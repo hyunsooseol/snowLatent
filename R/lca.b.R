@@ -55,35 +55,26 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .run = function() {
         
-       
-        # Cleaning data---------
+       #----------------------------
         
-        items <- self$options$vars
-        
-        data <- list()
-        
-        for (item in items)
-          data[[item]] <-
-          jmvcore::toNumeric(self$data[[item]])
-        
-        attr(data, 'row.names') <- seq_len(length(data[[1]]))
-        attr(data, 'class') <- 'data.frame'
+        data <- self$data
         
         data <- jmvcore::naOmit(data)
         
-        #----------------------------
+        vars<- self$options$vars
         
         class<- self$options$class
+        
         #cluster <- self$options$cluster
         
         data<- as.data.frame(data)
         
-        
-        vars <- colnames(data)
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        vars <- paste0(vars, collapse=',')
-        formula <- as.formula(paste0('item(', vars, ')~1'))
-        
+         
+        # vars <- colnames(data)
+          vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+          vars <- paste0(vars, collapse=',')
+         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+        # 
         
         ################ Model Estimates############################ 
         
