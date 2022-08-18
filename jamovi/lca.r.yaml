@@ -8,4 +8,8 @@ items:
       title: Latent Class Analysis
       type:  Preformatted
 
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
 ...

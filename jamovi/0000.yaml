@@ -4,8 +4,8 @@ name: snowLatent
 version: 0.0.1
 jms: '1.0'
 authors:
-  - Who wrote it
-maintainer: The package maintainer <yourself@somewhere.net>
+  - Hyunsoo Seol
+maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: '2022-08-18'
 type: R
 description: >-

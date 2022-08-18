@@ -2,21 +2,20 @@ title: Latent Class Analysis
 name: lca
 jus: '3.0'
 stage: 0
-compilerMode: aggressive
+compilerMode: tame
 children:
   - type: VariableSupplier
     persistentItems: false
     stretchFactor: 1
     children:
       - type: TargetLayoutBox
-        label: Dependent Variable
+        label: Variables
         children:
           - type: VariablesListBox
-            name: dep
-            maxItemCount: 1
+            name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Grouping Variable
+        label: Class Variable(Optional)
         children:
           - type: VariablesListBox
             name: group
@@ -24,11 +23,32 @@ children:
             isTarget: true
   - type: LayoutBox
     margin: large
+    style: inline
     children:
-      - type: ComboBox
-        name: alt
-  - type: LayoutBox
-    margin: large
+      - type: Label
+        label: Analysis option
+        margin: large
+        style: list-inline
+        children:
+          - name: class
+            type: TextBox
+            label: Class
+            format: number
+          - name: cluster
+            type: TextBox
+            label: Cluster
+            format: number
+  - type: CollapseBox
+    label: Analysis
+    margin: normal
+    collapsed: true
     children:
-      - type: CheckBox
-        name: varEq
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Statistics
+            children:
+              - type: CheckBox
+                name: summary

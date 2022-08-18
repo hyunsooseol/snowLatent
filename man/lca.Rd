@@ -4,23 +4,24 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, dep, group, alt = "notequal", varEq = TRUE)
+lca(vars, group, class = 2, cluster = 1, summary = TRUE)
 }
 \arguments{
-\item{data}{.}
-
-\item{dep}{.}
+\item{vars}{.}
 
 \item{group}{.}
 
-\item{alt}{.}
+\item{class}{.}
 
-\item{varEq}{.}
+\item{cluster}{.}
+
+\item{summary}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 }
 }
 \description{

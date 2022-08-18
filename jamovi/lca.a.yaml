@@ -6,31 +6,38 @@ version: '1.0.0'
 jas: '1.2'
 
 options:
-    - name: data
-      type: Data
-
-    - name: dep
-      title: Dependent Variable
-      type: Variable
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
 
     - name: group
-      title: Grouping Variable
+      title: Class Variable(Optional)
       type: Variable
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+ 
+    - name: class
+      title: Class
+      type: Integer
+      min: 2
+      default: 2
 
-    - name: alt
-      title: Alternative hypothesis
-      type: List
-      options:
-        - title: Not equal
-          name:  notequal
-        - title: One greater
-          name:  onegreater
-        - title: Two greater
-          name:  twogreater
-      default: notequal
+    - name: cluster
+      title: Cluster
+      type: Integer
+      min: 1
+      default: 1
 
-    - name: varEq
-      title: Assume equal variances
+    - name: summary
+      title: Summary 
       type: Bool
-      default: true
+      default: True      
 ...
