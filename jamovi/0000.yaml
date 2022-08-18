@@ -1,0 +1,23 @@
+---
+title: What the Package Does (Title Case)
+name: snowLatent
+version: 0.0.1
+jms: '1.0'
+authors:
+  - Who wrote it
+maintainer: The package maintainer <yourself@somewhere.net>
+date: '2022-08-18'
+type: R
+description: >-
+  More about what it does (maybe more than one line) Use four spaces when
+  indenting paragraphs within the Description.
+analyses:
+  - title: Latent Class Analysis
+    name: lca
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Latent Class Analysis
+usesNative: true
+minApp: 1.0.8
+
+...
