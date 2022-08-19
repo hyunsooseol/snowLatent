@@ -70,11 +70,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         data<- as.data.frame(data)
         
          
-        # vars <- colnames(data)
+          vars <- colnames(data)
           vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
           vars <- paste0(vars, collapse=',')
          formula <- as.formula(paste0('glca::item(', vars, ')~1'))
-        # 
+         
         
         ################ Model Estimates############################ 
         

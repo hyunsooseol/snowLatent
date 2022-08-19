@@ -15,7 +15,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package="snowLatent",
                 name="lca",
-                requiresData=FALSE,
+                requiresData=TRUE,
                 ...)
 
             private$..vars <- jmvcore::OptionVariables$new(
@@ -115,6 +115,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' Latent Class Analysis
 #'
 #' 
+#' @param data the data as a data frame
 #' @param vars .
 #' @param group .
 #' @param class .
@@ -128,6 +129,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' @export
 lca <- function(
+    data,
     vars,
     group,
     class = 2,
@@ -139,6 +141,14 @@ lca <- function(
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
     if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
+    if (missing(data))
+        data <- jmvcore::marshalData(
+            parent.frame(),
+            `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(group), group, NULL))
+
+    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
         vars = vars,

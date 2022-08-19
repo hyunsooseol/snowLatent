@@ -4,9 +4,11 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(vars, group, class = 2, cluster = 1, summary = TRUE)
+lca(data, vars, group, class = 2, cluster = 1, summary = TRUE)
 }
 \arguments{
+\item{data}{the data as a data frame}
+
 \item{vars}{.}
 
 \item{group}{.}
