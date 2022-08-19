@@ -4,12 +4,17 @@ title: Latent Class Analysis
 jrs:   '1.1'
 
 items:
-    - name:  text
-      title: Latent Class Analysis
-      type:  Preformatted
-
     - name: instructions
       title: 'Instructions'
       type: Html
       visible: True
+      
+    - name:  text
+      title: LCA
+      type:  Preformatted
+
+    - name:  text1
+      title: LCA with covariate
+      type:  Preformatted
+
 ...

@@ -4,26 +4,29 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, vars, group, class = 2, cluster = 1, summary = TRUE)
+lca(data, vars, cov, class = 2, cluster = 1, lca = TRUE, lcr = FALSE)
 }
 \arguments{
 \item{data}{the data as a data frame}
 
 \item{vars}{.}
 
-\item{group}{.}
+\item{cov}{.}
 
 \item{class}{.}
 
 \item{cluster}{.}
 
-\item{summary}{.}
+\item{lca}{.}
+
+\item{lcr}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
-  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 }
 }
 \description{

@@ -20,14 +20,15 @@ options:
       permitted:
         - factor
 
-    - name: group
-      title: Class Variable(Optional)
+    - name: cov
+      title: Covariate
       type: Variable
       suggested:
          - nominal
-         - ordinal
+         - continuous
       permitted:
         - factor
+        - numeric
  
     - name: class
       title: Class
@@ -41,8 +42,13 @@ options:
       min: 1
       default: 1
 
-    - name: summary
-      title: Summary 
+    - name: lca
+      title: LCA 
       type: Bool
       default: True      
+      
+    - name: lcr
+      title: LCA with covariate 
+      type: Bool
+      default: false          
 ...

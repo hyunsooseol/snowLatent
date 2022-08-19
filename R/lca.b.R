@@ -59,13 +59,31 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         data <- self$data
         
+       # data <- jmvcore::naOmit(data)
+        
+        # Cleaning data----------
+        
+        items <- self$options$vars
+        
+        data <- list()
+        
+        for (item in items)
+          data[[item]] <-
+          jmvcore::toNumeric(self$data[[item]])
+        
+        attr(data, 'row.names') <- seq_len(length(data[[1]]))
+        attr(data, 'class') <- 'data.frame'
+        
         data <- jmvcore::naOmit(data)
         
+       #------------------------------
+        
         vars<- self$options$vars
+        cov <- self$options$cov
         
         class<- self$options$class
         
-        #cluster <- self$options$cluster
+      #  cluster <- self$options$cluster
         
         data<- as.data.frame(data)
         
@@ -73,21 +91,40 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           vars <- colnames(data)
           vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
           vars <- paste0(vars, collapse=',')
-         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
          
+          formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+          
         
         ################ Model Estimates############################ 
         
         # Model 1: LCA
-        results = glca::glca(formula,
-                   data = data, nclass = class)
+        lca = glca::glca(formula, data = data, nclass = class, n.init=1)
         
        # res<- lca[["param"]][["rho"]][["ALL"]]
         
         ############################################################### 
         
-        self$results$text$setContent(summary(results))
+        self$results$text$setContent(summary(lca))
          
+        if(self$options$lcr==TRUE){
+          
+          
+       #   formula1 <- as.formula(paste0('glca::item(', vars, ')~1'))
+        
+          formula1<- jmvcore:::composeFormula(self$options$vars, self$options$cov)
+          
+            
+          ###############################################################
+          lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
+          
+          self$results$text1$setContent(summary(lcr))
+          
+        }  
+          
+          
+          
+          
+          
       
       }
         

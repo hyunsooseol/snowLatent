@@ -7,10 +7,11 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            group = NULL,
+            cov = NULL,
             class = 2,
             cluster = 1,
-            summary = TRUE, ...) {
+            lca = TRUE,
+            lcr = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -26,14 +27,15 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group,
+            private$..cov <- jmvcore::OptionVariable$new(
+                "cov",
+                cov,
                 suggested=list(
                     "nominal",
-                    "ordinal"),
+                    "continuous"),
                 permitted=list(
-                    "factor"))
+                    "factor",
+                    "numeric"))
             private$..class <- jmvcore::OptionInteger$new(
                 "class",
                 class,
@@ -44,37 +46,45 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 cluster,
                 min=1,
                 default=1)
-            private$..summary <- jmvcore::OptionBool$new(
-                "summary",
-                summary,
+            private$..lca <- jmvcore::OptionBool$new(
+                "lca",
+                lca,
                 default=TRUE)
+            private$..lcr <- jmvcore::OptionBool$new(
+                "lcr",
+                lcr,
+                default=FALSE)
 
             self$.addOption(private$..vars)
-            self$.addOption(private$..group)
+            self$.addOption(private$..cov)
             self$.addOption(private$..class)
             self$.addOption(private$..cluster)
-            self$.addOption(private$..summary)
+            self$.addOption(private$..lca)
+            self$.addOption(private$..lcr)
         }),
     active = list(
         vars = function() private$..vars$value,
-        group = function() private$..group$value,
+        cov = function() private$..cov$value,
         class = function() private$..class$value,
         cluster = function() private$..cluster$value,
-        summary = function() private$..summary$value),
+        lca = function() private$..lca$value,
+        lcr = function() private$..lcr$value),
     private = list(
         ..vars = NA,
-        ..group = NA,
+        ..cov = NA,
         ..class = NA,
         ..cluster = NA,
-        ..summary = NA)
+        ..lca = NA,
+        ..lcr = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaResults",
     inherit = jmvcore::Group,
     active = list(
+        instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        instructions = function() private$.items[["instructions"]]),
+        text1 = function() private$.items[["text1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -82,15 +92,19 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Latent Class Analysis")
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="Latent Class Analysis"))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
                 title="Instructions",
-                visible=TRUE))}))
+                visible=TRUE))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="LCA"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text1",
+                title="LCA with covariate"))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -117,45 +131,48 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data the data as a data frame
 #' @param vars .
-#' @param group .
+#' @param cov .
 #' @param class .
 #' @param cluster .
-#' @param summary .
+#' @param lca .
+#' @param lcr .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' @export
 lca <- function(
     data,
     vars,
-    group,
+    cov,
     class = 2,
     cluster = 1,
-    summary = TRUE) {
+    lca = TRUE,
+    lcr = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
-    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
+    if ( ! missing(cov)) cov <- jmvcore::resolveQuo(jmvcore::enquo(cov))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(group), group, NULL))
+            `if`( ! missing(cov), cov, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
-    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
         vars = vars,
-        group = group,
+        cov = cov,
         class = class,
         cluster = cluster,
-        summary = summary)
+        lca = lca,
+        lcr = lcr)
 
     analysis <- lcaClass$new(
         options = options,

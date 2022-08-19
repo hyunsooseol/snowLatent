@@ -15,12 +15,11 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Class Variable(Optional)
         children:
           - type: VariablesListBox
-            name: group
-            maxItemCount: 1
+            name: cov
             isTarget: true
+            maxItemCount: 1
   - type: LayoutBox
     margin: large
     style: inline
@@ -51,4 +50,6 @@ children:
             label: Statistics
             children:
               - type: CheckBox
-                name: summary
+                name: lca
+              - type: CheckBox
+                name: lcr
