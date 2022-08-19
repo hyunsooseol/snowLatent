@@ -79,14 +79,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ################ Model Estimates############################ 
         
         # Model 1: LCA
-        lca = glca::glca(formula,
+        results = glca::glca(formula,
                    data = data, nclass = class)
         
-        res<- summary(lca)
+       # res<- lca[["param"]][["rho"]][["ALL"]]
         
         ############################################################### 
         
-        self$results$text$setContent(res)
+        self$results$text$setContent(summary(results))
          
       
       }
