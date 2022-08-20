@@ -9,6 +9,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             covs = NULL,
             nc = 2,
+            nb = 100,
             nclu = 1,
             comp = TRUE,
             cp = FALSE, ...) {
@@ -41,6 +42,11 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=1,
                 default=2)
+            private$..nb <- jmvcore::OptionInteger$new(
+                "nb",
+                nb,
+                min=10,
+                default=100)
             private$..nclu <- jmvcore::OptionInteger$new(
                 "nclu",
                 nclu,
@@ -60,6 +66,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
             self$.addOption(private$..nc)
+            self$.addOption(private$..nb)
             self$.addOption(private$..nclu)
             self$.addOption(private$..comp)
             self$.addOption(private$..cp)
@@ -69,6 +76,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         covs = function() private$..covs$value,
         nc = function() private$..nc$value,
+        nb = function() private$..nb$value,
         nclu = function() private$..nclu$value,
         comp = function() private$..comp$value,
         cp = function() private$..cp$value,
@@ -77,6 +85,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..vars = NA,
         ..covs = NA,
         ..nc = NA,
+        ..nb = NA,
         ..nclu = NA,
         ..comp = NA,
         ..cp = NA,
@@ -213,6 +222,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param covs .
 #' @param nc .
+#' @param nb .
 #' @param nclu .
 #' @param comp .
 #' @param cp .
@@ -238,6 +248,7 @@ lca <- function(
     vars,
     covs,
     nc = 2,
+    nb = 100,
     nclu = 1,
     comp = TRUE,
     cp = FALSE) {
@@ -259,6 +270,7 @@ lca <- function(
         vars = vars,
         covs = covs,
         nc = nc,
+        nb = nb,
         nclu = nclu,
         comp = comp,
         cp = cp)

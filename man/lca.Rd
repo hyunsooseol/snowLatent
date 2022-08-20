@@ -4,7 +4,7 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, vars, covs, nc = 2, nclu = 1, comp = TRUE, cp = FALSE)
+lca(data, vars, covs, nc = 2, nb = 100, nclu = 1, comp = TRUE, cp = FALSE)
 }
 \arguments{
 \item{data}{the data as a data frame}
@@ -14,6 +14,8 @@ lca(data, vars, covs, nc = 2, nclu = 1, comp = TRUE, cp = FALSE)
 \item{covs}{.}
 
 \item{nc}{.}
+
+\item{nb}{.}
 
 \item{nclu}{.}
 

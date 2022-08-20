@@ -45,6 +45,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
         )
         
+         if (self$options$comp)
+             self$results$comp$setNote(
+                 "Note",
+                 "Bootstrap sample is used for obtaining p values"
+             )
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
@@ -91,6 +97,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         vars<- self$options$vars
         covs <- self$options$covs
         nc <- self$options$nc
+        nb <- self$options$nb
        # cluster <- self$options$cluster
         
         data<- as.data.frame(data)
@@ -125,7 +132,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                
                lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
           
-               fit<- glca::gofglca(lca, test = "boot", nboot = 100)
+               fit<- glca::gofglca(lca, test = "boot", nboot = nb)
                fit <- fit[["gtable"]]
                
               if (is.null(out)) {
