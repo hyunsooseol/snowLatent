@@ -12,7 +12,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nb = 100,
             nclu = 1,
             comp = TRUE,
-            cp = FALSE, ...) {
+            cp = FALSE,
+            item = FALSE,
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -62,6 +64,14 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..post <- jmvcore::OptionOutput$new(
                 "post")
+            private$..item <- jmvcore::OptionBool$new(
+                "item",
+                item,
+                default=FALSE)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -71,6 +81,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..comp)
             self$.addOption(private$..cp)
             self$.addOption(private$..post)
+            self$.addOption(private$..item)
+            self$.addOption(private$..plot1)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -80,7 +92,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         nclu = function() private$..nclu$value,
         comp = function() private$..comp$value,
         cp = function() private$..cp$value,
-        post = function() private$..post$value),
+        post = function() private$..post$value,
+        item = function() private$..item$value,
+        plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -89,7 +103,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..nclu = NA,
         ..comp = NA,
         ..cp = NA,
-        ..post = NA)
+        ..post = NA,
+        ..item = NA,
+        ..plot1 = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -98,10 +114,11 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        text1 = function() private$.items[["text1"]],
         comp = function() private$.items[["comp"]],
         cp = function() private$.items[["cp"]],
-        post = function() private$.items[["post"]]),
+        post = function() private$.items[["post"]],
+        text1 = function() private$.items[["text1"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -118,10 +135,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title="test"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text1",
-                title="test"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
@@ -129,7 +142,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(comp)",
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "nb"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -176,7 +190,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(cp)",
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "nb"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -193,7 +208,24 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="continuous",
                 clearWith=list(
                     "vars",
-                    "nc")))}))
+                    "nc",
+                    "nb")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text1",
+                title="Item-response probabilities"))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Class prevalences",
+                visible="(plot1)",
+                width=500,
+                height=500,
+                renderFun=".plot1",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -226,14 +258,17 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nclu .
 #' @param comp .
 #' @param cp .
+#' @param item .
+#' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -251,7 +286,9 @@ lca <- function(
     nb = 100,
     nclu = 1,
     comp = TRUE,
-    cp = FALSE) {
+    cp = FALSE,
+    item = FALSE,
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
@@ -273,7 +310,9 @@ lca <- function(
         nb = nb,
         nclu = nclu,
         comp = comp,
-        cp = cp)
+        cp = cp,
+        item = item,
+        plot1 = plot1)
 
     analysis <- lcaClass$new(
         options = options,

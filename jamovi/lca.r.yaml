@@ -13,10 +13,6 @@ items:
       title: test
       type:  Preformatted
 
-    - name:  text1
-      title: test
-      type:  Preformatted
-
     - name: comp
       title: 'Model fit'
       type: Table
@@ -24,6 +20,7 @@ items:
       clearWith:
         - vars
         - nc
+        - nb
 
       columns:
         - name: name
@@ -63,6 +60,7 @@ items:
       clearWith:
         - vars
         - nc
+        - nb
       
       columns:
         - name: name
@@ -78,5 +76,22 @@ items:
       measureType: continuous
       clearWith:
         - vars
-        - nc          
+        - nc
+        - nb
+
+    - name:  text1
+      title: Item-response probabilities
+      type:  Preformatted
+      
+    - name:  plot1
+      title: Class prevalences
+      type:  Image
+      visible: (plot1)
+      width: 500
+      height: 500
+      renderFun: .plot1
+      clearWith:
+        - vars
+        - nc
+        - nb
 ...

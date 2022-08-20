@@ -54,11 +54,21 @@ options:
       default: True
 
     - name: cp
-      title: Class 
+      title: Size of class 
       type: Bool 
       default: FALSE
 
     - name: post
-      title: Posterior probabilities
-      type: Output        
+      title: Posterior probability
+      type: Output  
+      
+    - name: item 
+      title: Item probability
+      type: Bool 
+      default: FALSE    
+
+    - name: plot1 
+      title: Class prevalences
+      type: Bool 
+      default: FALSE          
 ...

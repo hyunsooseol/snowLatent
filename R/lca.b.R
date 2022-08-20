@@ -48,7 +48,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          if (self$options$comp)
              self$results$comp$setNote(
                  "Note",
-                 "Bootstrap sample is used for obtaining p values"
+                 "Bootstrap sample was used for obtaining p values"
              )
         
         
@@ -82,9 +82,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateClassTable(results)
           
-          # populated posterior probabilities--
+          # populate item probabilities---------
+          
+          private$.populateItemTable(results)
+          
+          # populate posterior probabilities--
           
           private$.populatePosteriorOutputs(data)
+          
+          # populate class prevalences plot--
+          
+         # private$.populateClassPlot(results)
+          
         
           
         }
@@ -124,6 +133,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           gam <- t(gam)
           gam <- as.data.frame(gam)
           
+          # item probabilities------
+          
+          item<- lca[["param"]][["rho"]][["ALL"]]
+          
+          # Class Prevalences plot----------
+          
+          image <- self$results$plot1
+          image$setState(lca)
+          
+          
           ############## Model comparison######################
           
              out <- NULL
@@ -150,9 +169,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             results <-
               list(
                 'res'=res,
-                'gam'= gam
+                'gam'= gam,
+                'item'=item
                 
                 )
+          
             
       },   
       
@@ -222,8 +243,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          }
          
       },
-         
-      
+       
+    
       # posterior probability----------
          
       .populatePosteriorOutputs= function(data) {
@@ -276,8 +297,38 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
       },
       
-         
+      # item probabilities----------
+      
+      .populateItemTable= function(results) {
+        
+        
+        res <- results$item
+        
+        self$results$text1$setContent(res)
+        
+      },   
 
+      .plot1 = function(image, ...) {
+        
+        lca <- image$state
+        
+         if (is.null(lca))
+          return()
+        
+      
+      plot1 <- plot(lca)
+      
+      print(plot1)
+      
+      TRUE
+      
+      },
+      
+      
+      
+      
+      
+      
       ###############################################################
      #      lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
      #      

@@ -59,3 +59,18 @@ children:
                 name: cp
               - type: Output
                 name: post
+              - type: CheckBox
+                name: item
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: 'Plots'
+            children:
+              - type: CheckBox
+                name: plot1
