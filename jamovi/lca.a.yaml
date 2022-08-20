@@ -21,7 +21,7 @@ options:
         - factor
 
     - name: covs
-      title: Covariates
+      title: Covariates(Optional)
       type: Variables
       suggested:
          - nominal
@@ -42,15 +42,13 @@ options:
       min: 1
       default: 1
 
-    - name: fit
-      title: Fit measures
-      type: Bool
-      default: True
-
     - name: comp
-      title: Model comparison
+      title: Model fit
       type: Bool
       default: True
 
-     
+    - name: cp
+      title: Class 
+      type: Bool 
+      default: FALSE
 ...

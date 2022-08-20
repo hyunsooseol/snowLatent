@@ -77,7 +77,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #------------------------------
         
         vars<- self$options$vars
-        cov <- self$options$cov
+        covs <- self$options$covs
         
         nc <- self$options$nc
        # cluster <- self$options$cluster
@@ -91,124 +91,115 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
           formula <- as.formula(paste0('glca::item(', vars, ')~1'))
           
-        
-        ################ LCA model estimates############################ 
        
-        lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
-        
-       
-        ############################################################### 
-        
-       # self$results$text$setContent(summary(lca))
-      
-        # Fit measure-----------
+          ############## Model comparison######################
           
-          nc <- self$options$nc
-          
-          aic<- lca[["gof"]][["aic"]]
-          
-          bic<- lca[["gof"]][["bic"]]
-          
-          caic <- lca[["gof"]][["caic"]]
-          
-          entropy<- lca[["gof"]][["entropy"]]
-          
-          # gsq<- lca[["gof"]][["Gsq"]]
-          # loglik <- lca[["gof"]][["loglik"]]
-          
-          # Fit measure table-------------
-          
-          table <- self$results$fit
-          
-          row <- list()
-          
-          row[['nc']] <- nc
-          row[['aic']] <- aic
-          row[['bic']] <- bic
-          row[['caic']] <- caic
-          row[['entropy']] <- entropy
-          
-          table$setRow(rowNo = 1, values = row)
-          
-          #---------------------------------
-          # Model comparison-----------------
-          
-          out <- NULL
-          
-          for (i in 1:self$options$nc) {
-            
-            lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
-            
-           
-            aic<- lca[["gof"]][["aic"]]
-            
-            bic<- lca[["gof"]][["bic"]]
-            
-            caic <- lca[["gof"]][["caic"]]
-            
-            entropy<- lca[["gof"]][["entropy"]]
-            
-            
-            
-            df<- data.frame(aic,bic,caic, entropy)
-            
-            
-            if (is.null(out)) {
-              out <- df
-            } else {
-              out <- rbind(out, df)
-            }
-          }
-          
-          out <- out
-          
-          
-          #Populate model comparison----------------
-          
-          table <- self$results$comp
-          
-          nc <- self$options$nc
-         
-          fit<- data.frame(out)
-          
-         # self$results$text$setContent(fit)
-         
-          names <- dimnames(fit)[[1]]
-          
-          
-          for (name in names) {
-            
-            row <- list()
-            
-            row[["aic"]]   <-  fit[name, 1]
-            row[["bic"]] <-  fit[name, 2]
-            row[["caic"]] <-  fit[name, 3]
-            row[["entropy"]] <-  fit[name, 4]
-            
-            table$addRow(rowKey=name, values=row)
-            
-          }  
-      
-          
+             out <- NULL
              
-       
-     #      if(self$options$lcr==TRUE){
-     #      
-     #        dat<- jmvcore::select(data,self$options$cov)
-     #      
-     # #   formula1 <- as.formula(paste0('glca::item(', vars, ') ~ vars'))
-     #    
-     #  #formula1<- jmvcore:::composeFormula(self$options$vars, self$options$cov)
-     #      
-     #        formula1 <- as.formula(paste0('glca::item(', vars, '),'),paste0(self$options$cov, collapse ="+"))      
-     #      ###############################################################
+             for (i in 1:self$options$nc) {
+               
+               lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+          
+               fit<- glca::gofglca(lca, test = "boot", nboot = 100)
+               fit <- fit[["gtable"]]
+               
+              if (is.null(out)) {
+                out <- fit
+              } else {
+                out <- rbind(out, fit)
+              }
+            }
+
+            out <- out
+            
+            row.names(out) <- 1:nrow(out)  
+            res <- as.data.frame(out)
+            
+            #self$results$text1$setContent(res)
+
+######################################################################
+        
+         # populating model comparison--------
+         
+         table <- self$results$comp
+         
+        
+         loglik <- res[,1]
+         aic <- res[,2]
+         caic <- res[,3]
+         bic <- res[,4] 
+         entropy <- res[,5]
+         df <- res[,6] 
+         gsq <- res[,7] 
+         p <- res[,8]
+         
+         names <- dimnames(res)[[1]]
+         
+         for (name in names) {
+           
+           row <- list()
+           
+           row[['nc']] <- nc
+           row[["loglik"]]   <-  res[name, 1]
+           row[["aic"]] <-  res[name, 2]
+           row[["caic"]] <-  res[name, 3]
+           row[["bic"]] <-  res[name, 4]
+           row[["entropy"]] <-  res[name, 5]
+           row[["df"]] <-  res[name, 6]
+           row[["gsq"]] <-  res[name, 7]
+           row[["p"]] <-  res[name, 8]
+           
+           
+           table$addRow(rowKey=name, values=row)
+           
+         }     
+         
+         ################ LCA model estimates############################ 
+         
+         lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+         
+         
+         ############################################################### 
+         
+         gam<- lca[["param"]][["gamma"]]
+         
+         row.names(gam) <- 1:nrow(gam)  
+         gam <- as.data.frame(gam)
+         gam <- t(gam)
+         gam <- as.data.frame(gam)
+         
+         names<- dimnames(gam)[[1]]
+         
+         #creating table--------
+         
+         table <- self$results$cp
+         
+         for (name in names) {
+           
+           row <- list()
+           
+           row[['value']] <- gam[name,1]
+           
+           table$addRow(rowKey=name, values=row)
+           
+         }
+         
+         
+         
+         
+         
+         
+         
+         
+         
+      ###############################################################
      #      lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
      #      
      #      self$results$text1$setContent(summary(lcr))
      #      
      #    }  
           
-          
+                 
           
           
           
