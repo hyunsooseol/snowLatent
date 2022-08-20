@@ -4,7 +4,17 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(data, vars, cov, class = 2, cluster = 1, lca = TRUE, lcr = FALSE)
+lca(
+  data,
+  vars,
+  cov,
+  nc = 2,
+  cluster = 1,
+  fit = TRUE,
+  comp = TRUE,
+  lca = FALSE,
+  lcr = FALSE
+)
 }
 \arguments{
 \item{data}{the data as a data frame}
@@ -13,9 +23,13 @@ lca(data, vars, cov, class = 2, cluster = 1, lca = TRUE, lcr = FALSE)
 
 \item{cov}{.}
 
-\item{class}{.}
+\item{nc}{.}
 
 \item{cluster}{.}
+
+\item{fit}{.}
+
+\item{comp}{.}
 
 \item{lca}{.}
 
@@ -27,7 +41,15 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$fit$asDF}
+
+\code{as.data.frame(results$fit)}
 }
 \description{
 Latent Class Analysis

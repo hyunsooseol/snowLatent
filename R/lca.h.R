@@ -8,9 +8,11 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             cov = NULL,
-            class = 2,
+            nc = 2,
             cluster = 1,
-            lca = TRUE,
+            fit = TRUE,
+            comp = TRUE,
+            lca = FALSE,
             lcr = FALSE, ...) {
 
             super$initialize(
@@ -36,20 +38,28 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "factor",
                     "numeric"))
-            private$..class <- jmvcore::OptionInteger$new(
-                "class",
-                class,
-                min=2,
+            private$..nc <- jmvcore::OptionInteger$new(
+                "nc",
+                nc,
+                min=1,
                 default=2)
             private$..cluster <- jmvcore::OptionInteger$new(
                 "cluster",
                 cluster,
                 min=1,
                 default=1)
+            private$..fit <- jmvcore::OptionBool$new(
+                "fit",
+                fit,
+                default=TRUE)
+            private$..comp <- jmvcore::OptionBool$new(
+                "comp",
+                comp,
+                default=TRUE)
             private$..lca <- jmvcore::OptionBool$new(
                 "lca",
                 lca,
-                default=TRUE)
+                default=FALSE)
             private$..lcr <- jmvcore::OptionBool$new(
                 "lcr",
                 lcr,
@@ -57,23 +67,29 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..vars)
             self$.addOption(private$..cov)
-            self$.addOption(private$..class)
+            self$.addOption(private$..nc)
             self$.addOption(private$..cluster)
+            self$.addOption(private$..fit)
+            self$.addOption(private$..comp)
             self$.addOption(private$..lca)
             self$.addOption(private$..lcr)
         }),
     active = list(
         vars = function() private$..vars$value,
         cov = function() private$..cov$value,
-        class = function() private$..class$value,
+        nc = function() private$..nc$value,
         cluster = function() private$..cluster$value,
+        fit = function() private$..fit$value,
+        comp = function() private$..comp$value,
         lca = function() private$..lca$value,
         lcr = function() private$..lcr$value),
     private = list(
         ..vars = NA,
         ..cov = NA,
-        ..class = NA,
+        ..nc = NA,
         ..cluster = NA,
+        ..fit = NA,
+        ..comp = NA,
         ..lca = NA,
         ..lcr = NA)
 )
@@ -84,7 +100,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        text1 = function() private$.items[["text1"]]),
+        text1 = function() private$.items[["text1"]],
+        fit = function() private$.items[["fit"]],
+        comp = function() private$.items[["comp"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -104,7 +122,67 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="LCA with covariate"))}))
+                title="LCA with covariate"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="fit",
+                title="Model fit",
+                rows=1,
+                clearWith=list(
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="nc", 
+                        `title`="Class", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp",
+                title="Model comparison",
+                visible="(comp)",
+                clearWith=list(
+                    "vars",
+                    "nc"),
+                refs="poLCA",
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Class", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
+                        `type`="number"))))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -132,8 +210,10 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data the data as a data frame
 #' @param vars .
 #' @param cov .
-#' @param class .
+#' @param nc .
 #' @param cluster .
+#' @param fit .
+#' @param comp .
 #' @param lca .
 #' @param lcr .
 #' @return A results object containing:
@@ -141,16 +221,26 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$fit$asDF}
+#'
+#' \code{as.data.frame(results$fit)}
 #'
 #' @export
 lca <- function(
     data,
     vars,
     cov,
-    class = 2,
+    nc = 2,
     cluster = 1,
-    lca = TRUE,
+    fit = TRUE,
+    comp = TRUE,
+    lca = FALSE,
     lcr = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -169,8 +259,10 @@ lca <- function(
     options <- lcaOptions$new(
         vars = vars,
         cov = cov,
-        class = class,
+        nc = nc,
         cluster = cluster,
+        fit = fit,
+        comp = comp,
         lca = lca,
         lcr = lcr)
 

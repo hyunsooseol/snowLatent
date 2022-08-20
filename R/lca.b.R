@@ -58,16 +58,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        #----------------------------
         
         data <- self$data
-        
-       # data <- jmvcore::naOmit(data)
+      #data <- jmvcore::naOmit(data)
         
         # Cleaning data----------
-        
+         
         items <- self$options$vars
         
         data <- list()
         
-        for (item in items)
+       for (item in items)
           data[[item]] <-
           jmvcore::toNumeric(self$data[[item]])
         
@@ -75,19 +74,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         attr(data, 'class') <- 'data.frame'
         
         data <- jmvcore::naOmit(data)
-        
-       #------------------------------
+        #------------------------------
         
         vars<- self$options$vars
         cov <- self$options$cov
         
-        class<- self$options$class
-        
-      #  cluster <- self$options$cluster
+        nc <- self$options$nc
+       # cluster <- self$options$cluster
         
         data<- as.data.frame(data)
         
-         
+         ### Construct formula-----------        
           vars <- colnames(data)
           vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
           vars <- paste0(vars, collapse=',')
@@ -95,31 +92,121 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           formula <- as.formula(paste0('glca::item(', vars, ')~1'))
           
         
-        ################ Model Estimates############################ 
+        ################ LCA model estimates############################ 
+       
+        lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
         
-        # Model 1: LCA
-        lca = glca::glca(formula, data = data, nclass = class, n.init=1)
-        
-       # res<- lca[["param"]][["rho"]][["ALL"]]
-        
+       
         ############################################################### 
         
-        self$results$text$setContent(summary(lca))
-         
-        if(self$options$lcr==TRUE){
+       # self$results$text$setContent(summary(lca))
+      
+        # Fit measure-----------
           
+          nc <- self$options$nc
           
-       #   formula1 <- as.formula(paste0('glca::item(', vars, ')~1'))
-        
-          formula1<- jmvcore:::composeFormula(self$options$vars, self$options$cov)
+          aic<- lca[["gof"]][["aic"]]
           
+          bic<- lca[["gof"]][["bic"]]
+          
+          caic <- lca[["gof"]][["caic"]]
+          
+          entropy<- lca[["gof"]][["entropy"]]
+          
+          # gsq<- lca[["gof"]][["Gsq"]]
+          # loglik <- lca[["gof"]][["loglik"]]
+          
+          # Fit measure table-------------
+          
+          table <- self$results$fit
+          
+          row <- list()
+          
+          row[['nc']] <- nc
+          row[['aic']] <- aic
+          row[['bic']] <- bic
+          row[['caic']] <- caic
+          row[['entropy']] <- entropy
+          
+          table$setRow(rowNo = 1, values = row)
+          
+          #---------------------------------
+          # Model comparison-----------------
+          
+          out <- NULL
+          
+          for (i in 1:self$options$nc) {
             
-          ###############################################################
-          lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
+            lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+            
+           
+            aic<- lca[["gof"]][["aic"]]
+            
+            bic<- lca[["gof"]][["bic"]]
+            
+            caic <- lca[["gof"]][["caic"]]
+            
+            entropy<- lca[["gof"]][["entropy"]]
+            
+            
+            
+            df<- data.frame(aic,bic,caic, entropy)
+            
+            
+            if (is.null(out)) {
+              out <- df
+            } else {
+              out <- rbind(out, df)
+            }
+          }
           
-          self$results$text1$setContent(summary(lcr))
+          out <- out
           
-        }  
+          
+          #Populate model comparison----------------
+          
+          table <- self$results$comp
+          
+          nc <- self$options$nc
+         
+          fit<- data.frame(out)
+          
+         # self$results$text$setContent(fit)
+         
+          names <- dimnames(fit)[[1]]
+          
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            row[["aic"]]   <-  fit[name, 1]
+            row[["bic"]] <-  fit[name, 2]
+            row[["caic"]] <-  fit[name, 3]
+            row[["entropy"]] <-  fit[name, 4]
+            
+            table$addRow(rowKey=name, values=row)
+            
+          }  
+      
+          
+             
+       
+     #      if(self$options$lcr==TRUE){
+     #      
+     #        dat<- jmvcore::select(data,self$options$cov)
+     #      
+     # #   formula1 <- as.formula(paste0('glca::item(', vars, ') ~ vars'))
+     #    
+     #  #formula1<- jmvcore:::composeFormula(self$options$vars, self$options$cov)
+     #      
+     #        formula1 <- as.formula(paste0('glca::item(', vars, '),'),paste0(self$options$cov, collapse ="+"))      
+     #      ###############################################################
+     #      lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
+     #      
+     #      self$results$text1$setContent(summary(lcr))
+     #      
+     #    }  
           
           
           

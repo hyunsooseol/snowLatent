@@ -30,10 +30,10 @@ options:
         - factor
         - numeric
  
-    - name: class
+    - name: nc
       title: Class
       type: Integer
-      min: 2
+      min: 1
       default: 2
 
     - name: cluster
@@ -42,10 +42,22 @@ options:
       min: 1
       default: 1
 
+    - name: fit
+      title: Fit measures
+      type: Bool
+      default: True
+
+    - name: comp
+      title: Model comparison
+      type: Bool
+      default: True
+
+
+
     - name: lca
       title: LCA 
       type: Bool
-      default: True      
+      default: false     
       
     - name: lcr
       title: LCA with covariate 

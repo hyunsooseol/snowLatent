@@ -29,7 +29,7 @@ children:
         margin: large
         style: list-inline
         children:
-          - name: class
+          - name: nc
             type: TextBox
             label: Class
             format: number
@@ -48,6 +48,13 @@ children:
         children:
           - type: Label
             label: Statistics
+            children:
+              - type: CheckBox
+                name: fit
+              - type: CheckBox
+                name: comp
+          - type: LayoutBox
+            margin: large
             children:
               - type: CheckBox
                 name: lca

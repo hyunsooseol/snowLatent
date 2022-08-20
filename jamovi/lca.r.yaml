@@ -17,4 +17,56 @@ items:
       title: LCA with covariate
       type:  Preformatted
 
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - nc
+
+      columns:
+        - name: nc
+          title: Class
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: bic
+          title: BIC 
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number          
+        - name: entropy
+          title: Entropy 
+          type: number
+
+    - name: comp
+      title: 'Model comparison'
+      type: Table
+      visible: (comp)
+      clearWith:
+        - vars
+        - nc
+      refs: poLCA 
+
+      columns:
+        - name: name
+          title: 'Class'
+          type: 'text'
+          content: ($key)   
+        - name: aic
+          title: AIC
+          type: number
+        - name: bic
+          title: BIC 
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number          
+        - name: entropy
+          title: Entropy 
+          type: number
+
 ...
