@@ -7,13 +7,11 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            cov = NULL,
+            covs = NULL,
             nc = 2,
-            cluster = 1,
+            nclu = 1,
             fit = TRUE,
-            comp = TRUE,
-            lca = FALSE,
-            lcr = FALSE, ...) {
+            comp = TRUE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -29,9 +27,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..cov <- jmvcore::OptionVariable$new(
-                "cov",
-                cov,
+            private$..covs <- jmvcore::OptionVariables$new(
+                "covs",
+                covs,
                 suggested=list(
                     "nominal",
                     "continuous"),
@@ -43,9 +41,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=1,
                 default=2)
-            private$..cluster <- jmvcore::OptionInteger$new(
-                "cluster",
-                cluster,
+            private$..nclu <- jmvcore::OptionInteger$new(
+                "nclu",
+                nclu,
                 min=1,
                 default=1)
             private$..fit <- jmvcore::OptionBool$new(
@@ -56,42 +54,28 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "comp",
                 comp,
                 default=TRUE)
-            private$..lca <- jmvcore::OptionBool$new(
-                "lca",
-                lca,
-                default=FALSE)
-            private$..lcr <- jmvcore::OptionBool$new(
-                "lcr",
-                lcr,
-                default=FALSE)
 
             self$.addOption(private$..vars)
-            self$.addOption(private$..cov)
+            self$.addOption(private$..covs)
             self$.addOption(private$..nc)
-            self$.addOption(private$..cluster)
+            self$.addOption(private$..nclu)
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
-            self$.addOption(private$..lca)
-            self$.addOption(private$..lcr)
         }),
     active = list(
         vars = function() private$..vars$value,
-        cov = function() private$..cov$value,
+        covs = function() private$..covs$value,
         nc = function() private$..nc$value,
-        cluster = function() private$..cluster$value,
+        nclu = function() private$..nclu$value,
         fit = function() private$..fit$value,
-        comp = function() private$..comp$value,
-        lca = function() private$..lca$value,
-        lcr = function() private$..lcr$value),
+        comp = function() private$..comp$value),
     private = list(
         ..vars = NA,
-        ..cov = NA,
+        ..covs = NA,
         ..nc = NA,
-        ..cluster = NA,
+        ..nclu = NA,
         ..fit = NA,
-        ..comp = NA,
-        ..lca = NA,
-        ..lcr = NA)
+        ..comp = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -209,13 +193,11 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data the data as a data frame
 #' @param vars .
-#' @param cov .
+#' @param covs .
 #' @param nc .
-#' @param cluster .
+#' @param nclu .
 #' @param fit .
 #' @param comp .
-#' @param lca .
-#' @param lcr .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -235,36 +217,32 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lca <- function(
     data,
     vars,
-    cov,
+    covs,
     nc = 2,
-    cluster = 1,
+    nclu = 1,
     fit = TRUE,
-    comp = TRUE,
-    lca = FALSE,
-    lcr = FALSE) {
+    comp = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
-    if ( ! missing(cov)) cov <- jmvcore::resolveQuo(jmvcore::enquo(cov))
+    if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(cov), cov, NULL))
+            `if`( ! missing(covs), covs, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
         vars = vars,
-        cov = cov,
+        covs = covs,
         nc = nc,
-        cluster = cluster,
+        nclu = nclu,
         fit = fit,
-        comp = comp,
-        lca = lca,
-        lcr = lcr)
+        comp = comp)
 
     analysis <- lcaClass$new(
         options = options,

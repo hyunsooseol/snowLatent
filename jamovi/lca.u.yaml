@@ -17,9 +17,9 @@ children:
       - type: TargetLayoutBox
         children:
           - type: VariablesListBox
-            name: cov
+            name: covs
+            height: small
             isTarget: true
-            maxItemCount: 1
   - type: LayoutBox
     margin: large
     style: inline
@@ -33,7 +33,7 @@ children:
             type: TextBox
             label: Class
             format: number
-          - name: cluster
+          - name: nclu
             type: TextBox
             label: Cluster
             format: number
@@ -53,10 +53,4 @@ children:
                 name: fit
               - type: CheckBox
                 name: comp
-          - type: LayoutBox
-            margin: large
-            children:
-              - type: CheckBox
-                name: lca
-              - type: CheckBox
-                name: lcr
+ 

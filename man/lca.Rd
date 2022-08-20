@@ -4,36 +4,22 @@
 \alias{lca}
 \title{Latent Class Analysis}
 \usage{
-lca(
-  data,
-  vars,
-  cov,
-  nc = 2,
-  cluster = 1,
-  fit = TRUE,
-  comp = TRUE,
-  lca = FALSE,
-  lcr = FALSE
-)
+lca(data, vars, covs, nc = 2, nclu = 1, fit = TRUE, comp = TRUE)
 }
 \arguments{
 \item{data}{the data as a data frame}
 
 \item{vars}{.}
 
-\item{cov}{.}
+\item{covs}{.}
 
 \item{nc}{.}
 
-\item{cluster}{.}
+\item{nclu}{.}
 
 \item{fit}{.}
 
 \item{comp}{.}
-
-\item{lca}{.}
-
-\item{lcr}{.}
 }
 \value{
 A results object containing:

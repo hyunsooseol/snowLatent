@@ -20,9 +20,9 @@ options:
       permitted:
         - factor
 
-    - name: cov
-      title: Covariate
-      type: Variable
+    - name: covs
+      title: Covariates
+      type: Variables
       suggested:
          - nominal
          - continuous
@@ -36,7 +36,7 @@ options:
       min: 1
       default: 2
 
-    - name: cluster
+    - name: nclu
       title: Cluster
       type: Integer
       min: 1
@@ -52,15 +52,5 @@ options:
       type: Bool
       default: True
 
-
-
-    - name: lca
-      title: LCA 
-      type: Bool
-      default: false     
-      
-    - name: lcr
-      title: LCA with covariate 
-      type: Bool
-      default: false          
+     
 ...
