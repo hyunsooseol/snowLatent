@@ -69,7 +69,14 @@ items:
           title: ''
           type: 'text'
           content: ($key)
-
         - name: value
-          title: 'Probability'          
+          title: 'Probability'    
+          
+    - name: post
+      title: Posterior probabilities
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc          
 ...

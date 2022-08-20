@@ -53,4 +53,5 @@ children:
                 name: comp
               - type: CheckBox
                 name: cp
-  
+              - type: Output
+                name: post

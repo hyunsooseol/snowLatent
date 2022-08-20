@@ -51,4 +51,8 @@ options:
       title: Class 
       type: Bool 
       default: FALSE
+
+    - name: post
+      title: Posterior probabilities
+      type: Output        
 ...

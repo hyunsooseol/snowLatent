@@ -54,6 +54,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cp",
                 cp,
                 default=FALSE)
+            private$..post <- jmvcore::OptionOutput$new(
+                "post")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -61,6 +63,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nclu)
             self$.addOption(private$..comp)
             self$.addOption(private$..cp)
+            self$.addOption(private$..post)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -68,14 +71,16 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         nc = function() private$..nc$value,
         nclu = function() private$..nclu$value,
         comp = function() private$..comp$value,
-        cp = function() private$..cp$value),
+        cp = function() private$..cp$value,
+        post = function() private$..post$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
         ..nc = NA,
         ..nclu = NA,
         ..comp = NA,
-        ..cp = NA)
+        ..cp = NA,
+        ..post = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -86,7 +91,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         text = function() private$.items[["text"]],
         text1 = function() private$.items[["text1"]],
         comp = function() private$.items[["comp"]],
-        cp = function() private$.items[["cp"]]),
+        cp = function() private$.items[["cp"]],
+        post = function() private$.items[["post"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -170,7 +176,15 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `content`="($key)"),
                     list(
                         `name`="value", 
-                        `title`="Probability"))))}))
+                        `title`="Probability"))))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="post",
+                title="Posterior probabilities",
+                measureType="continuous",
+                clearWith=list(
+                    "vars",
+                    "nc")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -209,6 +223,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

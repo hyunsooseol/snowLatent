@@ -55,30 +55,41 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .run = function() {
         
-       #----------------------------
+        ready <- TRUE
         
-        data <- self$data
-      #data <- jmvcore::naOmit(data)
+        if (is.null(self$options$vars) ||
+            length(self$options$vars) < 2)
+          
+          ready <- FALSE
         
-        # Cleaning data----------
-         
-        items <- self$options$vars
+        if (ready) {
+          
+          data <- private$.cleanData()
+          
+          results <- private$.compute(data)               
+          
+          # populate Model comparison-----------
+          
+          private$.populateModelTable(results)
+          
+          # populate class probability table-----
+          
+          private$.populateClassTable(results)
+          
+          # populated posterior probabilities--
+          
+          private$.populatePosteriorOutputs(data)
         
-        data <- list()
+          
+        }
+      },
         
-       for (item in items)
-          data[[item]] <-
-          jmvcore::toNumeric(self$data[[item]])
         
-        attr(data, 'row.names') <- seq_len(length(data[[1]]))
-        attr(data, 'class') <- 'data.frame'
+      .compute = function(data) {
         
-        data <- jmvcore::naOmit(data)
-        #------------------------------
         
         vars<- self$options$vars
         covs <- self$options$covs
-        
         nc <- self$options$nc
        # cluster <- self$options$cluster
         
@@ -92,6 +103,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           formula <- as.formula(paste0('glca::item(', vars, ')~1'))
           
        
+          ################ LCA model estimates############################ 
+          
+          lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+          
+          
+          ############################################################### 
+          
+          gam<- lca[["param"]][["gamma"]]
+          
+          row.names(gam) <- 1:nrow(gam)  
+          gam <- as.data.frame(gam)
+          gam <- t(gam)
+          gam <- as.data.frame(gam)
+          
           ############## Model comparison######################
           
              out <- NULL
@@ -115,16 +140,30 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             row.names(out) <- 1:nrow(out)  
             res <- as.data.frame(out)
             
-            #self$results$text1$setContent(res)
-
-######################################################################
+            results <-
+              list(
+                'res'=res,
+                'gam'= gam
+                
+                )
+            
+      },   
+      
+      
+      # Model comparison table----------
+      
+      
+      .populateModelTable = function(results) {
+            
         
-         # populating model comparison--------
+        nc <- self$options$nc
          
-         table <- self$results$comp
+        table <- self$results$comp
          
         
-         loglik <- res[,1]
+         res <- results$res
+         
+        
          aic <- res[,2]
          caic <- res[,3]
          bic <- res[,4] 
@@ -132,6 +171,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          df <- res[,6] 
          gsq <- res[,7] 
          p <- res[,8]
+         
          
          names <- dimnames(res)[[1]]
          
@@ -154,26 +194,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
          }     
          
-         ################ LCA model estimates############################ 
+      },
          
-         lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+      .populateClassTable= function(results) {  
          
+        table <- self$results$cp
+        
+        gam <- results$gam
+        names<- dimnames(gam)[[1]]
          
-         ############################################################### 
-         
-         gam<- lca[["param"]][["gamma"]]
-         
-         row.names(gam) <- 1:nrow(gam)  
-         gam <- as.data.frame(gam)
-         gam <- t(gam)
-         gam <- as.data.frame(gam)
-         
-         names<- dimnames(gam)[[1]]
-         
-         #creating table--------
-         
-         table <- self$results$cp
-         
+       
          for (name in names) {
            
            row <- list()
@@ -184,14 +214,63 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
          }
          
+      },
          
+      
+      # posterior probability----------
          
+      .populatePosteriorOutputs= function(data) {
+        
+        nc<- self$options$nc
+        
+        data <- jmvcore::naOmit(data)
+        
+        data<- as.data.frame(data)
+        
+        vars <- colnames(data)
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        vars <- paste0(vars, collapse=',')
+        
+        formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+        
+        
+        ################ LCA model estimates############################ 
+        
+        lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+        ###############################################################
+        
+        pos<- lca$posterior$ALL
+        
+        
+        if (self$options$post
+            && self$results$post$isNotFilled()) {
          
+          keys <- 1:self$options$nc
+          measureTypes <- rep("continuous", self$options$nc)
+          
+          titles <- paste("Class", keys)
+          descriptions <- paste("Class", keys)
+          
+          self$results$post$set(
+            keys=keys,
+            titles=titles,
+            descriptions=descriptions,
+            measureTypes=measureTypes
+          )                
+          
+          self$results$post$setRowNums(rownames(data))
+          
+          for (i in 1:self$options$nc) {
+            scores <- as.numeric(pos[, i])
+            self$results$post$setValues(index=i, scores)
+          }
+          
+          
+        }
+      },
+      
          
-         
-         
-         
-         
+
       ###############################################################
      #      lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
      #      
@@ -199,12 +278,28 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      #      
      #    }  
           
-                 
-          
-          
-          
-      
-      }
-        
-        )
+     ### Helper functions =================================     
+     
+     .cleanData = function() {
+       
+       items <- self$options$vars
+       
+       data <- list()
+       
+       for (item in items)
+         data[[item]] <-
+         jmvcore::toNumeric(self$data[[item]])
+       
+       attr(data, 'row.names') <- seq_len(length(data[[1]]))
+       attr(data, 'class') <- 'data.frame'
+       
+       data <- jmvcore::naOmit(data)
+       
+       return(data)
+     }
+     
+     
+    )
 )
+
+  
