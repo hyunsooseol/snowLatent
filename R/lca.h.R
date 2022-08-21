@@ -7,10 +7,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            covs = NULL,
+            group = NULL,
             nc = 2,
             nb = 100,
-            nclu = 1,
             comp = TRUE,
             cp = FALSE,
             item = FALSE,
@@ -30,15 +29,14 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..covs <- jmvcore::OptionVariables$new(
-                "covs",
-                covs,
+            private$..group <- jmvcore::OptionVariable$new(
+                "group",
+                group,
                 suggested=list(
                     "nominal",
-                    "continuous"),
+                    "ordinal"),
                 permitted=list(
-                    "factor",
-                    "numeric"))
+                    "factor"))
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -49,11 +47,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nb,
                 min=10,
                 default=100)
-            private$..nclu <- jmvcore::OptionInteger$new(
-                "nclu",
-                nclu,
-                min=1,
-                default=1)
             private$..comp <- jmvcore::OptionBool$new(
                 "comp",
                 comp,
@@ -74,10 +67,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
 
             self$.addOption(private$..vars)
-            self$.addOption(private$..covs)
+            self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..nb)
-            self$.addOption(private$..nclu)
             self$.addOption(private$..comp)
             self$.addOption(private$..cp)
             self$.addOption(private$..post)
@@ -86,10 +78,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
-        covs = function() private$..covs$value,
+        group = function() private$..group$value,
         nc = function() private$..nc$value,
         nb = function() private$..nb$value,
-        nclu = function() private$..nclu$value,
         comp = function() private$..comp$value,
         cp = function() private$..cp$value,
         post = function() private$..post$value,
@@ -97,10 +88,9 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
-        ..covs = NA,
+        ..group = NA,
         ..nc = NA,
         ..nb = NA,
-        ..nclu = NA,
         ..comp = NA,
         ..cp = NA,
         ..post = NA,
@@ -252,10 +242,9 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data the data as a data frame
 #' @param vars .
-#' @param covs .
+#' @param group .
 #' @param nc .
 #' @param nb .
-#' @param nclu .
 #' @param comp .
 #' @param cp .
 #' @param item .
@@ -281,10 +270,9 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lca <- function(
     data,
     vars,
-    covs,
+    group,
     nc = 2,
     nb = 100,
-    nclu = 1,
     comp = TRUE,
     cp = FALSE,
     item = FALSE,
@@ -294,21 +282,21 @@ lca <- function(
         stop("lca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
-    if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
+    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(covs), covs, NULL))
+            `if`( ! missing(group), group, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
         vars = vars,
-        covs = covs,
+        group = group,
         nc = nc,
         nb = nb,
-        nclu = nclu,
         comp = comp,
         cp = cp,
         item = item,

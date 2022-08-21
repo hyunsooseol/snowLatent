@@ -15,10 +15,11 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
+        label: Group(Optional)
         children:
           - type: VariablesListBox
-            name: covs
-            height: small
+            name: group
+            maxItemCount: 1
             isTarget: true
   - type: LayoutBox
     margin: large
@@ -36,13 +37,9 @@ children:
           - name: nb
             type: TextBox
             label: Bootstrap
-            format: number 
-          - name: nclu
-            type: TextBox
-            label: Cluster
             format: number
   - type: CollapseBox
-    label: Analysis
+    label: LCA Analysis
     margin: normal
     collapsed: true
     children:
@@ -70,7 +67,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plots'
+            label: Plots
             children:
               - type: CheckBox
                 name: plot1

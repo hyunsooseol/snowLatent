@@ -32,12 +32,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
             <p><b>To get started:</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. jamovi treats all variables as qualitative/categorical/nominal.</p>
-            <p>2. Variables must contain only integer values, and must be coded with consecutive values from 1 to the maximum number.</p>
-            <p>3. The results of <b> Class membership </b> will be displayed in the datasheet.</p>
-            <p>4. The output columm can NOT be used as an input to the same analysis.</p>
-            <P>5. To analyze 'Profile' analysis, click the LCA analysis again.</p>
-            <p>6. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowRMM/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>1. Latent Class Analysis(LCA) based on glca R package.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -104,53 +99,60 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
         vars<- self$options$vars
-        covs <- self$options$covs
+        
+        group <- self$options$group
+        #group<- na.omit(group)
+        
         nc <- self$options$nc
         nb <- self$options$nb
-       # cluster <- self$options$cluster
-        
+       
         data<- as.data.frame(data)
         
-         ### Construct formula-----------        
-          vars <- colnames(data)
-          vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-          vars <- paste0(vars, collapse=',')
+        ############ Construct formula###################        
+          
+        vars <- colnames(data)
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        vars <- paste0(vars, collapse=',')
          
-          formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+        formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+        
+        ################### LCA model estimates############################ 
           
-       
-          ################ LCA model estimates############################ 
-          
-          lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
-          
-          
-          ############################################################### 
-          
-          gam<- lca[["param"]][["gamma"]]
-          
-          row.names(gam) <- 1:nrow(gam)  
-          gam <- as.data.frame(gam)
-          gam <- t(gam)
-          gam <- as.data.frame(gam)
-          
-          # item probabilities------
-          
-          item<- lca[["param"]][["rho"]][["ALL"]]
-          
-          # Class Prevalences plot----------
-          
-          image <- self$results$plot1
-          
-          vars <- length(self$options$vars)
-          
-          width <- 300 + vars * 30
-          
-          image$setSize(width, 500)
-          
-          image$setState(lca)
+          lca = glca::glca(formula, data = data, 
+                         #  group= data[[group]],
+                           nclass = nc, 
+                           n.init=1)
           
           
-          ############## Model comparison######################
+        ################################################################# 
+          #self$results$text$setContent(lca)
+          
+          
+        gam<- lca[["param"]][["gamma"]]
+          
+        row.names(gam) <- 1:nrow(gam)  
+        gam <- as.data.frame(gam)
+        gam <- t(gam)
+        gam <- as.data.frame(gam)
+          
+        # item probabilities------
+          
+        item<- lca[["param"]][["rho"]][["ALL"]]
+          
+        # Class Prevalences plot----------
+          
+        image <- self$results$plot1
+          
+        vars <- length(self$options$vars)
+          
+        width <- 300 + vars * 30
+          
+        image$setSize(width, 500)
+          
+        image$setState(lca)
+          
+          
+        ############## Model comparison######################
           
              out <- NULL
              
@@ -185,7 +187,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },   
       
       
-      # Model comparison table----------
+      ################ populating Tables################################
       
       
       .populateModelTable = function(results) {
