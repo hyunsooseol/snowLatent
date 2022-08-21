@@ -116,7 +116,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Latent Class Analysis")
+                title="Latent Class Analysis",
+                refs="snowLatent")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
@@ -131,6 +132,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="comp",
                 title="Model fit",
                 visible="(comp)",
+                refs="glca",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -179,6 +181,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="cp",
                 title="Size of each latent class",
                 visible="(cp)",
+                refs="glca",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -213,6 +216,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 width=500,
                 height=500,
                 renderFun=".plot1",
+                refs="glca",
                 clearWith=list(
                     "vars",
                     "nc",

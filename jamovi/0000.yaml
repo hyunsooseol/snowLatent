@@ -15,6 +15,17 @@ analyses:
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Latent Class Analysis
+datasets:
+  - name: gss
+    path: gss.omv
+    description: General Social Study (GSS) 2008
+    tags:
+      - LCA
+  - name: nyts
+    path: nyts18.omv
+    description: National Youth Tobacco Survey (NYTS) 2018
+    tags:
+      - Partial
 usesNative: true
 minApp: 1.0.8
 
