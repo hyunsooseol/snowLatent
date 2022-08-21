@@ -140,6 +140,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           # Class Prevalences plot----------
           
           image <- self$results$plot1
+          
+          vars <- length(self$options$vars)
+          
+          width <- 300 + vars * 30
+          
+          image$setSize(width, 500)
+          
           image$setState(lca)
           
           

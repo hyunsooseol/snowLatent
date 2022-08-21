@@ -84,7 +84,7 @@ items:
       type:  Preformatted
       
     - name:  plot1
-      title: Class prevalences
+      title: Profile plot
       type:  Image
       visible: (plot1)
       width: 500

@@ -68,7 +68,7 @@ options:
       default: FALSE    
 
     - name: plot1 
-      title: Class prevalences
+      title: Profile plot
       type: Bool 
       default: FALSE          
 ...

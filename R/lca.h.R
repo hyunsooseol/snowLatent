@@ -217,7 +217,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="Class prevalences",
+                title="Profile plot",
                 visible="(plot1)",
                 width=500,
                 height=500,
