@@ -7,7 +7,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            group = NULL,
+            covs = NULL,
             nc = 2,
             nb = 100,
             comp = TRUE,
@@ -29,14 +29,15 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group,
+            private$..covs <- jmvcore::OptionVariables$new(
+                "covs",
+                covs,
                 suggested=list(
                     "nominal",
-                    "ordinal"),
+                    "continuous"),
                 permitted=list(
-                    "factor"))
+                    "factor",
+                    "numeric"))
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -67,7 +68,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
 
             self$.addOption(private$..vars)
-            self$.addOption(private$..group)
+            self$.addOption(private$..covs)
             self$.addOption(private$..nc)
             self$.addOption(private$..nb)
             self$.addOption(private$..comp)
@@ -78,7 +79,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
-        group = function() private$..group$value,
+        covs = function() private$..covs$value,
         nc = function() private$..nc$value,
         nb = function() private$..nb$value,
         comp = function() private$..comp$value,
@@ -88,7 +89,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
-        ..group = NA,
+        ..covs = NA,
         ..nc = NA,
         ..nb = NA,
         ..comp = NA,
@@ -124,7 +125,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="test"))
+                title="Model information"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
@@ -242,7 +243,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data the data as a data frame
 #' @param vars .
-#' @param group .
+#' @param covs .
 #' @param nc .
 #' @param nb .
 #' @param comp .
@@ -270,7 +271,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lca <- function(
     data,
     vars,
-    group,
+    covs,
     nc = 2,
     nb = 100,
     comp = TRUE,
@@ -282,19 +283,18 @@ lca <- function(
         stop("lca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
-    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
+    if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(group), group, NULL))
+            `if`( ! missing(covs), covs, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
-    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- lcaOptions$new(
         vars = vars,
-        group = group,
+        covs = covs,
         nc = nc,
         nb = nb,
         comp = comp,

@@ -7,7 +7,7 @@
 lca(
   data,
   vars,
-  group,
+  covs,
   nc = 2,
   nb = 100,
   comp = TRUE,
@@ -21,7 +21,7 @@ lca(
 
 \item{vars}{.}
 
-\item{group}{.}
+\item{covs}{.}
 
 \item{nc}{.}
 

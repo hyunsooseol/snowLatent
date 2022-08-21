@@ -15,11 +15,11 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Group(Optional)
+        label: Covariates(Optional)
         children:
           - type: VariablesListBox
-            name: group
-            maxItemCount: 1
+            name: covs
+            height: small
             isTarget: true
   - type: LayoutBox
     margin: large

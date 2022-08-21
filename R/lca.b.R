@@ -98,36 +98,87 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       .compute = function(data) {
         
         
-        vars<- self$options$vars
+        ######## glca R package ################
         
-        group <- self$options$group
-        #group<- na.omit(group)
+        # library(glca)
+        # data("gss08")
+        # 
+        # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ AGE,
+        #            data = gss08, nclass = 3, n.init = 1)
+        # summary(lca)
+        
+        ################################
+        
+        
+        vars<- self$options$vars
+        covs<- self$options$covs
         
         nc <- self$options$nc
         nb <- self$options$nb
        
         data<- as.data.frame(data)
         
+        # data[[covs]] <- jmvcore::toNumeric(data[[covs]])
+        
         ############ Construct formula###################        
           
         vars <- colnames(data)
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
-         
+      
+       
+      # formula with no covariate variables----------     
+      
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+       
+        # 
+        # ################### LCA model estimates############################ 
+        # 
+        # lca = glca::glca(formula=formula, 
+        #                  data=data,
+        #                  # group= data[[group]],
+        #                  nclass = nc, 
+        #                  n.init=1)
+        # ################################################################# 
+        # #group: Argument that indicates group variable which has the same length as manifest items
+        # #on the formula. If group = NULL (default), LCA or LCR is fitted. 
+        # 
         
-        ################### LCA model estimates############################ 
-          
-          lca = glca::glca(formula, data = data, 
-                         #  group= data[[group]],
-                           nclass = nc, 
+   
+        if (length(covs) > 0) {
+
+          #Handling covariate variables ??? ---------
+
+        covs <- colnames(data)
+
+        #covs <- colnames(data[[covs]])
+
+
+      # Covariate formula is OK-----------------------------
+
+      formula <- as.formula(paste0('glca::item(', vars, ')~', paste(covs, collapse= "+")))
+
+         
+        }
+
+
+   ################### LCA model estimates############################
+
+          lca = glca::glca(formula=formula,
+                           data=data,
+                        # group= data[[group]],
+                           nclass = nc,
                            n.init=1)
+    #################################################################
+        #group: Argument that indicates group variable which has the same length as manifest items
+        #on the formula. If group = NULL (default), LCA or LCR is fitted.
+
+        
+        self$results$text$setContent(lca)
           
-          
-        ################################################################# 
-          #self$results$text$setContent(lca)
-          
-          
+   
+      ######## LCA with no covariates##############
+      
         gam<- lca[["param"]][["gamma"]]
           
         row.names(gam) <- 1:nrow(gam)  
