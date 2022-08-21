@@ -1,10 +1,10 @@
 Package: snowLatent
 Type: Package
 Title: Latent Class Analysis
-Version: 0.0.1
+Version: 1.0.0
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-Description: This module allows users to analyze various types of Latent Class Analysis including
+Description: Latent Class Analysis based on glca R package.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true

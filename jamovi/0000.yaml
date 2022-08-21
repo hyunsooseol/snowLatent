@@ -8,9 +8,7 @@ authors:
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: '2022-08-18'
 type: R
-description: >-
-  More about what it does (maybe more than one line) Use four spaces when
-  indenting paragraphs within the Description.
+description: Latent Class Analysis based on glca R package.
 analyses:
   - title: Latent Class Analysis
     name: lca
