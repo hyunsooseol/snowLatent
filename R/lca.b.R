@@ -315,8 +315,94 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          if (is.null(lca))
           return()
         
-      
-      plot1 <- plot(lca)
+        plot.glca <- function(x, ...){
+          oldmar <- par()$mar
+          on.exit(par(mar = oldmar))
+          
+          #  if (ask) grDevices::devAskNewPage(TRUE)
+          
+          model <- x$model
+          param <- x$param
+          post <- x$posterior
+          
+          par(mar = c(5.1, 4.1, 4.1, 5.1))
+          
+          # rho
+          if (all(model$R == 2L)) { # binary plot
+            if (model$measure.inv | model$G == 1L) {
+              if (model$W > 1L) rho <- param$rho
+              else rho <- param$rho[[1]]
+              irp <- sapply(rho, function(i) i[,1L])
+              # grDevices::dev.hold()
+              plot(x = 1L:model$M, y = c(0L, rep(1L, model$M - 1L)),
+                   xlim = c(0.8, model$M + 0.2), ylim = c(-0.1, 1.1),
+                   xlab = "Manifest Items", ylab = "",
+                   type = "n", xaxt = "n", yaxt = "n")
+              axis(side=1, at = 1:model$M, labels = x$var.names$y.name)
+              axis(side=2, at = (0:5)/5, las = "1")
+              for (c in 1:model$C) {
+                lines(1:model$M, irp[c,], type = "b", pch = c)
+              }
+              legend("topleft", pch = 1:model$C, inset = c(1,0),
+                     legend = rownames(irp), xpd = TRUE, bg = "white")
+              title("Item Response Probabilities by Class")
+              #grDevices::dev.flush()
+            } else {
+              for (g in 1:model$G) {
+                irp <- sapply(param$rho[[g]], function(i) i[,1])
+                # grDevices::dev.hold()
+                plot(x = 1:model$M, y = c(0, rep(1, model$M - 1)),
+                     xlim = c(0.8, model$M + 0.2), ylim = c(-0.1, 1.1),
+                     xlab = "Manifest Items", ylab = "",
+                     type = "n", xaxt = "n", yaxt = "n")
+                axis(side=1, at = 1:model$M, labels = x$var.names$y.name)
+                axis(side=2, at = (0:5)/5, las = 1)
+                for (c in 1:model$C) {
+                  lines(1:model$M, irp[c,], type = "b", pch = c)
+                }
+                legend(x = model$M + 0.2, y = 1, pch = 1:model$C,
+                       legend = rownames(irp), xpd = TRUE, bg = "white")
+                title(paste0("Item Response Probabilities by Class", "\n(Group : ",
+                             x$var.names$g.names[g],")"))
+                #grDevices::dev.flush()
+              }
+            }
+          } else { # polytomous plot
+            par(mar = c(3.5, 4.1, 4.1, 4.5))
+            if (model$measure.inv | model$G == 1) {
+              if (model$W > 1) rho <- param$rho
+              else rho <- param$rho[[1]]
+              for (m in 1:model$M) {
+                # grDevices::dev.hold()
+                xpos <- barplot(t(rho[[m]]), beside = TRUE, ylim = c(0, 1))
+                legend("topleft", inset = c(1, 0), legend = colnames(rho[[m]]),
+                       fill = grDevices::gray.colors(ncol(rho[[m]])),
+                       xpd = TRUE, bg = "white")
+                title(paste0("Item Response Probabilities by Class", "\n(Item : ",
+                             names(rho)[m],")"))
+                #grDevices::dev.flush()
+              }
+            } else {
+              for (g in 1:model$G) {
+                rho <- param$rho[[g]]
+                for (m in 1:model$M) {
+                  #  grDevices::dev.hold()
+                  xpos <- barplot(t(rho[[m]]), beside = TRUE, ylim = c(0, 1))
+                  legend("topleft", inset = c(1, 0), legend = colnames(rho[[m]]),
+                         fill = grDevices::gray.colors(ncol(rho[[m]])),
+                         xpd = TRUE, bg = "white")
+                  title(paste0("Item Response Probabilities by Class", "\n(Item : ",
+                               names(rho)[m]," / Group : ", x$var.names$g.names[g], ")"))
+                  #grDevices::dev.flush()
+                }
+              }
+            }
+          }
+          
+        }
+        
+        
+      plot1 <- plot.glca(lca)
       
       print(plot1)
       
