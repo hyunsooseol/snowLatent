@@ -147,7 +147,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           # covs <- colnames(data)
           #covs <- colnames(data[covs])
 
-          covs<- data[covs]
+          covs<- data[covs] # ?????
       
           # Covariate formula is OK-----------------------------
 
@@ -157,6 +157,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
 
 
+        if (formula==FALSE)  
+          return()
+        
    ################### LCA model estimates############################
 
           lca = glca::glca(formula=formula,
