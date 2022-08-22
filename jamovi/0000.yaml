@@ -1,5 +1,5 @@
 ---
-title: What the Package Does (Title Case)
+title: Latent Class Analysis
 name: snowLatent
 version: 1.0.0
 jms: '1.0'
@@ -25,7 +25,7 @@ datasets:
     path: nyts18.omv
     description: National Youth Tobacco Survey (NYTS) 2018
     tags:
-      - Partial
+      - Multilevel LCA
 usesNative: true
 minApp: 1.0.8
 

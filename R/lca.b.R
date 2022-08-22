@@ -149,9 +149,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
           #Handling covariate variables ??? ---------
 
-        covs <- colnames(data)
-
-        #covs <- colnames(data[[covs]])
+          data <- colnames(data)
+          covs <- colnames(data[covs])
 
 
       # Covariate formula is OK-----------------------------
