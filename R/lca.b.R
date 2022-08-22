@@ -147,10 +147,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
         if (length(covs) > 0) {
 
+          covs<- self$options$covs
+          
+          if (is.null(covs))
+            return()
+          
           #Handling covariate variables ??? ---------
 
           data <- colnames(data)
-          covs <- colnames(data[covs])
+          covs <- colnames(data)
+          #covs <- colnames(data[covs])
 
 
       # Covariate formula is OK-----------------------------
