@@ -126,24 +126,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
       
-       
-      # formula with no covariate variables----------     
+        if (is.null(covs)){
+      
+          # formula with no covariate variables----------     
       
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
        
-        # 
-        # ################### LCA model estimates############################ 
-        # 
-        # lca = glca::glca(formula=formula, 
-        #                  data=data,
-        #                  # group= data[[group]],
-        #                  nclass = nc, 
-        #                  n.init=1)
-        # ################################################################# 
-        # #group: Argument that indicates group variable which has the same length as manifest items
-        # #on the formula. If group = NULL (default), LCA or LCR is fitted. 
-        # 
-        
+        }
    
         if (length(covs) > 0) {
 
@@ -152,14 +141,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if (is.null(covs))
             return()
           
-          #Handling covariate variables ??? ---------
+          # Handling covariate variables ??? ---------
 
-          data <- colnames(data)
-          covs <- colnames(data)
+          # data <- colnames(data)
+          # covs <- colnames(data)
           #covs <- colnames(data[covs])
 
-
-      # Covariate formula is OK-----------------------------
+          covs<- data[covs]
+      
+          # Covariate formula is OK-----------------------------
 
       formula <- as.formula(paste0('glca::item(', vars, ')~', paste(covs, collapse= "+")))
 
