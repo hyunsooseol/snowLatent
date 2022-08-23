@@ -120,6 +120,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # data[[covs]] <- jmvcore::toNumeric(data[[covs]])
         
+       
         ############ Construct formula###################        
           
         vars <- colnames(data)
@@ -141,24 +142,35 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if (is.null(covs))
             return()
           
+          #-----------------------------------------------
+          varNames <- c(covs, vars)
+          data <- jmvcore::select(self$data, varNames)
+          
+           for (var in vars)
+               data[[var]] <- jmvcore::toNumeric(data[[var]])
+           
+          # exclude rows with missings in the covariate variables
+          
+          data <- data[!is.na(data[[covs]]), ]
+          #-----------------------------------------------
+          
           # Handling covariate variables ??? ---------
 
           # data <- colnames(data)
           # covs <- colnames(data)
           #covs <- colnames(data[covs])
 
-          covs<- data[covs] # ?????
+         # covs<- data[covs] # ?????
       
           # Covariate formula is OK-----------------------------
 
-      formula <- as.formula(paste0('glca::item(', vars, ')~', paste(covs, collapse= "+")))
+      formula <- as.formula(paste0('glca::item(', vars, ')~', paste(data[[covs]], collapse= "+")))
 
          
         }
 
-
-        if (formula==FALSE)  
-          return()
+        self$results$text$setContent(formula)
+       
         
    ################### LCA model estimates############################
 
@@ -172,7 +184,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #on the formula. If group = NULL (default), LCA or LCR is fitted.
 
         
-        self$results$text$setContent(lca)
+       # self$results$text$setContent(lca)
           
    
       ######## LCA with no covariates##############
