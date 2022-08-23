@@ -90,12 +90,13 @@ items:
       title: Profile plot
       type:  Image
       visible: (plot1)
-      width: 500
-      height: 500
+      width: 700
+      height: 700
       renderFun: .plot1
       refs: glca
       clearWith:
         - vars
         - nc
         - nb
+
 ...
