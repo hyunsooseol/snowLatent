@@ -15,6 +15,11 @@ analyses:
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Latent Class Analysis
+  - title: Group LCA
+    name: glca
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Group LCA
 datasets:
   - name: gss
     path: gss.omv

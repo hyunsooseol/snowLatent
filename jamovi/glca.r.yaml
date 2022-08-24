@@ -1,0 +1,101 @@
+---
+name:  glca
+title: Group LCA
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
+    - name:  text
+      title: Model information
+      type:  Preformatted
+
+    - name: comp
+      title: 'Model fit'
+      type: Table
+      visible: (comp)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+
+      columns:
+        - name: name
+          title: 'Class'
+          type: 'text'
+          content: ($key)   
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: Res.df 
+          type: number
+        - name: gsq
+          title: Gsq 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: cp
+      title: 'Size of each latent class'
+      type: Table
+      visible: (cp)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+      
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: value
+          title: 'Probability'    
+          
+    - name: post
+      title: Posterior probabilities
+      type: Output
+      measureType: continuous
+      clearWith:
+        - vars
+        - nc
+        - nb
+
+    - name:  text1
+      title: Item-response probabilities
+      type:  Preformatted
+      
+    - name:  plot1
+      title: Profile plot
+      type:  Image
+      width: 700
+      height: 700
+      renderFun: .plot1
+      visible: (plot1)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+
+...
