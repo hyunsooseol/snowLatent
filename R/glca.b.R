@@ -100,10 +100,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # library(glca)
         # data("gss08")
         # 
-        # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ AGE,
-        #            data = gss08, 
-        #            group= DEGREE,
-        #            nclass = 3)
+        # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ 1,
+        #       group= DEGREE,            
+        #       data = gss08, 
+        #       nclass = 3)
         # summary(lca)
         
         ################################
