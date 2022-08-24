@@ -115,7 +115,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Group LCA")
+                title="Multiple Group LCA")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
@@ -240,7 +240,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresMissings = FALSE)
         }))
 
-#' Group LCA
+#' Multiple Group LCA
 #'
 #' 
 #' @param data the data as a data frame

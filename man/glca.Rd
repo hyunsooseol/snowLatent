@@ -2,7 +2,7 @@
 % Please edit documentation in R/glca.h.R
 \name{glca}
 \alias{glca}
-\title{Group LCA}
+\title{Multiple Group LCA}
 \usage{
 glca(
   data,
@@ -54,5 +54,5 @@ Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.f
 \code{as.data.frame(results$comp)}
 }
 \description{
-Group LCA
+Multiple Group LCA
 }

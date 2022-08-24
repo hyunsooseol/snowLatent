@@ -1,6 +1,6 @@
 ---
 name:  glca
-title: Group LCA
+title: Multiple Group LCA
 menuGroup: snowLatent
 version: '1.0.0'
 jas: '1.2'
