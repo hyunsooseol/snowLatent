@@ -89,10 +89,10 @@ items:
     - name:  plot1
       title: Profile plot
       type:  Image
-      visible: (plot1)
       width: 700
       height: 700
       renderFun: .plot1
+      visible: (plot1)
       refs: glca
       clearWith:
         - vars

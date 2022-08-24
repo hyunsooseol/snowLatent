@@ -169,9 +169,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
         }
 
-        self$results$text$setContent(formula)
        
-        
    ################### LCA model estimates############################
 
           lca = glca::glca(formula=formula,
@@ -184,7 +182,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #on the formula. If group = NULL (default), LCA or LCR is fitted.
 
         
-       # self$results$text$setContent(lca)
+        self$results$text$setContent(lca)
           
    
       ######## LCA with no covariates##############
@@ -203,10 +201,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # Class Prevalences plot----------
           
         image <- self$results$plot1
-          
-        vars <- length(self$options$vars)
-        width <- 300 + vars * 30
-        image$setSize(width, 700)
+         
+        # vars <- length(self$options$vars) 
+        # 
+        # width <- 100 + vars * 100
+        # 
+        # image$setSize(width, 200)
+        
+        image$setSize(300 + 30 * length(self$options$vars), 700)
           
         image$setState(lca)
           

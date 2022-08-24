@@ -212,10 +212,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot1",
                 title="Profile plot",
-                visible="(plot1)",
                 width=700,
                 height=700,
                 renderFun=".plot1",
+                visible="(plot1)",
                 refs="glca",
                 clearWith=list(
                     "vars",
