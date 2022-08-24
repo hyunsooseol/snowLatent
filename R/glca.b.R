@@ -127,9 +127,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
       
-        #####################################################
-       
-       #Handling Group Variable---------------------------------------------
+        
+       # Handling Group Variable---------------------------------------------
 
         varNames <- c(groupVarName, vars)
 
@@ -142,7 +141,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         for (var in vars)
           data[[var]] <- jmvcore::toNumeric(data[[var]])
 
-        # exclude rows with missings in the covariate variables
+        # exclude rows with missing in the covariate variables
 
         data <- data[!is.na(data[[groupVarName]]), ]
 
@@ -177,13 +176,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image <- self$results$plot1
         
-        # vars <- length(self$options$vars) 
-        # 
-        # width <- 100 + vars * 100
-        # 
-        # image$setSize(width, 200)
+        vars <- length(self$options$vars) 
         
-        image$setSize(300 + 30 * length(self$options$vars), 700)
+        width <- 100 + vars * 100
+        
+        image$setSize(width, 700)
+        
+        
+        #image$setSize(100 + 100 * length(self$options$vars), 200)
         
         image$setState(lca)
         

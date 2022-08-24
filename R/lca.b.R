@@ -202,13 +202,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         image <- self$results$plot1
          
-        # vars <- length(self$options$vars) 
-        # 
-        # width <- 100 + vars * 100
-        # 
-        # image$setSize(width, 200)
+         vars <- length(self$options$vars) 
+         
+         width <- 100 + vars * 100
+         
+         image$setSize(width, 700)
         
-        image$setSize(300 + 30 * length(self$options$vars), 700)
+        #image$setSize(100 + 100 * length(self$options$vars), 200)
           
         image$setState(lca)
           
