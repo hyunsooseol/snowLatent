@@ -182,7 +182,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #on the formula. If group = NULL (default), LCA or LCR is fitted.
 
         
-        self$results$text$setContent(lca)
+      #  self$results$text$setContent(lca)
           
    
       ######## LCA with no covariates##############
@@ -218,7 +218,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
              out <- NULL
              
-             for (i in 1:self$options$nc) {
+             for (i in 2:self$options$nc) {
                
                lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
           
@@ -235,7 +235,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             out <- out
             
             row.names(out) <- 1:nrow(out)  
+            
             res <- as.data.frame(out)
+           
+           res['class'] <- 2:nc
+           
+           res<- res[, c(9,1,2,3,4,5,6,7,8)]
+           
+         # self$results$text$setContent(res)
+            
             
             results <-
               list(
@@ -262,31 +270,33 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
          res <- results$res
          
-        
-         aic <- res[,2]
-         caic <- res[,3]
-         bic <- res[,4] 
-         entropy <- res[,5]
-         df <- res[,6] 
-         gsq <- res[,7] 
-         p <- res[,8]
+         class <- res[,1]
+         loglik <- res[,2]
+         aic <- res[,3]
+         caic <- res[,4]
+         bic <- res[,5] 
+         entropy <- res[,6]
+         df <- res[,7] 
+         gsq <- res[,8] 
+         p <- res[,9]
          
-         
+       
          names <- dimnames(res)[[1]]
          
+       
          for (name in names) {
            
            row <- list()
            
-           row[['nc']] <- nc
-           row[["loglik"]]   <-  res[name, 1]
-           row[["aic"]] <-  res[name, 2]
-           row[["caic"]] <-  res[name, 3]
-           row[["bic"]] <-  res[name, 4]
-           row[["entropy"]] <-  res[name, 5]
-           row[["df"]] <-  res[name, 6]
-           row[["gsq"]] <-  res[name, 7]
-           row[["p"]] <-  res[name, 8]
+           row[['class']] <- res[name,1]
+           row[["loglik"]]   <-  res[name, 2]
+           row[["aic"]] <-  res[name, 3]
+           row[["caic"]] <-  res[name, 4]
+           row[["bic"]] <-  res[name, 5]
+           row[["entropy"]] <-  res[name, 6]
+           row[["df"]] <-  res[name, 7]
+           row[["gsq"]] <-  res[name, 8]
+           row[["p"]] <-  res[name, 9]
            
            
            table$addRow(rowKey=name, values=row)

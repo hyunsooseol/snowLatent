@@ -40,7 +40,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
-                min=1,
+                min=2,
                 default=2)
             private$..nb <- jmvcore::OptionInteger$new(
                 "nb",
@@ -137,10 +137,9 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nb"),
                 columns=list(
                     list(
-                        `name`="name", 
+                        `name`="class", 
                         `title`="Class", 
-                        `type`="text", 
-                        `content`="($key)"),
+                        `type`="number"),
                     list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 

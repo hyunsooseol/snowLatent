@@ -24,10 +24,9 @@ items:
         - nb
 
       columns:
-        - name: name
+        - name: class
           title: 'Class'
-          type: 'text'
-          content: ($key)   
+          type: number
         - name: loglik
           title: Log-likelihood
           type: number

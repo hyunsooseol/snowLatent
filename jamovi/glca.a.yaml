@@ -21,7 +21,7 @@ options:
         - factor
 
     - name: group
-      title: Group(Required)
+      title: Grouping Variable
       type: Variable
       suggested:
          - nominal
@@ -32,7 +32,7 @@ options:
     - name: nc
       title: Class
       type: Integer
-      min: 1
+      min: 2
       default: 2
 
     - name: nb
