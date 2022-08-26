@@ -10,6 +10,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             covs = NULL,
             nc = 2,
             nb = 100,
+            fit = TRUE,
             comp = TRUE,
             cp = FALSE,
             item = FALSE,
@@ -48,6 +49,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nb,
                 min=10,
                 default=100)
+            private$..fit <- jmvcore::OptionBool$new(
+                "fit",
+                fit,
+                default=TRUE)
             private$..comp <- jmvcore::OptionBool$new(
                 "comp",
                 comp,
@@ -71,6 +76,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..covs)
             self$.addOption(private$..nc)
             self$.addOption(private$..nb)
+            self$.addOption(private$..fit)
             self$.addOption(private$..comp)
             self$.addOption(private$..cp)
             self$.addOption(private$..post)
@@ -82,6 +88,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         covs = function() private$..covs$value,
         nc = function() private$..nc$value,
         nb = function() private$..nb$value,
+        fit = function() private$..fit$value,
         comp = function() private$..comp$value,
         cp = function() private$..cp$value,
         post = function() private$..post$value,
@@ -92,6 +99,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..covs = NA,
         ..nc = NA,
         ..nb = NA,
+        ..fit = NA,
         ..comp = NA,
         ..cp = NA,
         ..post = NA,
@@ -105,6 +113,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
+        fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
         cp = function() private$.items[["cp"]],
         post = function() private$.items[["post"]],
@@ -129,8 +138,50 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Model information"))
             self$add(jmvcore::Table$new(
                 options=options,
-                name="comp",
+                name="fit",
                 title="Model fit",
+                rows=1,
+                clearWith=list(
+                    "vars",
+                    "nc"),
+                refs="glca",
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="gsq", 
+                        `title`="Gsq", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp",
+                title="Model comparison",
                 visible="(comp)",
                 refs="glca",
                 clearWith=list(
@@ -249,6 +300,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param covs .
 #' @param nc .
 #' @param nb .
+#' @param fit .
 #' @param comp .
 #' @param cp .
 #' @param item .
@@ -257,6 +309,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
@@ -266,9 +319,9 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$comp$asDF}
+#' \code{results$fit$asDF}
 #'
-#' \code{as.data.frame(results$comp)}
+#' \code{as.data.frame(results$fit)}
 #'
 #' @export
 lca <- function(
@@ -277,6 +330,7 @@ lca <- function(
     covs,
     nc = 2,
     nb = 100,
+    fit = TRUE,
     comp = TRUE,
     cp = FALSE,
     item = FALSE,
@@ -300,6 +354,7 @@ lca <- function(
         covs = covs,
         nc = nc,
         nb = nb,
+        fit = fit,
         comp = comp,
         cp = cp,
         item = item,

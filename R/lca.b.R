@@ -69,6 +69,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           results <- private$.compute(data)               
           
+          # populate fit table------------
+          
+          private$.populateFitTable(results)
+          
           # populate Model comparison-----------
           
           private$.populateModelTable(results)
@@ -176,14 +180,25 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                            data=data,
                         # group= data[[group]],
                            nclass = nc,
+                           na.rm = TRUE,
                            n.init=1)
     #################################################################
         #group: Argument that indicates group variable which has the same length as manifest items
         #on the formula. If group = NULL (default), LCA or LCR is fitted.
 
         
-      #  self$results$text$setContent(lca)
-          
+       # self$results$text$setContent(lca)
+      
+        #fit measure----------
+        
+        loglik<- lca$gof$loglik
+        aic<- lca$gof$aic
+        caic<- lca$gof$caic
+        bic<- lca$gof$bic
+        entropy<- lca$gof$entropy
+        df<- lca$gof$df
+        gsq<- lca$gof$Gsq
+            
    
       ######## LCA with no covariates##############
       
@@ -242,11 +257,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
            res<- res[, c(9,1,2,3,4,5,6,7,8)]
            
-         # self$results$text$setContent(res)
+        #  self$results$text$setContent(res)
             
             
             results <-
               list(
+                'loglik'=loglik,
+                'aic'=aic,
+                'caic'=caic,
+                'bic'=bic,
+                'entropy'=entropy,
+                'df'=df,
+                'gsq'=gsq,
                 'res'=res,
                 'gam'= gam,
                 'item'=item
@@ -259,7 +281,42 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       ################ populating Tables################################
       
-      
+   # populating fit table-------------   
+   
+   .populateFitTable = function(results) {
+     
+     table <- self$results$fit
+     
+     class <- self$options$nc
+     
+     loglik<- results$loglik
+     aic<- results$aic
+     caic<- results$caic
+     bic<- results$bic
+     entropy<- results$entropy
+     df<- results$df
+     gsq<- results$gsq
+     
+   
+     row <- list()
+     
+     row[['class']] <- class
+     row[['loglik']] <- loglik
+     row[['aic']] <- aic
+     row[['caic']] <- caic
+     row[['bic']] <- bic
+     row[['entropy']] <- entropy
+     row[['df']] <- df
+     row[['gsq']] <- gsq
+     
+     table$setRow(rowNo = 1, values = row)
+     
+     
+   },
+   
+   # Model comparison----------------
+   
+   
       .populateModelTable = function(results) {
             
         

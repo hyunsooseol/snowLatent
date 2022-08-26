@@ -14,8 +14,43 @@ items:
       title: Model information
       type:  Preformatted
 
-    - name: comp
+    - name: fit
       title: 'Model fit'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - nc
+      refs: glca 
+
+      columns:
+        - name: class
+          title: Class
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: df 
+          type: number
+        - name: gsq
+          title: Gsq 
+          type: number
+ 
+    - name: comp
+      title: 'Model comparison'
       type: Table
       visible: (comp)
       refs: glca

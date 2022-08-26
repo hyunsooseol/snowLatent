@@ -51,6 +51,8 @@ children:
             label: Statistics
             children:
               - type: CheckBox
+                name: fit
+              - type: CheckBox
                 name: comp
               - type: CheckBox
                 name: cp
