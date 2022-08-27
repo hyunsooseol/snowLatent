@@ -92,35 +92,6 @@ items:
           type: number
           format: zto,pvalue
 
-    - name: cp
-      title: 'Size of each latent class'
-      type: Table
-      visible: (cp)
-      refs: glca
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-      
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-        - name: value
-          title: 'Probability'    
-          
-    - name: post
-      title: Posterior probabilities
-      type: Output
-      measureType: continuous
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-
     - name: preval
       title: 'Class prevalences by group'
       type: Table
@@ -138,10 +109,6 @@ items:
           type: 'text'
           content: ($key)
 
-    - name:  text1
-      title: Item-response probabilities
-      type:  Preformatted
-      
     - name:  plot1
       title: Profile plot
       type:  Image
@@ -156,4 +123,11 @@ items:
         - nb
         - group
 
+    - name:  text1
+      title: Item-response probabilities
+      type:  Preformatted
+
+    - name: text2
+      title: Item-response probabilities
+      type:  Preformatted      
 ...

@@ -75,7 +75,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populate Class probability table-----
           
-          private$.populateClassTable(results)
+          #private$.populateClassTable(results)
           
          # populate class prevalences by group table-------
           
@@ -84,11 +84,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
            # populate item probabilities---------
           
-        #  private$.populateItemTable(results)
+          private$.populateItemTable(results)
           
           # populate posterior probabilities--
           
-          private$.populatePosteriorOutputs(data)
+          private$.populatePosTable(results)
           
          
         }
@@ -116,7 +116,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Constructing formula----------------        
         
-        #vars <- colnames(data)
         vars <- colnames(data[, -1] )
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
@@ -155,21 +154,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
-        
-        # LCA with no covariates for model comparison---------
-        
-        gam<- lca[["param"]][["gamma"]]
-        
-        row.names(gam) <- 1:nrow(gam)  
-        gam <- as.data.frame(gam)
-        gam <- t(gam)
-        gam <- as.data.frame(gam)
-        
+       
         # Class prevalences by group----------
         
         class.group <- lca[["param"]][["gamma"]]
         
-        self$results$text$setContent(class.group)
+        #self$results$text$setContent(class.group)
+        
+        # item probability---------
+        
+        item<- lca[["param"]][["rho"]]
+        
+        # posterior probability---------
+        
+        post <- lca[["posterior"]]
+        
         
         # Class Prevalences plot----------
         
@@ -229,8 +228,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'df'=df,
             'gsq'=gsq,
             'res'=res,
-            'gam'= gam,
-            'class.group'=class.group
+            'class.group'=class.group,
+            'item'=item,
+            'post'=post
             
           )
         
@@ -319,86 +319,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # populate the size of class table---------------
-      
-      .populateClassTable= function(results) {  
-        
-        table <- self$results$cp
-        
-        gam <- results$gam
-        names<- dimnames(gam)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[['value']] <- gam[name,1]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-      },
-      
-      
-      # posterior probability----------
-      
-      .populatePosteriorOutputs= function(data) {
-        
-        nc<- self$options$nc
-        
-        # --------------------------------------------------
-        # NOTE:
-        # Excludes the GROUP variable, which is inserted
-        # as the first variable in the .cleandata()function
-        # --------------------------------------------------
-        df <- jmvcore::naOmit(data[, -1])
-        
-        vars <- colnames(df)
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        vars <- paste0(vars, collapse=',')
-        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
-        
-       # group <- data[, 1]
-        
-        ################ LCA model estimates############################ 
-        
-        lca = glca::glca(formula=formula, 
-                         data=df, 
-                        # group=group,
-                         nclass=nc, 
-                         n.init=1)
-        ###############################################################
-        pos<- lca$posterior$ALL
-        
-        #self$results$text$setContent(pos)
-        
-        if (self$options$post && self$results$post$isNotFilled()) {
-          
-          keys <- 1:self$options$nc
-          measureTypes <- rep("continuous", self$options$nc)
-          titles <- paste("Class", keys)
-          descriptions <- paste("Class", keys)
-          
-          self$results$post$set(
-            keys=keys,
-            titles=titles,
-            descriptions=descriptions,
-            measureTypes=measureTypes
-          )                
-          
-          self$results$post$setRowNums(rownames(data))
-          
-          for (i in 1:self$options$nc) {
-            
-            scores <- as.numeric(pos[, i])
-            self$results$post$setValues(index=i, scores)
-          }
-        }
-        
-      },
-      
       # populate class prevalences by group table---------------
       
       .populateCgTable= function(results) {  
@@ -433,26 +353,89 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
+      },
+      
+      
+      # posterior probability----------
+      
+      # .populatePosteriorOutputs= function(data) {
+      #   
+      #   nc<- self$options$nc
+      #   
+      #   # --------------------------------------------------
+      #   # NOTE:
+      #   # Excludes the GROUP variable, which is inserted
+      #   # as the first variable in the .cleandata()function
+      #   # --------------------------------------------------
+      #   df <- jmvcore::naOmit(data[, -1])
+      #   
+      #   vars <- colnames(df)
+      #   vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+      #   vars <- paste0(vars, collapse=',')
+      #   formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+      #   
+      #  # group <- data[, 1]
+      #   
+      #   ################ LCA model estimates############################ 
+      #   
+      #   lca = glca::glca(formula=formula, 
+      #                    data=df, 
+      #                   # group=group,
+      #                    nclass=nc, 
+      #                    n.init=1)
+      #   ###############################################################
+      #   pos<- lca$posterior$ALL
+      #   
+      #   #self$results$text$setContent(pos)
+      #   
+      #   if (self$options$post && self$results$post$isNotFilled()) {
+      #     
+      #     keys <- 1:self$options$nc
+      #     measureTypes <- rep("continuous", self$options$nc)
+      #     titles <- paste("Class", keys)
+      #     descriptions <- paste("Class", keys)
+      #     
+      #     self$results$post$set(
+      #       keys=keys,
+      #       titles=titles,
+      #       descriptions=descriptions,
+      #       measureTypes=measureTypes
+      #     )                
+      #     
+      #     self$results$post$setRowNums(rownames(data))
+      #     
+      #     for (i in 1:self$options$nc) {
+      #       
+      #       scores <- as.numeric(pos[, i])
+      #       self$results$post$setValues(index=i, scores)
+      #     }
+      #   }
+      #   
+      # },
+      # 
+        
+      
+      # item probabilities----------
+
+      .populateItemTable= function(results) {
+
+
+        res <- results$item
+
+        self$results$text1$setContent(res)
+
+      },
+
+      # posterior probability----------
+      
+      .populatePosTable= function(results) {
         
         
+        post <- results$post
         
+        self$results$text2$setContent(post)
         
       },
-        
-        
-        
-        
-        
-      # # item probabilities----------
-      # 
-      # .populateItemTable= function(results) {
-      #   
-      #   
-      #   res <- results$item
-      #   
-      #   self$results$text1$setContent(res)
-      #   
-      # },   
       
       
       

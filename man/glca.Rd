@@ -14,6 +14,7 @@ glca(
   comp = TRUE,
   cp = FALSE,
   preval = FALSE,
+  item = TRUE,
   plot1 = FALSE
 )
 }
@@ -36,6 +37,8 @@ glca(
 
 \item{preval}{.}
 
+\item{item}{.}
+
 \item{plot1}{.}
 }
 \value{
@@ -48,8 +51,8 @@ A results object containing:
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

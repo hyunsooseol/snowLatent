@@ -51,19 +51,20 @@ options:
       type: Bool
       default: True
 
-    - name: cp
-      title: Size of class 
-      type: Bool 
-      default: FALSE
-
-    - name: post
-      title: Posterior probability
-      type: Output  
-      
     - name: preval 
       title: Class prevalences by group
       type: Bool 
       default: FALSE    
+
+    - name: post
+      title: Posterior probability
+      type: Bool 
+      default: FALSE 
+     
+    - name: item 
+      title: Item probability
+      type: Bool 
+      default: TRUE
 
     - name: plot1 
       title: Profile plot

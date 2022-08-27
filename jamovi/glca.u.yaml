@@ -55,11 +55,11 @@ children:
               - type: CheckBox
                 name: comp
               - type: CheckBox
-                name: cp
-              - type: Output
-                name: post
-              - type: CheckBox
                 name: preval
+              - type: CheckBox
+                name: item
+              - type: CheckBox
+                name: post                
       - type: LayoutBox
         stretchFactor: 1
         margin: large
