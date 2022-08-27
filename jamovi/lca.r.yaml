@@ -50,7 +50,7 @@ items:
           type: number
  
     - name: comp
-      title: 'Model comparison using bootstrap method'
+      title: 'Absolute model fit'
       type: Table
       visible: (comp)
       refs: glca
@@ -85,7 +85,7 @@ items:
           title: Gsq 
           type: number
         - name: p
-          title: p 
+          title: Boot.p 
           type: number
           format: zto,pvalue
 
