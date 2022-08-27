@@ -238,7 +238,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              
              for (i in 2:self$options$nc) {
                
-               lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+               lca = glca::glca(formula, data = data, nclass = nc)
           
                fit<- glca::gofglca(lca, test = "boot", nboot = nb)
                fit <- fit[["gtable"]]

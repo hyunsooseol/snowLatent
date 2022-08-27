@@ -176,7 +176,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="df", 
                         `title`="df", 
-                        `type`="number"),
+                        `type`="integer"),
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
@@ -219,8 +219,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="df", 
-                        `title`="Res.df", 
-                        `type`="number"),
+                        `title`="df", 
+                        `type`="integer"),
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 

@@ -46,7 +46,7 @@ items:
           type: number
         - name: df
           title: df 
-          type: number
+          type: integer
         - name: gsq
           title: G² 
           type: number
@@ -82,8 +82,8 @@ items:
           title: Entropy 
           type: number
         - name: df
-          title: Res.df 
-          type: number
+          title: df 
+          type: integer
         - name: gsq
           title: G² 
           type: number
