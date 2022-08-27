@@ -184,7 +184,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
-                title="Model comparison using bootstrap method",
+                title="Absolute model fit",
                 visible="(comp)",
                 refs="glca",
                 clearWith=list(
@@ -219,7 +219,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="df", 
-                        `title`="df", 
+                        `title`="Res.df", 
                         `type`="number"),
                     list(
                         `name`="gsq", 
@@ -227,7 +227,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="p", 
-                        `title`="p", 
+                        `title`="Boot.p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
