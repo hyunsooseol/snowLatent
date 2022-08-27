@@ -181,7 +181,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
-                title="Model comparison",
+                title="Model comparison using bootstrap method",
                 visible="(comp)",
                 refs="glca",
                 clearWith=list(
@@ -229,7 +229,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cp",
-                title="Size of each latent class",
+                title="Class prevalences by group",
                 visible="(cp)",
                 refs="glca",
                 clearWith=list(

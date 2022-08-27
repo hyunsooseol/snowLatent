@@ -52,7 +52,7 @@ items:
           type: number
 
     - name: comp
-      title: 'Model comparison'
+      title: 'Model comparison using bootstrap method'
       type: Table
       visible: (comp)
       refs: glca
@@ -82,7 +82,7 @@ items:
           title: Entropy 
           type: number
         - name: df
-          title: Res.df 
+          title: df 
           type: number
         - name: gsq
           title: Gsq 

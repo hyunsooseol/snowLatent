@@ -12,8 +12,8 @@ glca(
   nb = 100,
   fit = TRUE,
   comp = TRUE,
-  cp = FALSE,
   preval = FALSE,
+  post = FALSE,
   item = TRUE,
   plot1 = FALSE
 )
@@ -33,9 +33,9 @@ glca(
 
 \item{comp}{.}
 
-\item{cp}{.}
-
 \item{preval}{.}
+
+\item{post}{.}
 
 \item{item}{.}
 
@@ -48,11 +48,10 @@ A results object containing:
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
-  \code{results$cp} \tab \tab \tab \tab \tab a table \cr
-  \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

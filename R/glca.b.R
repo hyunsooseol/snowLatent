@@ -134,8 +134,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         lca = glca::glca(formula=formula,
                          group= group,
                          data=data,
-                         nclass = nc,
-                         n.init=1)
+                         nclass = nc)
+                        
       #################################################################
       #group: Argument that indicates group variable which has the same length as manifest items
       #on the formula. If group = NULL (default), LCA or LCR is fitted.
@@ -192,11 +192,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         for (i in 2:self$options$nc) {
           
-          lca = glca::glca(formula, data = data, 
+          mlca = glca::glca(formula, data = data, 
                            group=group,
-                           nclass = nc, n.init=1)
+                           nclass = nc)
           
-          fit<- glca::gofglca(lca, test = "boot", nboot = nb)
+          fit<- glca::gofglca(mlca, test = "boot", nboot = nb)
           fit <- fit[["gtable"]]
           
           if (is.null(out)) {
@@ -447,7 +447,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (is.null(lca))
           return()
         
-        par(mfcol = c(2, 1))
+        par(mfcol = c(3, 1))
         plot1 <- plot(lca, ask=FALSE)
         
         print(plot1)

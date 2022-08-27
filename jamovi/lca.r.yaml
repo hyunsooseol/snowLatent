@@ -50,7 +50,7 @@ items:
           type: number
  
     - name: comp
-      title: 'Model comparison'
+      title: 'Model comparison using bootstrap method'
       type: Table
       visible: (comp)
       refs: glca
@@ -90,7 +90,7 @@ items:
           format: zto,pvalue
 
     - name: cp
-      title: 'Size of each latent class'
+      title: 'Class prevalences by group'
       type: Table
       visible: (cp)
       refs: glca
