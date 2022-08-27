@@ -10,6 +10,7 @@ glca(
   group,
   nc = 2,
   nb = 100,
+  fit = TRUE,
   comp = TRUE,
   cp = FALSE,
   item = FALSE,
@@ -27,6 +28,8 @@ glca(
 
 \item{nb}{.}
 
+\item{fit}{.}
+
 \item{comp}{.}
 
 \item{cp}{.}
@@ -40,6 +43,7 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
@@ -49,9 +53,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$comp$asDF}
+\code{results$fit$asDF}
 
-\code{as.data.frame(results$comp)}
+\code{as.data.frame(results$fit)}
 }
 \description{
 Multiple Group LCA

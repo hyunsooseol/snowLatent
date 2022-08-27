@@ -55,8 +55,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ready <- TRUE
         
-        if (is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
+        if (is.null(self$options$group) || is.null(self$options$vars) || length(self$options$vars) < 2)
           
           ready <- FALSE
         
@@ -94,6 +93,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .compute = function(data) {
         
+        if (is.null(self$options$group))
+          return()
+        
         
         ######## glca R package ################
         
@@ -108,50 +110,26 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ################################
         
+        ############ Constructing formula###################        
         
-        vars<- self$options$vars
-        groupVarName<- self$options$group
-        
-        nc <- self$options$nc
-        nb <- self$options$nb
-        
-        data<- as.data.frame(data)
-        
-        ############ Constructing formula is working well###################        
-        
-        vars <- colnames(data)
+        #vars <- colnames(data)
+        vars <- colnames(data[, -1] )
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
         
         # formula with no covariate variables----------     
         
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
-      
+        group <- data[, 1]
         
-       # Handling Group Variable---------------------------------------------
-
-        #varNames <- c(groupVarName, vars)
-
-        varNames <- c(self$options$group, self$options$vars)
-
-
-        if (is.null(groupVarName))
-          return()
-
-
-        data <- jmvcore::select(self$data, varNames)
-
-        for (var in vars)
-          data[[var]] <- jmvcore::toNumeric(data[[var]])
-
-        # exclude rows with missing in the covariate variables
-
-        data <- data[!is.na(data[[groupVarName]]), ]
-
+        nc <- self$options$nc
+        nb <- self$options$nb
+       
+        
         ################### LCA model estimates############################
         
         lca = glca::glca(formula=formula,
-                         group= data[[groupVarName]],
+                         group= group,
                          data=data,
                          nclass = nc)
       #################################################################
@@ -159,7 +137,19 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #on the formula. If group = NULL (default), LCA or LCR is fitted.
         
         
-        self$results$text$setContent(lca)
+      #  self$results$text$setContent(lca)
+        
+        
+        #fit measure----------
+        
+        loglik<- lca$gof$loglik
+        aic<- lca$gof$aic
+        caic<- lca$gof$caic
+        bic<- lca$gof$bic
+        entropy<- lca$gof$entropy
+        df<- lca$gof$df
+        gsq<- lca$gof$Gsq
+        
         
         
         ######## LCA with no covariates##############
@@ -223,6 +213,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         results <-
           list(
+            'loglik'=loglik,
+            'aic'=aic,
+            'caic'=caic,
+            'bic'=bic,
+            'entropy'=entropy,
+            'df'=df,
+            'gsq'=gsq,
             'res'=res,
             'gam'= gam,
             'item'=item
@@ -235,6 +232,38 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       ################ populating Tables################################
       
+      # populating fit table-------------   
+      
+      .populateFitTable = function(results) {
+        
+        table <- self$results$fit
+        
+        class <- self$options$nc
+        
+        loglik<- results$loglik
+        aic<- results$aic
+        caic<- results$caic
+        bic<- results$bic
+        entropy<- results$entropy
+        df<- results$df
+        gsq<- results$gsq
+        
+        
+        row <- list()
+        
+        row[['class']] <- class
+        row[['loglik']] <- loglik
+        row[['aic']] <- aic
+        row[['caic']] <- caic
+        row[['bic']] <- bic
+        row[['entropy']] <- entropy
+        row[['df']] <- df
+        row[['gsq']] <- gsq
+        
+        table$setRow(rowNo = 1, values = row)
+        
+        
+      },
       
       .populateModelTable = function(results) {
         
@@ -360,15 +389,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      
-      
-      
-      ###############################################################
-      #      lcr = glca::glca(formula1, data = data, nclass = class,n.init=1)
-      #      
-      #      self$results$text1$setContent(summary(lcr))
-      #      
-      #    }  
       
       ### Helper functions =================================     
       
