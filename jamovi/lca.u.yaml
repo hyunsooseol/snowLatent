@@ -48,12 +48,15 @@ children:
         margin: large
         children:
           - type: Label
-            label: Statistics
+            label: Fit
             children:
               - type: CheckBox
                 name: fit
               - type: CheckBox
                 name: comp
+          - type: Label
+            label: Statistics
+            children:      
               - type: CheckBox
                 name: cp
               - type: Output

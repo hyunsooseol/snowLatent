@@ -48,7 +48,7 @@ items:
           title: df 
           type: number
         - name: gsq
-          title: Gsq 
+          title: G² 
           type: number
 
     - name: comp
@@ -85,10 +85,10 @@ items:
           title: Res.df 
           type: number
         - name: gsq
-          title: Gsq 
+          title: G² 
           type: number
         - name: p
-          title: Boot.p 
+          title: p 
           type: number
           format: zto,pvalue
 

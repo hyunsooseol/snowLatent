@@ -46,7 +46,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          if (self$options$comp)
              self$results$comp$setNote(
                  "Note",
-                 "H0: Model fit data adequately."
+                 "p: Bootstrap p value; H0: Model fit data adequately."
              )
         
         

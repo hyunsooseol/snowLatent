@@ -176,7 +176,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="gsq", 
-                        `title`="Gsq", 
+                        `title`="G\u00B2", 
                         `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -215,15 +215,15 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="df", 
-                        `title`="Res.df", 
+                        `title`="df", 
                         `type`="number"),
                     list(
                         `name`="gsq", 
-                        `title`="Gsq", 
+                        `title`="G\u00B2", 
                         `type`="number"),
                     list(
                         `name`="p", 
-                        `title`="Boot.p", 
+                        `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
