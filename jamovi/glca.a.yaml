@@ -60,8 +60,8 @@ options:
       title: Posterior probability
       type: Output  
       
-    - name: item 
-      title: Item probability
+    - name: preval 
+      title: Class prevalences by group
       type: Bool 
       default: FALSE    
 

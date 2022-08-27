@@ -20,6 +20,9 @@ items:
       clearWith:
         - vars
         - nc
+        - nb
+        - group
+
       refs: glca 
 
       columns:
@@ -57,6 +60,7 @@ items:
         - vars
         - nc
         - nb
+        - group
 
       columns:
         - name: class
@@ -97,6 +101,7 @@ items:
         - vars
         - nc
         - nb
+        - group
       
       columns:
         - name: name
@@ -114,6 +119,24 @@ items:
         - vars
         - nc
         - nb
+        - group
+
+    - name: preval
+      title: 'Class prevalences by group'
+      type: Table
+      refs: glca
+      visible: (preval)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
 
     - name:  text1
       title: Item-response probabilities
@@ -131,5 +154,6 @@ items:
         - vars
         - nc
         - nb
+        - group
 
 ...

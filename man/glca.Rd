@@ -13,7 +13,7 @@ glca(
   fit = TRUE,
   comp = TRUE,
   cp = FALSE,
-  item = FALSE,
+  preval = FALSE,
   plot1 = FALSE
 )
 }
@@ -34,7 +34,7 @@ glca(
 
 \item{cp}{.}
 
-\item{item}{.}
+\item{preval}{.}
 
 \item{plot1}{.}
 }
@@ -47,6 +47,7 @@ A results object containing:
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+  \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }

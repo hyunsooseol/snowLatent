@@ -59,7 +59,7 @@ children:
               - type: Output
                 name: post
               - type: CheckBox
-                name: item
+                name: preval
       - type: LayoutBox
         stretchFactor: 1
         margin: large

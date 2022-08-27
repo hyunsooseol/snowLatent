@@ -13,7 +13,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fit = TRUE,
             comp = TRUE,
             cp = FALSE,
-            item = FALSE,
+            preval = FALSE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -62,9 +62,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..post <- jmvcore::OptionOutput$new(
                 "post")
-            private$..item <- jmvcore::OptionBool$new(
-                "item",
-                item,
+            private$..preval <- jmvcore::OptionBool$new(
+                "preval",
+                preval,
                 default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
@@ -79,7 +79,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..comp)
             self$.addOption(private$..cp)
             self$.addOption(private$..post)
-            self$.addOption(private$..item)
+            self$.addOption(private$..preval)
             self$.addOption(private$..plot1)
         }),
     active = list(
@@ -91,7 +91,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp = function() private$..comp$value,
         cp = function() private$..cp$value,
         post = function() private$..post$value,
-        item = function() private$..item$value,
+        preval = function() private$..preval$value,
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
@@ -102,7 +102,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..comp = NA,
         ..cp = NA,
         ..post = NA,
-        ..item = NA,
+        ..preval = NA,
         ..plot1 = NA)
 )
 
@@ -116,6 +116,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp = function() private$.items[["comp"]],
         cp = function() private$.items[["cp"]],
         post = function() private$.items[["post"]],
+        preval = function() private$.items[["preval"]],
         text1 = function() private$.items[["text1"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
@@ -141,7 +142,9 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=1,
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "nb",
+                    "group"),
                 refs="glca",
                 columns=list(
                     list(
@@ -185,7 +188,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb"),
+                    "nb",
+                    "group"),
                 columns=list(
                     list(
                         `name`="class", 
@@ -233,7 +237,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb"),
+                    "nb",
+                    "group"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -251,7 +256,25 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb")))
+                    "nb",
+                    "group")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="preval",
+                title="Class prevalences by group",
+                refs="glca",
+                visible="(preval)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -268,7 +291,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb")))}))
+                    "nb",
+                    "group")))}))
 
 glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "glcaBase",
@@ -301,7 +325,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fit .
 #' @param comp .
 #' @param cp .
-#' @param item .
+#' @param preval .
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -311,6 +335,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -331,7 +356,7 @@ glca <- function(
     fit = TRUE,
     comp = TRUE,
     cp = FALSE,
-    item = FALSE,
+    preval = FALSE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -356,7 +381,7 @@ glca <- function(
         fit = fit,
         comp = comp,
         cp = cp,
-        item = item,
+        preval = preval,
         plot1 = plot1)
 
     analysis <- glcaClass$new(
