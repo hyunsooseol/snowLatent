@@ -228,7 +228,21 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
         image$setState(lca)
           
-          
+        
+        #Good codes for model fit####################################
+        # 
+        # library(glca)
+        # data("gss08")
+        # data <- gss08
+        # args <- list(test = "boot", seed = 1)
+        # f <- item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ 1
+        # inpclas = 4
+        # for(nc in 2:inpclas)
+        #   args[[nc+1]] <- glca::glca(formula = f, data = data, nclass = nc, seed = 1)
+        # res <- do.call(glca::gofglca, args)
+        # res
+        
+        
         #Goodness of fit----------------------------
         
         if(self$options$nc ==2){
