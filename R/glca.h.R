@@ -12,6 +12,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nb = 100,
             fit = TRUE,
             comp = TRUE,
+            rel = FALSE,
             preval = FALSE,
             post = FALSE,
             item = TRUE,
@@ -57,6 +58,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "comp",
                 comp,
                 default=TRUE)
+            private$..rel <- jmvcore::OptionBool$new(
+                "rel",
+                rel,
+                default=FALSE)
             private$..preval <- jmvcore::OptionBool$new(
                 "preval",
                 preval,
@@ -80,6 +85,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nb)
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
+            self$.addOption(private$..rel)
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
@@ -92,6 +98,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         nb = function() private$..nb$value,
         fit = function() private$..fit$value,
         comp = function() private$..comp$value,
+        rel = function() private$..rel$value,
         preval = function() private$..preval$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
@@ -103,6 +110,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..nb = NA,
         ..fit = NA,
         ..comp = NA,
+        ..rel = NA,
         ..preval = NA,
         ..post = NA,
         ..item = NA,
@@ -117,6 +125,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         text = function() private$.items[["text"]],
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
+        rel = function() private$.items[["rel"]],
         preval = function() private$.items[["preval"]],
         plot1 = function() private$.items[["plot1"]],
         text1 = function() private$.items[["text1"]],
@@ -194,9 +203,10 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "group"),
                 columns=list(
                     list(
-                        `name`="class", 
-                        `title`="Class", 
-                        `type`="number"),
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
                     list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 
@@ -224,6 +234,43 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rel",
+                title="Relative model fit(Class>2)",
+                visible="(rel)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="para", 
+                        `title`="Parameter", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="dev", 
+                        `title`="Deviance", 
                         `type`="number"),
                     list(
                         `name`="p", 
@@ -300,6 +347,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nb .
 #' @param fit .
 #' @param comp .
+#' @param rel .
 #' @param preval .
 #' @param post .
 #' @param item .
@@ -310,6 +358,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
@@ -331,6 +380,7 @@ glca <- function(
     nb = 100,
     fit = TRUE,
     comp = TRUE,
+    rel = FALSE,
     preval = FALSE,
     post = FALSE,
     item = TRUE,
@@ -357,6 +407,7 @@ glca <- function(
         nb = nb,
         fit = fit,
         comp = comp,
+        rel = rel,
         preval = preval,
         post = post,
         item = item,

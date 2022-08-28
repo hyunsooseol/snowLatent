@@ -12,6 +12,7 @@ glca(
   nb = 100,
   fit = TRUE,
   comp = TRUE,
+  rel = FALSE,
   preval = FALSE,
   post = FALSE,
   item = TRUE,
@@ -33,6 +34,8 @@ glca(
 
 \item{comp}{.}
 
+\item{rel}{.}
+
 \item{preval}{.}
 
 \item{post}{.}
@@ -48,6 +51,7 @@ A results object containing:
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr

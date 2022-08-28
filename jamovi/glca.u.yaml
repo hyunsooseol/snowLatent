@@ -48,18 +48,23 @@ children:
         margin: large
         children:
           - type: Label
-            label: Statistics
+            label: Fit
             children:
               - type: CheckBox
                 name: fit
               - type: CheckBox
                 name: comp
               - type: CheckBox
+                name: rel
+          - type: Label
+            label: Statistics
+            children:
+              - type: CheckBox
                 name: preval
               - type: CheckBox
                 name: item
               - type: CheckBox
-                name: post                
+                name: post 
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -69,7 +74,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plots
+            label: Plot
             children:
               - type: CheckBox
                 name: plot1

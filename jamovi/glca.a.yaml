@@ -47,9 +47,14 @@ options:
       default: True
       
     - name: comp
-      title: Model comparison
+      title: Absolute model fit
       type: Bool
       default: True
+
+    - name: rel
+      title: Relative model fit(Class>2)
+      type: Bool
+      default: FALSE
 
     - name: preval 
       title: Class prevalences by group

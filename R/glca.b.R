@@ -42,7 +42,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (self$options$comp)
           self$results$comp$setNote(
             "Note",
-            "H0: Model fit data adequately."
+            "p: Bootstrap p value; H0: Model fit data adequately."
           )
         
         
@@ -57,7 +57,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ready <- TRUE
         
-        if (is.null(self$options$group) || is.null(self$options$vars) || length(self$options$vars) < 2)
+        if (is.null(self$options$group) || is.null(self$options$vars) || 
+            length(self$options$vars) < 2)
           
           ready <- FALSE
         
@@ -71,13 +72,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateFitTable(results)
           
-          # populate Model comparison-----------
+          # populate Model comparison(Absolute model fit)-----------
           
           private$.populateModelTable(results)
           
-          # populate Class probability table-----
+          # populate Relative model fit---------------
           
-          #private$.populateClassTable(results)
+          private$.populateRelTable(results)
           
          # populate class prevalences by group table-------
           
@@ -133,16 +134,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ################### LCA model estimates############################
         
-        lca = glca::glca(formula=formula,
-                         group= group,
-                         data=data,
-                         nclass = nc)
+        lca = glca::glca(formula=formula,group= group,data=data,nclass = nc)
                         
       #################################################################
-      #group: Argument that indicates group variable which has the same length as manifest items
-      #on the formula. If group = NULL (default), LCA or LCR is fitted.
-        
-        
+      
       # self$results$text$setContent(lca)
         
         
@@ -156,7 +151,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
-       
+       # Goodnes of fit--------------------------
+        
+         args <- list(test = "boot", nboot=nb)
+         inpclas = self$options$nc
+         
+         for(nc in 2:inpclas)
+           args[[nc+1]] <- glca::glca(formula = formula, data = data, nclass = nc)
+         res <- do.call(glca::gofglca, args)
+        
+        
+         gtable <- res[["gtable"]] #Absolute model fit
+         
+         dtable<- res[["dtable"]]  # Relative model fit 
+        
+        
         # Class prevalences by group----------
         
         class.group <- lca[["param"]][["gamma"]]
@@ -187,38 +196,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image$setState(lca)
         
-        
-        # Model comparison----------
-        
-        out <- NULL
-        
-        for (i in 2:self$options$nc) {
-          
-          mlca = glca::glca(formula, data = data, 
-                           group=group,
-                           nclass = nc)
-          
-          fit<- glca::gofglca(mlca, test = "boot", nboot = nb)
-          fit <- fit[["gtable"]]
-          
-          if (is.null(out)) {
-            out <- fit
-          } else {
-            out <- rbind(out, fit)
-          }
-        }
-        
-        out <- out
-        
-        row.names(out) <- 1:nrow(out)  
-        
-        res <- as.data.frame(out)
-        
-        res['class'] <- 2:nc
-        
-        res<- res[, c(9,1,2,3,4,5,6,7,8)]
-        
-       #  self$results$text$setContent(res)
+      
         
         results <-
           list(
@@ -232,7 +210,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'res'=res,
             'class.group'=class.group,
             'item'=item,
-            'post'=post
+            'post'=post,
+            'gtable'=gtable,
+            'dtable'=dtable
             
           )
         
@@ -275,44 +255,45 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # populate Model comparison table------------
+      # populate Absolute model fit table------------
       
       .populateModelTable = function(results) {
+        
         
         nc <- self$options$nc
         
         table <- self$results$comp
         
         
-        res <- results$res
+        gtable <- results$gtable
         
-        class <- res[,1]
-        loglik <- res[,2]
-        aic <- res[,3]
-        caic <- res[,4]
-        bic <- res[,5] 
-        entropy <- res[,6]
-        df <- res[,7] 
-        gsq <- res[,8] 
-        p <- res[,9]
+        g<- as.data.frame(gtable)
+        
+        loglik <- g[,1]
+        aic <- g[,2]
+        caic <- g[,3]
+        bic <- g[,4] 
+        entropy <- g[,5]
+        df <- g[,6] 
+        gsq <- g[,7] 
+        p <- g[,8]
         
         
-        names <- dimnames(res)[[1]]
+        names <- dimnames(g)[[1]]
         
         
         for (name in names) {
           
           row <- list()
           
-          row[['class']] <- res[name,1]
-          row[["loglik"]]   <-  res[name, 2]
-          row[["aic"]] <-  res[name, 3]
-          row[["caic"]] <-  res[name, 4]
-          row[["bic"]] <-  res[name, 5]
-          row[["entropy"]] <-  res[name, 6]
-          row[["df"]] <-  res[name, 7]
-          row[["gsq"]] <-  res[name, 8]
-          row[["p"]] <-  res[name, 9]
+          row[["loglik"]]   <-  g[name, 1]
+          row[["aic"]] <-  g[name, 2]
+          row[["caic"]] <-  g[name, 3]
+          row[["bic"]] <-  g[name, 4]
+          row[["entropy"]] <-  g[name, 5]
+          row[["df"]] <-  g[name, 6]
+          row[["gsq"]] <-  g[name, 7]
+          row[["p"]] <-  g[name, 8]
           
           
           table$addRow(rowKey=name, values=row)
@@ -320,6 +301,47 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }     
         
       },
+      
+      # Populate relative model fit---------------
+      
+      .populateRelTable = function(results) {
+        
+        if(self$options$nc<3)
+          return()
+        
+        nc <- self$options$nc
+        
+        table <- self$results$rel
+        
+        
+        dtable <- results$dtable
+        
+        d<- as.data.frame(dtable)
+        
+        para <- d[,1]
+        loglik<- d[,2]
+        df<- d[,3]
+        dev<- d[,4]
+        p<- d[,5]
+        
+        names <- dimnames(d)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[["para"]] <-  d[name, 1]
+          row[["loglik"]] <-  d[name, 2]
+          row[["df"]] <-  d[name, 3]
+          row[["dev"]] <-  d[name, 4]
+          row[["p"]] <-d[name, 5]
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+      },  
       
       # populate class prevalences by group table---------------
       
