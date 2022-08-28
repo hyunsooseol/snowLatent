@@ -15,7 +15,7 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Group(Required)
+        label: Grouping Variable
         children:
           - type: VariablesListBox
             name: group
