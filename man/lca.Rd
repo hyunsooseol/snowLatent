@@ -12,6 +12,7 @@ lca(
   nb = 100,
   fit = TRUE,
   comp = TRUE,
+  rel = FALSE,
   cp = FALSE,
   item = FALSE,
   plot1 = FALSE
@@ -32,6 +33,8 @@ lca(
 
 \item{comp}{.}
 
+\item{rel}{.}
+
 \item{cp}{.}
 
 \item{item}{.}
@@ -45,6 +48,7 @@ A results object containing:
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr

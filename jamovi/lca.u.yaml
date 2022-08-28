@@ -54,9 +54,11 @@ children:
                 name: fit
               - type: CheckBox
                 name: comp
+              - type: CheckBox
+                name: rel
           - type: Label
             label: Statistics
-            children:      
+            children:
               - type: CheckBox
                 name: cp
               - type: Output
@@ -76,4 +78,3 @@ children:
             children:
               - type: CheckBox
                 name: plot1
- 

@@ -60,9 +60,10 @@ items:
         - nb
 
       columns:
-        - name: class
-          title: 'Class'
-          type: number
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
         - name: loglik
           title: Log-likelihood
           type: number
@@ -83,6 +84,38 @@ items:
           type: integer
         - name: gsq
           title: G² 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: rel
+      title: 'Relative model fit(Class>2)'
+      type: Table
+      visible: (rel)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: para
+          title: Parameter
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: df
+          title: df 
+          type: integer 
+        - name: dev
+          title: Deviance 
           type: number
         - name: p
           title: p 

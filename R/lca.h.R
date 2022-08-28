@@ -12,6 +12,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nb = 100,
             fit = TRUE,
             comp = TRUE,
+            rel = FALSE,
             cp = FALSE,
             item = FALSE,
             plot1 = FALSE, ...) {
@@ -43,6 +44,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "nc",
                 nc,
                 min=2,
+                max=10,
                 default=2)
             private$..nb <- jmvcore::OptionInteger$new(
                 "nb",
@@ -57,6 +59,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "comp",
                 comp,
                 default=TRUE)
+            private$..rel <- jmvcore::OptionBool$new(
+                "rel",
+                rel,
+                default=FALSE)
             private$..cp <- jmvcore::OptionBool$new(
                 "cp",
                 cp,
@@ -78,6 +84,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..nb)
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
+            self$.addOption(private$..rel)
             self$.addOption(private$..cp)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
@@ -90,6 +97,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         nb = function() private$..nb$value,
         fit = function() private$..fit$value,
         comp = function() private$..comp$value,
+        rel = function() private$..rel$value,
         cp = function() private$..cp$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
@@ -101,6 +109,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..nb = NA,
         ..fit = NA,
         ..comp = NA,
+        ..rel = NA,
         ..cp = NA,
         ..post = NA,
         ..item = NA,
@@ -115,6 +124,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         text = function() private$.items[["text"]],
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
+        rel = function() private$.items[["rel"]],
         cp = function() private$.items[["cp"]],
         post = function() private$.items[["post"]],
         text1 = function() private$.items[["text1"]],
@@ -190,9 +200,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nb"),
                 columns=list(
                     list(
-                        `name`="class", 
-                        `title`="Class", 
-                        `type`="number"),
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
                     list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 
@@ -220,6 +231,43 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rel",
+                title="Relative model fit(Class>2)",
+                visible="(rel)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="para", 
+                        `title`="Parameter", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="dev", 
+                        `title`="Deviance", 
                         `type`="number"),
                     list(
                         `name`="p", 
@@ -302,6 +350,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param nb .
 #' @param fit .
 #' @param comp .
+#' @param rel .
 #' @param cp .
 #' @param item .
 #' @param plot1 .
@@ -311,6 +360,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
@@ -332,6 +382,7 @@ lca <- function(
     nb = 100,
     fit = TRUE,
     comp = TRUE,
+    rel = FALSE,
     cp = FALSE,
     item = FALSE,
     plot1 = FALSE) {
@@ -356,6 +407,7 @@ lca <- function(
         nb = nb,
         fit = fit,
         comp = comp,
+        rel = rel,
         cp = cp,
         item = item,
         plot1 = plot1)

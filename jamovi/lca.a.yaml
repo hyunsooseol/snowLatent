@@ -34,6 +34,7 @@ options:
       title: Class
       type: Integer
       min: 2
+      max: 10
       default: 2
 
     - name: nb
@@ -48,9 +49,14 @@ options:
       default: True
 
     - name: comp
-      title: Model fit
+      title: Absolute model fit
       type: Bool
       default: True
+
+    - name: rel
+      title: Relative model fit(Class>2)
+      type: Bool
+      default: FALSE
 
     - name: cp
       title: Size of class 
