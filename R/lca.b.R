@@ -120,67 +120,24 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ################################
         
-        
-        vars<- self$options$vars
-        covs<- self$options$covs
-        
         nc <- self$options$nc
         nb <- self$options$nb
        
-        data<- as.data.frame(data)
-        
-        # data[[covs]] <- jmvcore::toNumeric(data[[covs]])
-        
-       
-        ############ Construct formula###################        
+      ############ Construct formula###################        
           
-        vars <- colnames(data)
+        vars <- self$options$vars
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
-      
-        if (is.null(covs)){
-      
-          # formula with no covariate variables----------     
-      
-        formula <- as.formula(paste0('glca::item(', vars, ')~1'))
-       
-        }
-   
-        if (length(covs) > 0) {
-
-          covs<- self$options$covs
+        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+        
+        if( !is.null(self$options$covs) ) {
+          covs <- self$options$covs
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+          covs <- paste0(covs, collapse='+')
           
-          if (is.null(covs))
-            return()
-          
-          #-----------------------------------------------
-          varNames <- c(covs, vars)
-          data <- jmvcore::select(self$data, varNames)
-          
-           for (var in vars)
-               data[[var]] <- jmvcore::toNumeric(data[[var]])
-           
-          # exclude rows with missings in the covariate variables
-          
-          data <- data[!is.na(data[[covs]]), ]
-          #-----------------------------------------------
-          
-          # Handling covariate variables ??? ---------
-
-          # data <- colnames(data)
-          # covs <- colnames(data)
-          #covs <- colnames(data[covs])
-
-         # covs<- data[covs] # ?????
-      
-          # Covariate formula is OK-----------------------------
-
-      formula <- as.formula(paste0('glca::item(', vars, ')~', paste(data[,1], collapse= "+")))
-
-         
-        }
-
-       
+          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+        } 
+        
    ################### LCA model estimates############################
 
           lca = glca::glca(formula=formula,data=data,nclass=nc)
@@ -202,13 +159,21 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
       ######## LCA with no covariates##############
       
-        gam<- lca[["param"]][["gamma"]]
+        # Attention:
+        # Capture if 1 or more covariates have 
+        # not been selected to avoid 0 length error.
+        
+        if( is.null(self$options$covs) ) {
           
-        row.names(gam) <- 1:nrow(gam)  
-        gam <- as.data.frame(gam)
-        gam <- t(gam)
-        gam <- as.data.frame(gam)
-          
+          gam <- lca[["param"]][["gamma"]]
+          row.names(gam) <- 1:nrow(gam)  
+          gam <- as.data.frame(gam)
+          gam <- t(gam)
+          gam <- as.data.frame(gam)
+        } else
+          gam <- NaN
+        
+       
         # item probabilities------
           
         item<- lca[["param"]][["rho"]][["ALL"]]
@@ -619,18 +584,23 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
      .cleanData = function() {
        
-       items <- self$options$vars
-       
        data <- list()
        
-       for (item in items)
-         data[[item]] <-
-         jmvcore::toNumeric(self$data[[item]])
+       if( !is.null(self$options$covs) )
+         
+         for (cov in self$options$covs)
+           data[[cov]] <- jmvcore::toNumeric(self$data[[cov]])
+       
+       for (var in self$options$vars)
+         
+         data[[var]] <- jmvcore::toNumeric(self$data[[var]])
        
        attr(data, 'row.names') <- seq_len(length(data[[1]]))
        attr(data, 'class') <- 'data.frame'
        
-       data <- jmvcore::naOmit(data)
+       if( !is.null(self$options$covs))
+         for (cov in self$options$covs)
+           data <- data[!is.na(data[[cov]]), ]
        
        return(data)
      }
