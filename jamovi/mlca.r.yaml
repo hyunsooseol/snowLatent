@@ -1,0 +1,169 @@
+---
+name:  mlca
+title: Multilevel LCA
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
+    - name:  text
+      title: Model information
+      type:  Preformatted
+
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+
+      refs: glca 
+
+      columns:
+        - name: class
+          title: Class
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: df 
+          type: integer
+        - name: gsq
+          title: G² 
+          type: number
+
+    - name: comp
+      title: 'Absolute model fit'
+      type: Table
+      visible: (comp)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: df 
+          type: integer
+        - name: gsq
+          title: G² 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: rel
+      title: 'Relative model fit(Class>2)'
+      type: Table
+      visible: (rel)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: para
+          title: Parameter
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: df
+          title: df 
+          type: integer 
+        - name: dev
+          title: Deviance 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: preval
+      title: 'Class prevalences by group'
+      type: Table
+      refs: glca
+      visible: (preval)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+    - name:  plot1
+      title: Profile plot
+      type:  Image
+      width: 700
+      height: 700
+      renderFun: .plot1
+      visible: (plot1)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+
+    - name:  text1
+      title: Item-response probabilities
+      type:  Preformatted
+
+    - name: text2
+      title: Item-response probabilities
+      type:  Preformatted      
+...
+
+
+

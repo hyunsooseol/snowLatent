@@ -155,7 +155,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "cluster"),
                 refs="glca",
                 columns=list(
                     list(
@@ -200,7 +201,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "cluster"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -249,7 +251,9 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb"),
+                    "nb",
+                    "group",
+                    "cluster"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -287,7 +291,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "cluster"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -307,7 +312,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group")))
+                    "group",
+                    "cluster")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",

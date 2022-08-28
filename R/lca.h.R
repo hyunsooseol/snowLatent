@@ -44,7 +44,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "nc",
                 nc,
                 min=2,
-                max=10,
                 default=2)
             private$..nb <- jmvcore::OptionInteger$new(
                 "nb",

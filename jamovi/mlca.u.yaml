@@ -1,0 +1,85 @@
+title: Multilevel LCA
+name: mlca
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Variables
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Grouping Variable
+        children:
+          - type: VariablesListBox
+            name: group
+            maxItemCount: 1
+            isTarget: true
+  - type: LayoutBox
+    margin: large
+    style: inline
+    children:
+      - type: Label
+        label: Analysis option
+        margin: large
+        style: list-inline
+        children:
+          - name: nc
+            type: TextBox
+            label: Class
+            format: number
+          - name: nclust
+            type: TextBox
+            label: Cluster
+            format: number
+          - name: nb
+            type: TextBox
+            label: Bootstrap
+            format: number
+  - type: CollapseBox
+    label: LCA Analysis
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Fit
+            children:
+              - type: CheckBox
+                name: fit
+              - type: CheckBox
+                name: comp
+              - type: CheckBox
+                name: rel
+          - type: Label
+            label: Statistics
+            children:
+              - type: CheckBox
+                name: preval
+              - type: CheckBox
+                name: item
+              - type: CheckBox
+                name: post 
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Plot
+            children:
+              - type: CheckBox
+                name: plot1
+ 

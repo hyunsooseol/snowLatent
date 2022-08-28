@@ -1,0 +1,87 @@
+---
+name:  mlca
+title: Multilevel LCA
+menuGroup: snowLatent
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: the data as a data frame
+          
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+
+    - name: group
+      title: Grouping Variable
+      type: Variable
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+
+    - name: nc
+      title: Class
+      type: Integer
+      min: 2
+      default: 2
+
+    - name: nclust
+      title: Cluster
+      type: Integer
+      min: 2
+      default: 2
+      
+    - name: nb
+      title: Bootstrap
+      type: Integer
+      min: 10
+      default: 100
+
+    - name: fit
+      title: Model fit
+      type: Bool
+      default: True
+      
+    - name: comp
+      title: Absolute model fit
+      type: Bool
+      default: True
+
+    - name: rel
+      title: Relative model fit(Class>2)
+      type: Bool
+      default: FALSE
+
+    - name: preval 
+      title: Class prevalences by group
+      type: Bool 
+      default: FALSE    
+
+    - name: post
+      title: Posterior probability
+      type: Bool 
+      default: FALSE 
+     
+    - name: item 
+      title: Item probability
+      type: Bool 
+      default: TRUE
+
+    - name: plot1 
+      title: Profile plot
+      type: Bool 
+      default: FALSE   
+     
+     
+...
+ 

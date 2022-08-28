@@ -20,6 +20,11 @@ analyses:
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Multiple Group LCA
+  - title: Multilevel LCA
+    name: mlca
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Multilevel LCA
 datasets:
   - name: gss
     path: gss.omv
