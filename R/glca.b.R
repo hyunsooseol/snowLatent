@@ -157,7 +157,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          inpclas = self$options$nc
          
          for(nc in 2:inpclas)
-           args[[nc+1]] <- glca::glca(formula = formula, data = data, nclass = nc)
+           args[[nc+1]] <- glca::glca(formula = formula, group=group, data = data, nclass = nc)
          res <- do.call(glca::gofglca, args)
         
         
