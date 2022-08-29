@@ -157,23 +157,28 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         gsq<- lca$gof$Gsq
             
    
-      ######## LCA with no covariates##############
+      ######## Marginal prvalences for latent class##############
       
-        # Attention:
-        # Capture if 1 or more covariates have 
-        # not been selected to avoid 0 length error.
+        # # Attention:
+        # # Capture if 1 or more covariates have 
+        # # not been selected to avoid 0 length error.
+        # 
+        # if( is.null(self$options$covs) ) {
+        #   
+        #   gam <- lca[["param"]][["gamma"]]
+        #   row.names(gam) <- 1:nrow(gam)  
+        #   gam <- as.data.frame(gam)
+        #   gam <- t(gam)
+        #   gam <- as.data.frame(gam)
+        # } else
+        #   gam <- NaN
         
-        if( is.null(self$options$covs) ) {
-          
-          gam <- lca[["param"]][["gamma"]]
-          row.names(gam) <- 1:nrow(gam)  
-          gam <- as.data.frame(gam)
-          gam <- t(gam)
-          gam <- as.data.frame(gam)
-        } else
-          gam <- NaN
         
-       
+        gam <- lapply(lca$posterior, colMeans)
+        gam<- gam$ALL
+        gam <- as.data.frame(gam)
+        
+        
         # item probabilities------
           
         item<- lca[["param"]][["rho"]][["ALL"]]
@@ -468,7 +473,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    }
     
   },
-   # size of Class--------------------------------------
+   # Marginal prevalences for latent classes--------------------------------------
           
       .populateClassTable= function(results) {  
          
