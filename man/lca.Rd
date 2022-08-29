@@ -11,11 +11,11 @@ lca(
   nc = 2,
   nb = 100,
   fit = TRUE,
-  comp = TRUE,
+  comp = FALSE,
   rel = FALSE,
   cp = FALSE,
-  item = FALSE,
-  coef = FALSE,
+  item = TRUE,
+  coef = TRUE,
   plot1 = FALSE
 )
 }

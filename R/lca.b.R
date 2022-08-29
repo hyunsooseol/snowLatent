@@ -577,6 +577,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   .populateCoefTable= function(results) {
     
+    if(is.null(self$options$covs))
+      return()
     
     coef <- results$coef
     
