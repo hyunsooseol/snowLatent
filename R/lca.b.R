@@ -96,11 +96,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populate posterior probabilities--
           
-          private$.populatePosteriorOutputs(data)
+          private$.populatePosteriorOutputs(results)
           
-          # populate class prevalences plot--
-          
-         # private$.populateClassPlot(results)
+         
         
         }
       },
@@ -225,6 +223,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         dtable<- res[["dtable"]]  # Relative model fit 
         
         
+        # populate output results-------------
+        
+        
+        pos<- lca$posterior$ALL
+        
+        
+        
+        
         #Goodness of fit----------------------------
         
         # if(self$options$nc ==2){
@@ -342,8 +348,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'gam'= gam,
                 'item'=item,
                 'gtable'=gtable,
-                'dtable'=dtable
-                
+                'dtable'=dtable,
+                'pos'=pos
                 )
           
             
@@ -498,27 +504,29 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
       # posterior probability----------
          
-      .populatePosteriorOutputs= function(data) {
+      .populatePosteriorOutputs= function(results) {
         
-        nc<- self$options$nc
+        # nc<- self$options$nc
+        # 
+        # data <- jmvcore::naOmit(data)
+        # 
+        # data<- as.data.frame(data)
+        # 
+        # vars <- colnames(data)
+        # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        # vars <- paste0(vars, collapse=',')
+        # 
+        # formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+        # 
+        # 
+        # ################ LCA model estimates############################ 
+        # 
+        # lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
+        # ###############################################################
+        # 
+        # pos<- lca$posterior$ALL
         
-        data <- jmvcore::naOmit(data)
-        
-        data<- as.data.frame(data)
-        
-        vars <- colnames(data)
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        vars <- paste0(vars, collapse=',')
-        
-        formula <- as.formula(paste0('glca::item(', vars, ')~1'))
-        
-        
-        ################ LCA model estimates############################ 
-        
-        lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
-        ###############################################################
-        
-        pos<- lca$posterior$ALL
+        pos <- results$pos
         
         
         if (self$options$post
