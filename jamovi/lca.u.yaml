@@ -65,6 +65,8 @@ children:
                 name: post
               - type: CheckBox
                 name: item
+              - type: CheckBox
+                name: coef
       - type: LayoutBox
         stretchFactor: 1
         margin: large

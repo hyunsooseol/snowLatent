@@ -50,7 +50,7 @@ options:
     - name: comp
       title: Absolute model fit
       type: Bool
-      default: True
+      default: FALSE
 
     - name: rel
       title: Relative model fit(Class>2)
@@ -69,8 +69,13 @@ options:
     - name: item 
       title: Item probability
       type: Bool 
-      default: FALSE    
+      default: TRUE    
 
+    - name: coef 
+      title: Coefficients
+      type: Bool 
+      default: TRUE   
+      
     - name: plot1 
       title: Profile plot
       type: Bool 

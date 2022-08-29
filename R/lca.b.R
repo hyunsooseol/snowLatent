@@ -90,9 +90,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateClassTable(results)
           
-          # populate item probabilities---------
+          # populate Logistic regression coefficients---------
           
           private$.populateItemTable(results)
+          
+          
+          # populate item probabilities---------
+          
+          private$.populateCoefTable(results)
+          
           
           # populate posterior probabilities--
           
@@ -181,6 +187,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         item<- lca[["param"]][["rho"]][["ALL"]]
           
+        # logistic regression coefficients-------------
+        
+        if( !is.null(self$options$covs) ) {
+        
+        coef<- lca[["coefficient"]]
+        
+        }
+        
+        ########################################################
         # Class Prevalences plot----------
           
          image <- self$results$plot1
@@ -349,7 +364,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'item'=item,
                 'gtable'=gtable,
                 'dtable'=dtable,
-                'pos'=pos
+                'pos'=pos,
+                'coef'=coef
                 )
           
             
@@ -556,6 +572,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
       },
       
+  
+  # logistic regression coefficients-----------
+  
+  .populateCoefTable= function(results) {
+    
+    
+    coef <- results$coef
+    
+    self$results$text2$setContent(coef)
+    
+  },   
+  
+  
+  
       # item probabilities----------
       
       .populateItemTable= function(results) {

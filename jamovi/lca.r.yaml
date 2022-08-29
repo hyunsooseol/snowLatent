@@ -123,7 +123,7 @@ items:
           format: zto,pvalue
 
     - name: cp
-      title: 'Class prevalences by group'
+      title: 'Marginal prevalences for latent classes'
       type: Table
       visible: (cp)
       refs: glca
@@ -148,6 +148,10 @@ items:
         - vars
         - nc
         - nb
+
+    - name:  text2
+      title: Logistic regression coefficients
+      type:  Preformatted
 
     - name:  text1
       title: Item-response probabilities

@@ -15,6 +15,7 @@ lca(
   rel = FALSE,
   cp = FALSE,
   item = FALSE,
+  coef = FALSE,
   plot1 = FALSE
 )
 }
@@ -39,6 +40,8 @@ lca(
 
 \item{item}{.}
 
+\item{coef}{.}
+
 \item{plot1}{.}
 }
 \value{
@@ -51,6 +54,7 @@ A results object containing:
   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
