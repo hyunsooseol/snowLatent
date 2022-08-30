@@ -33,6 +33,7 @@ datasets:
     description: General Social Study (GSS) 2008
     tags:
       - LCA
+      - Multiple group LCA
   - name: nyts
     path: nyts18.omv
     description: National Youth Tobacco Survey (NYTS) 2018
