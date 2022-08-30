@@ -14,6 +14,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fit = TRUE,
             comp = TRUE,
             rel = FALSE,
+            margin = FALSE,
             preval = FALSE,
             post = FALSE,
             item = TRUE,
@@ -68,6 +69,10 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "rel",
                 rel,
                 default=FALSE)
+            private$..margin <- jmvcore::OptionBool$new(
+                "margin",
+                margin,
+                default=FALSE)
             private$..preval <- jmvcore::OptionBool$new(
                 "preval",
                 preval,
@@ -93,6 +98,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
             self$.addOption(private$..rel)
+            self$.addOption(private$..margin)
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
@@ -107,6 +113,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$..fit$value,
         comp = function() private$..comp$value,
         rel = function() private$..rel$value,
+        margin = function() private$..margin$value,
         preval = function() private$..preval$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
@@ -120,6 +127,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit = NA,
         ..comp = NA,
         ..rel = NA,
+        ..margin = NA,
         ..preval = NA,
         ..post = NA,
         ..item = NA,
@@ -135,6 +143,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
         rel = function() private$.items[["rel"]],
+        margin = function() private$.items[["margin"]],
         preval = function() private$.items[["preval"]],
         plot1 = function() private$.items[["plot1"]],
         text1 = function() private$.items[["text1"]],
@@ -164,7 +173,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "nclust"),
                 refs="glca",
                 columns=list(
                     list(
@@ -209,7 +219,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "nclust"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -258,7 +269,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb"),
+                    "nb",
+                    "nclust"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -288,6 +300,27 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="margin",
+                title="Marginal prevalences for latent clusters",
+                visible="(margin)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Probability"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="preval",
                 title="Class prevalences by group",
                 refs="glca",
@@ -296,7 +329,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "nclust"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -316,7 +350,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group")))
+                    "group",
+                    "nclust")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -324,7 +359,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Item-response probabilities"))}))
+                title="Posterior probabilities"))}))
 
 mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mlcaBase",
@@ -358,6 +393,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fit .
 #' @param comp .
 #' @param rel .
+#' @param margin .
 #' @param preval .
 #' @param post .
 #' @param item .
@@ -369,6 +405,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
@@ -392,6 +429,7 @@ mlca <- function(
     fit = TRUE,
     comp = TRUE,
     rel = FALSE,
+    margin = FALSE,
     preval = FALSE,
     post = FALSE,
     item = TRUE,
@@ -420,6 +458,7 @@ mlca <- function(
         fit = fit,
         comp = comp,
         rel = rel,
+        margin = margin,
         preval = preval,
         post = post,
         item = item,

@@ -62,8 +62,13 @@ options:
       type: Bool
       default: FALSE
 
+    - name: margin 
+      title: Maginal prevalences 
+      type: Bool 
+      default: FALSE    
+
     - name: preval 
-      title: Class prevalences by group
+      title: Class prevalences
       type: Bool 
       default: FALSE    
 

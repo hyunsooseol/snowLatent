@@ -43,7 +43,7 @@ children:
             label: Bootstrap
             format: number
   - type: CollapseBox
-    label: LCA Analysis
+    label: Analysis
     margin: normal
     collapsed: true
     children:
@@ -61,14 +61,12 @@ children:
               - type: CheckBox
                 name: rel
           - type: Label
-            label: Statistics
+            label: Class
             children:
               - type: CheckBox
+                name: margin
+              - type: CheckBox
                 name: preval
-              - type: CheckBox
-                name: item
-              - type: CheckBox
-                name: post 
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -82,4 +80,10 @@ children:
             children:
               - type: CheckBox
                 name: plot1
- 
+          - type: Label
+            label: Probability
+            children:                
+              - type: CheckBox
+                name: item
+              - type: CheckBox
+                name: post  

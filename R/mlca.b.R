@@ -82,6 +82,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateRelTable(results)
           
+          # Marginal prevalences for latent clusters------
+          
+          private$.populateMarginTable(results)
+          
           # populate class prevalences by group table-------
           
           private$.populateCgTable(results)
@@ -137,7 +141,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                          nclass = nc, ncluster = nclust)
         
         #################################################################
-        
         # self$results$text$setContent(lca)
         
         
@@ -166,12 +169,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         dtable<- res[["dtable"]]  # Relative model fit 
         
         
+        # Marginal prevalences for latent cluster------
+        
+        clust <- lca[["param"]][["delta"]]
+        clust<- as.data.frame(clust)
+        
         # Class prevalences by group----------
         
         class.group <- lca[["param"]][["gamma"]]
         
-        #self$results$text$setContent(class.group)
-        
+       
         # item probability---------
         
         item<- lca[["param"]][["rho"]]
@@ -212,7 +219,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'item'=item,
             'post'=post,
             'gtable'=gtable,
-            'dtable'=dtable
+            'dtable'=dtable,
+            'clust'=clust
             
           )
         
@@ -342,6 +350,31 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
         
       },  
+      
+      # populate marginal prevalences for latent classes---
+      
+      .populateMarginTable= function(results) {  
+        
+        table <- self$results$margin
+        
+        clust<- results$clust
+      
+      
+        names<- dimnames(clust)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[['value']] <- clust[name,1]
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+      },
+      
       
       # populate class prevalences by group table---------------
       

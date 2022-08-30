@@ -14,6 +14,7 @@ mlca(
   fit = TRUE,
   comp = TRUE,
   rel = FALSE,
+  margin = FALSE,
   preval = FALSE,
   post = FALSE,
   item = TRUE,
@@ -38,6 +39,8 @@ mlca(
 \item{comp}{.}
 
 \item{rel}{.}
+
+\item{margin}{.}
 
 \item{preval}{.}
 

@@ -11,10 +11,10 @@ glca(
   nc = 2,
   nb = 100,
   fit = TRUE,
-  comp = TRUE,
+  comp = FALSE,
   rel = FALSE,
   preval = FALSE,
-  post = FALSE,
+  post = TRUE,
   item = TRUE,
   plot1 = FALSE
 )
