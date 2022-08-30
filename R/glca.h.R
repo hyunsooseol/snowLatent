@@ -11,10 +11,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             nb = 100,
             fit = TRUE,
-            comp = TRUE,
+            comp = FALSE,
             rel = FALSE,
             preval = FALSE,
-            post = FALSE,
+            post = TRUE,
             item = TRUE,
             plot1 = FALSE, ...) {
 
@@ -57,7 +57,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..comp <- jmvcore::OptionBool$new(
                 "comp",
                 comp,
-                default=TRUE)
+                default=FALSE)
             private$..rel <- jmvcore::OptionBool$new(
                 "rel",
                 rel,
@@ -69,7 +69,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..post <- jmvcore::OptionBool$new(
                 "post",
                 post,
-                default=FALSE)
+                default=TRUE)
             private$..item <- jmvcore::OptionBool$new(
                 "item",
                 item,
@@ -155,8 +155,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group",
-                    "cluster"),
+                    "group"),
                 refs="glca",
                 columns=list(
                     list(
@@ -201,8 +200,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group",
-                    "cluster"),
+                    "group"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -252,8 +250,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group",
-                    "cluster"),
+                    "group"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -291,8 +288,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group",
-                    "cluster"),
+                    "group"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -312,8 +308,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group",
-                    "cluster")))
+                    "group")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -321,7 +316,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Item-response probabilities"))}))
+                title="Posterior probabilities"))}))
 
 glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "glcaBase",
@@ -385,10 +380,10 @@ glca <- function(
     nc = 2,
     nb = 100,
     fit = TRUE,
-    comp = TRUE,
+    comp = FALSE,
     rel = FALSE,
     preval = FALSE,
-    post = FALSE,
+    post = TRUE,
     item = TRUE,
     plot1 = FALSE) {
 

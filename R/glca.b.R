@@ -134,7 +134,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         ################### LCA model estimates############################
         
-        lca = glca::glca(formula=formula,group= group,data=data,nclass = nc)
+        lca = glca::glca(formula=formula,group= group,
+                         data=data,nclass = nc)
                         
       #################################################################
       

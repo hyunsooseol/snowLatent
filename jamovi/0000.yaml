@@ -8,7 +8,9 @@ authors:
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: '2022-08-18'
 type: R
-description: Latent Class Analysis based on glca R package.
+description: >-
+  This module allows users to conduct LCA, Multiple group LCA, and Multilevel
+  LCA based on glca R package.
 analyses:
   - title: Latent Class Analysis
     name: lca

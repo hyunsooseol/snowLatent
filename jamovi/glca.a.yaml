@@ -49,7 +49,7 @@ options:
     - name: comp
       title: Absolute model fit
       type: Bool
-      default: True
+      default: FALSE
 
     - name: rel
       title: Relative model fit(Class>2)
@@ -57,14 +57,14 @@ options:
       default: FALSE
 
     - name: preval 
-      title: Class prevalences by group
+      title: Class prevalences 
       type: Bool 
       default: FALSE    
 
     - name: post
       title: Posterior probability
       type: Bool 
-      default: FALSE 
+      default: TRUE
      
     - name: item 
       title: Item probability
