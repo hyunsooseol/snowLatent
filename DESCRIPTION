@@ -1,6 +1,6 @@
 Package: snowLatent
 Type: Package
-Title: Latent Class Analysis
+Title: Latent Class Analysis for jamovi
 Version: 1.0.0
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
