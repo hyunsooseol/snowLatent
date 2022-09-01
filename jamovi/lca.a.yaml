@@ -72,7 +72,7 @@ options:
       default: TRUE    
 
     - name: coef 
-      title: Coefficients
+      title: Coefficients with covariates
       type: Bool 
       default: FALSE   
       
