@@ -161,7 +161,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=1,
                 clearWith=list(
                     "vars",
-                    "nc"),
+                    "nc",
+                    "covs"),
                 refs="glca",
                 columns=list(
                     list(
@@ -204,6 +205,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="glca",
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb"),
                 columns=list(
@@ -253,6 +255,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="glca",
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb"),
                 columns=list(
@@ -290,6 +293,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="glca",
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb"),
                 columns=list(
@@ -309,6 +313,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="glca",
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb"),
                 columns=list(
@@ -345,6 +350,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="continuous",
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb")))
             self$add(jmvcore::Preformatted$new(
@@ -362,6 +368,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="glca",
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb")))}))
 

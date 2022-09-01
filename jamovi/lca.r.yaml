@@ -21,6 +21,7 @@ items:
       clearWith:
         - vars
         - nc
+        - covs
       refs: glca 
 
       columns:
@@ -56,6 +57,7 @@ items:
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
         - nb
 
@@ -97,6 +99,7 @@ items:
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
         - nb
 
@@ -129,6 +132,7 @@ items:
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
         - nb
       
@@ -147,6 +151,7 @@ items:
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
         - nb
 
@@ -178,6 +183,7 @@ items:
       measureType: continuous
       clearWith:
         - vars
+        - covs
         - nc
         - nb
 
@@ -195,6 +201,7 @@ items:
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
         - nb
 
