@@ -91,14 +91,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateClassTable(results)
           
-          # populate Logistic regression coefficients---------
           
-          private$.populateItemTable(results)
+          # logistic table-----------
+          
+          private$.populateLogTable(results)
           
           
           # populate item probabilities---------
           
-          private$.populateCoefTable(results)
+          private$.populateItemTable(results)
           
           
           # populate posterior probabilities--
@@ -149,8 +150,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
     #################################################################
      
-        
-      
         #fit measure----------
         
         loglik<- lca$gof$loglik
@@ -192,11 +191,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if( !is.null(self$options$covs) ) {
         
-        coef<- lca[["coefficient"]]
-        
+          coef<- coef(lca)
+          
         }
         
-        ########################################################
+        
+        # populate output results-------------
+        
+        
+        pos<- lca$posterior$ALL
+        
+       
         # Class Prevalences plot----------
           
          image <- self$results$plot1
@@ -238,15 +243,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         dtable<- res[["dtable"]]  # Relative model fit 
         
-        
-        # populate output results-------------
-        
-        
-        pos<- lca$posterior$ALL
-        
-        
-        
-        
+       
         #Goodness of fit----------------------------
         
         # if(self$options$nc ==2){
@@ -366,7 +363,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'gtable'=gtable,
                 'dtable'=dtable,
                 'pos'=pos,
-                'coef'=coef
+               'coef'= coef
                 )
           
             
@@ -574,22 +571,41 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
       
   
-  # logistic regression coefficients-----------
   
-  .populateCoefTable= function(results) {
+  # populate multinomial logistic regression-----
+  
+  .populateLogTable= function(results) {
+  
     
     if(is.null(self$options$covs))
       return()
+  
+    table <- self$results$coef
     
     coef <- results$coef
+    coef<- coef[[1]]
+    codf<- do.call("rbind", lapply(coef, as.data.frame))
     
-    self$results$text2$setContent(coef)
+   
+    names<- dimnames(codf)[[1]]
     
-  },   
+    for (name in names) {
+      
+      row <- list()
+      
+      row[["odds"]]   <-  codf[name, 1]
+      row[["co"]] <-  codf[name, 2]
+      row[["error"]] <-  codf[name, 3]
+      row[["t"]] <-  codf[name, 4]
+      row[["p"]] <-  codf[name, 5]
+    
+      table$addRow(rowKey=name, values=row)
+      
+    }     
+    
+  },
   
-  
-  
-      # item probabilities----------
+        # item probabilities----------
       
       .populateItemTable= function(results) {
         

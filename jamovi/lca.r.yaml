@@ -139,6 +139,38 @@ items:
           content: ($key)
         - name: value
           title: 'Probability'    
+ 
+    - name: coef
+      title: 'Logistic regression coefficients'
+      type: Table
+      visible: (coef)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: odds
+          title: Odds Ratio
+          type: number
+        - name: co
+          title: Coefficient
+          type: number
+        - name: error
+          title: Std.Error 
+          type: number
+        - name: t
+          title: t 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
           
     - name: post
       title: Posterior probabilities
@@ -148,10 +180,6 @@ items:
         - vars
         - nc
         - nb
-
-    - name:  text2
-      title: Logistic regression coefficients
-      type:  Preformatted
 
     - name:  text1
       title: Item-response probabilities

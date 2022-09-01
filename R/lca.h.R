@@ -15,7 +15,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rel = FALSE,
             cp = FALSE,
             item = TRUE,
-            coef = TRUE,
+            coef = FALSE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -76,7 +76,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..coef <- jmvcore::OptionBool$new(
                 "coef",
                 coef,
-                default=TRUE)
+                default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -133,8 +133,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp = function() private$.items[["comp"]],
         rel = function() private$.items[["rel"]],
         cp = function() private$.items[["cp"]],
+        coef = function() private$.items[["coef"]],
         post = function() private$.items[["post"]],
-        text2 = function() private$.items[["text2"]],
         text1 = function() private$.items[["text1"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
@@ -301,6 +301,43 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="value", 
                         `title`="Probability"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="coef",
+                title="Logistic regression coefficients",
+                visible="(coef)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="odds", 
+                        `title`="Odds Ratio", 
+                        `type`="number"),
+                    list(
+                        `name`="co", 
+                        `title`="Coefficient", 
+                        `type`="number"),
+                    list(
+                        `name`="error", 
+                        `title`="Std.Error", 
+                        `type`="number"),
+                    list(
+                        `name`="t", 
+                        `title`="t", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="post",
@@ -310,10 +347,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text2",
-                title="Logistic regression coefficients"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -375,8 +408,8 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -399,7 +432,7 @@ lca <- function(
     rel = FALSE,
     cp = FALSE,
     item = TRUE,
-    coef = TRUE,
+    coef = FALSE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
