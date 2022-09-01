@@ -156,13 +156,13 @@ items:
           type: 'text'
           content: ($key)
         - name: odds
-          title: Odds Ratio
+          title: Odds ratio
           type: number
         - name: co
           title: Coefficient
           type: number
         - name: error
-          title: Std.Error 
+          title: SE 
           type: number
         - name: t
           title: t 

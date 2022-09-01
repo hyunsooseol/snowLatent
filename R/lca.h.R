@@ -319,7 +319,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `content`="($key)"),
                     list(
                         `name`="odds", 
-                        `title`="Odds Ratio", 
+                        `title`="Odds ratio", 
                         `type`="number"),
                     list(
                         `name`="co", 
@@ -327,7 +327,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="error", 
-                        `title`="Std.Error", 
+                        `title`="SE", 
                         `type`="number"),
                     list(
                         `name`="t", 
