@@ -106,7 +106,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populatePosteriorOutputs(results)
           
-         
+          # populate class membership--
+          
+          private$.populateMemberOutputs(results)
+          
         
         }
       },
@@ -202,7 +205,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         pos<- lca$posterior$ALL
         
-       
+        # class membership-------------
+        
+        
+        pos$Membership <- as.numeric(factor(apply(pos, 1, which.max)))
+        
+         mem <- pos$Membership
+        
         # Class Prevalences plot----------
           
          image <- self$results$plot1
@@ -366,7 +375,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'gtable'=gtable,
                 'dtable'=dtable,
                 'pos'=pos,
-               'coef'= coef
+               'coef'= coef,
+               'mem'=mem
                 )
           
             
@@ -573,7 +583,23 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
       },
       
-  
+  .populateMemberOutputs= function(results) {
+    
+    
+    mem <- results$mem
+   
+    
+    
+    if (self$options$member
+        && self$results$member$isNotFilled()) {
+    
+    
+    self$results$member$setValues(mem)
+    
+    self$results$member$setRowNums(rownames(data))
+    
+    }
+  },
   
   # populate multinomial logistic regression-----
   
@@ -619,6 +645,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },   
 
+  
+  # plot-------------------------------------
+  
    .plot1 = function(image, ...) {
      
      lca <- image$state

@@ -63,6 +63,8 @@ children:
                 name: cp
               - type: Output
                 name: post
+              - type: Output
+                name: member
               - type: CheckBox
                 name: item
               - type: CheckBox

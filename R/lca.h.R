@@ -69,6 +69,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..post <- jmvcore::OptionOutput$new(
                 "post")
+            private$..member <- jmvcore::OptionOutput$new(
+                "member")
             private$..item <- jmvcore::OptionBool$new(
                 "item",
                 item,
@@ -91,6 +93,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..rel)
             self$.addOption(private$..cp)
             self$.addOption(private$..post)
+            self$.addOption(private$..member)
             self$.addOption(private$..item)
             self$.addOption(private$..coef)
             self$.addOption(private$..plot1)
@@ -105,6 +108,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rel = function() private$..rel$value,
         cp = function() private$..cp$value,
         post = function() private$..post$value,
+        member = function() private$..member$value,
         item = function() private$..item$value,
         coef = function() private$..coef$value,
         plot1 = function() private$..plot1$value),
@@ -118,6 +122,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..rel = NA,
         ..cp = NA,
         ..post = NA,
+        ..member = NA,
         ..item = NA,
         ..coef = NA,
         ..plot1 = NA)
@@ -135,6 +140,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cp = function() private$.items[["cp"]],
         coef = function() private$.items[["coef"]],
         post = function() private$.items[["post"]],
+        member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
@@ -353,6 +359,17 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="member",
+                title="Class membership",
+                measureType="nominal",
+                varTitle="Membership",
+                clearWith=list(
+                    "vars",
+                    "covs",
+                    "nc",
+                    "nb")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -417,6 +434,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }

@@ -66,6 +66,10 @@ options:
       title: Posterior probability
       type: Output  
       
+    - name: member
+      title: Class membership
+      type: Output  
+ 
     - name: item 
       title: Item probability
       type: Bool 
