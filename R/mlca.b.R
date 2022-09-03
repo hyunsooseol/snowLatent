@@ -615,6 +615,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         member <- results$member
         
         m<- as.data.frame(member)
+       #------------------------------------- 
+        
+        m$Membership <- as.numeric(factor(apply(m, 1, which.max)))
         
         #---------------------------------
         table <- self$results$member
