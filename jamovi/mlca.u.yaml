@@ -52,7 +52,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Fit
+            label: Fit for class
             children:
               - type: CheckBox
                 name: fit
@@ -61,12 +61,12 @@ children:
               - type: CheckBox
                 name: rel
           - type: Label
-            label: Class
+            label: Fit for cluster
             children:
               - type: CheckBox
-                name: margin
+                name: comp1
               - type: CheckBox
-                name: preval
+                name: rel1                
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -82,8 +82,13 @@ children:
                 name: plot1
           - type: Label
             label: Probability
-            children:                
+            children:
+              - type: CheckBox
+                name: margin
+              - type: CheckBox
+                name: preval
               - type: CheckBox
                 name: item
               - type: CheckBox
-                name: post  
+                name: post
+ 

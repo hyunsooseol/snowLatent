@@ -9,7 +9,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             covs = NULL,
             nc = 2,
-            nb = 100,
+            nb = 50,
             fit = TRUE,
             comp = FALSE,
             rel = FALSE,
@@ -50,7 +50,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "nb",
                 nb,
                 min=10,
-                default=100)
+                default=50)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -433,7 +433,7 @@ lca <- function(
     vars,
     covs,
     nc = 2,
-    nb = 100,
+    nb = 50,
     fit = TRUE,
     comp = FALSE,
     rel = FALSE,

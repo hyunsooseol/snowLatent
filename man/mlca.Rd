@@ -10,10 +10,12 @@ mlca(
   group,
   nc = 2,
   nclust = 2,
-  nb = 100,
+  nb = 50,
   fit = TRUE,
   comp = TRUE,
   rel = FALSE,
+  comp1 = TRUE,
+  rel1 = FALSE,
   margin = FALSE,
   preval = FALSE,
   post = FALSE,
@@ -40,6 +42,10 @@ mlca(
 
 \item{rel}{.}
 
+\item{comp1}{.}
+
+\item{rel1}{.}
+
 \item{margin}{.}
 
 \item{preval}{.}
@@ -58,6 +64,8 @@ A results object containing:
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+  \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr

@@ -10,10 +10,12 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             nclust = 2,
-            nb = 100,
+            nb = 50,
             fit = TRUE,
             comp = TRUE,
             rel = FALSE,
+            comp1 = TRUE,
+            rel1 = FALSE,
             margin = FALSE,
             preval = FALSE,
             post = FALSE,
@@ -56,7 +58,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "nb",
                 nb,
                 min=10,
-                default=100)
+                default=50)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -68,6 +70,14 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..rel <- jmvcore::OptionBool$new(
                 "rel",
                 rel,
+                default=FALSE)
+            private$..comp1 <- jmvcore::OptionBool$new(
+                "comp1",
+                comp1,
+                default=TRUE)
+            private$..rel1 <- jmvcore::OptionBool$new(
+                "rel1",
+                rel1,
                 default=FALSE)
             private$..margin <- jmvcore::OptionBool$new(
                 "margin",
@@ -98,6 +108,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
             self$.addOption(private$..rel)
+            self$.addOption(private$..comp1)
+            self$.addOption(private$..rel1)
             self$.addOption(private$..margin)
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
@@ -113,6 +125,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$..fit$value,
         comp = function() private$..comp$value,
         rel = function() private$..rel$value,
+        comp1 = function() private$..comp1$value,
+        rel1 = function() private$..rel1$value,
         margin = function() private$..margin$value,
         preval = function() private$..preval$value,
         post = function() private$..post$value,
@@ -127,6 +141,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit = NA,
         ..comp = NA,
         ..rel = NA,
+        ..comp1 = NA,
+        ..rel1 = NA,
         ..margin = NA,
         ..preval = NA,
         ..post = NA,
@@ -143,6 +159,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
         rel = function() private$.items[["rel"]],
+        comp1 = function() private$.items[["comp1"]],
+        rel1 = function() private$.items[["rel1"]],
         margin = function() private$.items[["margin"]],
         preval = function() private$.items[["preval"]],
         plot1 = function() private$.items[["plot1"]],
@@ -212,7 +230,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="comp",
-                title="Absolute model fit",
+                title="Absolute model fit for class",
                 visible="(comp)",
                 refs="glca",
                 clearWith=list(
@@ -263,7 +281,96 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rel",
-                title="Relative model fit(Class>2)",
+                title="Relative model fit for class",
+                visible="(rel)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="para", 
+                        `title`="Parameter", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="dev", 
+                        `title`="Deviance", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="comp1",
+                title="Absolute model fit for cluster",
+                visible="(comp)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="Model", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="gsq", 
+                        `title`="G\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rel1",
+                title="Relative model fit for cluster",
                 visible="(rel)",
                 refs="glca",
                 clearWith=list(
@@ -393,6 +500,8 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fit .
 #' @param comp .
 #' @param rel .
+#' @param comp1 .
+#' @param rel1 .
 #' @param margin .
 #' @param preval .
 #' @param post .
@@ -405,6 +514,8 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -425,10 +536,12 @@ mlca <- function(
     group,
     nc = 2,
     nclust = 2,
-    nb = 100,
+    nb = 50,
     fit = TRUE,
     comp = TRUE,
     rel = FALSE,
+    comp1 = TRUE,
+    rel1 = FALSE,
     margin = FALSE,
     preval = FALSE,
     post = FALSE,
@@ -458,6 +571,8 @@ mlca <- function(
         fit = fit,
         comp = comp,
         rel = rel,
+        comp1 = comp1,
+        rel1 = rel1,
         margin = margin,
         preval = preval,
         post = post,

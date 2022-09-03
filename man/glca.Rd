@@ -9,7 +9,7 @@ glca(
   vars,
   group,
   nc = 2,
-  nb = 100,
+  nb = 50,
   fit = TRUE,
   comp = FALSE,
   rel = FALSE,
