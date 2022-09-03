@@ -20,6 +20,7 @@ mlca(
   preval = FALSE,
   post = FALSE,
   item = TRUE,
+  member = FALSE,
   plot1 = FALSE
 )
 }
@@ -54,6 +55,8 @@ mlca(
 
 \item{item}{.}
 
+\item{member}{.}
+
 \item{plot1}{.}
 }
 \value{
@@ -68,6 +71,7 @@ A results object containing:
   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
+  \code{results$member} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr

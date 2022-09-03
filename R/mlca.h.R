@@ -20,6 +20,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             preval = FALSE,
             post = FALSE,
             item = TRUE,
+            member = FALSE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -95,6 +96,10 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "item",
                 item,
                 default=TRUE)
+            private$..member <- jmvcore::OptionBool$new(
+                "member",
+                member,
+                default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -114,6 +119,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
+            self$.addOption(private$..member)
             self$.addOption(private$..plot1)
         }),
     active = list(
@@ -131,6 +137,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         preval = function() private$..preval$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
+        member = function() private$..member$value,
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
@@ -147,6 +154,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..preval = NA,
         ..post = NA,
         ..item = NA,
+        ..member = NA,
         ..plot1 = NA)
 )
 
@@ -163,6 +171,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rel1 = function() private$.items[["rel1"]],
         margin = function() private$.items[["margin"]],
         preval = function() private$.items[["preval"]],
+        member = function() private$.items[["member"]],
         plot1 = function() private$.items[["plot1"]],
         text1 = function() private$.items[["text1"]],
         text2 = function() private$.items[["text2"]]),
@@ -444,6 +453,24 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="member",
+                title="Cluster membership",
+                refs="glca",
+                visible="(member)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -506,6 +533,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param preval .
 #' @param post .
 #' @param item .
+#' @param member .
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -518,6 +546,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$member} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
@@ -546,6 +575,7 @@ mlca <- function(
     preval = FALSE,
     post = FALSE,
     item = TRUE,
+    member = FALSE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -577,6 +607,7 @@ mlca <- function(
         preval = preval,
         post = post,
         item = item,
+        member = member,
         plot1 = plot1)
 
     analysis <- mlcaClass$new(

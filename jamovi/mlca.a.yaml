@@ -92,6 +92,11 @@ options:
       type: Bool 
       default: TRUE
 
+    - name: member
+      title: Cluster membership
+      type: Bool 
+      default: FALSE
+
     - name: plot1 
       title: Profile plot
       type: Bool 

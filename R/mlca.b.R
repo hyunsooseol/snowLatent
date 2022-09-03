@@ -108,6 +108,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populatePosTable(results)
           
+          # populate cluter membership--
+          
+          private$.populateMemTable(results)
+          
+          
           
         }
       },
@@ -242,6 +247,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image$setState(lca)
         
+        # Cluster membership------------
+        
+        member<- lca$posterior$cluster
         
         
         results <-
@@ -261,7 +269,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'dtable'=dtable,
             'gtable1'=gtable1,
             'dtable1'=dtable1,
-            'clust'=clust
+            'clust'=clust,
+            'member'=member
             
           )
         
@@ -599,6 +608,45 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       # },
       # 
       
+      # populate cluter membership-----------
+      
+      .populateMemTable= function(results) {
+      
+        member <- results$member
+        
+        m<- as.data.frame(member)
+        
+        #---------------------------------
+        table <- self$results$member
+        
+        names<- dimnames(m)[[1]]
+        
+        dims <- dimnames(m)[[2]]
+        
+        for (dim in dims) {
+          
+          table$addColumn(name = paste0(dim),
+                          type = 'number')
+        }
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          for(j in seq_along(dims)){
+            
+            row[[dims[j]]] <- m[name,j]
+            
+          }
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+        
+      },
+        
       
       # item probabilities----------
       

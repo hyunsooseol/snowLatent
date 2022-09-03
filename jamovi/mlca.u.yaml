@@ -91,4 +91,5 @@ children:
                 name: item
               - type: CheckBox
                 name: post
- 
+              - type: CheckBox
+                name: member 

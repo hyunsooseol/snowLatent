@@ -242,6 +242,24 @@ items:
           type: 'text'
           content: ($key)
 
+    - name: member
+      title: 'Cluster membership'
+      type: Table
+      refs: glca
+      visible: (member)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
     - name:  plot1
       title: Profile plot
       type:  Image
