@@ -190,8 +190,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Goodness of fit for cluster(Selecting optimal cluster)-------
         
-        if (self$options$comp1==TRUE ||  
-            self$options$rel1==TRUE){
+        # if (self$options$comp1==TRUE ||  
+        #     self$options$rel1==TRUE){
         
         args <- list(test = "boot", nboot=nb)
         
@@ -211,7 +211,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         dtable1<- res1[["dtable"]]  # Relative model fit 
         
-        }
+        
         
         # Marginal prevalences for latent cluster------
         
