@@ -29,6 +29,16 @@ options:
       permitted:
         - factor
 
+    - name: covs
+      title: Covariates
+      type: Variables
+      suggested:
+         - nominal
+         - continuous
+      permitted:
+        - factor
+        - numeric
+
     - name: nc
       title: Class
       type: Integer
@@ -70,6 +80,11 @@ options:
       title: Item probability
       type: Bool 
       default: TRUE
+
+    - name: coef 
+      title: Coefficients with covariates
+      type: Bool 
+      default: FALSE   
 
     - name: plot1 
       title: Profile plot

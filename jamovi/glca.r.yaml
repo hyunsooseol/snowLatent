@@ -143,6 +143,39 @@ items:
           type: 'text'
           content: ($key)
 
+    - name: coef
+      title: 'Logistic regression coefficients'
+      type: Table
+      visible: (coef)
+      refs: glca
+      clearWith:
+        - vars
+        - covs
+        - nc
+        - nb
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: odds
+          title: Odds ratio
+          type: number
+        - name: co
+          title: Coefficient
+          type: number
+        - name: error
+          title: SE 
+          type: number
+        - name: t
+          title: t 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
     - name:  plot1
       title: Profile plot
       type:  Image

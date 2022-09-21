@@ -8,6 +8,7 @@ glca(
   data,
   vars,
   group,
+  covs,
   nc = 2,
   nb = 50,
   fit = TRUE,
@@ -16,6 +17,7 @@ glca(
   preval = FALSE,
   post = TRUE,
   item = TRUE,
+  coef = FALSE,
   plot1 = FALSE
 )
 }
@@ -25,6 +27,8 @@ glca(
 \item{vars}{.}
 
 \item{group}{.}
+
+\item{covs}{.}
 
 \item{nc}{.}
 
@@ -42,6 +46,8 @@ glca(
 
 \item{item}{.}
 
+\item{coef}{.}
+
 \item{plot1}{.}
 }
 \value{
@@ -53,6 +59,7 @@ A results object containing:
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
+  \code{results$coef} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr

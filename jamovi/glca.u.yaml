@@ -21,6 +21,13 @@ children:
             name: group
             maxItemCount: 1
             isTarget: true
+      - type: TargetLayoutBox
+        label: Covariates(Optional)
+        children:
+          - type: VariablesListBox
+            name: covs
+            height: small
+            isTarget: true
   - type: LayoutBox
     margin: large
     style: inline
@@ -63,6 +70,8 @@ children:
                 name: preval
               - type: CheckBox
                 name: item
+              - type: CheckBox
+                name: coef
               - type: CheckBox
                 name: post 
       - type: LayoutBox
