@@ -15,14 +15,14 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Grouping Variable
+        label: Grouping Variable(Required)
         children:
           - type: VariablesListBox
             name: group
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
-        label: Covariates(Optional)
+        label: Covariates
         children:
           - type: VariablesListBox
             name: covs
