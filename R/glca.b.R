@@ -123,9 +123,23 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
         
-        # formula with no covariates variables----------     
+        # formula with no covariates ----------     
         
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+        
+        # With covariates-------------
+        
+        if( !is.null(self$options$covs) ) {
+            
+          covs <- self$options$covs
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+          covs <- paste0(covs, collapse='+')
+          
+          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+        }
+        
+        
+        
         group <- data[, 1]
         
         nc <- self$options$nc
@@ -488,15 +502,38 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       ### Helper functions =================================     
       
+      # .cleanData = function() {
+      #   
+      #   vars <- self$options$vars
+      #   groupVarName <- self$options$group
+      #   data <- list()
+      #   
+      #   data[[groupVarName]] <- jmvcore::toNumeric(self$data[[groupVarName]])
+      #   
+      #   for (item in vars)
+      #     data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+      #   
+      #   attr(data, 'row.names') <- seq_len(length(data[[1]]))
+      #   attr(data, 'class') <- 'data.frame'
+      #   
+      #   data <- data[!is.na(data[[groupVarName]]), ]
+      #   
+      #   return(data)
+      # }
+      
       .cleanData = function() {
         
         vars <- self$options$vars
+        covs <- self$options$covs
+        
         groupVarName <- self$options$group
         data <- list()
         
         data[[groupVarName]] <- jmvcore::toNumeric(self$data[[groupVarName]])
         
         for (item in vars)
+          data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+        for (item in covs)
           data[[item]] <- jmvcore::toNumeric(self$data[[item]])
         
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
@@ -506,6 +543,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         return(data)
       }
+      
       
       
     )
