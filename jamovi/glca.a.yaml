@@ -66,6 +66,16 @@ options:
       type: Bool
       default: FALSE
 
+    - name: invari
+      title: Measurement invariance
+      type: List
+      options:
+      - name: T
+        title: 'TRUE'
+      - name: F
+        title: 'FALSE'
+      default: T  
+
     - name: preval 
       title: Class prevalences 
       type: Bool 

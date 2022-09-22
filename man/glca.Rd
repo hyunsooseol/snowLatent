@@ -14,6 +14,7 @@ glca(
   fit = TRUE,
   comp = FALSE,
   rel = FALSE,
+  invari = "T",
   preval = FALSE,
   post = TRUE,
   item = TRUE,
@@ -39,6 +40,8 @@ glca(
 \item{comp}{.}
 
 \item{rel}{.}
+
+\item{invari}{.}
 
 \item{preval}{.}
 

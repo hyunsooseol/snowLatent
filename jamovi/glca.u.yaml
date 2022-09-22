@@ -63,6 +63,10 @@ children:
                 name: comp
               - type: CheckBox
                 name: rel
+                children:
+                  - type: ComboBox
+                    name: invari
+                    enable: (rel)
           - type: Label
             label: Statistics
             children:

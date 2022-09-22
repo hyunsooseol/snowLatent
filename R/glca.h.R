@@ -14,6 +14,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fit = TRUE,
             comp = FALSE,
             rel = FALSE,
+            invari = "T",
             preval = FALSE,
             post = TRUE,
             item = TRUE,
@@ -73,6 +74,13 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "rel",
                 rel,
                 default=FALSE)
+            private$..invari <- jmvcore::OptionList$new(
+                "invari",
+                invari,
+                options=list(
+                    "T",
+                    "F"),
+                default="T")
             private$..preval <- jmvcore::OptionBool$new(
                 "preval",
                 preval,
@@ -102,6 +110,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
             self$.addOption(private$..rel)
+            self$.addOption(private$..invari)
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
@@ -117,6 +126,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$..fit$value,
         comp = function() private$..comp$value,
         rel = function() private$..rel$value,
+        invari = function() private$..invari$value,
         preval = function() private$..preval$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
@@ -131,6 +141,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit = NA,
         ..comp = NA,
         ..rel = NA,
+        ..invari = NA,
         ..preval = NA,
         ..post = NA,
         ..item = NA,
@@ -410,6 +421,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fit .
 #' @param comp .
 #' @param rel .
+#' @param invari .
 #' @param preval .
 #' @param post .
 #' @param item .
@@ -446,6 +458,7 @@ glca <- function(
     fit = TRUE,
     comp = FALSE,
     rel = FALSE,
+    invari = "T",
     preval = FALSE,
     post = TRUE,
     item = TRUE,
@@ -477,6 +490,7 @@ glca <- function(
         fit = fit,
         comp = comp,
         rel = rel,
+        invari = invari,
         preval = preval,
         post = post,
         item = item,

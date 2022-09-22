@@ -130,7 +130,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         nc <- self$options$nc
         nb <- self$options$nb
-       
+        invari <- self$options$invari
         
         ################### LCA model estimates############################
         
@@ -159,7 +159,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          for(nc in 2:inpclas)
            args[[nc+1]] <- glca::glca(formula = formula, group=group, data = data, 
-                                      nclass = nc, seed = 1)
+                                      nclass = nc, 
+                                      measure.inv=invari,
+                                      seed = 1)
          
          res <- do.call(glca::gofglca, args)
         
