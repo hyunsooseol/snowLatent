@@ -67,7 +67,7 @@ options:
       default: FALSE
 
     - name: invari
-      title: Measurement invariance
+      title: measure.inv
       type: List
       options:
       - name: T
