@@ -34,10 +34,9 @@ options:
       type: Variables
       suggested:
          - nominal
-         - continuous
+         - ordinal
       permitted:
         - factor
-        - numeric
 
     - name: nc
       title: Class
@@ -76,6 +75,11 @@ options:
         title: 'FALSE'
       default: T  
 
+    - name: marginal 
+      title: Marginal prevalences 
+      type: Bool 
+      default: FALSE    
+
     - name: preval 
       title: Class prevalences 
       type: Bool 
@@ -91,10 +95,10 @@ options:
       type: Bool 
       default: TRUE
 
-    - name: coef 
+    - name: co
       title: Coefficients with covariates
       type: Bool 
-      default: FALSE   
+      default: TRUE  
 
     - name: plot1 
       title: Profile plot

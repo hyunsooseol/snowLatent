@@ -80,7 +80,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateRelTable(results)
           
-         # populate class prevalences by group table-------
+         # populate marginal prevalences---------
+          
+          private$.populateClassTable(results)
+          
+          # populate class prevalences by group table-------
           
           private$.populateCgTable(results)
           
@@ -89,22 +93,24 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateItemTable(results)
           
+          # logistic table-----------
+          
+        #  private$.populateLogTable(results)
+          
+          
           # populate posterior probabilities--
           
           private$.populatePosTable(results)
           
-          # logistic table-----------
-          
-          private$.populateLogTable(results)
-         
+ 
         }
       },
       
       
       .compute = function(data) {
         
-        if (is.null(self$options$group))
-          return()
+         if (is.null(self$options$group))
+           return()
         
         
         ######## glca R package ################
@@ -148,28 +154,29 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         nb <- self$options$nb
         
         invari <- self$options$invari
+       # coinv <- self$options$coinv
         
         ################### LCA model estimates############################
         
-        lca = glca::glca(formula=formula,group= group,
-                         data=data,nclass = nc, seed = 1)
+        lca = glca::glca(formula=formula,
+                         group= group,
+                         data=data,
+                         nclass = nc, 
+                         seed = 1)
                         
       #################################################################
       
-      # self$results$text$setContent(lca)
-        
-        
-        # logistic regression coefficients-------------
+      # logistic regression -------------
         
         if( !is.null(self$options$covs) ) {
           
-          coef<- coef(lca)
-          
+          co<- lca$coefficient
+         
+          self$results$text3$setContent(co)
         }
-        
-        
-        
-        # fit measure----------
+       
+       
+       # fit measure----------
         
         loglik<- lca$gof$loglik
         aic<- lca$gof$aic
@@ -190,6 +197,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                       data = data, 
                                       nclass = nc, 
                                       measure.inv=invari,
+                                     # coeff.inv = coinv,
                                       seed = 1)
          
          res <- do.call(glca::gofglca, args)
@@ -202,7 +210,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Class prevalences by group----------
         
-        class.group <- lca[["param"]][["gamma"]]
+         prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
         
        
         # item probability---------
@@ -214,7 +222,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         post <- lca[["posterior"]]
         
         
-        # Class Prevalences plot----------
+         # Marginal prvalences for latent class##
+         
+         margin<- colMeans(do.call(rbind, lca[["posterior"]]))
+         
+         
+         # Class Prevalences plot----------
         
         image <- self$results$plot1
         
@@ -241,13 +254,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'df'=df,
             'gsq'=gsq,
             'res'=res,
-            'class.group'=class.group,
+            'prev'=prev,
             'item'=item,
             'post'=post,
             'gtable'=gtable,
             'dtable'=dtable,
-            'coef'=coef
-            
+            'margin'=margin
+           
           )
         
         
@@ -377,43 +390,72 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },  
       
-      # populate class prevalences by group table---------------
+      # Marginal prevalences for latent classes--------------------------------------
       
-      .populateCgTable= function(results) {  
+      .populateClassTable= function(results) {  
         
-        table <- self$results$preval
+        table <- self$results$marginal
         
-        cg<- results$class.group
+        margin <- results$margin
         
-        cg<- as.data.frame(cg)
-        
-        names <- dimnames(cg)[[1]]
-        dims <- dimnames(cg)[[2]]
-        
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'number')
-        }
-        
+        mar<- as.data.frame(margin)
+        names<- dimnames(mar)[[1]]
         
         for (name in names) {
           
           row <- list()
           
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- cg[name,j]
-            
-          }
+          row[['value']] <- mar[name,1]
           
           table$addRow(rowKey=name, values=row)
           
         }
         
+        
+        
       },
       
       
+      
+      
+      
+      # populate class prevalences by group table---------------
+      
+      .populateCgTable= function(results) {
+
+        table <- self$results$preval
+
+        cg<- results$prev
+
+        cg<- as.data.frame(cg)
+
+        names <- dimnames(cg)[[1]]
+        dims <- dimnames(cg)[[2]]
+
+        for (dim in dims) {
+
+          table$addColumn(name = paste0(dim),
+                          type = 'number')
+        }
+
+
+        for (name in names) {
+
+          row <- list()
+
+          for(j in seq_along(dims)){
+
+            row[[dims[j]]] <- cg[name,j]
+
+          }
+
+          table$addRow(rowKey=name, values=row)
+
+        }
+
+      },
+
+
       # item probabilities----------
 
       .populateItemTable= function(results) {
@@ -425,40 +467,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
       },
 
-      # populate multinomial logistic regression-----
-      
-      .populateLogTable= function(results) {
-        
-        
-        if(is.null(self$options$covs))
-          return()
-        
-        table <- self$results$coef
-        
-        coef <- results$coef
-        coef<- coef[[1]]
-        codf<- do.call("rbind", lapply(coef, as.data.frame))
-        
-        
-        names<- dimnames(codf)[[1]]
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["odds"]]   <-  codf[name, 1]
-          row[["co"]] <-  codf[name, 2]
-          row[["error"]] <-  codf[name, 3]
-          row[["t"]] <-  codf[name, 4]
-          row[["p"]] <-  codf[name, 5]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }     
-        
-      },
-      
-      
        # posterior probability----------
       
       .populatePosTable= function(results) {

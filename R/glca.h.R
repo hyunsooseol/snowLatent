@@ -15,10 +15,11 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             comp = FALSE,
             rel = FALSE,
             invari = "T",
+            marginal = FALSE,
             preval = FALSE,
             post = TRUE,
             item = TRUE,
-            coef = FALSE,
+            co = TRUE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -48,10 +49,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 covs,
                 suggested=list(
                     "nominal",
-                    "continuous"),
+                    "ordinal"),
                 permitted=list(
-                    "factor",
-                    "numeric"))
+                    "factor"))
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -81,6 +81,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "T",
                     "F"),
                 default="T")
+            private$..marginal <- jmvcore::OptionBool$new(
+                "marginal",
+                marginal,
+                default=FALSE)
             private$..preval <- jmvcore::OptionBool$new(
                 "preval",
                 preval,
@@ -93,10 +97,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "item",
                 item,
                 default=TRUE)
-            private$..coef <- jmvcore::OptionBool$new(
-                "coef",
-                coef,
-                default=FALSE)
+            private$..co <- jmvcore::OptionBool$new(
+                "co",
+                co,
+                default=TRUE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -111,10 +115,11 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..comp)
             self$.addOption(private$..rel)
             self$.addOption(private$..invari)
+            self$.addOption(private$..marginal)
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
-            self$.addOption(private$..coef)
+            self$.addOption(private$..co)
             self$.addOption(private$..plot1)
         }),
     active = list(
@@ -127,10 +132,11 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp = function() private$..comp$value,
         rel = function() private$..rel$value,
         invari = function() private$..invari$value,
+        marginal = function() private$..marginal$value,
         preval = function() private$..preval$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
-        coef = function() private$..coef$value,
+        co = function() private$..co$value,
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
@@ -142,10 +148,11 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..comp = NA,
         ..rel = NA,
         ..invari = NA,
+        ..marginal = NA,
         ..preval = NA,
         ..post = NA,
         ..item = NA,
-        ..coef = NA,
+        ..co = NA,
         ..plot1 = NA)
 )
 
@@ -158,9 +165,10 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         comp = function() private$.items[["comp"]],
         rel = function() private$.items[["rel"]],
+        marginal = function() private$.items[["marginal"]],
         preval = function() private$.items[["preval"]],
-        coef = function() private$.items[["coef"]],
         plot1 = function() private$.items[["plot1"]],
+        text3 = function() private$.items[["text3"]],
         text1 = function() private$.items[["text1"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
@@ -188,7 +196,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "invari"),
                 refs="glca",
                 columns=list(
                     list(
@@ -233,7 +242,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "invari"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -283,7 +293,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "invari"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -313,6 +324,28 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="marginal",
+                title="Marginal prevalences for latent classes",
+                visible="(marginal)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "covs",
+                    "nc",
+                    "nb",
+                    "group",
+                    "invari"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Probability"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="preval",
                 title="Class prevalences by group",
                 refs="glca",
@@ -321,51 +354,14 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "invari"),
                 columns=list(
                     list(
                         `name`="name", 
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="coef",
-                title="Logistic regression coefficients",
-                visible="(coef)",
-                refs="glca",
-                clearWith=list(
-                    "vars",
-                    "covs",
-                    "nc",
-                    "nb"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="odds", 
-                        `title`="Odds ratio", 
-                        `type`="number"),
-                    list(
-                        `name`="co", 
-                        `title`="Coefficient", 
-                        `type`="number"),
-                    list(
-                        `name`="error", 
-                        `title`="SE", 
-                        `type`="number"),
-                    list(
-                        `name`="t", 
-                        `title`="t", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -379,7 +375,12 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group")))
+                    "group",
+                    "invari")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text3",
+                title="Logistic regression"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -422,10 +423,11 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param comp .
 #' @param rel .
 #' @param invari .
+#' @param marginal .
 #' @param preval .
 #' @param post .
 #' @param item .
-#' @param coef .
+#' @param co .
 #' @param plot1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -434,9 +436,10 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
@@ -459,10 +462,11 @@ glca <- function(
     comp = FALSE,
     rel = FALSE,
     invari = "T",
+    marginal = FALSE,
     preval = FALSE,
     post = TRUE,
     item = TRUE,
-    coef = FALSE,
+    co = TRUE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -480,6 +484,7 @@ glca <- function(
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in covs) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- glcaOptions$new(
         vars = vars,
@@ -491,10 +496,11 @@ glca <- function(
         comp = comp,
         rel = rel,
         invari = invari,
+        marginal = marginal,
         preval = preval,
         post = post,
         item = item,
-        coef = coef,
+        co = co,
         plot1 = plot1)
 
     analysis <- glcaClass$new(

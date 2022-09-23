@@ -71,13 +71,16 @@ children:
             label: Statistics
             children:
               - type: CheckBox
+                name: marginal
+              - type: CheckBox
                 name: preval
               - type: CheckBox
                 name: item
               - type: CheckBox
-                name: coef
-              - type: CheckBox
                 name: post 
+              - type: CheckBox
+                name: co   
+ 
       - type: LayoutBox
         stretchFactor: 1
         margin: large
