@@ -14,7 +14,8 @@ glca(
   fit = TRUE,
   comp = FALSE,
   rel = FALSE,
-  invari = "T",
+  mi = FALSE,
+  ci = FALSE,
   marginal = FALSE,
   preval = FALSE,
   post = TRUE,
@@ -42,7 +43,9 @@ glca(
 
 \item{rel}{.}
 
-\item{invari}{.}
+\item{mi}{.}
+
+\item{ci}{.}
 
 \item{marginal}{.}
 
@@ -64,6 +67,8 @@ A results object containing:
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mi} \tab \tab \tab \tab \tab a table \cr
+  \code{results$ci} \tab \tab \tab \tab \tab a table \cr
   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr

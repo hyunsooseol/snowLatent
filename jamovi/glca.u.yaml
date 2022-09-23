@@ -63,10 +63,7 @@ children:
                 name: comp
               - type: CheckBox
                 name: rel
-                children:
-                  - type: ComboBox
-                    name: invari
-                    enable: (rel)
+
           - type: Label
             label: Statistics
             children:
@@ -94,3 +91,10 @@ children:
             children:
               - type: CheckBox
                 name: plot1
+          - type: Label
+            label: Invariance(Class>2)
+            children:
+              - type: CheckBox
+                name: mi
+              - type: CheckBox
+                name: ci

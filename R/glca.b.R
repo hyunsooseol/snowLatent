@@ -80,7 +80,17 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateRelTable(results)
           
-         # populate marginal prevalences---------
+         
+          # populate measurement invariance---------------
+          
+          private$.populateMiTable(results)
+          
+          # populate coefficients invariance---------------
+          
+          private$.populateCiTable(results)
+          
+          
+          # populate marginal prevalences---------
           
           private$.populateClassTable(results)
           
@@ -153,10 +163,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         nc <- self$options$nc
         nb <- self$options$nb
         
-        invari <- self$options$invari
-       # coinv <- self$options$coinv
-        
-        ################### LCA model estimates############################
+      ################### LCA model estimates############################
         
         lca = glca::glca(formula=formula,
                          group= group,
@@ -196,8 +203,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                       group=group, 
                                       data = data, 
                                       nclass = nc, 
-                                      measure.inv=invari,
-                                     # coeff.inv = coinv,
                                       seed = 1)
          
          res <- do.call(glca::gofglca, args)
@@ -208,7 +213,284 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          dtable<- res[["dtable"]]  # Relative model fit 
         
         
-        # Class prevalences by group----------
+        # Measurement invariance--------------
+         
+         if(self$options$nc==2){
+          
+           # lca2 <- glca::glca(formula = formula, 
+           #                    data = data, 
+           #                    nclass = 2, 
+           #                    seed = 1)
+           
+           mglca2<- glca::glca(formula = formula, 
+                      group=group, 
+                      data = data, 
+                      nclass = 2, 
+                      seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 2, 
+                               measure.inv=FALSE,
+                               seed = 1)
+           
+           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           mi.d<- mi[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==3){
+           
+           # lca3 <- glca::glca(formula = formula, 
+           #                    data = data, 
+           #                    nclass = 3, 
+           #                    seed = 1)
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 3, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 3, 
+                               measure.inv=FALSE,
+                               seed = 1)
+           
+           mi<- glca::gofglca(mglca2,mglca3, test = "chisq")
+           
+           mi.d<- mi[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==4){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 4, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 4, 
+                               measure.inv=FALSE,
+                               seed = 1)
+           
+           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           mi.d<- mi[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==5){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 5, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 5, 
+                               measure.inv=FALSE,
+                               seed = 1)
+           
+           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           mi.d<- mi[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==6){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 6, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 6, 
+                               measure.inv=FALSE,
+                               seed = 1)
+           
+           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           mi.d<- mi[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==7){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 7, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 7, 
+                               measure.inv=FALSE,
+                               seed = 1)
+           
+           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           mi.d<- mi[["dtable"]]
+           
+         }
+         
+         # Equality of coefficients--------------
+         
+         if(self$options$nc==2){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 2, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 2, 
+                               coeff.inv = FALSE,
+                               seed = 1)
+           
+           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           ci.d<- ci[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==3){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 3, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 3, 
+                               coeff.inv = FALSE,
+                               seed = 1)
+           
+           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           ci.d<- ci[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==4){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 4, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 4, 
+                               coeff.inv = FALSE,
+                               seed = 1)
+           
+           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           ci.d<- ci[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==5){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 5, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 5, 
+                               coeff.inv = FALSE,
+                               seed = 1)
+           
+           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           ci.d<- ci[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==6){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 6, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 6, 
+                               coeff.inv = FALSE,
+                               seed = 1)
+           
+           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           ci.d<- ci[["dtable"]]
+           
+         }
+         
+         if(self$options$nc==7){
+           
+           
+           mglca2<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 7, 
+                               seed = 1)
+           
+           mglca3<- glca::glca(formula = formula, 
+                               group=group, 
+                               data = data, 
+                               nclass = 7, 
+                               coeff.inv = FALSE,
+                               seed = 1)
+           
+           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+           
+           ci.d<- ci[["dtable"]]
+           
+         }
+         
+         
+         # Class prevalences by group----------
         
          prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
         
@@ -259,8 +541,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'post'=post,
             'gtable'=gtable,
             'dtable'=dtable,
-            'margin'=margin
-           
+            'margin'=margin,
+            'mi.d'=mi.d,
+            'ci.d'=ci.d
           )
         
         
@@ -390,7 +673,85 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },  
       
-      # Marginal prevalences for latent classes--------------------------------------
+      .populateMiTable = function(results) {
+        
+        if(self$options$nc<3)
+          return()
+        
+        nc <- self$options$nc
+        
+        table <- self$results$mi
+        
+        
+        dtable <- results$mi.d
+        
+        d<- as.data.frame(dtable)
+        
+        para <- d[,1]
+        loglik<- d[,2]
+        df<- d[,3]
+        dev<- d[,4]
+        p<- d[,5]
+        
+        names <- dimnames(d)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[["para"]] <-  d[name, 1]
+          row[["loglik"]] <-  d[name, 2]
+          row[["df"]] <-  d[name, 3]
+          row[["dev"]] <-  d[name, 4]
+          row[["p"]] <-d[name, 5]
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+      },  
+      
+      .populateCiTable = function(results) {
+        
+        if(self$options$nc<3)
+          return()
+        
+        nc <- self$options$nc
+        
+        table <- self$results$ci
+        
+        
+        dtable <- results$ci.d
+        
+        d<- as.data.frame(dtable)
+        
+        para <- d[,1]
+        loglik<- d[,2]
+        df<- d[,3]
+        dev<- d[,4]
+        p<- d[,5]
+        
+        names <- dimnames(d)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[["para"]] <-  d[name, 1]
+          row[["loglik"]] <-  d[name, 2]
+          row[["df"]] <-  d[name, 3]
+          row[["dev"]] <-  d[name, 4]
+          row[["p"]] <-d[name, 5]
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+      },  
+      
+       # Marginal prevalences for latent classes--------------------------------------
       
       .populateClassTable= function(results) {  
         

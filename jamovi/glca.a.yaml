@@ -65,15 +65,15 @@ options:
       type: Bool
       default: FALSE
 
-    - name: invari
-      title: measure.inv
-      type: List
-      options:
-      - name: T
-        title: 'TRUE'
-      - name: F
-        title: 'FALSE'
-      default: T  
+    - name: mi
+      title: Measurement
+      type: Bool
+      default: FALSE
+
+    - name: ci
+      title: Equality of coefficients
+      type: Bool
+      default: FALSE
 
     - name: marginal 
       title: Marginal prevalences 

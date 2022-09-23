@@ -22,8 +22,6 @@ items:
         - nc
         - nb
         - group
-        - invari
- 
       refs: glca 
 
       columns:
@@ -62,7 +60,6 @@ items:
         - nc
         - nb
         - group
-        - invari
 
       columns:
         - name: name
@@ -105,8 +102,73 @@ items:
         - nc
         - nb
         - group
-        - invari
 
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: para
+          title: Parameter
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: df
+          title: df 
+          type: integer 
+        - name: dev
+          title: Deviance 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: mi
+      title: 'Measurement invariance'
+      type: Table
+      visible: (mi)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+ 
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: para
+          title: Parameter
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: df
+          title: df 
+          type: integer 
+        - name: dev
+          title: Deviance 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: ci
+      title: 'Equality of coefficients'
+      type: Table
+      visible: (ci)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+ 
       columns:
         - name: name
           title: 'Model'
@@ -140,8 +202,7 @@ items:
         - nc
         - nb
         - group
-        - invari
-      
+ 
       columns:
         - name: name
           title: ''
@@ -161,7 +222,6 @@ items:
         - nc
         - nb
         - group
-        - invari
  
       columns:
         - name: name
@@ -182,8 +242,7 @@ items:
         - nc
         - nb
         - group
-        - invari
- 
+
     - name: text3
       title: Logistic regression
       type:  Preformatted   
