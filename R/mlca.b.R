@@ -128,9 +128,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # library(glca)
         # Multilevel LCA (MLCA)
-        # mlca = glca(item(ECIGT, ECIGAR, ESLT, EELCIGT, EHOOKAH) ~ 1,
+        # mlca = glca(item(ECIGT, ECIGAR, ESLT, EELCIGT, EHOOKAH) ~ SEX,
         #             group = SCH_ID, data = nyts18, 
-        #             nclass = 3, ncluster = 2)
+        #             nclass = 3, ncluster = 2, seed=1)
         # 
         ################################
         
@@ -140,25 +140,40 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
         
-        # formula with no covariates variables----------     
+        # formula with no covariates----------     
         
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+       
+        # With covariates-------------
+        
+        if( !is.null(self$options$covs) ) {
+          
+          covs <- self$options$covs
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+          covs <- paste0(covs, collapse='+')
+          
+          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+        }
+       
         group <- data[, 1]
         
         nc <- self$options$nc
         nb <- self$options$nb
-        nclust<- self$options$nclust
-        
+        nclust<- self$options$nclust 
+       
         ################### LCA model estimates############################
         
-        lca = glca::glca(formula=formula,group= group,data=data,
-                         nclass = nc, ncluster = nclust,
+        lca = glca::glca(formula=formula,
+                         group= group,
+                         data=data,
+                         nclass = nc, 
+                         ncluster = nclust,
                          seed = 1)
         
         #################################################################
         
-        
-        
+      #  self$results$text$setContent(lca)
+       
         # fit measure----------
         
         loglik<- lca$gof$loglik
@@ -169,40 +184,47 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
+      
         # Goodnes of fit for class-------------------------
         
         args <- list(test = "boot", nboot=nb)
+        
         inpclas = self$options$nc
         
         for(nc in 2:inpclas)
-          args[[nc+1]] <- glca::glca(formula = formula, group=group, 
+          
+          args[[nc+1]] <- glca::glca(formula = formula, 
+                                     group=group, 
                                      data = data, 
                                      nclass = nc,
+                                     ncluster = nclust,
                                      seed = 1)
         
         res <- do.call(glca::gofglca, args)
-        
         
         gtable <- res[["gtable"]] #Absolute model fit
         
         dtable<- res[["dtable"]]  # Relative model fit 
         
-        
+      
+        self$results$text$setContent(dtable) # ???
+         
+       
         # Goodness of fit for cluster(Selecting optimal cluster)-------
         
-        # if (self$options$comp1==TRUE ||  
-        #     self$options$rel1==TRUE){
         
         args <- list(test = "boot", nboot=nb)
         
         nclu = self$options$nclust
         
         for(nclu in 2:nclu)
-          args[[nclu+1]] <- glca::glca(formula = formula, group=group, 
-                                     data = data, 
-                                     nclass = nc,
-                                     ncluster=nclu,
-                                     seed = 1)
+          
+          args[[nclu+1]] <- glca::glca(formula = formula, 
+                                       group=group, 
+                                       data = data, 
+                                       nclass = nc,
+                                       ncluster=nclu,
+                                       seed = 1)
         
         res1 <- do.call(glca::gofglca, args)
         
@@ -211,8 +233,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         dtable1<- res1[["dtable"]]  # Relative model fit 
         
-        
-        
+       
         # Marginal prevalences for latent cluster------
         
         clust <- lca[["param"]][["delta"]]
@@ -316,17 +337,13 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       # populate Absolute model fit table for class------------
       
       .populateModelTable = function(results) {
-        
-        
-        nc <- self$options$nc
-        
+       
         table <- self$results$comp
-        
-        
+       
         gtable <- results$gtable
-        
+       
         g<- as.data.frame(gtable)
-        
+       
         loglik <- g[,1]
         aic <- g[,2]
         caic <- g[,3]
@@ -367,11 +384,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(self$options$nc<3)
           return()
         
-        nc <- self$options$nc
-        
         table <- self$results$rel
-        
-        
+      
         dtable <- results$dtable
         
         d<- as.data.frame(dtable)
@@ -695,15 +709,39 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       ### Helper functions =================================     
       
+      # .cleanData = function() {
+      #   
+      #   vars <- self$options$vars
+      #   groupVarName <- self$options$group
+      #   data <- list()
+      #   
+      #   data[[groupVarName]] <- jmvcore::toNumeric(self$data[[groupVarName]])
+      #   
+      #   for (item in vars)
+      #     data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+      #   
+      #   attr(data, 'row.names') <- seq_len(length(data[[1]]))
+      #   attr(data, 'class') <- 'data.frame'
+      #   
+      #   data <- data[!is.na(data[[groupVarName]]), ]
+      #   
+      #   return(data)
+      # }
+      
+      
       .cleanData = function() {
         
         vars <- self$options$vars
+        covs <- self$options$covs
+        
         groupVarName <- self$options$group
         data <- list()
         
         data[[groupVarName]] <- jmvcore::toNumeric(self$data[[groupVarName]])
         
         for (item in vars)
+          data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+        for (item in covs)
           data[[item]] <- jmvcore::toNumeric(self$data[[item]])
         
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
@@ -713,7 +751,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         return(data)
       }
-      
       
     )
 )

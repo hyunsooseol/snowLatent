@@ -7,6 +7,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
+            covs = NULL,
             group = NULL,
             nc = 2,
             nclust = 2,
@@ -32,6 +33,14 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
                 vars,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"))
+            private$..covs <- jmvcore::OptionVariables$new(
+                "covs",
+                covs,
                 suggested=list(
                     "nominal",
                     "ordinal"),
@@ -106,6 +115,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
 
             self$.addOption(private$..vars)
+            self$.addOption(private$..covs)
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..nclust)
@@ -124,6 +134,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
+        covs = function() private$..covs$value,
         group = function() private$..group$value,
         nc = function() private$..nc$value,
         nclust = function() private$..nclust$value,
@@ -141,6 +152,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
+        ..covs = NA,
         ..group = NA,
         ..nc = NA,
         ..nclust = NA,
@@ -520,6 +532,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data the data as a data frame
 #' @param vars .
+#' @param covs .
 #' @param group .
 #' @param nc .
 #' @param nclust .
@@ -562,6 +575,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 mlca <- function(
     data,
     vars,
+    covs,
     group,
     nc = 2,
     nclust = 2,
@@ -582,18 +596,22 @@ mlca <- function(
         stop("mlca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
+    if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
     if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
+            `if`( ! missing(covs), covs, NULL),
             `if`( ! missing(group), group, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in covs) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- mlcaOptions$new(
         vars = vars,
+        covs = covs,
         group = group,
         nc = nc,
         nclust = nclust,

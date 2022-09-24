@@ -7,6 +7,7 @@
 mlca(
   data,
   vars,
+  covs,
   group,
   nc = 2,
   nclust = 2,
@@ -28,6 +29,8 @@ mlca(
 \item{data}{the data as a data frame}
 
 \item{vars}{.}
+
+\item{covs}{.}
 
 \item{group}{.}
 
