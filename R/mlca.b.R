@@ -208,9 +208,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         dtable<- res[["dtable"]]  # Relative model fit 
         
       
-        self$results$text$setContent(dtable) # ???
-         
-       
         # Goodness of fit for cluster(Selecting optimal cluster)-------
         
         
