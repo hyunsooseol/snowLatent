@@ -18,7 +18,8 @@ mlca(
   comp1 = TRUE,
   rel1 = FALSE,
   margin = FALSE,
-  preval = FALSE,
+  cla = FALSE,
+  cross = FALSE,
   post = FALSE,
   item = TRUE,
   member = FALSE,
@@ -52,7 +53,9 @@ mlca(
 
 \item{margin}{.}
 
-\item{preval}{.}
+\item{cla}{.}
+
+\item{cross}{.}
 
 \item{post}{.}
 
@@ -73,7 +76,8 @@ A results object containing:
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
-  \code{results$preval} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cla} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cross} \tab \tab \tab \tab \tab a table \cr
   \code{results$member} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr

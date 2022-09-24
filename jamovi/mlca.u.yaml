@@ -88,12 +88,26 @@ children:
               - type: CheckBox
                 name: plot1
           - type: Label
-            label: Probability
+            label: Prevalence
             children:
               - type: CheckBox
                 name: margin
               - type: CheckBox
-                name: preval
+                name: cla
+              - type: CheckBox
+                name: cross
+  - type: CollapseBox
+    label: Additional output
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: Probability
+            children:
               - type: CheckBox
                 name: item
               - type: CheckBox

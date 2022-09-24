@@ -224,11 +224,31 @@ items:
         - name: value
           title: 'Probability'   
 
-    - name: preval
-      title: 'Class prevalences by group'
+    - name: cla
+      title: 'Marginal prevalences for latent classes'
       type: Table
       refs: glca
-      visible: (preval)
+      visible: (cla)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: value
+          title: 'Probability'     
+
+    - name: cross
+      title: 'Class prevalences by cluster'
+      type: Table
+      refs: glca
+      visible: (cross)
       clearWith:
         - vars
         - nc

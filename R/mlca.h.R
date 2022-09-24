@@ -18,7 +18,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             comp1 = TRUE,
             rel1 = FALSE,
             margin = FALSE,
-            preval = FALSE,
+            cla = FALSE,
+            cross = FALSE,
             post = FALSE,
             item = TRUE,
             member = FALSE,
@@ -93,9 +94,13 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "margin",
                 margin,
                 default=FALSE)
-            private$..preval <- jmvcore::OptionBool$new(
-                "preval",
-                preval,
+            private$..cla <- jmvcore::OptionBool$new(
+                "cla",
+                cla,
+                default=FALSE)
+            private$..cross <- jmvcore::OptionBool$new(
+                "cross",
+                cross,
                 default=FALSE)
             private$..post <- jmvcore::OptionBool$new(
                 "post",
@@ -126,7 +131,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..comp1)
             self$.addOption(private$..rel1)
             self$.addOption(private$..margin)
-            self$.addOption(private$..preval)
+            self$.addOption(private$..cla)
+            self$.addOption(private$..cross)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
             self$.addOption(private$..member)
@@ -145,7 +151,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp1 = function() private$..comp1$value,
         rel1 = function() private$..rel1$value,
         margin = function() private$..margin$value,
-        preval = function() private$..preval$value,
+        cla = function() private$..cla$value,
+        cross = function() private$..cross$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
         member = function() private$..member$value,
@@ -163,7 +170,8 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..comp1 = NA,
         ..rel1 = NA,
         ..margin = NA,
-        ..preval = NA,
+        ..cla = NA,
+        ..cross = NA,
         ..post = NA,
         ..item = NA,
         ..member = NA,
@@ -182,7 +190,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp1 = function() private$.items[["comp1"]],
         rel1 = function() private$.items[["rel1"]],
         margin = function() private$.items[["margin"]],
-        preval = function() private$.items[["preval"]],
+        cla = function() private$.items[["cla"]],
+        cross = function() private$.items[["cross"]],
         member = function() private$.items[["member"]],
         plot1 = function() private$.items[["plot1"]],
         text1 = function() private$.items[["text1"]],
@@ -449,10 +458,31 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Probability"))))
             self$add(jmvcore::Table$new(
                 options=options,
-                name="preval",
-                title="Class prevalences by group",
+                name="cla",
+                title="Marginal prevalences for latent classes",
                 refs="glca",
-                visible="(preval)",
+                visible="(cla)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Probability"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="cross",
+                title="Class prevalences by cluster",
+                refs="glca",
+                visible="(cross)",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -543,7 +573,8 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param comp1 .
 #' @param rel1 .
 #' @param margin .
-#' @param preval .
+#' @param cla .
+#' @param cross .
 #' @param post .
 #' @param item .
 #' @param member .
@@ -558,7 +589,8 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
@@ -586,7 +618,8 @@ mlca <- function(
     comp1 = TRUE,
     rel1 = FALSE,
     margin = FALSE,
-    preval = FALSE,
+    cla = FALSE,
+    cross = FALSE,
     post = FALSE,
     item = TRUE,
     member = FALSE,
@@ -622,7 +655,8 @@ mlca <- function(
         comp1 = comp1,
         rel1 = rel1,
         margin = margin,
-        preval = preval,
+        cla = cla,
+        cross = cross,
         post = post,
         item = item,
         member = member,

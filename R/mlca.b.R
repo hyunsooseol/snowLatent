@@ -95,9 +95,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateMarginTable(results)
           
+          # Marginal prevalences for latent classes----
+          
+          
+          private$.populateClaTable(results)
+          
+          #Class prevalences by cluster------------
+          
+          private$.populateCrossTable(results)
+          
           # populate class prevalences by group table-------
           
-          private$.populateCgTable(results)
+         # private$.populateCgTable(results)
           
           
           # populate item probabilities---------
@@ -232,16 +241,20 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         dtable1<- res1[["dtable"]]  # Relative model fit 
         
        
-        # Marginal prevalences for latent cluster------
+        # Cluster(Marginal prevalences for latent cluster)------
         
         clust <- lca[["param"]][["delta"]]
         clust<- as.data.frame(clust)
         
-        # Class prevalences by group----------
+        # Class prevalences(Marginal prevalences for latent classes) ----------
         
-        class.group <- lca[["param"]][["gamma"]]
-        
+        cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+        cla<- as.data.frame(cla)
        
+        # Class prevalences by cluster-----------
+        
+        cross<- lca[["posterior"]][["wclass"]]
+        
         # item probability---------
         
         item<- lca[["param"]][["rho"]]
@@ -281,7 +294,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'df'=df,
             'gsq'=gsq,
             'res'=res,
-            'class.group'=class.group,
+            'cla'=cla,
+            'cross'=cross,
             'item'=item,
             'post'=post,
             'gtable'=gtable,
@@ -523,6 +537,68 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
         
       },
+      
+      # Marginal prevalences for latent classes----------
+      
+      .populateClaTable= function(results){
+        
+        table <- self$results$cla
+        
+        cla<- results$cla
+        
+        
+        names<- dimnames(cla)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[['value']] <- cla[name,1]
+          
+          table$addRow(rowKey=name, values=row)
+        
+        
+      }
+      
+      },
+      
+      # Class prevalences by cluster----------------------
+      
+      .populateCrossTable=function(results){
+        
+        table <- self$results$cross
+        
+        cross<- results$cross
+        
+        names<- dimnames(cross)[[1]]
+        dims <- dimnames(cross)[[2]]
+        
+        
+        for (dim in dims) {
+          
+          table$addColumn(name = paste0(dim),
+                          type = 'character')
+        }
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          for(j in seq_along(dims)){
+            
+            row[[dims[j]]] <- cross[name,j]
+            
+          }
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+        
+      },
+      
       
       
       # populate class prevalences by group table---------------

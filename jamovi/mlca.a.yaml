@@ -86,10 +86,15 @@ options:
       type: Bool 
       default: FALSE    
 
-    - name: preval 
+    - name: cla
       title: Class prevalences
       type: Bool 
       default: FALSE    
+
+    - name: cross
+      title: Class prevalences by cluster
+      type: Bool 
+      default: FALSE
 
     - name: post
       title: Posterior probability
