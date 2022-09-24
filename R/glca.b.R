@@ -137,8 +137,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ################################
         
         # Constructing formula----------------        
+        vars <- self$options$vars
         
-        vars <- colnames(data[, -1] )
+       # vars <- colnames(data[, -1] )
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
         
@@ -215,137 +216,19 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Measurement invariance--------------
          
-         if(self$options$nc==2){
+         if(self$options$nc>=2){
           
-           # lca2 <- glca::glca(formula = formula, 
-           #                    data = data, 
-           #                    nclass = 2, 
-           #                    seed = 1)
-           
+          
            mglca2<- glca::glca(formula = formula, 
                       group=group, 
                       data = data, 
-                      nclass = 2, 
+                      nclass = nc, 
                       seed = 1)
            
            mglca3<- glca::glca(formula = formula, 
                                group=group, 
                                data = data, 
-                               nclass = 2, 
-                               measure.inv=FALSE,
-                               seed = 1)
-           
-           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           mi.d<- mi[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==3){
-           
-           # lca3 <- glca::glca(formula = formula, 
-           #                    data = data, 
-           #                    nclass = 3, 
-           #                    seed = 1)
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 3, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 3, 
-                               measure.inv=FALSE,
-                               seed = 1)
-           
-           mi<- glca::gofglca(mglca2,mglca3, test = "chisq")
-           
-           mi.d<- mi[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==4){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 4, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 4, 
-                               measure.inv=FALSE,
-                               seed = 1)
-           
-           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           mi.d<- mi[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==5){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 5, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 5, 
-                               measure.inv=FALSE,
-                               seed = 1)
-           
-           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           mi.d<- mi[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==6){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 6, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 6, 
-                               measure.inv=FALSE,
-                               seed = 1)
-           
-           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           mi.d<- mi[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==7){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 7, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 7, 
+                               nclass = nc, 
                                measure.inv=FALSE,
                                seed = 1)
            
@@ -357,19 +240,19 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          # Equality of coefficients--------------
          
-         if(self$options$nc==2){
+         if(self$options$nc>=2){
            
            
            mglca2<- glca::glca(formula = formula, 
                                group=group, 
                                data = data, 
-                               nclass = 2, 
+                               nclass = nc, 
                                seed = 1)
            
            mglca3<- glca::glca(formula = formula, 
                                group=group, 
                                data = data, 
-                               nclass = 2, 
+                               nclass = nc, 
                                coeff.inv = FALSE,
                                seed = 1)
            
@@ -378,117 +261,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            ci.d<- ci[["dtable"]]
            
          }
-         
-         if(self$options$nc==3){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 3, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 3, 
-                               coeff.inv = FALSE,
-                               seed = 1)
-           
-           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           ci.d<- ci[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==4){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 4, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 4, 
-                               coeff.inv = FALSE,
-                               seed = 1)
-           
-           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           ci.d<- ci[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==5){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 5, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 5, 
-                               coeff.inv = FALSE,
-                               seed = 1)
-           
-           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           ci.d<- ci[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==6){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 6, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 6, 
-                               coeff.inv = FALSE,
-                               seed = 1)
-           
-           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           ci.d<- ci[["dtable"]]
-           
-         }
-         
-         if(self$options$nc==7){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 7, 
-                               seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = 7, 
-                               coeff.inv = FALSE,
-                               seed = 1)
-           
-           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           ci.d<- ci[["dtable"]]
-           
-         }
-         
          
          # Class prevalences by group----------
         
