@@ -92,7 +92,7 @@ children:
               - type: CheckBox
                 name: ci
   - type: CollapseBox
-    label: Additional Outputs
+    label: Additional options
     margin: normal
     collapsed: true
     children:
