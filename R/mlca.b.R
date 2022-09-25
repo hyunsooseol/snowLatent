@@ -354,7 +354,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # logistic regression coef.--------
         
-        co <- lca[["coefficient"]]
+        co <- lca[["coefficient"]][["Level1"]]
         
         
         

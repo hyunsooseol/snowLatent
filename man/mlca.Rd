@@ -11,7 +11,7 @@ mlca(
   group,
   nc = 2,
   nclust = 2,
-  nb = 50,
+  nb = 10,
   fit = TRUE,
   comp = TRUE,
   rel = FALSE,
@@ -20,11 +20,11 @@ mlca(
   margin = FALSE,
   cla = FALSE,
   cross = FALSE,
-  co = TRUE,
+  co = FALSE,
   mi = FALSE,
   ci = FALSE,
   post = FALSE,
-  item = TRUE,
+  item = FALSE,
   member = FALSE,
   plot1 = FALSE
 )

@@ -19,8 +19,8 @@ glca(
   marginal = FALSE,
   preval = FALSE,
   post = TRUE,
-  item = TRUE,
-  co = TRUE,
+  item = FALSE,
+  co = FALSE,
   plot1 = FALSE
 )
 }
