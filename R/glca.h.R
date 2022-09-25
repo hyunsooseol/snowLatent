@@ -7,8 +7,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             vars = NULL,
-            group = NULL,
             covs = NULL,
+            group = NULL,
             nc = 2,
             nb = 50,
             fit = TRUE,
@@ -19,8 +19,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             marginal = FALSE,
             preval = FALSE,
             post = TRUE,
-            item = TRUE,
-            co = TRUE,
+            item = FALSE,
+            co = FALSE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -37,17 +37,17 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group,
+            private$..covs <- jmvcore::OptionVariables$new(
+                "covs",
+                covs,
                 suggested=list(
                     "nominal",
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..covs <- jmvcore::OptionVariables$new(
-                "covs",
-                covs,
+            private$..group <- jmvcore::OptionVariable$new(
+                "group",
+                group,
                 suggested=list(
                     "nominal",
                     "ordinal"),
@@ -98,19 +98,19 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..item <- jmvcore::OptionBool$new(
                 "item",
                 item,
-                default=TRUE)
+                default=FALSE)
             private$..co <- jmvcore::OptionBool$new(
                 "co",
                 co,
-                default=TRUE)
+                default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
                 default=FALSE)
 
             self$.addOption(private$..vars)
-            self$.addOption(private$..group)
             self$.addOption(private$..covs)
+            self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..nb)
             self$.addOption(private$..fit)
@@ -127,8 +127,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         }),
     active = list(
         vars = function() private$..vars$value,
-        group = function() private$..group$value,
         covs = function() private$..covs$value,
+        group = function() private$..group$value,
         nc = function() private$..nc$value,
         nb = function() private$..nb$value,
         fit = function() private$..fit$value,
@@ -144,8 +144,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value),
     private = list(
         ..vars = NA,
-        ..group = NA,
         ..covs = NA,
+        ..group = NA,
         ..nc = NA,
         ..nb = NA,
         ..fit = NA,
@@ -492,8 +492,8 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data the data as a data frame
 #' @param vars .
-#' @param group .
 #' @param covs .
+#' @param group .
 #' @param nc .
 #' @param nb .
 #' @param fit .
@@ -534,8 +534,8 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 glca <- function(
     data,
     vars,
-    group,
     covs,
+    group,
     nc = 2,
     nb = 50,
     fit = TRUE,
@@ -546,31 +546,31 @@ glca <- function(
     marginal = FALSE,
     preval = FALSE,
     post = TRUE,
-    item = TRUE,
-    co = TRUE,
+    item = FALSE,
+    co = FALSE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("glca requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
-    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
+    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(group), group, NULL),
-            `if`( ! missing(covs), covs, NULL))
+            `if`( ! missing(covs), covs, NULL),
+            `if`( ! missing(group), group, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
-    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in covs) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- glcaOptions$new(
         vars = vars,
-        group = group,
         covs = covs,
+        group = group,
         nc = nc,
         nb = nb,
         fit = fit,

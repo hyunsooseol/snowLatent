@@ -7,8 +7,8 @@
 glca(
   data,
   vars,
-  group,
   covs,
+  group,
   nc = 2,
   nb = 50,
   fit = TRUE,
@@ -29,9 +29,9 @@ glca(
 
 \item{vars}{.}
 
-\item{group}{.}
-
 \item{covs}{.}
+
+\item{group}{.}
 
 \item{nc}{.}
 

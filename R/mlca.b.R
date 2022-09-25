@@ -30,7 +30,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
             <p><b>To get started:</b></p>
             <p>_____________________________________________________________________________________________</p>
-            <p>1. Latent Class Analysis(LCA) based on glca R package.</p>
+            <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. When group and cluster(>1) are given, the multilevel latent class models will be fitted.</p>
             <p>3. The rationale of snowLatent module is described in the <a href='https://docs.google.com/viewer?a=v&pid=sites&srcid=a29yZWEuYWMua3J8a3VzdGF0bGFifGd4OjU0Nzc0NjU4OGJkODVjNDk'>documentation</a>.</p>
             <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
@@ -47,10 +47,21 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "p: Bootstrap p value; H0: Model fit data adequately."
           )
         
+        if (self$options$mi)
+          self$results$mi$setNote(
+            "Note",
+            "Model1: Invariance is TRUE; Model2: Invariance is FALSE."
+          )
+        
+        if (self$options$ci)
+          self$results$ci$setNote(
+            "Note",
+            "Model1: Equality is TRUE; Model2: Equality is FALSE."
+          )
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
-        
         
         
       },
@@ -104,11 +115,15 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateCrossTable(results)
           
-          # populate class prevalences by group table-------
+          # populate measurement invariance---------------
           
-         # private$.populateCgTable(results)
+          private$.populateMiTable(results)
           
+          # populate coefficients invariance---------------
           
+          private$.populateCiTable(results)
+          
+        
           # populate item probabilities---------
           
           private$.populateItemTable(results)
@@ -121,7 +136,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateMemTable(results)
           
+           #logistic table-----------
           
+            private$.populateLogTable(results)
           
         }
       },
@@ -182,7 +199,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-      #  self$results$text$setContent(lca)
+        self$results$text$setContent(lca)
        
         # fit measure----------
         
@@ -241,6 +258,58 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         dtable1<- res1[["dtable"]]  # Relative model fit 
         
        
+        # Measurement invariance--------------
+        
+        if(self$options$nc>=2){
+          
+          
+          mglca2<- glca::glca(formula = formula, 
+                              group=group, 
+                              data = data, 
+                              nclass = nc, 
+                              ncluster = nclust,
+                              seed = 1)
+          
+          mglca3<- glca::glca(formula = formula, 
+                              group=group, 
+                              data = data, 
+                              nclass = nc, 
+                              ncluster = nclust,
+                              measure.inv=FALSE,
+                              seed = 1)
+          
+          mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
+          
+          mi.d<- mi[["dtable"]]
+          
+        }
+        
+        # Equality of coefficients--------------
+        
+        if(self$options$nc>=2){
+          
+          
+          mglca2<- glca::glca(formula = formula, 
+                              group=group, 
+                              data = data, 
+                              nclass = nc, 
+                              ncluster = nclust,
+                              seed = 1)
+          
+          mglca3<- glca::glca(formula = formula, 
+                              group=group, 
+                              data = data, 
+                              nclass = nc, 
+                              ncluster = nclust,
+                              coeff.inv = FALSE,
+                              seed = 1)
+          
+          ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+          
+          ci.d<- ci[["dtable"]]
+          
+        }
+        
         # Cluster(Marginal prevalences for latent cluster)------
         
         clust <- lca[["param"]][["delta"]]
@@ -283,6 +352,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         member<- lca$posterior$cluster
         
+        # logistic regression coef.--------
+        
+        co <- lca[["coefficient"]]
+        
+        
         
         results <-
           list(
@@ -303,7 +377,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'gtable1'=gtable1,
             'dtable1'=dtable1,
             'clust'=clust,
-            'member'=member
+            'member'=member,
+            'co'=co,
+            'mi.d'=mi.d,
+            'ci.d'=ci.d
             
           )
         
@@ -599,102 +676,82 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
+      # invariance check------------------
       
+      .populateMiTable = function(results) {
+        
+        if(self$options$nc<3)
+          return()
+        
       
-      # populate class prevalences by group table---------------
-      
-      .populateCgTable= function(results) {  
+        table <- self$results$mi
         
-        table <- self$results$preval
+        dtable <- results$mi.d
         
-        cg<- results$class.group
+        d<- as.data.frame(dtable)
         
-        cg<- as.data.frame(cg)
+        para <- d[,1]
+        loglik<- d[,2]
+        df<- d[,3]
+        dev<- d[,4]
+        p<- d[,5]
         
-        names <- dimnames(cg)[[1]]
-        dims <- dimnames(cg)[[2]]
-        
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'number')
-        }
+        names <- dimnames(d)[[1]]
         
         
         for (name in names) {
           
           row <- list()
           
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- cg[name,j]
-            
-          }
+          row[["para"]] <-  d[name, 1]
+          row[["loglik"]] <-  d[name, 2]
+          row[["df"]] <-  d[name, 3]
+          row[["dev"]] <-  d[name, 4]
+          row[["p"]] <-d[name, 5]
           
           table$addRow(rowKey=name, values=row)
           
         }
         
-      },
+      },  
       
+      # invariance for coeff.----------------------
       
-      # posterior probability----------
-      
-      # .populatePosteriorOutputs= function(data) {
-      #   
-      #   nc<- self$options$nc
-      #   
-      #   # --------------------------------------------------
-      #   # NOTE:
-      #   # Excludes the GROUP variable, which is inserted
-      #   # as the first variable in the .cleandata()function
-      #   # --------------------------------------------------
-      #   df <- jmvcore::naOmit(data[, -1])
-      #   
-      #   vars <- colnames(df)
-      #   vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-      #   vars <- paste0(vars, collapse=',')
-      #   formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
-      #   
-      #  # group <- data[, 1]
-      #   
-      #   ################ LCA model estimates############################ 
-      #   
-      #   lca = glca::glca(formula=formula, 
-      #                    data=df, 
-      #                   # group=group,
-      #                    nclass=nc, 
-      #                    n.init=1)
-      #   ###############################################################
-      #   pos<- lca$posterior$ALL
-      #   
-      #   #self$results$text$setContent(pos)
-      #   
-      #   if (self$options$post && self$results$post$isNotFilled()) {
-      #     
-      #     keys <- 1:self$options$nc
-      #     measureTypes <- rep("continuous", self$options$nc)
-      #     titles <- paste("Class", keys)
-      #     descriptions <- paste("Class", keys)
-      #     
-      #     self$results$post$set(
-      #       keys=keys,
-      #       titles=titles,
-      #       descriptions=descriptions,
-      #       measureTypes=measureTypes
-      #     )                
-      #     
-      #     self$results$post$setRowNums(rownames(data))
-      #     
-      #     for (i in 1:self$options$nc) {
-      #       
-      #       scores <- as.numeric(pos[, i])
-      #       self$results$post$setValues(index=i, scores)
-      #     }
-      #   }
-      #   
-      # },
-      # 
+      .populateCiTable = function(results) {
+        
+        if(self$options$nc<3)
+          return()
+        
+       table <- self$results$ci
+       
+       dtable <- results$ci.d
+        
+        d<- as.data.frame(dtable)
+        
+        para <- d[,1]
+        loglik<- d[,2]
+        df<- d[,3]
+        dev<- d[,4]
+        p<- d[,5]
+        
+        names <- dimnames(d)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[["para"]] <-  d[name, 1]
+          row[["loglik"]] <-  d[name, 2]
+          row[["df"]] <-  d[name, 3]
+          row[["dev"]] <-  d[name, 4]
+          row[["p"]] <-d[name, 5]
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+      },  
       
       # populate cluter membership-----------
       
@@ -761,7 +818,14 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      
+      .populateLogTable=function(results){
+        
+        co <- results$co
+        
+        self$results$text3$setContent(co)
+        
+        
+      },
       
       ######## plot#######################
       .plot1 = function(image, ...) {
@@ -779,28 +843,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         TRUE
         
       },
-      
-      
-      ### Helper functions =================================     
-      
-      # .cleanData = function() {
-      #   
-      #   vars <- self$options$vars
-      #   groupVarName <- self$options$group
-      #   data <- list()
-      #   
-      #   data[[groupVarName]] <- jmvcore::toNumeric(self$data[[groupVarName]])
-      #   
-      #   for (item in vars)
-      #     data[[item]] <- jmvcore::toNumeric(self$data[[item]])
-      #   
-      #   attr(data, 'row.names') <- seq_len(length(data[[1]]))
-      #   attr(data, 'class') <- 'data.frame'
-      #   
-      #   data <- data[!is.na(data[[groupVarName]]), ]
-      #   
-      #   return(data)
-      # }
       
       
       .cleanData = function() {

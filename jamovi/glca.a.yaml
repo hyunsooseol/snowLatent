@@ -20,18 +20,18 @@ options:
       permitted:
         - factor
 
-    - name: group
-      title: Grouping Variable(Required)
-      type: Variable
+    - name: covs
+      title: Covariates
+      type: Variables
       suggested:
          - nominal
          - ordinal
       permitted:
         - factor
 
-    - name: covs
-      title: Covariates
-      type: Variables
+    - name: group
+      title: Grouping Variable(Required)
+      type: Variable
       suggested:
          - nominal
          - ordinal
@@ -93,12 +93,12 @@ options:
     - name: item 
       title: Item probability
       type: Bool 
-      default: TRUE
+      default: FALSE
 
     - name: co
       title: Coefficients with covariates
       type: Bool 
-      default: TRUE  
+      default: FALSE 
 
     - name: plot1 
       title: Profile plot

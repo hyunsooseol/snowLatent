@@ -96,8 +96,13 @@ children:
                 name: cla
               - type: CheckBox
                 name: cross
+          - type: Label
+            label: Logistic regression
+            children:
+              - type: CheckBox
+                name: co 
   - type: CollapseBox
-    label: Additional output
+    label: Additional Outputs
     margin: normal
     collapsed: true
     children:
@@ -114,3 +119,18 @@ children:
                 name: post
               - type: CheckBox
                 name: member 
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Invariance check(Class>2)
+            children:
+              - type: CheckBox
+                name: mi
+              - type: CheckBox
+                name: ci
