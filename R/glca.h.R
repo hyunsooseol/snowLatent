@@ -18,8 +18,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ci = FALSE,
             marginal = FALSE,
             preval = FALSE,
-            post = TRUE,
-            item = TRUE,
+            post = FALSE,
+            item = FALSE,
             co = TRUE,
             plot1 = FALSE, ...) {
 
@@ -94,11 +94,11 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..post <- jmvcore::OptionBool$new(
                 "post",
                 post,
-                default=TRUE)
+                default=FALSE)
             private$..item <- jmvcore::OptionBool$new(
                 "item",
                 item,
-                default=TRUE)
+                default=FALSE)
             private$..co <- jmvcore::OptionBool$new(
                 "co",
                 co,
@@ -545,8 +545,8 @@ glca <- function(
     ci = FALSE,
     marginal = FALSE,
     preval = FALSE,
-    post = TRUE,
-    item = TRUE,
+    post = FALSE,
+    item = FALSE,
     co = TRUE,
     plot1 = FALSE) {
 

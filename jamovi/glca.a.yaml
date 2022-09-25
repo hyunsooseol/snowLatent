@@ -88,12 +88,12 @@ options:
     - name: post
       title: Group probability
       type: Bool 
-      default: TRUE
+      default: FALSE
      
     - name: item 
       title: Item probability
       type: Bool 
-      default: TRUE
+      default: FALSE
 
     - name: co
       title: Coefficients with covariates

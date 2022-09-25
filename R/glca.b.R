@@ -118,7 +118,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # logistic table-----------
           
-        #  private$.populateLogTable(results)
+          private$.populateLogiTable(results)
           
           
           # populate posterior probabilities--
@@ -195,7 +195,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
           co<- lca$coefficient
          
-          self$results$text3$setContent(co)
         }
        
        
@@ -330,7 +329,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'dtable'=dtable,
             'margin'=margin,
             'mi.d'=mi.d,
-            'ci.d'=ci.d
+            'ci.d'=ci.d,
+            'co'=co
           )
         
         
@@ -605,7 +605,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
       .populateItemTable= function(results) {
 
-
+        if (!self$options$item)
+          return()
+          
         res <- results$item
 
         self$results$text1$setContent(res)
@@ -616,6 +618,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populatePosTable= function(results) {
         
+        if (!self$options$post)
+          return()
         
         post <- results$post
         
@@ -624,6 +628,19 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
       
       
+      # Logistic reg. table----------
+      
+      
+      .populateLogiTable= function(results) {
+        
+        if (!self$options$co)
+          return()
+        
+        co <- results$co
+        
+        self$results$text3$setContent(co)
+        
+      },
       
       ######## plot#######################
       .plot1 = function(image, ...) {
