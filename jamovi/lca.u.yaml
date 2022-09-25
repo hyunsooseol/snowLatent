@@ -39,7 +39,7 @@ children:
             label: Bootstrap
             format: number
   - type: CollapseBox
-    label: LCA Analysis
+    label: Analysis
     margin: normal
     collapsed: true
     children:
@@ -61,12 +61,6 @@ children:
             children:
               - type: CheckBox
                 name: cp
-              - type: Output
-                name: post
-              - type: Output
-                name: member
-              - type: CheckBox
-                name: item
               - type: CheckBox
                 name: coef
       - type: LayoutBox
@@ -82,3 +76,12 @@ children:
             children:
               - type: CheckBox
                 name: plot1
+          - type: Label
+            label: Probability
+            children:
+              - type: CheckBox
+                name: item
+              - type: Output
+                name: post
+              - type: Output
+                name: member

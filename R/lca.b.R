@@ -154,6 +154,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
     #################################################################
      
+        self$results$text$setContent(lca)
+        
         #fit measure----------
         
         loglik<- lca$gof$loglik
@@ -190,7 +192,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # item probabilities------
           
         item<- lca[["param"]][["rho"]][["ALL"]]
-          
+        item<- do.call("rbind", lapply(item, as.data.frame))  
+        
         # logistic regression coefficients-------------
         
         if( !is.null(self$options$covs) ) {
@@ -533,10 +536,35 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateItemTable= function(results) {
         
+        table <- self$results$item
         
-        res <- results$item
+        item <- results$item
+       
+        names<- dimnames(item)[[1]]
         
-        self$results$text1$setContent(res)
+        dims <- dimnames(item)[[2]]
+        
+        for (dim in dims) {
+          
+          table$addColumn(name = paste0(dim),
+                          type = 'character')
+        }
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          for(j in seq_along(dims)){
+            
+            row[[dims[j]]] <- item[name,j]
+            
+          }
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
         
       },   
 

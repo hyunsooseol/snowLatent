@@ -21,7 +21,7 @@ options:
         - factor
 
     - name: covs
-      title: Group(Optional)
+      title: Covariates(Optional)
       type: Variables
       suggested:
          - nominal
@@ -58,7 +58,7 @@ options:
       default: FALSE
 
     - name: cp
-      title: Size of class 
+      title: Marginal prevalences 
       type: Bool 
       default: FALSE
 

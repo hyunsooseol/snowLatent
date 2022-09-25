@@ -54,9 +54,9 @@ A results object containing:
   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$member} \tab \tab \tab \tab \tab an output \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 

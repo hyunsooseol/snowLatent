@@ -139,9 +139,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rel = function() private$.items[["rel"]],
         cp = function() private$.items[["cp"]],
         coef = function() private$.items[["coef"]],
+        item = function() private$.items[["item"]],
         post = function() private$.items[["post"]],
         member = function() private$.items[["member"]],
-        text1 = function() private$.items[["text1"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
@@ -349,6 +349,23 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="item",
+                title="Item-response probabilities",
+                refs="glca",
+                visible="(item)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "covs"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="post",
@@ -370,10 +387,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text1",
-                title="Item-response probabilities"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -433,9 +446,9 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'

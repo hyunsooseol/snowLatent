@@ -177,6 +177,23 @@ items:
           type: number
           format: zto,pvalue
           
+    - name: item
+      title: 'Item-response probabilities'
+      type: Table
+      refs: glca
+      visible: (item)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - covs
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
     - name: post
       title: Posterior probabilities
       type: Output
@@ -198,10 +215,6 @@ items:
         - nc
         - nb
 
-    - name:  text1
-      title: Item-response probabilities
-      type:  Preformatted
-      
     - name:  plot1
       title: Profile plot
       type:  Image
