@@ -116,8 +116,6 @@ children:
               - type: CheckBox
                 name: item
               - type: CheckBox
-                name: clp
-              - type: CheckBox
                 name: post
               - type: CheckBox
                 name: member 

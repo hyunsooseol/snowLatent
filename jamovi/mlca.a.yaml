@@ -121,11 +121,6 @@ options:
       type: Bool 
       default: FALSE
 
-    - name: clp 
-      title: Cluster probability
-      type: Bool 
-      default: FALSE
-
     - name: member
       title: Cluster membership
       type: Bool 

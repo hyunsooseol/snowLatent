@@ -46,7 +46,7 @@ children:
             label: Bootstrap
             format: number
   - type: CollapseBox
-    label: LCA Analysis
+    label: Analysis
     margin: normal
     collapsed: true
     children:
@@ -71,14 +71,6 @@ children:
                 name: marginal
               - type: CheckBox
                 name: preval
-          - type: Label
-            label: 'Probability'
-            children:
-              - type: CheckBox
-                name: item
-              - type: CheckBox
-                name: post 
-
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -99,6 +91,30 @@ children:
                 name: mi
               - type: CheckBox
                 name: ci
+  - type: CollapseBox
+    label: Additional Outputs
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: 'Probability'
+            children:
+              - type: CheckBox
+                name: item
+              - type: CheckBox
+                name: post 
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
           - type: Label
             label: 'Logistic regression'
             children:                

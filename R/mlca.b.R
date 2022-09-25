@@ -131,7 +131,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # cluster probabilities--------
           
-          private$.populateClpTable(results)
+         # private$.populateClpTable(results)
           
           # populate posterior probabilities--
           
@@ -337,7 +337,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # cluster posterior probability---------
         
-        clp<-lca[["posterior"]][["cluster"]]
+       # clp<-lca[["posterior"]][["cluster"]]
         
         # posterior probability---------
         
@@ -391,9 +391,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'member'=member,
             'co'=co,
             'mi.d'=mi.d,
-            'ci.d'=ci.d,
-            'clp'=clp
-            
+            'ci.d'=ci.d
+           
           )
         
         
@@ -842,42 +841,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
       },
-      
-      # cluster posterior probabilities--------
-      
-      .populateClpTable= function(results) {
-        
-        table <- self$results$clp
-        clp <- results$clp
-        
-        names<- dimnames(clp)[[1]]
-        
-        dims <- dimnames(clp)[[2]]
-        
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'character')
-        }
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- clp[name,j]
-            
-          }
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-        
-      },
-      
+    
       # posterior probability----------
       
       .populatePosTable= function(results) {

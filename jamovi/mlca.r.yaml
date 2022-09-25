@@ -364,24 +364,6 @@ items:
           type: 'text'
           content: ($key)
 
-    - name: clp
-      title: 'Cluster probabilities'
-      type: Table
-      refs: glca
-      visible: (item)
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-        - nclust
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
     - name:  plot1
       title: Profile plot
       type:  Image

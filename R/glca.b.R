@@ -191,8 +191,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # logistic regression -------------
         
-        if( !is.null(self$options$covs) ) {
-          
+        if(!is.null(self$options$covs) ) {
+         
           co<- lca$coefficient
          
           self$results$text3$setContent(co)
@@ -562,9 +562,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
       },
-      
-      
-      
       
       
       # populate class prevalences by group table---------------

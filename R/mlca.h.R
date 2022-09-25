@@ -25,7 +25,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ci = FALSE,
             post = FALSE,
             item = FALSE,
-            clp = FALSE,
             member = FALSE,
             plot1 = FALSE, ...) {
 
@@ -126,10 +125,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "item",
                 item,
                 default=FALSE)
-            private$..clp <- jmvcore::OptionBool$new(
-                "clp",
-                clp,
-                default=FALSE)
             private$..member <- jmvcore::OptionBool$new(
                 "member",
                 member,
@@ -158,7 +153,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ci)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
-            self$.addOption(private$..clp)
             self$.addOption(private$..member)
             self$.addOption(private$..plot1)
         }),
@@ -182,7 +176,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ci = function() private$..ci$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
-        clp = function() private$..clp$value,
         member = function() private$..member$value,
         plot1 = function() private$..plot1$value),
     private = list(
@@ -205,7 +198,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ci = NA,
         ..post = NA,
         ..item = NA,
-        ..clp = NA,
         ..member = NA,
         ..plot1 = NA)
 )
@@ -228,7 +220,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ci = function() private$.items[["ci"]],
         member = function() private$.items[["member"]],
         item = function() private$.items[["item"]],
-        clp = function() private$.items[["clp"]],
         plot1 = function() private$.items[["plot1"]],
         text2 = function() private$.items[["text2"]],
         text3 = function() private$.items[["text3"]]),
@@ -643,24 +634,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="clp",
-                title="Cluster probabilities",
-                refs="glca",
-                visible="(item)",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "nb",
-                    "group",
-                    "nclust"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -728,7 +701,6 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ci .
 #' @param post .
 #' @param item .
-#' @param clp .
 #' @param member .
 #' @param plot1 .
 #' @return A results object containing:
@@ -747,7 +719,6 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$clp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
@@ -781,7 +752,6 @@ mlca <- function(
     ci = FALSE,
     post = FALSE,
     item = FALSE,
-    clp = FALSE,
     member = FALSE,
     plot1 = FALSE) {
 
@@ -822,7 +792,6 @@ mlca <- function(
         ci = ci,
         post = post,
         item = item,
-        clp = clp,
         member = member,
         plot1 = plot1)
 

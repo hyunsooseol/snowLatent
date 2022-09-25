@@ -48,7 +48,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: Fit
+            label: Model fit
             children:
               - type: CheckBox
                 name: fit

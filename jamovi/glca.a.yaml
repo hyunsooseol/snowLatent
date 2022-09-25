@@ -93,12 +93,12 @@ options:
     - name: item 
       title: Item probability
       type: Bool 
-      default: FALSE
+      default: TRUE
 
     - name: co
       title: Coefficients with covariates
       type: Bool 
-      default: FALSE 
+      default: TRUE 
 
     - name: plot1 
       title: Profile plot
