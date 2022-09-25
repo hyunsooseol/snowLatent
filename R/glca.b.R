@@ -187,7 +187,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
       #################################################################
       
-      # logistic regression -------------
+      self$results$text$setContent(lca)
+        
+        # logistic regression -------------
         
         if( !is.null(self$options$covs) ) {
           

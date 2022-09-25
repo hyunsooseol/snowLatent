@@ -86,7 +86,7 @@ options:
       default: FALSE    
 
     - name: post
-      title: Posterior probability
+      title: Group probability
       type: Bool 
       default: TRUE
      

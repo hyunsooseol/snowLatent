@@ -65,19 +65,20 @@ children:
                 name: rel
 
           - type: Label
-            label: Statistics
+            label: 'Prevalences'
             children:
               - type: CheckBox
                 name: marginal
               - type: CheckBox
                 name: preval
+          - type: Label
+            label: 'Probability'
+            children:
               - type: CheckBox
                 name: item
               - type: CheckBox
                 name: post 
-              - type: CheckBox
-                name: co   
- 
+
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -98,3 +99,8 @@ children:
                 name: mi
               - type: CheckBox
                 name: ci
+          - type: Label
+            label: 'Logistic regression'
+            children:                
+              - type: CheckBox
+                name: co 

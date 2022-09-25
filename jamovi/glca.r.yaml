@@ -252,7 +252,7 @@ items:
       type:  Preformatted
 
     - name: text2
-      title: Posterior probabilities
+      title: Group probabilities
       type:  Preformatted      
 
     
