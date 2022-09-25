@@ -128,6 +128,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateItemTable(results)
           
+          
+          # cluster probabilities--------
+          
+          private$.populateClpTable(results)
+          
           # populate posterior probabilities--
           
           private$.populatePosTable(results)
@@ -328,9 +333,15 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         item<- lca[["param"]][["rho"]]
         
+        item<- do.call("rbind", lapply(item, as.data.frame))
+        
+        # cluster posterior probability---------
+        
+        clp<-lca[["posterior"]][["cluster"]]
+        
         # posterior probability---------
         
-        post <- lca[["posterior"]]
+        post <-lca[["posterior"]][["class"]]
         
         
         # Class Prevalences plot----------
@@ -380,7 +391,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'member'=member,
             'co'=co,
             'mi.d'=mi.d,
-            'ci.d'=ci.d
+            'ci.d'=ci.d,
+            'clp'=clp
             
           )
         
@@ -800,10 +812,69 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateItemTable= function(results) {
         
+        table <- self$results$item
+        item <- results$item
         
-        res <- results$item
+        names<- dimnames(item)[[1]]
         
-        self$results$text1$setContent(res)
+        dims <- dimnames(item)[[2]]
+        
+        for (dim in dims) {
+          
+          table$addColumn(name = paste0(dim),
+                          type = 'character')
+        }
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          for(j in seq_along(dims)){
+            
+            row[[dims[j]]] <- item[name,j]
+            
+          }
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
+        
+      },
+      
+      # cluster posterior probabilities--------
+      
+      .populateClpTable= function(results) {
+        
+        table <- self$results$clp
+        clp <- results$clp
+        
+        names<- dimnames(clp)[[1]]
+        
+        dims <- dimnames(clp)[[2]]
+        
+        for (dim in dims) {
+          
+          table$addColumn(name = paste0(dim),
+                          type = 'character')
+        }
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          for(j in seq_along(dims)){
+            
+            row[[dims[j]]] <- clp[name,j]
+            
+          }
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }
+        
         
       },
       

@@ -346,6 +346,42 @@ items:
           type: 'text'
           content: ($key)
 
+    - name: item
+      title: 'Item-response probabilities'
+      type: Table
+      refs: glca
+      visible: (item)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
+    - name: clp
+      title: 'Cluster probabilities'
+      type: Table
+      refs: glca
+      visible: (item)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
     - name:  plot1
       title: Profile plot
       type:  Image
@@ -361,12 +397,8 @@ items:
         - group
         - nclust
 
-    - name:  text1
-      title: Item-response probabilities
-      type:  Preformatted
-
     - name: text2
-      title: Posterior probabilities
+      title: Class probability
       type:  Preformatted      
 
     - name: text3

@@ -25,6 +25,7 @@ mlca(
   ci = FALSE,
   post = FALSE,
   item = FALSE,
+  clp = FALSE,
   member = FALSE,
   plot1 = FALSE
 )
@@ -70,6 +71,8 @@ mlca(
 
 \item{item}{.}
 
+\item{clp}{.}
+
 \item{member}{.}
 
 \item{plot1}{.}
@@ -90,8 +93,9 @@ A results object containing:
   \code{results$mi} \tab \tab \tab \tab \tab a table \cr
   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
   \code{results$member} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item} \tab \tab \tab \tab \tab a table \cr
+  \code{results$clp} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 }

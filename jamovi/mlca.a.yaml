@@ -112,12 +112,17 @@ options:
       default: FALSE
 
     - name: post
-      title: Posterior probability
+      title: Class probability
       type: Bool 
       default: FALSE 
      
     - name: item 
       title: Item probability
+      type: Bool 
+      default: FALSE
+
+    - name: clp 
+      title: Cluster probability
       type: Bool 
       default: FALSE
 
