@@ -184,7 +184,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Multiple Group LCA")
+                title="Multiple Group LCA",
+                refs="snowLatent")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",

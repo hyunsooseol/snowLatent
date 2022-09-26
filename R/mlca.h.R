@@ -229,7 +229,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Multilevel LCA")
+                title="Multilevel LCA",
+                refs="snowLatent")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",

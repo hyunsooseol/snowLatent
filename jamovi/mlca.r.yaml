@@ -2,6 +2,7 @@
 name:  mlca
 title: Multilevel LCA
 jrs:   '1.1'
+refs: snowLatent
 
 items:
     - name: instructions

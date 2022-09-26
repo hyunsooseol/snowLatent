@@ -2,6 +2,7 @@
 name:  glca
 title: Multiple Group LCA
 jrs:   '1.1'
+refs: snowLatent
 
 items:
     - name: instructions

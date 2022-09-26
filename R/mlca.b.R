@@ -846,6 +846,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populatePosTable= function(results) {
         
+        if(!self$options$post)
+          return()
         
         post <- results$post
         
@@ -854,6 +856,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
       
       .populateLogTable=function(results){
+        
+        if(!self$options$co)
+          return()
         
         co <- results$co
         

@@ -1,8 +1,8 @@
 ---
 name:  lca
 title: Latent Class Analysis
-refs: snowLatent
 jrs:   '1.1'
+refs: snowLatent
 
 items:
     - name: instructions
