@@ -150,8 +150,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         item = function() private$.items[["item"]],
         post = function() private$.items[["post"]],
         member = function() private$.items[["member"]],
-        text2 = function() private$.items[["text2"]],
-        plot1 = function() private$.items[["plot1"]]),
+        plot1 = function() private$.items[["plot1"]],
+        text2 = function() private$.items[["text2"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -396,10 +396,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text2",
-                title="Prevalence for level-1 class(gamma)"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -413,7 +409,11 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb")))}))
+                    "nb")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text2",
+                title="Prevalence for level-1 class(gamma)"))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -463,8 +463,8 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
