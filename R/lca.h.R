@@ -14,7 +14,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             comp = FALSE,
             rel = FALSE,
             cp = FALSE,
-            item = TRUE,
+            item = FALSE,
+            gamma = FALSE,
             coef = FALSE,
             plot1 = FALSE, ...) {
 
@@ -74,7 +75,11 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..item <- jmvcore::OptionBool$new(
                 "item",
                 item,
-                default=TRUE)
+                default=FALSE)
+            private$..gamma <- jmvcore::OptionBool$new(
+                "gamma",
+                gamma,
+                default=FALSE)
             private$..coef <- jmvcore::OptionBool$new(
                 "coef",
                 coef,
@@ -95,6 +100,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..post)
             self$.addOption(private$..member)
             self$.addOption(private$..item)
+            self$.addOption(private$..gamma)
             self$.addOption(private$..coef)
             self$.addOption(private$..plot1)
         }),
@@ -110,6 +116,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$..post$value,
         member = function() private$..member$value,
         item = function() private$..item$value,
+        gamma = function() private$..gamma$value,
         coef = function() private$..coef$value,
         plot1 = function() private$..plot1$value),
     private = list(
@@ -124,6 +131,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..post = NA,
         ..member = NA,
         ..item = NA,
+        ..gamma = NA,
         ..coef = NA,
         ..plot1 = NA)
 )
@@ -142,6 +150,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         item = function() private$.items[["item"]],
         post = function() private$.items[["post"]],
         member = function() private$.items[["member"]],
+        text2 = function() private$.items[["text2"]],
         plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
@@ -387,6 +396,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text2",
+                title="Prevalence for level-1 class(gamma)"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -435,6 +448,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param rel .
 #' @param cp .
 #' @param item .
+#' @param gamma .
 #' @param coef .
 #' @param plot1 .
 #' @return A results object containing:
@@ -449,6 +463,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$item} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
@@ -469,7 +484,8 @@ lca <- function(
     comp = FALSE,
     rel = FALSE,
     cp = FALSE,
-    item = TRUE,
+    item = FALSE,
+    gamma = FALSE,
     coef = FALSE,
     plot1 = FALSE) {
 
@@ -496,6 +512,7 @@ lca <- function(
         rel = rel,
         cp = cp,
         item = item,
+        gamma = gamma,
         coef = coef,
         plot1 = plot1)
 

@@ -116,9 +116,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateItemTable(results)
           
+          # populate item probabilities---------
+          
+          private$.populateGamTable(results)
+          
+          
           # logistic table-----------
           
-          private$.populateLogiTable(results)
+         # private$.populateLogiTable(results)
           
           
           # populate posterior probabilities--
@@ -195,6 +200,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
           co<- lca$coefficient
          
+          self$results$text3$setContent(co)
+          
         }
        
        
@@ -285,7 +292,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         item<- lca[["param"]][["rho"]]
         
-        # posterior probability---------
+        # gamma probability----------
+         
+         gamma <- lca[["param"]][["gamma"]]
+         
+         
+         
+         # posterior probability---------
         
         post <- lca[["posterior"]]
         
@@ -330,7 +343,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'margin'=margin,
             'mi.d'=mi.d,
             'ci.d'=ci.d,
-            'co'=co
+          #  'co'=co,
+            'gamma'=gamma
           )
         
         
@@ -614,7 +628,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
       },
 
-       # posterior probability----------
+      # gamma probabilities----------
+      
+      .populateGamTable= function(results) {
+        
+        if (!self$options$gamma)
+          return()
+        
+        res <- results$gamma
+        
+        self$results$text4$setContent(res)
+        
+      }, 
+      
+      
+      # posterior probability----------
       
       .populatePosTable= function(results) {
         
@@ -631,16 +659,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       # Logistic reg. table----------
       
       
-      .populateLogiTable= function(results) {
-        
-        if (!self$options$co)
-          return()
-        
-        co <- results$co
-        
-        self$results$text3$setContent(co)
-        
-      },
+      # .populateLogiTable= function(results) {
+      #   
+      #   if (!self$options$co)
+      #     return()
+      #   
+      #   co <- results$co
+      #   
+      #   self$results$text3$setContent(co)
+      #   
+      # },
       
       ######## plot#######################
       .plot1 = function(image, ...) {

@@ -215,6 +215,10 @@ items:
         - nc
         - nb
 
+    - name:  text2
+      title: Prevalence for level-1 class(gamma)
+      type:  Preformatted
+
     - name:  plot1
       title: Profile plot
       type:  Image
@@ -228,5 +232,7 @@ items:
         - covs
         - nc
         - nb
+
+
 
 ...

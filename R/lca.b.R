@@ -108,6 +108,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateMemberOutputs(results)
           
+          # populate item probabilities---------
+          
+          private$.populateGamTable(results)
+          
         
         }
       },
@@ -192,6 +196,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         item<- lca[["param"]][["rho"]][["ALL"]]
         item<- do.call("rbind", lapply(item, as.data.frame))  
         
+        # gamma probability----------
+        
+        gamma <- lca[["param"]][["gamma"]]
+        
+        
         # logistic regression coefficients-------------
         
         if( !is.null(self$options$covs) ) {
@@ -272,7 +281,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'dtable'=dtable,
                 'pos'=pos,
                'coef'= coef,
-               'mem'=mem
+               'mem'=mem,
+               'gamma'=gamma
                 )
           
             
@@ -566,6 +576,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },   
 
+  # gamma probabilities----------
+  
+  .populateGamTable= function(results) {
+    
+    if (!self$options$gamma)
+      return()
+    
+    res <- results$gamma
+    
+    options(max.print = 1000000)
+    
+    self$results$text2$setContent(res)
+    
+  }, 
   
   # plot-------------------------------------
   

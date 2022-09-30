@@ -106,6 +106,8 @@ children:
               - type: CheckBox
                 name: item
               - type: CheckBox
+                name: gamma
+              - type: CheckBox
                 name: post 
       - type: LayoutBox
         stretchFactor: 1

@@ -63,7 +63,7 @@ options:
       default: FALSE
 
     - name: post
-      title: Posterior probability
+      title: Posterior 
       type: Output  
       
     - name: member
@@ -71,9 +71,14 @@ options:
       type: Output  
  
     - name: item 
-      title: Item probability
+      title: Item response(rho)
       type: Bool 
-      default: TRUE    
+      default: FALSE   
+
+    - name: gamma
+      title: prevalence for level-1 class(gamma)
+      type: Bool 
+      default: FALSE
 
     - name: coef 
       title: Coefficients with covariates

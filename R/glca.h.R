@@ -20,7 +20,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             preval = FALSE,
             post = FALSE,
             item = FALSE,
-            co = TRUE,
+            gamma = FALSE,
+            co = FALSE,
             plot1 = FALSE, ...) {
 
             super$initialize(
@@ -99,10 +100,14 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "item",
                 item,
                 default=FALSE)
+            private$..gamma <- jmvcore::OptionBool$new(
+                "gamma",
+                gamma,
+                default=FALSE)
             private$..co <- jmvcore::OptionBool$new(
                 "co",
                 co,
-                default=TRUE)
+                default=FALSE)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -122,6 +127,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..preval)
             self$.addOption(private$..post)
             self$.addOption(private$..item)
+            self$.addOption(private$..gamma)
             self$.addOption(private$..co)
             self$.addOption(private$..plot1)
         }),
@@ -140,6 +146,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         preval = function() private$..preval$value,
         post = function() private$..post$value,
         item = function() private$..item$value,
+        gamma = function() private$..gamma$value,
         co = function() private$..co$value,
         plot1 = function() private$..plot1$value),
     private = list(
@@ -157,6 +164,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..preval = NA,
         ..post = NA,
         ..item = NA,
+        ..gamma = NA,
         ..co = NA,
         ..plot1 = NA)
 )
@@ -177,6 +185,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$.items[["plot1"]],
         text3 = function() private$.items[["text3"]],
         text1 = function() private$.items[["text1"]],
+        text4 = function() private$.items[["text4"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
     public=list(
@@ -462,7 +471,11 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Item-response probabilities"))
+                title="Item-response probabilities(rho)"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text4",
+                title="Prevalence for level-1 class(gamma)"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
@@ -506,6 +519,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param preval .
 #' @param post .
 #' @param item .
+#' @param gamma .
 #' @param co .
 #' @param plot1 .
 #' @return A results object containing:
@@ -522,6 +536,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
@@ -548,7 +563,8 @@ glca <- function(
     preval = FALSE,
     post = FALSE,
     item = FALSE,
-    co = TRUE,
+    gamma = FALSE,
+    co = FALSE,
     plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -583,6 +599,7 @@ glca <- function(
         preval = preval,
         post = post,
         item = item,
+        gamma = gamma,
         co = co,
         plot1 = plot1)
 

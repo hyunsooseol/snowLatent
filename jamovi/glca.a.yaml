@@ -86,19 +86,24 @@ options:
       default: FALSE    
 
     - name: post
-      title: Group probability
+      title: Posterior
       type: Bool 
       default: FALSE
      
     - name: item 
-      title: Item probability
+      title: Item response(rho)
+      type: Bool 
+      default: FALSE
+
+    - name: gamma
+      title: prevalence for level-1 class(gamma)
       type: Bool 
       default: FALSE
 
     - name: co
       title: Coefficients with covariates
       type: Bool 
-      default: TRUE 
+      default: FALSE
 
     - name: plot1 
       title: Profile plot

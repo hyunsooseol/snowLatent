@@ -20,7 +20,8 @@ glca(
   preval = FALSE,
   post = FALSE,
   item = FALSE,
-  co = TRUE,
+  gamma = FALSE,
+  co = FALSE,
   plot1 = FALSE
 )
 }
@@ -55,6 +56,8 @@ glca(
 
 \item{item}{.}
 
+\item{gamma}{.}
+
 \item{co}{.}
 
 \item{plot1}{.}
@@ -74,6 +77,7 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 }
 

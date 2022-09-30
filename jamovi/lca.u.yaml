@@ -81,6 +81,8 @@ children:
             children:
               - type: CheckBox
                 name: item
+              - type: CheckBox
+                name: gamma
               - type: Output
                 name: post
               - type: Output

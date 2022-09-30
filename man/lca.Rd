@@ -14,7 +14,8 @@ lca(
   comp = FALSE,
   rel = FALSE,
   cp = FALSE,
-  item = TRUE,
+  item = FALSE,
+  gamma = FALSE,
   coef = FALSE,
   plot1 = FALSE
 )
@@ -40,6 +41,8 @@ lca(
 
 \item{item}{.}
 
+\item{gamma}{.}
+
 \item{coef}{.}
 
 \item{plot1}{.}
@@ -57,6 +60,7 @@ A results object containing:
   \code{results$item} \tab \tab \tab \tab \tab a table \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$member} \tab \tab \tab \tab \tab an output \cr
+  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 
