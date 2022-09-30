@@ -23,8 +23,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             co = FALSE,
             mi = FALSE,
             ci = FALSE,
-            post = FALSE,
             item = FALSE,
+            post = FALSE,
+            gamma = FALSE,
             member = FALSE,
             plot1 = FALSE, ...) {
 
@@ -117,13 +118,17 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ci",
                 ci,
                 default=FALSE)
+            private$..item <- jmvcore::OptionBool$new(
+                "item",
+                item,
+                default=FALSE)
             private$..post <- jmvcore::OptionBool$new(
                 "post",
                 post,
                 default=FALSE)
-            private$..item <- jmvcore::OptionBool$new(
-                "item",
-                item,
+            private$..gamma <- jmvcore::OptionBool$new(
+                "gamma",
+                gamma,
                 default=FALSE)
             private$..member <- jmvcore::OptionBool$new(
                 "member",
@@ -151,8 +156,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..co)
             self$.addOption(private$..mi)
             self$.addOption(private$..ci)
-            self$.addOption(private$..post)
             self$.addOption(private$..item)
+            self$.addOption(private$..post)
+            self$.addOption(private$..gamma)
             self$.addOption(private$..member)
             self$.addOption(private$..plot1)
         }),
@@ -174,8 +180,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         co = function() private$..co$value,
         mi = function() private$..mi$value,
         ci = function() private$..ci$value,
-        post = function() private$..post$value,
         item = function() private$..item$value,
+        post = function() private$..post$value,
+        gamma = function() private$..gamma$value,
         member = function() private$..member$value,
         plot1 = function() private$..plot1$value),
     private = list(
@@ -196,8 +203,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..co = NA,
         ..mi = NA,
         ..ci = NA,
-        ..post = NA,
         ..item = NA,
+        ..post = NA,
+        ..gamma = NA,
         ..member = NA,
         ..plot1 = NA)
 )
@@ -221,8 +229,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         member = function() private$.items[["member"]],
         item = function() private$.items[["item"]],
         plot1 = function() private$.items[["plot1"]],
+        text3 = function() private$.items[["text3"]],
         text2 = function() private$.items[["text2"]],
-        text3 = function() private$.items[["text3"]]),
+        text4 = function() private$.items[["text4"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -620,7 +629,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="item",
-                title="Item-response probabilities",
+                title="Item-response probabilities(rho)",
                 refs="glca",
                 visible="(item)",
                 clearWith=list(
@@ -652,12 +661,16 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nclust")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
+                name="text3",
+                title="Logistic regression"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
                 name="text2",
                 title="Class probability"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
-                name="text3",
-                title="Logistic regression"))}))
+                name="text4",
+                title="Cluster probability(gamma)"))}))
 
 mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mlcaBase",
@@ -700,8 +713,9 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param co .
 #' @param mi .
 #' @param ci .
-#' @param post .
 #' @param item .
+#' @param post .
+#' @param gamma .
 #' @param member .
 #' @param plot1 .
 #' @return A results object containing:
@@ -721,8 +735,9 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$member} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -751,8 +766,9 @@ mlca <- function(
     co = FALSE,
     mi = FALSE,
     ci = FALSE,
-    post = FALSE,
     item = FALSE,
+    post = FALSE,
+    gamma = FALSE,
     member = FALSE,
     plot1 = FALSE) {
 
@@ -791,8 +807,9 @@ mlca <- function(
         co = co,
         mi = mi,
         ci = ci,
-        post = post,
         item = item,
+        post = post,
+        gamma = gamma,
         member = member,
         plot1 = plot1)
 

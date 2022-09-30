@@ -82,12 +82,12 @@ options:
       default: FALSE
 
     - name: margin 
-      title: Cluster prevalences 
+      title: Prevalences for latent clusters(delta) 
       type: Bool 
       default: FALSE    
 
     - name: cla
-      title: Class prevalences
+      title: Prevalences for latent classes
       type: Bool 
       default: FALSE    
 
@@ -111,15 +111,21 @@ options:
       type: Bool
       default: FALSE
 
+    - name: item 
+      title: Item response(rho)
+      type: Bool 
+      default: FALSE
+
     - name: post
       title: Class probability
       type: Bool 
       default: FALSE 
-     
-    - name: item 
-      title: Item probability
+
+    - name: gamma
+      title: Cluster probability(gamma)
       type: Bool 
-      default: FALSE
+      default: FALSE 
+
 
     - name: member
       title: Cluster membership

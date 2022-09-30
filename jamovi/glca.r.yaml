@@ -193,7 +193,7 @@ items:
           format: zto,pvalue
 
     - name: marginal
-      title: 'Marginal prevalences for latent classes'
+      title: 'Marginal prevalences for latent class'
       type: Table
       visible: (marginal)
       refs: glca
@@ -257,7 +257,7 @@ items:
       type:  Preformatted
 
     - name: text2
-      title: Group probabilities
+      title: Posterior probabilities
       type:  Preformatted      
 
     

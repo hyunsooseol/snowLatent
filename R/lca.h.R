@@ -303,7 +303,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cp",
-                title="Marginal prevalences for latent classes",
+                title="Marginal prevalences for latent class",
                 visible="(cp)",
                 refs="glca",
                 clearWith=list(

@@ -76,12 +76,12 @@ options:
       default: FALSE
 
     - name: marginal 
-      title: Marginal prevalences 
+      title: Prevalences for latent class
       type: Bool 
       default: FALSE    
 
     - name: preval 
-      title: Class prevalences 
+      title: Class prevalences by group 
       type: Bool 
       default: FALSE    
 
@@ -96,7 +96,7 @@ options:
       default: FALSE
 
     - name: gamma
-      title: prevalence for level-1 class(gamma)
+      title: Prevalence for level-1 class(gamma)
       type: Bool 
       default: FALSE
 

@@ -126,7 +126,7 @@ items:
           format: zto,pvalue
 
     - name: cp
-      title: 'Marginal prevalences for latent classes'
+      title: 'Marginal prevalences for latent class'
       type: Table
       visible: (cp)
       refs: glca

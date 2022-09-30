@@ -348,7 +348,7 @@ items:
           content: ($key)
 
     - name: item
-      title: 'Item-response probabilities'
+      title: 'Item-response probabilities(rho)'
       type: Table
       refs: glca
       visible: (item)
@@ -380,13 +380,18 @@ items:
         - group
         - nclust
 
+    - name: text3
+      title: Logistic regression
+      type:  Preformatted 
+
     - name: text2
       title: Class probability
       type:  Preformatted      
 
-    - name: text3
-      title: Logistic regression
+    - name: text4
+      title: Cluster probability(gamma)
       type:  Preformatted  
+
 ...
 
 

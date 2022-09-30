@@ -111,12 +111,14 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Posterior probability'
+            label: 'Probability'
             children:
               - type: CheckBox
                 name: item
               - type: CheckBox
                 name: post
+              - type: CheckBox
+                name: gamma
               - type: CheckBox
                 name: member 
       - type: LayoutBox

@@ -23,8 +23,9 @@ mlca(
   co = FALSE,
   mi = FALSE,
   ci = FALSE,
-  post = FALSE,
   item = FALSE,
+  post = FALSE,
+  gamma = FALSE,
   member = FALSE,
   plot1 = FALSE
 )
@@ -66,9 +67,11 @@ mlca(
 
 \item{ci}{.}
 
+\item{item}{.}
+
 \item{post}{.}
 
-\item{item}{.}
+\item{gamma}{.}
 
 \item{member}{.}
 
@@ -94,6 +97,7 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

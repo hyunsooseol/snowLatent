@@ -415,7 +415,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="marginal",
-                title="Marginal prevalences for latent classes",
+                title="Marginal prevalences for latent class",
                 visible="(marginal)",
                 refs="glca",
                 clearWith=list(
@@ -479,7 +479,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Group probabilities"))}))
+                title="Posterior probabilities"))}))
 
 glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "glcaBase",

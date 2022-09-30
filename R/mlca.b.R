@@ -137,13 +137,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populatePosTable(results)
           
-          # populate cluter membership--
+          # populate cluster membership--
           
           private$.populateMemTable(results)
           
            #logistic table-----------
           
             private$.populateLogTable(results)
+          
+          # cluster prob.(gamma)----------
+          
+          private$.populateGamTable(results)
+          
           
         }
       },
@@ -343,6 +348,19 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         post <-lca[["posterior"]][["class"]]
         
+        # Cluster membership------------
+        
+        member<- lca$posterior$cluster
+        
+        # logistic regression coef.--------
+        
+        co <- lca[["coefficient"]][["Level1"]]
+        
+        
+        # cluster prob.(gamma)----------
+        
+        gamma <- lca[["param"]][["gamma"]]
+        
         
         # Class Prevalences plot----------
         
@@ -359,15 +377,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image$setState(lca)
         
-        # Cluster membership------------
-        
-        member<- lca$posterior$cluster
-        
-        # logistic regression coef.--------
-        
-        co <- lca[["coefficient"]][["Level1"]]
-        
-        
+       
         
         results <-
           list(
@@ -391,7 +401,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'member'=member,
             'co'=co,
             'mi.d'=mi.d,
-            'ci.d'=ci.d
+            'ci.d'=ci.d,
+            'gamma'=gamma
            
           )
         
@@ -866,6 +877,19 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         
       },
+      
+      .populateGamTable=function(results){
+        
+        if(!self$options$gamma)
+          return()
+        
+        gamma <- results$gamma
+        
+        self$results$text4$setContent(gamma)
+        
+        
+      },
+      
       
       ######## plot#######################
       .plot1 = function(image, ...) {

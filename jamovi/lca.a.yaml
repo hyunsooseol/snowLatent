@@ -58,7 +58,7 @@ options:
       default: FALSE
 
     - name: cp
-      title: Marginal prevalences 
+      title: Prevalences for latent class
       type: Bool 
       default: FALSE
 
