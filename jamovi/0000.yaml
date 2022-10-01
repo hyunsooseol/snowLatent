@@ -30,13 +30,13 @@ analyses:
 datasets:
   - name: gss
     path: gss.omv
-    description: General Social Study (GSS) 2008
+    description: Attitudes toward abortion
     tags:
       - LCA
       - Multiple group LCA
   - name: nyts
     path: nyts18.omv
-    description: National Youth Tobacco Survey (NYTS) 2018
+    description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
 usesNative: true

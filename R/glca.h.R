@@ -43,9 +43,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 covs,
                 suggested=list(
                     "nominal",
-                    "ordinal"),
+                    "continuous"),
                 permitted=list(
-                    "factor"))
+                    "factor",
+                    "numeric"))
             private$..group <- jmvcore::OptionVariable$new(
                 "group",
                 group,
@@ -581,7 +582,6 @@ glca <- function(
             `if`( ! missing(group), group, NULL))
 
     for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
-    for (v in covs) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- glcaOptions$new(
