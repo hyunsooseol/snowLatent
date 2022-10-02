@@ -192,7 +192,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
       #################################################################
       
-     # self$results$text$setContent(lca)
+      self$results$text$setContent(lca)
         
         # logistic regression -------------
         
@@ -234,7 +234,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          dtable<- res[["dtable"]]  # Relative model fit 
         
-         self$results$text$setContent(dtable)
+         #self$results$text$setContent(dtable)
         
          if(is.null(res$dtable)){
            
