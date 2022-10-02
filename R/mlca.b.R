@@ -174,6 +174,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         vars <- self$options$vars
         #vars <- colnames(data[, -1] )
+        
         vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse=',')
         
@@ -209,9 +210,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-         self$results$text$setContent(lca)
+        # self$results$text$setContent(lca)
        
-        # fit measure----------
+        # Model fit measure----------
         
         loglik<- lca$gof$loglik
         aic<- lca$gof$aic
@@ -222,7 +223,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         gsq<- lca$gof$Gsq
         
         
-        # Goodnes of fit for class-------------------------
+        # Absolute and Relative model fit for class-------------------------
         
         args <- list(test = "boot", nboot=nb)
         
@@ -254,7 +255,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           # 
         }
         
-        # Goodness of fit for cluster(Selecting optimal cluster)-------
+        # Absolute and relative model fit for cluster-------
         
         
         args <- list(test = "boot", nboot=nb)
@@ -277,16 +278,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         dtable1<- res1[["dtable"]]  # Relative model fit 
         
-        if(is.null(res$dtable)){
-          
-          dtable<- NULL 
-          
-          # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
-          # Warning message:
-          #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
-          #   Since responses are different, deviance table does not printed.
-          # 
-        }
+        
+        
+        # if(is.null(res1$dtable1)){
+        #   
+        #   dtable1<- NULL 
+        #   
+        #   # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+        #   # Warning message:
+        #   #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+        #   #   Since responses are different, deviance table does not printed.
+        #   # 
+        # }
         
         
         # Measurement invariance--------------
@@ -349,17 +352,20 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # Class prevalences(Marginal prevalences for latent classes) ----------
         
         cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-        cla<- as.data.frame(cla)
+        #cla<- as.data.frame(cla)
+       
        
         # Class prevalences by cluster-----------
         
         cross<- lca[["posterior"]][["wclass"]]
         
-        # item probability---------
+        # item response probability---------
         
         item<- lca[["param"]][["rho"]]
         
-        item<- do.call("rbind", lapply(item, as.data.frame))
+        #item<- do.call("rbind", lapply(item, as.data.frame))
+        
+         #self$results$text$setContent(item)
         
         # cluster posterior probability---------
         
@@ -433,7 +439,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       ################ populating Tables################################
       
-      # populate Model Fit table-------------   
+      # Model Fit table-------------   
       
       .populateFitTable = function(results) {
         
@@ -464,7 +470,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # populate Absolute model fit table for class------------
+      # Absolute model fit table for class------------
       
       .populateModelTable = function(results) {
        
@@ -507,7 +513,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # Populate relative model fit for class---------------
+      #  Relative model fit for class---------------
       
       .populateRelTable = function(results) {
         
@@ -547,12 +553,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },  
       
-      # populate Absolute model fit table for cluster------------
+      # Absolute model fit for cluster------------
       
       .populateModel1Table = function(results) {
-        
-        if(is.null(results$dtable))
-          return()
         
        
         table <- self$results$comp1
@@ -599,11 +602,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateRel1Table = function(results) {
         
-        if(is.null(results$dtable))
+        
+         if(self$options$nclust<3) 
           return()
         
         table <- self$results$rel1
-        
         
         dtable1 <- results$dtable1
         
@@ -667,6 +670,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         cla<- results$cla
         
+        cla<- as.data.frame(cla)
         
         names<- dimnames(cla)[[1]]
         
@@ -840,38 +844,47 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
         
       
-      # item probabilities----------
+      # item response probabilities----------
       
       .populateItemTable= function(results) {
         
-        table <- self$results$item
+        
+        if(!self$options$item)
+          return()
+        
         item <- results$item
         
-        names<- dimnames(item)[[1]]
-        
-        dims <- dimnames(item)[[2]]
-        
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'character')
-        }
+        self$results$text5$setContent(item)
         
         
-        for (name in names) {
-          
-          row <- list()
-          
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- item[name,j]
-            
-          }
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
+        # table <- self$results$item
+        # item <- results$item
+        # 
+        # names<- dimnames(item)[[1]]
+        # 
+        # dims <- dimnames(item)[[2]]
+        # 
+        # for (dim in dims) {
+        #   
+        #   table$addColumn(name = paste0(dim),
+        #                   type = 'character')
+        # }
+        # 
+        # 
+        # for (name in names) {
+        #   
+        #   row <- list()
+        #   
+        #   for(j in seq_along(dims)){
+        #     
+        #     row[[dims[j]]] <- item[name,j]
+        #     
+        #   }
+        #   
+        #   table$addRow(rowKey=name, values=row)
+        #   
+        # }
+        # 
         
       },
     
@@ -884,9 +897,13 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         post <- results$post
         
+        options(max.print = 1000000)
+        
         self$results$text2$setContent(post)
         
       },
+      
+      # logistic table----------
       
       .populateLogTable=function(results){
         
@@ -900,12 +917,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
+      # Gamma probability---------
+      
       .populateGamTable=function(results){
         
         if(!self$options$gamma)
           return()
         
         gamma <- results$gamma
+        
+        options(max.print = 1000000)
         
         self$results$text4$setContent(gamma)
         

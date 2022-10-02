@@ -228,9 +228,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mi = function() private$.items[["mi"]],
         ci = function() private$.items[["ci"]],
         member = function() private$.items[["member"]],
-        item = function() private$.items[["item"]],
         plot1 = function() private$.items[["plot1"]],
         text3 = function() private$.items[["text3"]],
+        text5 = function() private$.items[["text5"]],
         text2 = function() private$.items[["text2"]],
         text4 = function() private$.items[["text4"]]),
     private = list(),
@@ -627,24 +627,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="item",
-                title="Item-response probabilities(rho)",
-                refs="glca",
-                visible="(item)",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "nb",
-                    "group",
-                    "nclust"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -666,12 +648,16 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Logistic regression"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
+                name="text5",
+                title="Item response probability(Rho)"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
                 name="text2",
                 title="Class probability"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
-                title="Cluster probability(gamma)"))}))
+                title="Cluster probability(Gamma)"))}))
 
 mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mlcaBase",
@@ -734,9 +720,9 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$mi} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$item} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #' }

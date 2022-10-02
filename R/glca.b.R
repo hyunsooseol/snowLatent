@@ -192,7 +192,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
       #################################################################
       
-      self$results$text$setContent(lca)
+     # self$results$text$setContent(lca)
         
         # logistic regression -------------
         
@@ -205,7 +205,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
        
        
-       # fit measure----------
+       # Model fit measure----------
         
         loglik<- lca$gof$loglik
         aic<- lca$gof$aic
@@ -215,7 +215,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
-       # Goodnes of fit--------------------------
+       # Absolute and Relative fit--------------------------
         
          args <- list(test = "boot", nboot=nb)
          inpclas = self$options$nc
@@ -234,18 +234,19 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          dtable<- res[["dtable"]]  # Relative model fit 
         
+         self$results$text$setContent(dtable)
         
          if(is.null(res$dtable)){
            
-           dtable<- NULL 
-           
+           dtable<- NULL
+
            # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
            # Warning message:
            #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
            #   Since responses are different, deviance table does not printed.
-           # 
-         }
-         
+
+         }           
+          
          
         # Measurement invariance--------------
          
@@ -445,48 +446,48 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # Populate relative model fit---------------
+      # Relative model fit---------------
       
       .populateRelTable = function(results) {
-        
+
         if(self$options$nc<3 | is.null(results$dtable))
           return()
-        
+
         nc <- self$options$nc
-        
+
         table <- self$results$rel
-        
-        
+
         dtable <- results$dtable
-        
+
         d<- as.data.frame(dtable)
-        
+
         para <- d[,1]
         loglik<- d[,2]
         df<- d[,3]
         dev<- d[,4]
         p<- d[,5]
-        
+
         names <- dimnames(d)[[1]]
-        
-        
+
+
         for (name in names) {
-          
+
           row <- list()
-          
+
           row[["para"]] <-  d[name, 1]
           row[["loglik"]] <-  d[name, 2]
           row[["df"]] <-  d[name, 3]
           row[["dev"]] <-  d[name, 4]
           row[["p"]] <-d[name, 5]
-          
+
           table$addRow(rowKey=name, values=row)
-          
+
         }
-        
-      },  
-      
-      .populateMiTable = function(results) {
+
+      },
+
+     #-----------------------------------------------
+       .populateMiTable = function(results) {
         
         if(self$options$nc<3)
           return()
@@ -525,6 +526,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },  
       
+     #----------------------------------------------
       .populateCiTable = function(results) {
         
         if(self$options$nc<3)
@@ -649,6 +651,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         res <- results$gamma
         
+        options(max.print = 1000000)
+        
         self$results$text4$setContent(res)
         
       }, 
@@ -662,6 +666,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           return()
         
         post <- results$post
+        
+        options(max.print = 1000000)
         
         self$results$text2$setContent(post)
         

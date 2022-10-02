@@ -347,24 +347,6 @@ items:
           type: 'text'
           content: ($key)
 
-    - name: item
-      title: 'Item-response probabilities(rho)'
-      type: Table
-      refs: glca
-      visible: (item)
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-        - nclust
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
     - name:  plot1
       title: Profile plot
       type:  Image
@@ -384,12 +366,16 @@ items:
       title: Logistic regression
       type:  Preformatted 
 
+    - name: text5
+      title: Item response probability(Rho)
+      type:  Preformatted  
+
     - name: text2
       title: Class probability
       type:  Preformatted      
 
     - name: text4
-      title: Cluster probability(gamma)
+      title: Cluster probability(Gamma)
       type:  Preformatted  
 
 ...
