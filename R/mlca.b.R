@@ -221,8 +221,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
-        #self$results$text$setContent(loglik)
-        
         
         # Goodnes of fit for class-------------------------
         
@@ -514,7 +512,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       .populateRelTable = function(results) {
         
         
-        if(is.null(results$dtable))
+        if(self$options$nc<3 | is.null(results$dtable))
           return()
         
         
