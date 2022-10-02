@@ -155,9 +155,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                            nclass=nc, seed = 1)
 
     #################################################################
-     
-        self$results$text$setContent(lca)
         
+        self$results$text$setContent(lca)
+       
         #fit measure----------
         
         loglik<- lca$gof$loglik
@@ -259,14 +259,25 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                      nclass = nc, seed = 1)
         
         res <- do.call(glca::gofglca, args)
-        
-        
-        gtable <- res[["gtable"]] #Absolute model fit
-        
-        dtable<- res[["dtable"]]  # Relative model fit 
-        
        
-            results <-
+        gtable <- res[["gtable"]] #Absolute model fit
+       
+        dtable<- res[["dtable"]]  # Relative model fit   
+        
+        
+        if(is.null(res$dtable)){
+        
+        dtable<- NULL 
+          
+        # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+        # Warning message:
+        #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+        #   Since responses are different, deviance table does not printed.
+        # 
+        }
+        
+         
+      results <-
               list(
                 'loglik'=loglik,
                 'aic'=aic,
@@ -376,9 +387,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   .populateRelTable = function(results) {
    
-   if(self$options$nc<3)
-     return()
-    
+    if(self$options$nc<3 | is.null(results$dtable))
+      return()
+   
     nc <- self$options$nc
     
     table <- self$results$rel

@@ -235,6 +235,18 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          dtable<- res[["dtable"]]  # Relative model fit 
         
         
+         if(is.null(res$dtable)){
+           
+           dtable<- NULL 
+           
+           # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+           # Warning message:
+           #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+           #   Since responses are different, deviance table does not printed.
+           # 
+         }
+         
+         
         # Measurement invariance--------------
          
          if(self$options$nc>=2){
@@ -437,7 +449,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateRelTable = function(results) {
         
-        if(self$options$nc<3)
+        if(self$options$nc<3 | is.null(results$dtable))
           return()
         
         nc <- self$options$nc

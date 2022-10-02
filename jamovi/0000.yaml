@@ -1,12 +1,12 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.0.1
+version: 2.1.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-09-30'
+date: '2022-10-02'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, and Multilevel
@@ -39,6 +39,13 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
+  - name: election
+    path: election.omv
+    description: The 2000 American National Election Study
+    tags:
+      - Multilevel LCA
+      - LCA
+      - Multiple group LCA
 usesNative: true
 minApp: 1.0.8
 

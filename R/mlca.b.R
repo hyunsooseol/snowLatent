@@ -209,7 +209,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-        self$results$text$setContent(lca)
+         self$results$text$setContent(lca)
        
         # fit measure----------
         
@@ -221,7 +221,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
-      
+        #self$results$text$setContent(loglik)
+        
+        
         # Goodnes of fit for class-------------------------
         
         args <- list(test = "boot", nboot=nb)
@@ -243,7 +245,17 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         dtable<- res[["dtable"]]  # Relative model fit 
         
-      
+        if(is.null(res$dtable)){
+          
+          dtable<- NULL 
+          
+          # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+          # Warning message:
+          #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+          #   Since responses are different, deviance table does not printed.
+          # 
+        }
+        
         # Goodness of fit for cluster(Selecting optimal cluster)-------
         
         
@@ -267,7 +279,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         dtable1<- res1[["dtable"]]  # Relative model fit 
         
-       
+        if(is.null(res$dtable)){
+          
+          dtable<- NULL 
+          
+          # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+          # Warning message:
+          #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+          #   Since responses are different, deviance table does not printed.
+          # 
+        }
+        
+        
         # Measurement invariance--------------
         
         if(self$options$nc>=2){
@@ -419,7 +442,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         table <- self$results$fit
         
         class <- self$options$nc
-        
         loglik<- results$loglik
         aic<- results$aic
         caic<- results$caic
@@ -427,8 +449,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         entropy<- results$entropy
         df<- results$df
         gsq<- results$gsq
-        
-        
+      
         row <- list()
         
         row[['class']] <- class
@@ -492,8 +513,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateRelTable = function(results) {
         
-        if(self$options$nc<3)
+        
+        if(is.null(results$dtable))
           return()
+        
         
         table <- self$results$rel
       
@@ -530,7 +553,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateModel1Table = function(results) {
         
-       
+        if(is.null(results$dtable))
+          return()
+        
        
         table <- self$results$comp1
         
@@ -576,10 +601,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateRel1Table = function(results) {
         
-         if(self$options$nclust<3)
-           return()
+        if(is.null(results$dtable))
+          return()
         
-       
         table <- self$results$rel1
         
         
