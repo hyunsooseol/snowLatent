@@ -83,7 +83,7 @@ options:
       default: FALSE
 
     - name: margin 
-      title: Prevalences for latent clusters(delta) 
+      title: Prevalences for latent clusters(Delta) 
       type: Bool 
       default: FALSE    
 
@@ -113,7 +113,7 @@ options:
       default: FALSE
 
     - name: item 
-      title: Item response(rho)
+      title: Item response(Rho)
       type: Bool 
       default: FALSE
 
@@ -123,7 +123,7 @@ options:
       default: FALSE 
 
     - name: gamma
-      title: Cluster probability(gamma)
+      title: Cluster probability(Gamma)
       type: Bool 
       default: FALSE 
 

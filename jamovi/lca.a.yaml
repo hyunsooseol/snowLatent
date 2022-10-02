@@ -71,12 +71,12 @@ options:
       type: Output  
  
     - name: item 
-      title: Item response(rho)
+      title: Item response(Rho)
       type: Bool 
       default: FALSE   
 
     - name: gamma
-      title: prevalence for level-1 class(gamma)
+      title: prevalence for level-1 class(Gamma)
       type: Bool 
       default: FALSE
 
