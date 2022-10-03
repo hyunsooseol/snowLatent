@@ -388,7 +388,19 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image$setState(lca)
         
-       
+       ##############################
+        #example with args
+        
+        # # --- Class prevalences (Marginal prevalences for latent classes) --- #
+        # args <- list()
+        # args[[1]] <- lca[["posterior"]][["1"]]
+        # args[[2]] <- lca[["posterior"]][["2"]]
+        # 
+        # cla <- colMeans(do.call(rbind, args))
+        # cla <- as.data.frame(cla)
+        
+        ###################################
+        
         
         results <-
           list(
