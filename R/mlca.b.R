@@ -274,8 +274,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         gtable1 <- res1[["gtable"]] #Absolute model fit
         
-        #dtable1<- res1[["dtable"]]  # Relative model fit 
-        
+       
         if(is.null(res1$dtable)) {
           dtable1 <- NULL 
         } else {
@@ -361,7 +360,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Cluster membership------------
         
-        member<- lca$posterior$cluster
+        member<- lca[["posterior"]][["cluster"]]
         
         # logistic regression coef.--------
         
