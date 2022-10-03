@@ -210,7 +210,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-        # self$results$text$setContent(lca)
+         self$results$text$setContent(lca)
        
         # Model fit measure----------
         
@@ -223,15 +223,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         gsq<- lca$gof$Gsq
         
         
-        # Absolute and Relative model fit for class-------------------------
+        # CLASS: Absolute and Relative model fit -------------------------
         
         args <- list(test = "boot", nboot=nb)
-        
-        inpclas = self$options$nc
-        
-        for(nc in 2:inpclas)
-          
-          args[[nc+1]] <- glca::glca(formula = formula, 
+        for(n in 2:self$options$nc)
+        args[[n+1]] <- glca::glca(formula = formula, 
                                      group=group, 
                                      data = data, 
                                      nclass = nc,
@@ -241,48 +237,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         res <- do.call(glca::gofglca, args)
         
         gtable <- res[["gtable"]] #Absolute model fit
-        
-        dtable<- res[["dtable"]]  # Relative model fit 
-        
-        if(is.null(res$dtable)){
-          
-          dtable<- NULL 
-          
-          # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
-          # Warning message:
-          #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
-          #   Since responses are different, deviance table does not printed.
-          # 
+
+        if(is.null(res$dtable)) {
+          dtable <- NULL 
+        } else {
+          dtable <- res[["dtable"]] # Relative model fit 
         }
-        
-        # Absolute and relative model fit for cluster-------
-        
-        
-        args <- list(test = "boot", nboot=nb)
-        
-        nclu = self$options$nclust
-        
-        for(nclu in 2:nclu)
-          
-          args[[nclu+1]] <- glca::glca(formula = formula, 
-                                       group=group, 
-                                       data = data, 
-                                       nclass = nc,
-                                       ncluster=nclu,
-                                       seed = 1)
-        
-        res1 <- do.call(glca::gofglca, args)
-        
-        
-        gtable1 <- res1[["gtable"]] #Absolute model fit
-        
-        dtable1<- res1[["dtable"]]  # Relative model fit 
-        
-        
-        
-        # if(is.null(res1$dtable1)){
-        #   
-        #   dtable1<- NULL 
+                
+        # dtable<- res[["dtable"]]  # Relative model fit 
+        # if(is.null(res$dtable)){
+        #   dtable<- NULL 
         #   
         #   # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
         #   # Warning message:
@@ -291,57 +255,75 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #   # 
         # }
         
+        # Absolute and relative model fit for cluster-------
         
-        # Measurement invariance--------------
         
-        if(self$options$nc>=2){
+        args <- list(test = "boot", nboot=nb)
+        
+        for(n in 2:self$options$nclust)
           
-          
-          mglca2<- glca::glca(formula = formula, 
-                              group=group, 
-                              data = data, 
-                              nclass = nc, 
-                              ncluster = nclust,
-                              seed = 1)
-          
-          mglca3<- glca::glca(formula = formula, 
-                              group=group, 
-                              data = data, 
-                              nclass = nc, 
-                              ncluster = nclust,
-                              measure.inv=FALSE,
-                              seed = 1)
-          
-          mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
-          
-          mi.d<- mi[["dtable"]]
-          
+          args[[n+1]] <- glca::glca(formula = formula, 
+                                       group=group, 
+                                       data = data, 
+                                       nclass = nc,
+                                       ncluster = nclust,
+                                       seed = 1)
+        
+        res1 <- do.call(glca::gofglca, args)
+        
+        
+        gtable1 <- res1[["gtable"]] #Absolute model fit
+        
+        #dtable1<- res1[["dtable"]]  # Relative model fit 
+        
+        if(is.null(res1$dtable)) {
+          dtable1 <- NULL 
+        } else {
+          dtable1 <- res1[["dtable"]]   # Relative model fit 
         }
         
-        # Equality of coefficients--------------
         
-        if(self$options$nc>=2){
+        if(self$options$nc >= 2){
+          
+          mglca2 <- glca::glca(formula = formula, 
+                               group = group, 
+                               data = data, 
+                               nclass = nc, 
+                               ncluster = nclust,
+                               seed = 1)
           
           
-          mglca2<- glca::glca(formula = formula, 
-                              group=group, 
-                              data = data, 
-                              nclass = nc, 
-                              ncluster = nclust,
-                              seed = 1)
+          # --- Measurement invariance --- #
+          mglca3 <- glca::glca(formula = formula, 
+                               group = group, 
+                               data = data, 
+                               nclass = nc, 
+                               ncluster = nclust,
+                               measure.inv = FALSE,
+                               seed = 1)
           
-          mglca3<- glca::glca(formula = formula, 
-                              group=group, 
-                              data = data, 
-                              nclass = nc, 
-                              ncluster = nclust,
-                              coeff.inv = FALSE,
-                              seed = 1)
+          mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
+          if(is.null(mi$dtable)) {
+            mi.d <- NULL 
+          } else {
+            mi.d <- mi[["dtable"]]
+          }
           
-          ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
+          # --- Equality of coefficients --- #            
+          mglca4 <- glca::glca(formula = formula, 
+                               group = group, 
+                               data = data, 
+                               nclass = nc, 
+                               ncluster = nclust,
+                               coeff.inv = FALSE,
+                               seed = 1)
           
-          ci.d<- ci[["dtable"]]
-          
+          ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
+          if(is.null(ci$dtable)) {
+            ci.d <- NULL 
+          } else {
+            ci.d <- ci[["dtable"]]
+          }
         }
         
         # Cluster(Marginal prevalences for latent cluster)------
@@ -352,12 +334,19 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # Class prevalences(Marginal prevalences for latent classes) ----------
         
         cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-        #cla<- as.data.frame(cla)
+        cla<- as.data.frame(cla)
        
        
         # Class prevalences by cluster-----------
         
-        cross<- lca[["posterior"]][["wclass"]]
+        #cross<- lca[["posterior"]][["wclass"]]
+        
+        if( is.null(lca[["posterior"]][["wclass"]]) ) {
+          cross <- NULL 
+        } else {
+          cross <- lca[["posterior"]][["wclass"]]
+        }
+        
         
         # item response probability---------
         
@@ -365,11 +354,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #item<- do.call("rbind", lapply(item, as.data.frame))
         
-         #self$results$text$setContent(item)
-        
-        # cluster posterior probability---------
-        
-       # clp<-lca[["posterior"]][["cluster"]]
         
         # posterior probability---------
         
@@ -670,10 +654,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         cla<- results$cla
         
-        cla<- as.data.frame(cla)
-        
         names<- dimnames(cla)[[1]]
-        
         
         for (name in names) {
           
