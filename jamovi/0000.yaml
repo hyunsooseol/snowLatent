@@ -29,7 +29,7 @@ analyses:
     menuTitle: Multilevel LCA
 datasets:
   - name: gss
-    path: gss.omv
+    path: gss08.omv
     description: Attitudes toward abortion
     tags:
       - LCA
@@ -39,13 +39,6 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
-  - name: election
-    path: election.omv
-    description: The 2000 American National Election Study
-    tags:
-      - Multilevel LCA
-      - LCA
-      - Multiple group LCA
 usesNative: true
 minApp: 1.0.8
 

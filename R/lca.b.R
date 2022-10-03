@@ -194,7 +194,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # item probabilities------
           
         item<- lca[["param"]][["rho"]][["ALL"]]
-        item<- do.call("rbind", lapply(item, as.data.frame))  
+       # item<- do.call("rbind", lapply(item, as.data.frame))  
         
         # gamma probability----------
         
@@ -239,41 +239,23 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         
         #Good codes for model fit####################################
-        # 
-        # library(glca)
-        # data("gss08")
-        # data <- gss08
-        # args <- list(test = "boot", seed = 1)
-        # f <- item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ 1
-        # inpclas = 4
-        # for(nc in 2:inpclas)
-        #   args[[nc+1]] <- glca::glca(formula = f, data = data, nclass = nc, seed = 1)
-        # res <- do.call(glca::gofglca, args)
-        # res
         
         args <- list(test = "boot", nboot=nb)
-        inpclas = self$options$nc
-        
-        for(nc in 2:inpclas)
-          args[[nc+1]] <- glca::glca(formula = formula, data = data, 
-                                     nclass = nc, seed = 1)
+      
+        for(n in 2:self$options$nc)
+          args[[n+1]] <- glca::glca(formula = formula, 
+                                     data = data, 
+                                     nclass = n, 
+                                     seed = 1)
         
         res <- do.call(glca::gofglca, args)
-       
+        
         gtable <- res[["gtable"]] #Absolute model fit
-       
-        dtable<- res[["dtable"]]  # Relative model fit   
         
-        
-        if(is.null(res$dtable)){
-        
-        dtable<- NULL 
-          
-        # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
-        # Warning message:
-        #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
-        #   Since responses are different, deviance table does not printed.
-        # 
+        if(is.null(res$dtable)) {
+          dtable <- NULL 
+        } else {
+          dtable <- res[["dtable"]] # Relative model fit 
         }
         
          
@@ -555,36 +537,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateItemTable= function(results) {
         
-        table <- self$results$item
+        if (!self$options$item)
+          return()
         
-        item <- results$item
-       
-        names<- dimnames(item)[[1]]
+        res <- results$item
         
-        dims <- dimnames(item)[[2]]
+        options(max.print = 1000000)
         
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'character')
-        }
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- item[name,j]
-            
-          }
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-        
+        self$results$text3$setContent(res)
       },   
 
   # gamma probabilities----------

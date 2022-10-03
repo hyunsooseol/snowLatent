@@ -10,7 +10,7 @@ glca(
   covs,
   group,
   nc = 2,
-  nb = 50,
+  nb = 10,
   fit = TRUE,
   comp = FALSE,
   rel = FALSE,

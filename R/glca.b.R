@@ -215,87 +215,79 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
-       # Absolute and Relative fit--------------------------
+        # CLASS: Absolute and Relative model fit -------------------------
         
-         args <- list(test = "boot", nboot=nb)
-         inpclas = self$options$nc
-         
-         for(nc in 2:inpclas)
-           args[[nc+1]] <- glca::glca(formula = formula, 
-                                      group=group, 
-                                      data = data, 
-                                      nclass = nc, 
-                                      seed = 1)
-         
-         res <- do.call(glca::gofglca, args)
+        args <- list(test = "boot", nboot=nb)
+        for(n in 2:self$options$nc)
+          args[[n+1]] <- glca::glca(formula = formula, 
+                                    group=group, 
+                                    data = data, 
+                                    nclass = n,
+                                    seed = 1)
         
+        res <- do.call(glca::gofglca, args)
         
-         gtable <- res[["gtable"]] #Absolute model fit
-         
-         dtable<- res[["dtable"]]  # Relative model fit 
+        gtable <- res[["gtable"]] #Absolute model fit
         
-         #self$results$text$setContent(dtable)
+        if(is.null(res$dtable)) {
+          dtable <- NULL 
+        } else {
+          dtable <- res[["dtable"]] # Relative model fit 
+        }
         
-         if(is.null(res$dtable)){
-           
-           dtable<- NULL
-
-           # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
-           # Warning message:
-           #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
-           #   Since responses are different, deviance table does not printed.
-
-         }           
+        # dtable<- res[["dtable"]]  # Relative model fit 
+        # if(is.null(res$dtable)){
+        #   dtable<- NULL 
+        #   
+        #   # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+        #   # Warning message:
+        #   #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+        #   #   Since responses are different, deviance table does not printed.
+        #   # 
+        # }
+        
+        # Measurement invariance----------------
+        
+        if(self$options$nc >= 2){
           
-         
-        # Measurement invariance--------------
-         
-         if(self$options$nc>=2){
-          
-          
-           mglca2<- glca::glca(formula = formula, 
-                      group=group, 
-                      data = data, 
-                      nclass = nc, 
-                      seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
-                               data = data, 
-                               nclass = nc, 
-                               measure.inv=FALSE,
-                               seed = 1)
-           
-           mi<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           mi.d<- mi[["dtable"]]
-           
-         }
-         
-         # Equality of coefficients--------------
-         
-         if(self$options$nc>=2){
-           
-           
-           mglca2<- glca::glca(formula = formula, 
-                               group=group, 
+          mglca2 <- glca::glca(formula = formula, 
+                               group = group, 
                                data = data, 
                                nclass = nc, 
                                seed = 1)
-           
-           mglca3<- glca::glca(formula = formula, 
-                               group=group, 
+          
+          
+          # --- Measurement invariance --- #
+          mglca3 <- glca::glca(formula = formula, 
+                               group = group, 
+                               data = data, 
+                               nclass = nc, 
+                               measure.inv = FALSE,
+                               seed = 1)
+          
+          mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
+          if(is.null(mi$dtable)) {
+            mi.d <- NULL 
+          } else {
+            mi.d <- mi[["dtable"]]
+          }
+          
+          # --- Equality of coefficients --- #            
+          mglca4 <- glca::glca(formula = formula, 
+                               group = group, 
                                data = data, 
                                nclass = nc, 
                                coeff.inv = FALSE,
                                seed = 1)
-           
-           ci<- glca::gofglca(mglca2, mglca3, test = "chisq")
-           
-           ci.d<- ci[["dtable"]]
-           
-         }
-         
+          
+          ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
+          if(is.null(ci$dtable)) {
+            ci.d <- NULL 
+          } else {
+            ci.d <- ci[["dtable"]]
+          }
+        }
+        
          # Class prevalences by group----------
         
          prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
@@ -309,14 +301,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          gamma <- lca[["param"]][["gamma"]]
          
-         
-         
          # posterior probability---------
         
         post <- lca[["posterior"]]
         
         
-         # Marginal prvalences for latent class##
+         # Marginal prvalences for latent class-----
          
          margin<- colMeans(do.call(rbind, lca[["posterior"]]))
          

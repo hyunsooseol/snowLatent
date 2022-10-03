@@ -230,7 +230,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         args[[n+1]] <- glca::glca(formula = formula, 
                                      group=group, 
                                      data = data, 
-                                     nclass = nc,
+                                     nclass = n,
                                      ncluster = nclust,
                                      seed = 1)
         
@@ -255,7 +255,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #   # 
         # }
         
-        # Absolute and relative model fit for cluster-------
+        # CLUSTER: Absolute and relative model fit-------
         
         
         args <- list(test = "boot", nboot=nb)
@@ -266,7 +266,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                        group=group, 
                                        data = data, 
                                        nclass = nc,
-                                       ncluster = nclust,
+                                       ncluster = n,
                                        seed = 1)
         
         res1 <- do.call(glca::gofglca, args)

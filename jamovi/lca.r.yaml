@@ -177,23 +177,6 @@ items:
           type: number
           format: zto,pvalue
           
-    - name: item
-      title: 'Item-response probabilities'
-      type: Table
-      refs: glca
-      visible: (item)
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - covs
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
     - name: post
       title: Posterior probabilities
       type: Output
@@ -229,8 +212,12 @@ items:
         - nc
         - nb
 
+    - name:  text3
+      title: Item response probability(Rho)
+      type:  Preformatted
+
     - name:  text2
-      title: Prevalence for level-1 class(gamma)
+      title: Prevalence for level-1 class(Gamma)
       type:  Preformatted
 
 ...
