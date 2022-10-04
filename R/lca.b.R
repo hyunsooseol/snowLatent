@@ -540,12 +540,45 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (!self$options$item)
           return()
         
-        res <- results$item
+        tables <- self$results$item
         
-        options(max.print = 1000000)
+        vars <- self$options$vars
         
-        self$results$text3$setContent(res)
-      },   
+        for(i in seq_along(vars)){
+          
+          item <- results$item[[ vars[i] ]]
+          
+          table <- tables[[i]]
+          
+          item<- as.data.frame(item)
+          
+          names<- dimnames(item)[[1]]
+          dims <- dimnames(item)[[2]]
+          
+          for (dim in dims) {
+            
+            table$addColumn(name = paste0(dim),
+                            type = 'number')
+          }
+          
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            for(j in seq_along(dims)){
+              
+              row[[dims[j]]] <- item[name,j]
+              
+            }
+            
+            table$addRow(rowKey=name, values=row)
+            
+          }
+          
+        }
+        
+        },   
 
   # gamma probabilities----------
   

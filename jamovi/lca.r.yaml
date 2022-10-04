@@ -177,6 +177,21 @@ items:
           type: number
           format: zto,pvalue
           
+    - name: item
+      title: 'item response probabilities'
+      type: Array
+      visible: (item)
+      items: (vars)
+      template:
+          title: Probability of $key
+          type: Table
+          clearWith:
+            - vars
+            - covs
+            - nc
+            - nb
+          columns: []
+        
     - name: post
       title: Posterior probabilities
       type: Output
@@ -211,10 +226,6 @@ items:
         - covs
         - nc
         - nb
-
-    - name:  text3
-      title: Item response probability(Rho)
-      type:  Preformatted
 
     - name:  text2
       title: Prevalence for level-1 class(Gamma)

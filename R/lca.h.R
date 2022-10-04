@@ -147,10 +147,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rel = function() private$.items[["rel"]],
         cp = function() private$.items[["cp"]],
         coef = function() private$.items[["coef"]],
+        item = function() private$.items[["item"]],
         post = function() private$.items[["post"]],
         member = function() private$.items[["member"]],
         plot1 = function() private$.items[["plot1"]],
-        text3 = function() private$.items[["text3"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
     public=list(
@@ -358,6 +358,21 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
+            self$add(jmvcore::Array$new(
+                options=options,
+                name="item",
+                title="item response probabilities",
+                visible="(item)",
+                items="(vars)",
+                template=jmvcore::Table$new(
+                    options=options,
+                    title="Probability of $key",
+                    clearWith=list(
+                        "vars",
+                        "covs",
+                        "nc",
+                        "nb"),
+                    columns=list())))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="post",
@@ -393,10 +408,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text3",
-                title="Item response probability(Rho)"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
@@ -447,10 +458,10 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cp} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$coef} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item} \tab \tab \tab \tab \tab an array of tables \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
