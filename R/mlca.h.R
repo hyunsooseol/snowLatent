@@ -242,6 +242,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust"),
                 refs="glca",
                 columns=list(
@@ -288,6 +289,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust"),
                 columns=list(
                     list(
@@ -338,6 +340,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
+                    "group",
+                    "covs",
                     "nclust"),
                 columns=list(
                     list(
@@ -377,6 +381,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust"),
                 columns=list(
                     list(
@@ -398,6 +403,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust"),
                 columns=list(
                     list(
@@ -419,6 +425,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust"),
                 columns=list(
                     list(
@@ -436,7 +443,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs",
+                    "nclust"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -474,7 +483,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs",
+                    "nclust"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -513,6 +524,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust"),
                 columns=list(
                     list(
@@ -534,6 +546,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "nb",
                     "group",
+                    "covs",
                     "nclust")))
             self$add(jmvcore::Preformatted$new(
                 options=options,

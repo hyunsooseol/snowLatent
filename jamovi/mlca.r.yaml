@@ -23,6 +23,7 @@ items:
         - nc
         - nb
         - group
+        - covs
         - nclust
 
       refs: glca 
@@ -63,6 +64,7 @@ items:
         - nc
         - nb
         - group
+        - covs
         - nclust
 
       columns:
@@ -105,6 +107,8 @@ items:
         - vars
         - nc
         - nb
+        - group
+        - covs
         - nclust
 
       columns:
@@ -139,7 +143,8 @@ items:
         - nc
         - nb
         - group
-        - nclust        
+        - covs
+        - nclust     
       
       columns:
         - name: name
@@ -159,6 +164,7 @@ items:
         - nc
         - nb
         - group
+        - covs
         - nclust
 
       columns:
@@ -179,6 +185,7 @@ items:
         - nc
         - nb
         - group
+        - covs
         - nclust
 
       columns:
@@ -197,6 +204,8 @@ items:
         - nc
         - nb
         - group
+        - covs
+        - nclust
  
       columns:
         - name: name
@@ -230,6 +239,8 @@ items:
         - nc
         - nb
         - group
+        - covs
+        - nclust
  
       columns:
         - name: name
@@ -263,6 +274,7 @@ items:
         - nc
         - nb
         - group
+        - covs
         - nclust
 
       columns:
@@ -284,6 +296,7 @@ items:
         - nc
         - nb
         - group
+        - covs
         - nclust
 
     - name: text3

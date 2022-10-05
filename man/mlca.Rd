@@ -14,7 +14,7 @@ mlca(
   nb = 10,
   fit = TRUE,
   comp1 = TRUE,
-  rel1 = FALSE,
+  rel1 = TRUE,
   margin = FALSE,
   cla = FALSE,
   cross = FALSE,

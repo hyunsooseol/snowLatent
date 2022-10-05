@@ -178,10 +178,16 @@ items:
           format: zto,pvalue
           
     - name: item
-      title: 'item response probabilities'
+      title: 'Item response probabilities'
       type: Array
       visible: (item)
       items: (vars)
+      clearWith:
+            - vars
+            - covs
+            - nc
+            - nb
+      
       template:
           title: Probability of $key
           type: Table
@@ -190,7 +196,11 @@ items:
             - covs
             - nc
             - nb
-          columns: []
+          columns: 
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
         
     - name: post
       title: Posterior probabilities

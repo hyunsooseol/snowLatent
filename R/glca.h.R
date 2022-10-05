@@ -184,8 +184,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         marginal = function() private$.items[["marginal"]],
         preval = function() private$.items[["preval"]],
         plot1 = function() private$.items[["plot1"]],
-        text3 = function() private$.items[["text3"]],
         text1 = function() private$.items[["text1"]],
+        text3 = function() private$.items[["text3"]],
         text4 = function() private$.items[["text4"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
@@ -212,6 +212,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=1,
                 clearWith=list(
                     "vars",
+                    "covs",
                     "nc",
                     "nb",
                     "group"),
@@ -259,7 +260,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -309,7 +311,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -347,7 +350,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -385,7 +389,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -424,7 +429,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -444,7 +450,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group"),
+                    "group",
+                    "covs"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -464,15 +471,16 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "nb",
-                    "group")))
+                    "group",
+                    "covs")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text1",
+                title="Item response probabilities"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
                 title="Logistic regression"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text1",
-                title="Item-response probabilities(rho)"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
@@ -535,8 +543,8 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }

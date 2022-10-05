@@ -20,6 +20,7 @@ items:
       rows: 1
       clearWith:
         - vars
+        - covs
         - nc
         - nb
         - group
@@ -61,6 +62,7 @@ items:
         - nc
         - nb
         - group
+        - covs
 
       columns:
         - name: name
@@ -103,6 +105,7 @@ items:
         - nc
         - nb
         - group
+        - covs        
 
       columns:
         - name: name
@@ -136,7 +139,7 @@ items:
         - nc
         - nb
         - group
- 
+        - covs 
       columns:
         - name: name
           title: 'Model'
@@ -169,7 +172,7 @@ items:
         - nc
         - nb
         - group
- 
+        - covs 
       columns:
         - name: name
           title: 'Model'
@@ -203,7 +206,7 @@ items:
         - nc
         - nb
         - group
- 
+        - covs 
       columns:
         - name: name
           title: ''
@@ -223,7 +226,7 @@ items:
         - nc
         - nb
         - group
- 
+        - covs 
       columns:
         - name: name
           title: ''
@@ -243,15 +246,16 @@ items:
         - nc
         - nb
         - group
+        - covs
+
+    - name: text1
+      title: Item response probabilities
+      type:  Preformatted 
 
     - name: text3
       title: Logistic regression
       type:  Preformatted   
  
-    - name:  text1
-      title: Item-response probabilities(rho)
-      type:  Preformatted
-
     - name:  text4
       title: Prevalence for level-1 class(gamma)
       type:  Preformatted

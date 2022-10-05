@@ -361,9 +361,14 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Array$new(
                 options=options,
                 name="item",
-                title="item response probabilities",
+                title="Item response probabilities",
                 visible="(item)",
                 items="(vars)",
+                clearWith=list(
+                    "vars",
+                    "covs",
+                    "nc",
+                    "nb"),
                 template=jmvcore::Table$new(
                     options=options,
                     title="Probability of $key",
@@ -372,7 +377,12 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         "covs",
                         "nc",
                         "nb"),
-                    columns=list())))
+                    columns=list(
+                        list(
+                            `name`="name", 
+                            `title`="", 
+                            `type`="text", 
+                            `content`="($key)")))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="post",

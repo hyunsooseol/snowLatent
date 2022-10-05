@@ -81,9 +81,21 @@ children:
             children:
               - type: CheckBox
                 name: item
-              - type: CheckBox
-                name: gamma
               - type: Output
                 name: post
               - type: Output
                 name: member
+  - type: CollapseBox
+    label: Additional options
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        children:
+          - type: Label
+            label: ''
+            children:
+              - type: CheckBox
+                name: gamma

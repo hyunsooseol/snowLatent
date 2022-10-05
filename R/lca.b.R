@@ -548,19 +548,24 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           item <- results$item[[ vars[i] ]]
           
+         
           table <- tables[[i]]
           
-          item<- as.data.frame(item)
+          names<- row.names(item)
+          dims <- colnames(item)
           
-          names<- dimnames(item)[[1]]
-          dims <- dimnames(item)[[2]]
+          #item<- as.data.frame(item)
+          #names<- dimnames(item)[[1]]
+          #dims <- dimnames(item)[[2]]
           
-          for (dim in dims) {
-            
-            table$addColumn(name = paste0(dim),
-                            type = 'number')
-          }
-          
+         
+           for (dim in dims) {
+
+             table$addColumn(name = paste0(dim),
+                             type = 'text',
+                             combineBelow=TRUE)
+           }
+
           
           for (name in names) {
             
