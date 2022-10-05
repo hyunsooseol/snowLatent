@@ -59,14 +59,10 @@ children:
         margin: large
         children:
           - type: Label
-            label: Fit for class
+            label: Model fit
             children:
               - type: CheckBox
                 name: fit
-              - type: CheckBox
-                name: comp
-              - type: CheckBox
-                name: rel
           - type: Label
             label: Fit for cluster
             children:
@@ -96,11 +92,6 @@ children:
                 name: cla
               - type: CheckBox
                 name: cross
-          - type: Label
-            label: Logistic regression
-            children:
-              - type: CheckBox
-                name: co 
   - type: CollapseBox
     label: Additional options
     margin: normal
@@ -136,3 +127,8 @@ children:
                 name: mi
               - type: CheckBox
                 name: ci
+          - type: Label
+            label: Logistic regression
+            children:
+              - type: CheckBox
+                name: co 

@@ -13,8 +13,6 @@ mlca(
   nclust = 2,
   nb = 10,
   fit = TRUE,
-  comp = TRUE,
-  rel = FALSE,
   comp1 = TRUE,
   rel1 = FALSE,
   margin = FALSE,
@@ -46,10 +44,6 @@ mlca(
 \item{nb}{.}
 
 \item{fit}{.}
-
-\item{comp}{.}
-
-\item{rel}{.}
 
 \item{comp1}{.}
 
@@ -83,8 +77,6 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
-  \code{results$comp} \tab \tab \tab \tab \tab a table \cr
-  \code{results$rel} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
   \code{results$margin} \tab \tab \tab \tab \tab a table \cr

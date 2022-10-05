@@ -62,16 +62,6 @@ options:
       type: Bool
       default: True
       
-    - name: comp
-      title: Absolute model fit
-      type: Bool
-      default: True
-
-    - name: rel
-      title: Relative model fit(Class>2)
-      type: Bool
-      default: FALSE
-
     - name: comp1
       title: Absolute model fit
       type: Bool

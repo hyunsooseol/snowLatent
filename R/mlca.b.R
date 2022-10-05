@@ -41,8 +41,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
         )
         
-        if (self$options$comp)
-          self$results$comp$setNote(
+        if (self$options$comp1)
+          self$results$comp1$setNote(
             "Note",
             "p: Bootstrap p value; H0: Model fit data adequately."
           )
@@ -85,14 +85,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateFitTable(results)
           
-          # Absolute model fit for class-----------
-          
-          private$.populateModelTable(results)
-          
-          # populate Relative model fit for class---------------
-          
-          private$.populateRelTable(results)
-          
+         
           # Absolute model fit for cluster-----------
           
           private$.populateModel1Table(results)
@@ -223,63 +216,177 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         gsq<- lca$gof$Gsq
         
         
-        # CLASS: Absolute and Relative model fit -------------------------
-        
-        args <- list(test = "boot", nboot=nb)
-        for(n in 2:self$options$nc)
-        args[[n+1]] <- glca::glca(formula = formula, 
-                                     group=group, 
-                                     data = data, 
-                                     nclass = n,
-                                     ncluster = nclust,
-                                     seed = 1)
-        
-        res <- do.call(glca::gofglca, args)
-        
-        gtable <- res[["gtable"]] #Absolute model fit
-
-        if(is.null(res$dtable)) {
-          dtable <- NULL 
-        } else {
-          dtable <- res[["dtable"]] # Relative model fit 
-        }
-                
-        # dtable<- res[["dtable"]]  # Relative model fit 
-        # if(is.null(res$dtable)){
-        #   dtable<- NULL 
-        #   
-        #   # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
-        #   # Warning message:
-        #   #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
-        #   #   Since responses are different, deviance table does not printed.
-        #   # 
+        # # CLASS: Absolute and Relative model fit -------------------------
+        # 
+        # args <- list(test = "boot", nboot=nb)
+        # for(n in 2:self$options$nc)
+        # args[[n+1]] <- glca::glca(formula = formula, 
+        #                              group=group, 
+        #                              data = data, 
+        #                              nclass = n,
+        #                             # ncluster = nclust,
+        #                              seed = 1)
+        # 
+        # res <- do.call(glca::gofglca, args)
+        # 
+        # gtable <- res[["gtable"]] #Absolute model fit
+        # 
+        # if(is.null(res$dtable)) {
+        #   dtable <- NULL 
+        # } else {
+        #   dtable <- res[["dtable"]] # Relative model fit 
         # }
-        
+        #         
+        # # dtable<- res[["dtable"]]  # Relative model fit 
+        # # if(is.null(res$dtable)){
+        # #   dtable<- NULL 
+        # #   
+        # #   # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
+        # #   # Warning message:
+        # #   #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
+        # #   #   Since responses are different, deviance table does not printed.
+        # #   # 
+        # # }
+        # 
         # CLUSTER: Absolute and relative model fit-------
         
-        
         args <- list(test = "boot", nboot=nb)
-        
+
         for(n in 2:self$options$nclust)
-          
-          args[[n+1]] <- glca::glca(formula = formula, 
-                                       group=group, 
-                                       data = data, 
+
+          args[[n+1]] <- glca::glca(formula = formula,
+                                       group=group,
+                                       data = data,
                                        nclass = nc,
                                        ncluster = n,
                                        seed = 1)
-        
-        res1 <- do.call(glca::gofglca, args)
-        
-        
-        gtable1 <- res1[["gtable"]] #Absolute model fit
-        
-       
-        if(is.null(res1$dtable)) {
-          dtable1 <- NULL 
+
+        res <- do.call(glca::gofglca, args)
+
+
+        gtable1 <- res[["gtable"]] #Absolute model fit
+
+
+        if(is.null(res$dtable)) {
+          dtable1 <- NULL
         } else {
-          dtable1 <- res1[["dtable"]]   # Relative model fit 
+          dtable1 <- res[["dtable"]]   # Relative model fit
         }
+
+        ##################################################################
+        #CLUSTER: Absolute and relative model fit-------
+        
+      #   if(self$options$nc==2){
+      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
+      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
+      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
+      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
+      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
+      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
+      #     
+      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot", nboot=nb,seed = 1)
+      #     
+      #     gtable1 <- res[["gtable"]] #Absolute model fit
+      #     
+      #     if(is.null(res$dtable)) {
+      #       dtable1 <- NULL 
+      #     } else {
+      #       dtable1 <- res[["dtable"]] # Relative model fit 
+      #     }
+      #   }
+      #   
+      #   if(self$options$nc==3){
+      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
+      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
+      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
+      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
+      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
+      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
+      #     
+      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot",nboot=nb, seed = 1)
+      #     
+      #     gtable1 <- res[["gtable"]] #Absolute model fit
+      #     if(is.null(res$dtable)) {
+      #       dtable1 <- NULL 
+      #     } else {
+      #       dtable1 <- res[["dtable"]] # Relative model fit 
+      #     }
+      #   }
+      #   
+      # if(self$options$nc==4){
+      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
+      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
+      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
+      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
+      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
+      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
+      #     
+      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot",nboot=nb, seed = 1)
+      #     
+      #     gtable1 <- res[["gtable"]] #Absolute model fit
+      #     if(is.null(res$dtable)) {
+      #       dtable1 <- NULL 
+      #     } else {
+      #       dtable1 <- res[["dtable"]] # Relative model fit 
+      #     }
+      #   }
+      #   
+      #   if(self$options$nc==5){
+      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
+      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
+      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
+      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
+      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
+      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
+      #     
+      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot",nboot=nb, seed = 1)
+      #     
+      #     gtable1 <- res[["gtable"]] #Absolute model fit
+      #     if(is.null(res$dtable)) {
+      #       dtable1 <- NULL 
+      #     } else {
+      #       dtable1 <- res[["dtable"]] # Relative model fit 
+      #     }
+      #   }
+      #   
+      #   if(self$options$nc==6){
+      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
+      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
+      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
+      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
+      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
+      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
+      #     
+      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot",nboot=nb, seed = 1)
+      #     
+      #     gtable1 <- res[["gtable"]] #Absolute model fit
+      #     if(is.null(res$dtable)) {
+      #       dtable1 <- NULL 
+      #     } else {
+      #       dtable1 <- res[["dtable"]] # Relative model fit 
+      #     }
+      #   }
+      #   
+      #   if(self$options$nc==7){
+      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
+      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
+      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
+      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
+      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
+      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
+      #     
+      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot",nboot=nb, seed = 1)
+      #     
+      #     gtable1 <- res[["gtable"]] #Absolute model fit
+      #     if(is.null(res$dtable)) {
+      #       dtable1 <- NULL 
+      #     } else {
+      #       dtable1 <- res[["dtable"]] # Relative model fit 
+      #     }
+      #   }
+      #   
+        
+        ######### Measurement Invariance#################
         
         
         if(self$options$nc >= 2){
@@ -415,8 +522,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'cross'=cross,
             'item'=item,
             'post'=post,
-            'gtable'=gtable,
-            'dtable'=dtable,
+            # 'gtable'=gtable,
+            # 'dtable'=dtable,
             'gtable1'=gtable1,
             'dtable1'=dtable1,
             'clust'=clust,
@@ -465,89 +572,89 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # Absolute model fit table for class------------
-      
-      .populateModelTable = function(results) {
-       
-        table <- self$results$comp
-       
-        gtable <- results$gtable
-       
-        g<- as.data.frame(gtable)
-       
-        loglik <- g[,1]
-        aic <- g[,2]
-        caic <- g[,3]
-        bic <- g[,4] 
-        entropy <- g[,5]
-        df <- g[,6] 
-        gsq <- g[,7] 
-        p <- g[,8]
-        
-        
-        names <- dimnames(g)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["loglik"]]   <-  g[name, 1]
-          row[["aic"]] <-  g[name, 2]
-          row[["caic"]] <-  g[name, 3]
-          row[["bic"]] <-  g[name, 4]
-          row[["entropy"]] <-  g[name, 5]
-          row[["df"]] <-  g[name, 6]
-          row[["gsq"]] <-  g[name, 7]
-          row[["p"]] <-  g[name, 8]
-          
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }     
-        
-      },
-      
-      #  Relative model fit for class---------------
-      
-      .populateRelTable = function(results) {
-        
-        
-        if(self$options$nc<3 | is.null(results$dtable))
-          return()
-        
-        
-        table <- self$results$rel
-      
-        dtable <- results$dtable
-        
-        d<- as.data.frame(dtable)
-        
-        para <- d[,1]
-        loglik<- d[,2]
-        df<- d[,3]
-        dev<- d[,4]
-        p<- d[,5]
-        
-        names <- dimnames(d)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["para"]] <-  d[name, 1]
-          row[["loglik"]] <-  d[name, 2]
-          row[["df"]] <-  d[name, 3]
-          row[["dev"]] <-  d[name, 4]
-          row[["p"]] <-d[name, 5]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-      },  
-      
+      # # Absolute model fit table for class------------
+      # 
+      # .populateModelTable = function(results) {
+      #  
+      #   table <- self$results$comp
+      #  
+      #   gtable <- results$gtable
+      #  
+      #   g<- as.data.frame(gtable)
+      #  
+      #   loglik <- g[,1]
+      #   aic <- g[,2]
+      #   caic <- g[,3]
+      #   bic <- g[,4] 
+      #   entropy <- g[,5]
+      #   df <- g[,6] 
+      #   gsq <- g[,7] 
+      #   p <- g[,8]
+      #   
+      #   
+      #   names <- dimnames(g)[[1]]
+      #   
+      #   
+      #   for (name in names) {
+      #     
+      #     row <- list()
+      #     
+      #     row[["loglik"]]   <-  g[name, 1]
+      #     row[["aic"]] <-  g[name, 2]
+      #     row[["caic"]] <-  g[name, 3]
+      #     row[["bic"]] <-  g[name, 4]
+      #     row[["entropy"]] <-  g[name, 5]
+      #     row[["df"]] <-  g[name, 6]
+      #     row[["gsq"]] <-  g[name, 7]
+      #     row[["p"]] <-  g[name, 8]
+      #     
+      #     
+      #     table$addRow(rowKey=name, values=row)
+      #     
+      #   }     
+      #   
+      # },
+      # 
+      # #  Relative model fit for class---------------
+      # 
+      # .populateRelTable = function(results) {
+      #   
+      #   
+      #   if(self$options$nc<3 | is.null(results$dtable))
+      #     return()
+      #   
+      #   
+      #   table <- self$results$rel
+      # 
+      #   dtable <- results$dtable
+      #   
+      #   d<- as.data.frame(dtable)
+      #   
+      #   para <- d[,1]
+      #   loglik<- d[,2]
+      #   df<- d[,3]
+      #   dev<- d[,4]
+      #   p<- d[,5]
+      #   
+      #   names <- dimnames(d)[[1]]
+      #   
+      #   
+      #   for (name in names) {
+      #     
+      #     row <- list()
+      #     
+      #     row[["para"]] <-  d[name, 1]
+      #     row[["loglik"]] <-  d[name, 2]
+      #     row[["df"]] <-  d[name, 3]
+      #     row[["dev"]] <-  d[name, 4]
+      #     row[["p"]] <-d[name, 5]
+      #     
+      #     table$addRow(rowKey=name, values=row)
+      #     
+      #   }
+      #   
+      # },  
+      # 
       # Absolute model fit for cluster------------
       
       .populateModel1Table = function(results) {
@@ -598,8 +705,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       .populateRel1Table = function(results) {
         
         
-         if(self$options$nclust<3) 
-          return()
+        if(self$options$nclust<3 | is.null(results$dtable1))
+             return()
         
         table <- self$results$rel1
         

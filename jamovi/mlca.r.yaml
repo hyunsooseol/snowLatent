@@ -53,86 +53,10 @@ items:
           title: G² 
           type: number
 
-    - name: comp
-      title: 'Absolute model fit for class'
-      type: Table
-      visible: (comp)
-      refs: glca
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-        - nclust
-
-      columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
-        - name: loglik
-          title: Log-likelihood
-          type: number
-        - name: aic
-          title: AIC
-          type: number
-        - name: caic
-          title: CAIC 
-          type: number 
-        - name: bic
-          title: BIC 
-          type: number
-        - name: entropy
-          title: Entropy 
-          type: number
-        - name: df
-          title: df 
-          type: integer
-        - name: gsq
-          title: G² 
-          type: number
-        - name: p
-          title: p 
-          type: number
-          format: zto,pvalue
-
-    - name: rel
-      title: 'Relative model fit for class'
-      type: Table
-      visible: (rel)
-      refs: glca
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - nclust
-
-      columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
-        - name: para
-          title: Parameter
-          type: number
-        - name: loglik
-          title: Log-likelihood
-          type: number
-        - name: df
-          title: df 
-          type: integer 
-        - name: dev
-          title: Deviance 
-          type: number
-        - name: p
-          title: p 
-          type: number
-          format: zto,pvalue
-
     - name: comp1
       title: 'Absolute model fit for cluster'
       type: Table
-      visible: (comp)
+      visible: (comp1)
       refs: glca
       clearWith:
         - vars
@@ -175,7 +99,7 @@ items:
     - name: rel1
       title: 'Relative model fit for cluster'
       type: Table
-      visible: (rel)
+      visible: (rel1)
       refs: glca
       clearWith:
         - vars
