@@ -55,14 +55,12 @@ children:
         margin: large
         children:
           - type: Label
-            label: Fit
+            label: Invariance(Class>2)
             children:
               - type: CheckBox
-                name: fit
+                name: mi
               - type: CheckBox
-                name: comp
-              - type: CheckBox
-                name: rel
+                name: ci
 
           - type: Label
             label: 'Prevalences'
@@ -85,12 +83,10 @@ children:
               - type: CheckBox
                 name: plot1
           - type: Label
-            label: Invariance check(Class>2)
-            children:
+            label: 'Logistic regression'
+            children:                
               - type: CheckBox
-                name: mi
-              - type: CheckBox
-                name: ci
+                name: co 
   - type: CollapseBox
     label: Additional options
     margin: normal
@@ -109,16 +105,3 @@ children:
                 name: gamma
               - type: CheckBox
                 name: post 
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 1
-          row: 0
-        fitToGrid: true
-        children:
-          - type: Label
-            label: 'Logistic regression'
-            children:                
-              - type: CheckBox
-                name: co 

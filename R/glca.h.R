@@ -11,10 +11,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             nb = 10,
-            fit = TRUE,
-            comp = FALSE,
-            rel = FALSE,
-            mi = FALSE,
+            mi = TRUE,
             ci = FALSE,
             marginal = FALSE,
             preval = FALSE,
@@ -65,22 +62,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nb,
                 min=10,
                 default=10)
-            private$..fit <- jmvcore::OptionBool$new(
-                "fit",
-                fit,
-                default=TRUE)
-            private$..comp <- jmvcore::OptionBool$new(
-                "comp",
-                comp,
-                default=FALSE)
-            private$..rel <- jmvcore::OptionBool$new(
-                "rel",
-                rel,
-                default=FALSE)
             private$..mi <- jmvcore::OptionBool$new(
                 "mi",
                 mi,
-                default=FALSE)
+                default=TRUE)
             private$..ci <- jmvcore::OptionBool$new(
                 "ci",
                 ci,
@@ -119,9 +104,6 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..nb)
-            self$.addOption(private$..fit)
-            self$.addOption(private$..comp)
-            self$.addOption(private$..rel)
             self$.addOption(private$..mi)
             self$.addOption(private$..ci)
             self$.addOption(private$..marginal)
@@ -138,9 +120,6 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         group = function() private$..group$value,
         nc = function() private$..nc$value,
         nb = function() private$..nb$value,
-        fit = function() private$..fit$value,
-        comp = function() private$..comp$value,
-        rel = function() private$..rel$value,
         mi = function() private$..mi$value,
         ci = function() private$..ci$value,
         marginal = function() private$..marginal$value,
@@ -156,9 +135,6 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..group = NA,
         ..nc = NA,
         ..nb = NA,
-        ..fit = NA,
-        ..comp = NA,
-        ..rel = NA,
         ..mi = NA,
         ..ci = NA,
         ..marginal = NA,
@@ -176,9 +152,6 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        fit = function() private$.items[["fit"]],
-        comp = function() private$.items[["comp"]],
-        rel = function() private$.items[["rel"]],
         mi = function() private$.items[["mi"]],
         ci = function() private$.items[["ci"]],
         marginal = function() private$.items[["marginal"]],
@@ -205,141 +178,6 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title="Model information"))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="fit",
-                title="Model fit",
-                rows=1,
-                clearWith=list(
-                    "vars",
-                    "covs",
-                    "nc",
-                    "nb",
-                    "group"),
-                refs="glca",
-                columns=list(
-                    list(
-                        `name`="class", 
-                        `title`="Class", 
-                        `type`="number"),
-                    list(
-                        `name`="loglik", 
-                        `title`="Log-likelihood", 
-                        `type`="number"),
-                    list(
-                        `name`="aic", 
-                        `title`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="caic", 
-                        `title`="CAIC", 
-                        `type`="number"),
-                    list(
-                        `name`="bic", 
-                        `title`="BIC", 
-                        `type`="number"),
-                    list(
-                        `name`="entropy", 
-                        `title`="Entropy", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="integer"),
-                    list(
-                        `name`="gsq", 
-                        `title`="G\u00B2", 
-                        `type`="number"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="comp",
-                title="Absolute model fit",
-                visible="(comp)",
-                refs="glca",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "nb",
-                    "group",
-                    "covs"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Model", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="loglik", 
-                        `title`="Log-likelihood", 
-                        `type`="number"),
-                    list(
-                        `name`="aic", 
-                        `title`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="caic", 
-                        `title`="CAIC", 
-                        `type`="number"),
-                    list(
-                        `name`="bic", 
-                        `title`="BIC", 
-                        `type`="number"),
-                    list(
-                        `name`="entropy", 
-                        `title`="Entropy", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="integer"),
-                    list(
-                        `name`="gsq", 
-                        `title`="G\u00B2", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="rel",
-                title="Relative model fit(Class>2)",
-                visible="(rel)",
-                refs="glca",
-                clearWith=list(
-                    "vars",
-                    "nc",
-                    "nb",
-                    "group",
-                    "covs"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="Model", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="para", 
-                        `title`="Parameter", 
-                        `type`="number"),
-                    list(
-                        `name`="loglik", 
-                        `title`="Log-likelihood", 
-                        `type`="number"),
-                    list(
-                        `name`="df", 
-                        `title`="df", 
-                        `type`="integer"),
-                    list(
-                        `name`="dev", 
-                        `title`="Deviance", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="mi",
@@ -519,9 +357,6 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param nc .
 #' @param nb .
-#' @param fit .
-#' @param comp .
-#' @param rel .
 #' @param mi .
 #' @param ci .
 #' @param marginal .
@@ -535,9 +370,6 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$comp} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$rel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mi} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
@@ -551,9 +383,9 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$fit$asDF}
+#' \code{results$mi$asDF}
 #'
-#' \code{as.data.frame(results$fit)}
+#' \code{as.data.frame(results$mi)}
 #'
 #' @export
 glca <- function(
@@ -563,10 +395,7 @@ glca <- function(
     group,
     nc = 2,
     nb = 10,
-    fit = TRUE,
-    comp = FALSE,
-    rel = FALSE,
-    mi = FALSE,
+    mi = TRUE,
     ci = FALSE,
     marginal = FALSE,
     preval = FALSE,
@@ -598,9 +427,6 @@ glca <- function(
         group = group,
         nc = nc,
         nb = nb,
-        fit = fit,
-        comp = comp,
-        rel = rel,
         mi = mi,
         ci = ci,
         marginal = marginal,
