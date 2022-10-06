@@ -11,8 +11,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             nb = 50,
             fit = TRUE,
-            comp = FALSE,
-            rel = FALSE,
+            comp = TRUE,
+            rel = TRUE,
             cp = FALSE,
             item = FALSE,
             gamma = FALSE,
@@ -59,11 +59,11 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..comp <- jmvcore::OptionBool$new(
                 "comp",
                 comp,
-                default=FALSE)
+                default=TRUE)
             private$..rel <- jmvcore::OptionBool$new(
                 "rel",
                 rel,
-                default=FALSE)
+                default=TRUE)
             private$..cp <- jmvcore::OptionBool$new(
                 "cp",
                 cp,
@@ -489,8 +489,8 @@ lca <- function(
     nc = 2,
     nb = 50,
     fit = TRUE,
-    comp = FALSE,
-    rel = FALSE,
+    comp = TRUE,
+    rel = TRUE,
     cp = FALSE,
     item = FALSE,
     gamma = FALSE,

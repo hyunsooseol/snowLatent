@@ -50,12 +50,12 @@ options:
     - name: comp
       title: Absolute model fit
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: rel
       title: Relative model fit(Class>2)
       type: Bool
-      default: FALSE
+      default: TRUE
 
     - name: cp
       title: Prevalences for latent class
