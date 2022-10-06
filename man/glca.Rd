@@ -10,9 +10,10 @@ glca(
   covs,
   group,
   nc = 2,
-  nb = 10,
-  mi = TRUE,
-  ci = FALSE,
+  mia = TRUE,
+  mir = TRUE,
+  cia = FALSE,
+  cir = FALSE,
   marginal = FALSE,
   preval = FALSE,
   post = FALSE,
@@ -33,11 +34,13 @@ glca(
 
 \item{nc}{.}
 
-\item{nb}{.}
+\item{mia}{.}
 
-\item{mi}{.}
+\item{mir}{.}
 
-\item{ci}{.}
+\item{cia}{.}
+
+\item{cir}{.}
 
 \item{marginal}{.}
 
@@ -58,8 +61,10 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$mi} \tab \tab \tab \tab \tab a table \cr
-  \code{results$ci} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mia} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mir} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cia} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cir} \tab \tab \tab \tab \tab a table \cr
   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -71,9 +76,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$mi$asDF}
+\code{results$mia$asDF}
 
-\code{as.data.frame(results$mi)}
+\code{as.data.frame(results$mia)}
 }
 \description{
 Multiple Group LCA

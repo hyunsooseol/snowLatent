@@ -45,19 +45,23 @@ options:
       min: 2
       default: 2
 
-    - name: nb
-      title: Bootstrap
-      type: Integer
-      min: 10
-      default: 10
-
-    - name: mi
-      title: Measurement
+    - name: mia
+      title: Absolute model fit
       type: Bool
       default: TRUE
 
-    - name: ci
-      title: Equality of coefficients
+    - name: mir
+      title: Relative model fit
+      type: Bool
+      default: TRUE
+
+    - name: cia
+      title: Absolute model fit
+      type: Bool
+      default: FALSE
+
+    - name: cir
+      title: Relative model fit
       type: Bool
       default: FALSE
 

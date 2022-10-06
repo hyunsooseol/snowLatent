@@ -40,18 +40,18 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         )
         
       
-        if (self$options$mi)
-          self$results$mi$setNote(
+        if (self$options$cia)
+          self$results$cia$setNote(
             "Note",
-            "Model1: Invariance is TRUE; Model2: Invariance is FALSE."
+            "Model1: coeff.inv=TRUE; Model2: coeff.inv=FALSE."
           )
-        
-        if (self$options$ci)
-          self$results$ci$setNote(
+
+        if (self$options$cir)
+          self$results$cir$setNote(
             "Note",
-            "Model1: Equality is TRUE; Model2: Equality is FALSE."
+            "Model1: coeff.inv=TRUE; Model2: coeff.inv=FALSE."
           )
-        
+
         
         
         if (length(self$options$vars) <= 1)
@@ -76,34 +76,50 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           results <- private$.compute(data)               
           
-          # populate measurement invariance---------------
+          # Measurement invariance(Absolute model fit)-----------
           
-          private$.populateMiTable(results)
+          private$.populateMiaTable(results)
           
-          # populate coefficients invariance---------------
-          
-          private$.populateCiTable(results)
+          # Measurement invariance(Relative model fit)---------------
           
           
-          # populate marginal prevalences---------
+          private$.populateMirTable(results)
+          
+          # Equality of coefficients(Absolute model fit)-----------
+          
+          private$.populateCiaTable(results)
+          
+          # Equality of coefficients(Relative model fit)---------------
+          
+          
+          private$.populateCirTable(results)
+          
+          
+          
+          # class probability table-----
           
           private$.populateClassTable(results)
           
-          # populate class prevalences by group table-------
+          
+          # marginal prevalences---------
+          
+          private$.populateClassTable(results)
+          
+          #  class prevalences by group table-------
           
           private$.populateCgTable(results)
           
           
-           # populate item probabilities---------
+           # item probabilities---------
           
           private$.populateItemTable(results)
           
-          # populate item probabilities---------
+          #  Gamma probabilities---------
           
           private$.populateGamTable(results)
           
          
-          # populate posterior probabilities--
+          #  posterior probabilities--
           
           private$.populatePosTable(results)
           
@@ -161,7 +177,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         group <- data[, 1]
         
         nc <- self$options$nc
-        nb <- self$options$nb
+        # nb <- self$options$nb
         
       ################### LCA model estimates############################
         
@@ -173,12 +189,18 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
       #################################################################
       
-      self$results$text$setContent(lca)
+     # self$results$text$setContent(lca)
         
        
         # Measurement invariance----------------
         
         if(self$options$nc >= 2){
+          
+          lca1 <- glca::glca(formula = formula, 
+                              # group = group, 
+                               data = data, 
+                               nclass = nc, 
+                               seed = 1)
           
           mglca2 <- glca::glca(formula = formula, 
                                group = group, 
@@ -194,14 +216,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                measure.inv = FALSE,
                                seed = 1)
           
-          mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
+          mi <- glca::gofglca(lca1,mglca2, mglca3, test = "chisq")
+          
+         
+          mi.g <- mi[["gtable"]] #Absolute model fit
+          
+         
           if(is.null(mi$dtable)) {
             mi.d <- NULL 
           } else {
-            mi.d <- mi[["dtable"]]
+            mi.d <- mi[["dtable"]] # Relative model fit
           }
           
-          # --- Equality of coefficients --- #            
+        
+           # --- Equality of coefficients --- #            
+         
           mglca4 <- glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
@@ -210,14 +239,20 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                seed = 1)
           
           ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
+          
+          ci.g <- ci[["gtable"]] #Absolute model fit
+          
+          self$results$text$setContent(ci)
+          
           if(is.null(ci$dtable)) {
             ci.d <- NULL 
           } else {
-            ci.d <- ci[["dtable"]]
+            ci.d <- ci[["dtable"]] # Relative model fit
           }
         }
-        
-         # Class prevalences by group----------
+          
+      
+        # Class prevalences by group----------
         
          prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
         
@@ -268,15 +303,15 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image$setState(lca)
         
-      
-        
         results <-
           list(
             'prev'=prev,
             'item'=item,
             'post'=post,
             'margin'=margin,
+            'mi.g'=mi.g,
             'mi.d'=mi.d,
+            'ci.g'=ci.g,
             'ci.d'=ci.d,
             'gamma'=gamma
           
@@ -286,20 +321,57 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },   
       
       
-      ################ populating Tables################################
+      ################ Tables################################
       
- 
-     #Measurement Invariance----------------------------------------------
-       
-     .populateMiTable = function(results) {
+      .populateMiaTable = function(results) {
         
-        if(self$options$nc<3)
+       
+        table <- self$results$mia
+        
+        
+        gtable <- results$mi.g
+        g<- as.data.frame(gtable)
+      
+       
+        loglik <- g[,1]
+        aic <- g[,2]
+        caic <- g[,3]
+        bic <- g[,4] 
+        entropy <- g[,5]
+        df <- g[,6] 
+        gsq <- g[,7] 
+       
+        
+        names <- dimnames(g)[[1]]
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[["loglik"]]   <-  g[name, 1]
+          row[["aic"]] <-  g[name, 2]
+          row[["caic"]] <-  g[name, 3]
+          row[["bic"]] <-  g[name, 4]
+          row[["entropy"]] <-  g[name, 5]
+          row[["df"]] <-  g[name, 6]
+          row[["gsq"]] <-  g[name, 7]
+         
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }     
+        
+      },
+      
+      # Populate relative model fit---------------
+      
+      .populateMirTable = function(results) {
+        
+        if(is.null(results$mi.d))
           return()
         
-        nc <- self$options$nc
-        
-        table <- self$results$mi
-        
+       
+        table <- self$results$mir
         
         dtable <- results$mi.d
         
@@ -328,20 +400,61 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
-      },  
+      },
+    
+      #-----------------------
       
-     #--Coefficients invarianve--------------------------------------------
-      
-     .populateCiTable = function(results) {
+      .populateCiaTable = function(results) {
         
-        if(self$options$nc<3)
+        
+      table <- self$results$cia
+      gtable <- results$ci.g
+        
+        g<- as.data.frame(gtable)
+        
+        loglik <- g[,1]
+        aic <- g[,2]
+        caic <- g[,3]
+        bic <- g[,4] 
+        entropy <- g[,5]
+        df <- g[,6] 
+        gsq <- g[,7] 
+      
+        
+        
+        names <- dimnames(g)[[1]]
+        
+        
+        for (name in names) {
+          
+          row <- list()
+          
+          row[["loglik"]]   <-  g[name, 1]
+          row[["aic"]] <-  g[name, 2]
+          row[["caic"]] <-  g[name, 3]
+          row[["bic"]] <-  g[name, 4]
+          row[["entropy"]] <-  g[name, 5]
+          row[["df"]] <-  g[name, 6]
+          row[["gsq"]] <-  g[name, 7]
+        
+          
+          
+          table$addRow(rowKey=name, values=row)
+          
+        }     
+        
+      },
+      
+      # Populate relative model fit---------------
+      
+      .populateCirTable = function(results) {
+        
+        if(is.null(results$ci.d))
           return()
         
-        nc <- self$options$nc
+       
         
-        table <- self$results$ci
-        
-        
+        table <- self$results$cir
         dtable <- results$ci.d
         
         d<- as.data.frame(dtable)
@@ -369,7 +482,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
-      },  
+      },
+      
       
        # Marginal prevalences for latent classes--------------------------------------
       

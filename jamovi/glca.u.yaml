@@ -28,23 +28,6 @@ children:
             name: group
             maxItemCount: 1
             isTarget: true
-  - type: LayoutBox
-    margin: large
-    style: inline
-    children:
-      - type: Label
-        label: Analysis options
-        margin: large
-        style: list-inline
-        children:
-          - name: nc
-            type: TextBox
-            label: Class
-            format: number
-          - name: nb
-            type: TextBox
-            label: Bootstrap
-            format: number
   - type: CollapseBox
     label: Analysis
     margin: normal
@@ -55,15 +38,28 @@ children:
         margin: large
         children:
           - type: Label
-            label: Invariance(Class>2)
+            label: ''
+            children:
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number   
+          - type: Label
+            label: Measurement invariance
             children:
               - type: CheckBox
-                name: mi
+                name: mia
               - type: CheckBox
-                name: ci
-
+                name: mir
           - type: Label
-            label: 'Prevalences'
+            label: Equality of coefficients
+            children:
+              - type: CheckBox
+                name: cia
+              - type: CheckBox
+                name: cir
+          - type: Label
+            label: Prevalences
             children:
               - type: CheckBox
                 name: marginal
@@ -83,10 +79,10 @@ children:
               - type: CheckBox
                 name: plot1
           - type: Label
-            label: 'Logistic regression'
-            children:                
+            label: Logistic regression
+            children:
               - type: CheckBox
-                name: co 
+                name: co
   - type: CollapseBox
     label: Additional options
     margin: normal
@@ -97,11 +93,11 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Probability'
+            label: Probability
             children:
               - type: CheckBox
                 name: item
               - type: CheckBox
                 name: gamma
               - type: CheckBox
-                name: post 
+                name: post

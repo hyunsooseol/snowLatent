@@ -14,17 +14,55 @@ items:
       title: Model information
       type:  Preformatted
 
-    - name: mi
-      title: 'Measurement invariance'
+    - name: mia
+      title: 'Absolute model fit for measurement invariance'
       type: Table
-      visible: (mi)
+      visible: (mia)
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
-        - nb
         - group
-        - covs 
+
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: df 
+          type: integer
+        - name: gsq
+          title: G² 
+          type: number
+ 
+    - name: mir
+      title: 'Relative model fit for measurement invariance'
+      type: Table
+      visible: (mir)
+      refs: glca
+      clearWith:
+        - vars
+        - covs
+        - nc
+        - group
+
       columns:
         - name: name
           title: 'Model'
@@ -47,17 +85,55 @@ items:
           type: number
           format: zto,pvalue
 
-    - name: ci
-      title: 'Equality of coefficients'
+    - name: cia
+      title: 'Absolute model fit for the equality of coefficients'
       type: Table
-      visible: (ci)
+      visible: (cia)
       refs: glca
       clearWith:
         - vars
+        - covs
         - nc
-        - nb
         - group
-        - covs 
+
+      columns:
+        - name: name
+          title: 'Model'
+          type: 'text'
+          content: ($key)
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: df 
+          type: integer
+        - name: gsq
+          title: G² 
+          type: number
+ 
+    - name: cir
+      title: 'Relative model fit for the equality of coefficients'
+      type: Table
+      visible: (cir)
+      refs: glca
+      clearWith:
+        - vars
+        - covs
+        - nc
+        - group
+
       columns:
         - name: name
           title: 'Model'
@@ -89,9 +165,7 @@ items:
         - vars
         - covs
         - nc
-        - nb
         - group
-        - covs 
       columns:
         - name: name
           title: ''
@@ -109,7 +183,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs 
       columns:
@@ -129,7 +202,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
 
