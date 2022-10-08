@@ -283,6 +283,31 @@ items:
           type: 'text'
           content: ($key)
 
+    - name: item
+      title: 'Item response probabilities(Rho)'
+      type: Array
+      visible: (item)
+      items: (vars)
+      clearWith:
+            - vars
+            - covs
+            - nc
+            - nb
+      
+      template:
+          title: Probability of $key
+          type: Table
+          clearWith:
+            - vars
+            - covs
+            - nc
+            - nb
+          columns: 
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+
     - name:  plot1
       title: Profile plot
       type:  Image
@@ -302,10 +327,6 @@ items:
     - name: text3
       title: Logistic regression
       type:  Preformatted 
-
-    - name: text5
-      title: Item response probability(Rho)
-      type:  Preformatted  
 
     - name: text2
       title: Class probability

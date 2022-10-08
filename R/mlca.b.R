@@ -873,50 +873,58 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
         
       
-      # item response probabilities----------
+      # item probabilities----------
       
       .populateItemTable= function(results) {
         
-        
-        if(!self$options$item)
+        if (!self$options$item)
           return()
         
-        item <- results$item
+        tables <- self$results$item
         
-        self$results$text5$setContent(item)
+        vars <- self$options$vars
         
+        for(i in seq_along(vars)){
+          
+          item <- results$item[[ vars[i] ]]
+          
+          
+          table <- tables[[i]]
+          
+          names<- row.names(item)
+          dims <- colnames(item)
+          
+          #item<- as.data.frame(item)
+          #names<- dimnames(item)[[1]]
+          #dims <- dimnames(item)[[2]]
+          
+          
+          for (dim in dims) {
+            
+            table$addColumn(name = paste0(dim),
+                            type = 'text',
+                            combineBelow=TRUE)
+          }
+          
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            for(j in seq_along(dims)){
+              
+              row[[dims[j]]] <- item[name,j]
+              
+            }
+            
+            table$addRow(rowKey=name, values=row)
+            
+          }
+          
+        }
         
-        # table <- self$results$item
-        # item <- results$item
-        # 
-        # names<- dimnames(item)[[1]]
-        # 
-        # dims <- dimnames(item)[[2]]
-        # 
-        # for (dim in dims) {
-        #   
-        #   table$addColumn(name = paste0(dim),
-        #                   type = 'character')
-        # }
-        # 
-        # 
-        # for (name in names) {
-        #   
-        #   row <- list()
-        #   
-        #   for(j in seq_along(dims)){
-        #     
-        #     row[[dims[j]]] <- item[name,j]
-        #     
-        #   }
-        #   
-        #   table$addRow(rowKey=name, values=row)
-        #   
-        # }
-        # 
-        
-      },
-    
+      },   
+      
       # posterior probability----------
       
       .populatePosTable= function(results) {
