@@ -195,7 +195,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
       #################################################################
       
-    #  self$results$text$setContent(lca)
+      self$results$text$setContent(lca)
         
         # Model fit-------------
         
