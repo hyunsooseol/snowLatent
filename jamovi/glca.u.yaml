@@ -48,6 +48,8 @@ children:
             label: Measurement invariance
             children:
               - type: CheckBox
+                name: fit
+              - type: CheckBox
                 name: mia
               - type: CheckBox
                 name: mir
@@ -58,13 +60,6 @@ children:
                 name: cia
               - type: CheckBox
                 name: cir
-          - type: Label
-            label: Prevalences
-            children:
-              - type: CheckBox
-                name: marginal
-              - type: CheckBox
-                name: preval
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -83,6 +78,13 @@ children:
             children:
               - type: CheckBox
                 name: co
+          - type: Label
+            label: Prevalences
+            children:
+              - type: CheckBox
+                name: marginal
+              - type: CheckBox
+                name: preval
   - type: CollapseBox
     label: Additional options
     margin: normal

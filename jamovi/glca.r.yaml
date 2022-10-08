@@ -14,6 +14,43 @@ items:
       title: Model information
       type:  Preformatted
 
+    - name: fit
+      title: 'Model fit'
+      type: Table
+      rows: 1
+      clearWith:
+        - vars
+        - nc
+        - covs
+        - group
+      refs: glca 
+
+      columns:
+        - name: class
+          title: Class
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
+        - name: df
+          title: df 
+          type: integer
+        - name: gsq
+          title: G² 
+          type: number
+
     - name: mia
       title: 'Absolute model fit for measurement invariance'
       type: Table
@@ -166,6 +203,7 @@ items:
         - covs
         - nc
         - group
+
       columns:
         - name: name
           title: ''
@@ -173,8 +211,9 @@ items:
           content: ($key)
 
         - name: value
-          title: 'Probability' 
-          
+          title: 'Probability'
+          type: number
+        
     - name: preval
       title: 'Class prevalences by group'
       type: Table

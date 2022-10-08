@@ -10,6 +10,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             covs = NULL,
             group = NULL,
             nc = 2,
+            fit = TRUE,
             mia = TRUE,
             mir = TRUE,
             cia = FALSE,
@@ -58,6 +59,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
+            private$..fit <- jmvcore::OptionBool$new(
+                "fit",
+                fit,
+                default=TRUE)
             private$..mia <- jmvcore::OptionBool$new(
                 "mia",
                 mia,
@@ -107,6 +112,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..covs)
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
+            self$.addOption(private$..fit)
             self$.addOption(private$..mia)
             self$.addOption(private$..mir)
             self$.addOption(private$..cia)
@@ -124,6 +130,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         covs = function() private$..covs$value,
         group = function() private$..group$value,
         nc = function() private$..nc$value,
+        fit = function() private$..fit$value,
         mia = function() private$..mia$value,
         mir = function() private$..mir$value,
         cia = function() private$..cia$value,
@@ -140,6 +147,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..covs = NA,
         ..group = NA,
         ..nc = NA,
+        ..fit = NA,
         ..mia = NA,
         ..mir = NA,
         ..cia = NA,
@@ -159,6 +167,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
+        fit = function() private$.items[["fit"]],
         mia = function() private$.items[["mia"]],
         mir = function() private$.items[["mir"]],
         cia = function() private$.items[["cia"]],
@@ -187,6 +196,50 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text",
                 title="Model information"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="fit",
+                title="Model fit",
+                rows=1,
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "covs",
+                    "group"),
+                refs="glca",
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
+                        `type`="number"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="integer"),
+                    list(
+                        `name`="gsq", 
+                        `title`="G\u00B2", 
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="mia",
@@ -372,7 +425,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `content`="($key)"),
                     list(
                         `name`="value", 
-                        `title`="Probability"))))
+                        `title`="Probability", 
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="preval",
@@ -449,6 +503,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param covs .
 #' @param group .
 #' @param nc .
+#' @param fit .
 #' @param mia .
 #' @param mir .
 #' @param cia .
@@ -464,6 +519,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mir} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cia} \tab \tab \tab \tab \tab a table \cr
@@ -479,9 +535,9 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$mia$asDF}
+#' \code{results$fit$asDF}
 #'
-#' \code{as.data.frame(results$mia)}
+#' \code{as.data.frame(results$fit)}
 #'
 #' @export
 glca <- function(
@@ -490,6 +546,7 @@ glca <- function(
     covs,
     group,
     nc = 2,
+    fit = TRUE,
     mia = TRUE,
     mir = TRUE,
     cia = FALSE,
@@ -523,6 +580,7 @@ glca <- function(
         covs = covs,
         group = group,
         nc = nc,
+        fit = fit,
         mia = mia,
         mir = mir,
         cia = cia,

@@ -10,6 +10,7 @@ glca(
   covs,
   group,
   nc = 2,
+  fit = TRUE,
   mia = TRUE,
   mir = TRUE,
   cia = FALSE,
@@ -33,6 +34,8 @@ glca(
 \item{group}{.}
 
 \item{nc}{.}
+
+\item{fit}{.}
 
 \item{mia}{.}
 
@@ -61,6 +64,7 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$mia} \tab \tab \tab \tab \tab a table \cr
   \code{results$mir} \tab \tab \tab \tab \tab a table \cr
   \code{results$cia} \tab \tab \tab \tab \tab a table \cr
@@ -76,9 +80,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$mia$asDF}
+\code{results$fit$asDF}
 
-\code{as.data.frame(results$mia)}
+\code{as.data.frame(results$fit)}
 }
 \description{
 Multiple Group LCA

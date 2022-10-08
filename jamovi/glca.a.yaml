@@ -45,6 +45,11 @@ options:
       min: 2
       default: 2
 
+    - name: fit
+      title: Fit measures
+      type: Bool
+      default: True
+ 
     - name: mia
       title: Absolute model fit
       type: Bool

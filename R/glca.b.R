@@ -40,10 +40,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         )
         
       
-        if (self$options$cia)
-          self$results$cia$setNote(
+        if (self$options$mir)
+          self$results$mir$setNote(
             "Note",
-            "Model1: coeff.inv=TRUE; Model2: coeff.inv=FALSE."
+            "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
           )
 
         if (self$options$cir)
@@ -75,6 +75,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           data <- private$.cleanData()
           
           results <- private$.compute(data)               
+          
+          
+          # populate fit table------------
+          
+          private$.populateFitTable(results)
+          
           
           # Measurement invariance(Absolute model fit)-----------
           
@@ -126,7 +132,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  
           # logistic table-----------
           
-        #   private$.populateLogiTable(results)
+           private$.populateLogiTable(results)
           
         }
       },
@@ -134,9 +140,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .compute = function(data) {
         
-         if (is.null(self$options$group))
-           return()
-        
+         # if (is.null(self$options$group))
+         #   return()
+         # 
         
         ######## glca R package ################
         
@@ -189,19 +195,29 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
       #################################################################
       
-     # self$results$text$setContent(lca)
+    #  self$results$text$setContent(lca)
         
-       
+        # Model fit-------------
+        
+        loglik<- lca$gof$loglik
+        aic<- lca$gof$aic
+        caic<- lca$gof$caic
+        bic<- lca$gof$bic
+        entropy<- lca$gof$entropy
+        df<- lca$gof$df
+        gsq<- lca$gof$Gsq
+        
+        
         # Measurement invariance----------------
         
         if(self$options$nc >= 2){
           
-          lca1 <- glca::glca(formula = formula, 
-                              # group = group, 
-                               data = data, 
-                               nclass = nc, 
-                               seed = 1)
-          
+          # lca1 <- glca::glca(formula = formula,
+          #                     # group = group,
+          #                      data = data,
+          #                      nclass = nc,
+          #                      seed = 1)
+
           mglca2 <- glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
@@ -216,7 +232,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                measure.inv = FALSE,
                                seed = 1)
           
-          mi <- glca::gofglca(lca1,mglca2, mglca3, test = "chisq")
+          mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
           
          
           mi.g <- mi[["gtable"]] #Absolute model fit
@@ -241,9 +257,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
           
           ci.g <- ci[["gtable"]] #Absolute model fit
-          
-          self$results$text$setContent(ci)
-          
+         
           if(is.null(ci$dtable)) {
             ci.d <- NULL 
           } else {
@@ -274,19 +288,30 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          margin<- colMeans(do.call(rbind, lca[["posterior"]]))
          
-        # logistic regression -------------
+        # self$results$text3$setContent(margin)
+         
+         # logistic regression -------------
         
-        if(!is.null(self$options$covs) ) {
-          
-          if (!self$options$co)
-                 return()
-          
+        co<- lca$coefficient
+        
+        if(is.null(co)) {
+          co <- NULL 
+        } else {
           co<- lca$coefficient
-          
-          self$results$text3$setContent(co)
-          
         }
+      
         
+        # if(!is.null(self$options$covs) ) {
+        #   
+        #   # if (!self$options$co)
+        #   #        return()
+        #   
+        #   co<- lca$coefficient
+        #   
+        #   self$results$text3$setContent(co)
+        #   
+        # }
+        # 
        
          # Class Prevalences plot----------
         
@@ -305,15 +330,23 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         results <-
           list(
+            'loglik'=loglik,
+            'aic'=aic,
+            'caic'=caic,
+            'bic'=bic,
+            'entropy'=entropy,
+            'df'=df,
+            'gsq'=gsq,
             'prev'=prev,
             'item'=item,
             'post'=post,
             'margin'=margin,
-            'mi.g'=mi.g,
+             'mi.g'=mi.g,
             'mi.d'=mi.d,
             'ci.g'=ci.g,
             'ci.d'=ci.d,
-            'gamma'=gamma
+            'gamma'=gamma,
+            'co'=co
           
             )
         
@@ -322,10 +355,45 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       
       ################ Tables################################
-      
+  
+       .populateFitTable = function(results) {
+       
+       table <- self$results$fit
+       
+       class <- self$options$nc
+       
+       loglik<- results$loglik
+       aic<- results$aic
+       caic<- results$caic
+       bic<- results$bic
+       entropy<- results$entropy
+       df<- results$df
+       gsq<- results$gsq
+       
+       
+       row <- list()
+       
+       row[['class']] <- class
+       row[['loglik']] <- loglik
+       row[['aic']] <- aic
+       row[['caic']] <- caic
+       row[['bic']] <- bic
+       row[['entropy']] <- entropy
+       row[['df']] <- df
+       row[['gsq']] <- gsq
+       
+       table$setRow(rowNo = 1, values = row)
+       
+       
+     },
+     
+     
+     # absolute model fit table--------------------
+     
       .populateMiaTable = function(results) {
         
-       
+        nc <- self$options$nc
+        
         table <- self$results$mia
         
         
@@ -489,28 +557,26 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateClassTable= function(results) {  
         
+       
         table <- self$results$marginal
-        
+
         margin <- results$margin
+
+        margin<- as.data.frame(margin)
         
-        mar<- as.data.frame(margin)
-        names<- dimnames(mar)[[1]]
-        
+        names<- dimnames(margin)[[1]]
+       
         for (name in names) {
-          
+
           row <- list()
-          
-          row[['value']] <- mar[name,1]
-          
+
+          row[['value']] <- margin[name,1]
+
           table$addRow(rowKey=name, values=row)
-          
+
         }
-        
-        
-        
-      },
-      
-      
+    },
+     
       # populate class prevalences by group table---------------
       
       .populateCgTable= function(results) {
@@ -592,21 +658,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      
-      # # Logistic reg. table----------
-      # 
-      # 
-      # .populateLogiTable= function(results) {
-      # 
-      #   if (!self$options$co)
-      #     return()
-      # 
-      #   co <- results$co
-      # 
-      #   self$results$text3$setContent(co)
-      # 
-      # },
-      # 
+
+      # Logistic reg. table----------
+
+
+      .populateLogiTable= function(results) {
+
+        if (!self$options$co)
+          return()
+
+        co <- results$co
+
+        self$results$text3$setContent(co)
+
+      },
+
       ######## plot#######################
       .plot1 = function(image, ...) {
         
