@@ -106,11 +106,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           private$.populateClassTable(results)
           
-          
-          # marginal prevalences---------
-          
-          private$.populateClassTable(results)
-          
+        
           #  class prevalences by group table-------
           
           private$.populateCgTable(results)
@@ -555,28 +551,29 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
        # Marginal prevalences for latent classes--------------------------------------
       
-      .populateClassTable= function(results) {  
+        .populateClassTable= function(results) {  
+          
+          table <- self$results$marginal
+          
+          margin <- results$margin
+          
+          mar<- as.data.frame(margin)
+          names<- dimnames(mar)[[1]]
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            row[['value']] <- mar[name,1]
+            
+            table$addRow(rowKey=name, values=row)
+            
+          }
+          
+          
+          
+        },
         
-       
-        table <- self$results$marginal
-
-        margin <- results$margin
-
-        margin<- as.data.frame(margin)
-        
-        names<- dimnames(margin)[[1]]
-       
-        for (name in names) {
-
-          row <- list()
-
-          row[['value']] <- margin[name,1]
-
-          table$addRow(rowKey=name, values=row)
-
-        }
-    },
-     
       # populate class prevalences by group table---------------
       
       .populateCgTable= function(results) {
