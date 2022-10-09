@@ -174,10 +174,12 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="fit",
                 title="Model fit",
                 rows=1,
+                visible="(fit)",
                 clearWith=list(
                     "vars",
                     "nc",
-                    "covs"),
+                    "covs",
+                    "nb"),
                 refs="glca",
                 columns=list(
                     list(

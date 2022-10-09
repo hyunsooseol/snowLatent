@@ -39,6 +39,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             </html>"
         )
         
+        if (self$options$mia)
+          self$results$mia$setNote(
+            "Note",
+            "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
+          )
+        
       
         if (self$options$mir)
           self$results$mir$setNote(
@@ -46,6 +52,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
           )
 
+        if (self$options$cia)
+          self$results$cia$setNote(
+            "Note",
+            "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
+          )
+        
+        
         if (self$options$cir)
           self$results$cir$setNote(
             "Note",
@@ -203,6 +216,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
         
+        fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq)
         
         # Measurement invariance----------------
         
@@ -230,7 +244,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
           
-         
           mi.g <- mi[["gtable"]] #Absolute model fit
           
          
@@ -326,13 +339,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         results <-
           list(
-            'loglik'=loglik,
-            'aic'=aic,
-            'caic'=caic,
-            'bic'=bic,
-            'entropy'=entropy,
-            'df'=df,
-            'gsq'=gsq,
+           'fit'=fit,
             'prev'=prev,
             'item'=item,
             'post'=post,
@@ -354,32 +361,24 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
        .populateFitTable = function(results) {
        
-       table <- self$results$fit
-       
-       class <- self$options$nc
-       
-       loglik<- results$loglik
-       aic<- results$aic
-       caic<- results$caic
-       bic<- results$bic
-       entropy<- results$entropy
-       df<- results$df
-       gsq<- results$gsq
-       
-       
-       row <- list()
-       
-       row[['class']] <- class
-       row[['loglik']] <- loglik
-       row[['aic']] <- aic
-       row[['caic']] <- caic
-       row[['bic']] <- bic
-       row[['entropy']] <- entropy
-       row[['df']] <- df
-       row[['gsq']] <- gsq
-       
-       table$setRow(rowNo = 1, values = row)
-       
+         table <- self$results$fit
+         fit <- results$fit
+         
+         class <- self$options$nc 
+         
+         row <- list()
+         
+         row[['class']] <- class
+         row[['loglik']] <- fit[,1]
+         row[['aic']] <- fit[,2]
+         row[['caic']] <- fit[,3]
+         row[['bic']] <- fit[,4]
+         row[['entropy']] <- fit[,5]
+         row[['df']] <- fit[,6]
+         row[['gsq']] <- fit[,7]
+         
+         table$setRow(rowNo = 1, values = row)
+         
        
      },
      

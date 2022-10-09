@@ -167,7 +167,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         entropy<- lca$gof$entropy
         df<- lca$gof$df
         gsq<- lca$gof$Gsq
-            
+           
+        fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq) 
    
       ######## Marginal prvalences for latent class##############
       
@@ -261,13 +262,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
       results <-
               list(
-                'loglik'=loglik,
-                'aic'=aic,
-                'caic'=caic,
-                'bic'=bic,
-                'entropy'=entropy,
-                'df'=df,
-                'gsq'=gsq,
+                'fit'=fit,
                 'gam'= gam,
                 'item'=item,
                 'gtable'=gtable,
@@ -290,27 +285,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
      table <- self$results$fit
      
-     class <- self$options$nc
+     fit <- results$fit
+     class <- self$options$nc 
      
-     loglik<- results$loglik
-     aic<- results$aic
-     caic<- results$caic
-     bic<- results$bic
-     entropy<- results$entropy
-     df<- results$df
-     gsq<- results$gsq
-     
-   
      row <- list()
      
      row[['class']] <- class
-     row[['loglik']] <- loglik
-     row[['aic']] <- aic
-     row[['caic']] <- caic
-     row[['bic']] <- bic
-     row[['entropy']] <- entropy
-     row[['df']] <- df
-     row[['gsq']] <- gsq
+     row[['loglik']] <- fit[,1]
+     row[['aic']] <- fit[,2]
+     row[['caic']] <- fit[,3]
+     row[['bic']] <- fit[,4]
+     row[['entropy']] <- fit[,5]
+     row[['df']] <- fit[,6]
+     row[['gsq']] <- fit[,7]
      
      table$setRow(rowNo = 1, values = row)
      
@@ -321,13 +308,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
    
       .populateModelTable = function(results) {
-            
-        
-        nc <- self$options$nc
-         
-        table <- self$results$comp
-         
-        
+       
+       
+         table <- self$results$comp
          gtable <- results$gtable
          
          g<- as.data.frame(gtable)
@@ -537,9 +520,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateItemTable= function(results) {
         
-        if (!self$options$item)
-          return()
-        
+       
         tables <- self$results$item
         
         vars <- self$options$vars

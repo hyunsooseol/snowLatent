@@ -237,6 +237,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="fit",
                 title="Model fit",
                 rows=1,
+                visible="(fit)",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -542,7 +543,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb"),
+                    "nb",
+                    "group",
+                    "nclust"),
                 template=jmvcore::Table$new(
                     options=options,
                     title="Probability of $key",
@@ -550,7 +553,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         "vars",
                         "covs",
                         "nc",
-                        "nb"),
+                        "nb",
+                        "group",
+                        "nclust"),
                     columns=list(
                         list(
                             `name`="name", 

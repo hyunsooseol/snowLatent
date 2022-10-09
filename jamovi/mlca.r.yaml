@@ -18,6 +18,7 @@ items:
       title: 'Model fit'
       type: Table
       rows: 1
+      visible: (fit)
       clearWith:
         - vars
         - nc
@@ -25,7 +26,6 @@ items:
         - group
         - covs
         - nclust
-
       refs: glca 
 
       columns:
@@ -293,6 +293,8 @@ items:
             - covs
             - nc
             - nb
+            - group
+            - nclust
       
       template:
           title: Probability of $key
@@ -302,6 +304,8 @@ items:
             - covs
             - nc
             - nb
+            - group
+            - nclust
           columns: 
             - name: name
               title: ''

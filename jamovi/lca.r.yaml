@@ -18,10 +18,12 @@ items:
       title: 'Model fit'
       type: Table
       rows: 1
+      visible: (fit)
       clearWith:
         - vars
         - nc
         - covs
+        - nb
       refs: glca 
 
       columns:
