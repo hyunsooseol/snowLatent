@@ -70,7 +70,7 @@ options:
     - name: rel1
       title: Relative model fit(Cluster>2)
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: margin 
       title: Prevalences for latent clusters(Delta) 

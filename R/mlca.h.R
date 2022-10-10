@@ -14,7 +14,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nb = 10,
             fit = TRUE,
             comp1 = TRUE,
-            rel1 = TRUE,
+            rel1 = FALSE,
             margin = FALSE,
             cla = FALSE,
             cross = FALSE,
@@ -84,7 +84,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..rel1 <- jmvcore::OptionBool$new(
                 "rel1",
                 rel1,
-                default=TRUE)
+                default=FALSE)
             private$..margin <- jmvcore::OptionBool$new(
                 "margin",
                 margin,
@@ -672,7 +672,7 @@ mlca <- function(
     nb = 10,
     fit = TRUE,
     comp1 = TRUE,
-    rel1 = TRUE,
+    rel1 = FALSE,
     margin = FALSE,
     cla = FALSE,
     cross = FALSE,

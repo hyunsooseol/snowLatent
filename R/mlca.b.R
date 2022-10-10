@@ -33,7 +33,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. When group and cluster(>1) are given, the multilevel latent class models will be fitted.</p>
             <p>3. The rationale of snowLatent module is described in the <a href='https://docs.google.com/viewer?a=v&pid=sites&srcid=a29yZWEuYWMua3J8a3VzdGF0bGFifGd4OjU0Nzc0NjU4OGJkODVjNDk'>documentation</a>.</p>
-            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>4. Relative model fit table does not printed if responses are different</p> 
+            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -217,40 +218,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq)
         
-        
-        
-        # # CLASS: Absolute and Relative model fit -------------------------
-        # 
-        # args <- list(test = "boot", nboot=nb)
-        # for(n in 2:self$options$nc)
-        # args[[n+1]] <- glca::glca(formula = formula, 
-        #                              group=group, 
-        #                              data = data, 
-        #                              nclass = n,
-        #                             # ncluster = nclust,
-        #                              seed = 1)
-        # 
-        # res <- do.call(glca::gofglca, args)
-        # 
-        # gtable <- res[["gtable"]] #Absolute model fit
-        # 
-        # if(is.null(res$dtable)) {
-        #   dtable <- NULL 
-        # } else {
-        #   dtable <- res[["dtable"]] # Relative model fit 
-        # }
-        #         
-        # # dtable<- res[["dtable"]]  # Relative model fit 
-        # # if(is.null(res$dtable)){
-        # #   dtable<- NULL 
-        # #   
-        # #   # res<- gofglca(lca2, lca3, lca4, test = "boot", seed = 1)
-        # #   # Warning message:
-        # #   #   In gofglca(lca2, lca3, lca4, test = "boot", seed = 1) :
-        # #   #   Since responses are different, deviance table does not printed.
-        # #   # 
-        # # }
-        # 
         # CLUSTER: Absolute and relative model fit-------
         
         args <- list(test = "boot", nboot=nb)
@@ -266,7 +233,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         res <- do.call(glca::gofglca, args)
 
-       
+        #self$results$text$setContent(res)
+
+        
         gtable1 <- res[["gtable"]] #Absolute model fit
 
 
@@ -276,12 +245,12 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           dtable1 <- res[["dtable"]]   # Relative model fit
         }
 
-        
+
          #Selecting number of latent cluster###############################################################
         #CLUSTER: Absolute and relative model fit-------
-        
+        # 
         # if(self$options$nc>=2){
-        #   
+        # 
         #   lca <- glca::glca(formula, data = data, nclass = nc, seed = 1)
         #   nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
         #   nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
@@ -293,7 +262,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #   res<- glca::gofglca(lca,nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot", nboot=nb,seed = 1)
         # 
         #   self$results$text$setContent(res)
-        #   
+        # 
         #   gtable1 <- res[["gtable"]] #Absolute model fit
         # 
         #   if(is.null(res$dtable)) {
@@ -370,12 +339,12 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
         }
         
-        # Cluster(Marginal prevalences for latent cluster)------
+        # Marginal prevalences for latent cluster------
         
         clust <- lca[["param"]][["delta"]]
         clust<- as.data.frame(clust)
         
-        # Class prevalences(Marginal prevalences for latent classes) ----------
+        # Marginal prevalences for latent classes ----------
         
         cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
         cla<- as.data.frame(cla)
@@ -496,89 +465,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # # Absolute model fit table for class------------
-      # 
-      # .populateModelTable = function(results) {
-      #  
-      #   table <- self$results$comp
-      #  
-      #   gtable <- results$gtable
-      #  
-      #   g<- as.data.frame(gtable)
-      #  
-      #   loglik <- g[,1]
-      #   aic <- g[,2]
-      #   caic <- g[,3]
-      #   bic <- g[,4] 
-      #   entropy <- g[,5]
-      #   df <- g[,6] 
-      #   gsq <- g[,7] 
-      #   p <- g[,8]
-      #   
-      #   
-      #   names <- dimnames(g)[[1]]
-      #   
-      #   
-      #   for (name in names) {
-      #     
-      #     row <- list()
-      #     
-      #     row[["loglik"]]   <-  g[name, 1]
-      #     row[["aic"]] <-  g[name, 2]
-      #     row[["caic"]] <-  g[name, 3]
-      #     row[["bic"]] <-  g[name, 4]
-      #     row[["entropy"]] <-  g[name, 5]
-      #     row[["df"]] <-  g[name, 6]
-      #     row[["gsq"]] <-  g[name, 7]
-      #     row[["p"]] <-  g[name, 8]
-      #     
-      #     
-      #     table$addRow(rowKey=name, values=row)
-      #     
-      #   }     
-      #   
-      # },
-      # 
-      # #  Relative model fit for class---------------
-      # 
-      # .populateRelTable = function(results) {
-      #   
-      #   
-      #   if(self$options$nc<3 | is.null(results$dtable))
-      #     return()
-      #   
-      #   
-      #   table <- self$results$rel
-      # 
-      #   dtable <- results$dtable
-      #   
-      #   d<- as.data.frame(dtable)
-      #   
-      #   para <- d[,1]
-      #   loglik<- d[,2]
-      #   df<- d[,3]
-      #   dev<- d[,4]
-      #   p<- d[,5]
-      #   
-      #   names <- dimnames(d)[[1]]
-      #   
-      #   
-      #   for (name in names) {
-      #     
-      #     row <- list()
-      #     
-      #     row[["para"]] <-  d[name, 1]
-      #     row[["loglik"]] <-  d[name, 2]
-      #     row[["df"]] <-  d[name, 3]
-      #     row[["dev"]] <-  d[name, 4]
-      #     row[["p"]] <-d[name, 5]
-      #     
-      #     table$addRow(rowKey=name, values=row)
-      #     
-      #   }
-      #   
-      # },  
-      # 
+       
       # Absolute model fit for cluster------------
       
       .populateModel1Table = function(results) {
@@ -624,14 +511,14 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      # Populate relative model fit for cluster---------------
+      # Relative model fit for cluster---------------
       
       .populateRel1Table = function(results) {
         
+        if (!self$options$rel1 | is.null(results$dtable1))
+          return()
         
-        if(self$options$nclust<3 | is.null(results$dtable1))
-             return()
-        
+       
         table <- self$results$rel1
         
         dtable1 <- results$dtable1
@@ -664,9 +551,12 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },  
       
       
-      # populate marginal prevalences for latent classes---
+      # Marginal prevalences for latent cluster---------
       
       .populateMarginTable= function(results) {  
+        
+        if (!self$options$margin)
+          return()
         
         table <- self$results$margin
         
@@ -692,6 +582,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateClaTable= function(results){
         
+        if (!self$options$cla)
+          return()
+        
         table <- self$results$cla
         
         cla<- results$cla
@@ -714,6 +607,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       # Class prevalences by cluster----------------------
       
       .populateCrossTable=function(results){
+        
+        if (!self$options$cross)
+          return()
+        
         
         table <- self$results$cross
         
@@ -751,10 +648,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateMiTable = function(results) {
         
-        if(self$options$nc<3)
+        if (!self$options$mi | self$options$nc<3)
           return()
         
-      
+       
         table <- self$results$mi
         
         dtable <- results$mi.d
@@ -790,7 +687,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateCiTable = function(results) {
         
-        if(self$options$nc<3)
+        if (!self$options$ci | self$options$nc<3)
           return()
         
        table <- self$results$ci
@@ -824,10 +721,13 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },  
       
-      # populate cluter membership-----------
+      # cluster membership-----------
       
       .populateMemTable= function(results) {
       
+        if (!self$options$member)
+          return()
+        
         member <- results$member
         
         m<- as.data.frame(member)
