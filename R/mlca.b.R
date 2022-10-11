@@ -111,11 +111,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populate measurement invariance---------------
           
-          private$.populateMiTable(results)
+         # private$.populateMiTable(results)
           
           # populate coefficients invariance---------------
           
-          private$.populateCiTable(results)
+          # private$.populateCiTable(results)
           
         
           # populate item probabilities---------
@@ -272,25 +272,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #   }
         # }
 
-      #   if(self$options$nc==3){
-      #     nplca2 <- glca::glca(formula , group = group, data = data, nclass = nc, ncluster = 2,seed = 1)
-      #     nplca3 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 3,seed = 1)
-      #     nplca4 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 4,seed = 1)
-      #     nplca5 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 5,seed = 1)
-      #     nplca6 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 6, seed = 1)
-      #     nplca7 <- glca::glca(formula, group = group, data = data, nclass = nc, ncluster = 7, seed = 1)
-      #     
-      #     res<- glca::gofglca(nplca2, nplca3, nplca4,nplca5,nplca6,nplca7, test = "boot",nboot=nb, seed = 1)
-      #     
-      #     gtable1 <- res[["gtable"]] #Absolute model fit
-      #     if(is.null(res$dtable)) {
-      #       dtable1 <- NULL 
-      #     } else {
-      #       dtable1 <- res[["dtable"]] # Relative model fit 
-      #     }
-      #   }
-      #   
-        
+     
         if(self$options$mi==TRUE){ 
         
           ######### Measurement Invariance#################
@@ -301,10 +283,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                nclass = nc, 
                                ncluster = nclust,
                                seed = 1)
-          
-       
-          
-          # --- Measurement invariance --- #
+         
           mglca3 <- glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
@@ -315,15 +294,53 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
           
-          if(is.null(mi$dtable)) {
-            mi.d <- NULL 
-          } else {
-            mi.d <- mi[["dtable"]]
-          }
+          mi.d <- mi[["dtable"]]
           
+          # if(is.null(mi$dtable)) {
+          #   mi.d <- NULL 
+          # } else {
+          #   mi.d <- mi[["dtable"]]
+          # }
+          
+          if(is.null(mi.d))
+            
+            return()
+
+            table <- self$results$mi
+
+            d<- as.data.frame(mi.d)
+
+            para <- d[,1]
+            loglik<- d[,2]
+            df<- d[,3]
+            dev<- d[,4]
+            p<- d[,5]
+
+            names <- dimnames(d)[[1]]
+
+
+            for (name in names) {
+
+              row <- list()
+
+              row[["para"]] <-  d[name, 1]
+              row[["loglik"]] <-  d[name, 2]
+              row[["df"]] <-  d[name, 3]
+              row[["dev"]] <-  d[name, 4]
+              row[["p"]] <-d[name, 5]
+
+              table$addRow(rowKey=name, values=row)
+
+            }
+
+
         }
          
+        
         if(self$options$ci==TRUE){  
+         
+          if(is.null(self$options$covs))
+            return()
           
           
           mglca2 <- glca::glca(formula = formula, 
@@ -344,14 +361,47 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
           
-          if(is.null(ci$dtable)) {
-            ci.d <- NULL 
-          } else {
-            ci.d <- ci[["dtable"]]
+          ci.d <- ci[["dtable"]]
+          
+        #   if(is.null(ci$dtable)) {
+        #     ci.d <- NULL 
+        #   } else {
+        #     ci.d <- ci[["dtable"]]
+        #   }
+        # 
+        # }
+        
+          if(is.null(ci.d))
+            return()
+        
+         table <- self$results$ci
+
+         d<- as.data.frame(ci.d)
+
+          para <- d[,1]
+          loglik<- d[,2]
+          df<- d[,3]
+          dev<- d[,4]
+          p<- d[,5]
+
+          names <- dimnames(d)[[1]]
+
+
+          for (name in names) {
+
+            row <- list()
+
+            row[["para"]] <-  d[name, 1]
+            row[["loglik"]] <-  d[name, 2]
+            row[["df"]] <-  d[name, 3]
+            row[["dev"]] <-  d[name, 4]
+            row[["p"]] <-d[name, 5]
+
+            table$addRow(rowKey=name, values=row)
+
           }
-        
+
         }
-        
         # Marginal prevalences for latent cluster------
         
         clust <- lca[["param"]][["delta"]]
@@ -441,8 +491,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'clust'=clust,
             'member'=member,
             'co'=co,
-            'mi.d'=mi.d,
-            'ci.d'=ci.d,
+          #  'mi.d'=mi.d,
+          #  'ci.d'=ci.d,
             'gamma'=gamma
            
           )
@@ -659,81 +709,81 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       # invariance check------------------
       
-      .populateMiTable = function(results) {
-        
-        if (!self$options$mi | self$options$nc<3)
-          return()
-        
-       
-        table <- self$results$mi
-        
-        dtable <- results$mi.d
-        
-        d<- as.data.frame(dtable)
-        
-        para <- d[,1]
-        loglik<- d[,2]
-        df<- d[,3]
-        dev<- d[,4]
-        p<- d[,5]
-        
-        names <- dimnames(d)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["para"]] <-  d[name, 1]
-          row[["loglik"]] <-  d[name, 2]
-          row[["df"]] <-  d[name, 3]
-          row[["dev"]] <-  d[name, 4]
-          row[["p"]] <-d[name, 5]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-      },  
-      
+      # .populateMiTable = function(results) {
+      #   
+      #   if (!self$options$mi | self$options$nc<3)
+      #     return()
+      #   
+      #  
+      #   table <- self$results$mi
+      #   
+      #   dtable <- results$mi.d
+      #   
+      #   d<- as.data.frame(dtable)
+      #   
+      #   para <- d[,1]
+      #   loglik<- d[,2]
+      #   df<- d[,3]
+      #   dev<- d[,4]
+      #   p<- d[,5]
+      #   
+      #   names <- dimnames(d)[[1]]
+      #   
+      #   
+      #   for (name in names) {
+      #     
+      #     row <- list()
+      #     
+      #     row[["para"]] <-  d[name, 1]
+      #     row[["loglik"]] <-  d[name, 2]
+      #     row[["df"]] <-  d[name, 3]
+      #     row[["dev"]] <-  d[name, 4]
+      #     row[["p"]] <-d[name, 5]
+      #     
+      #     table$addRow(rowKey=name, values=row)
+      #     
+      #   }
+      #   
+      # },  
+      # 
       # invariance for coeff.----------------------
       
-      .populateCiTable = function(results) {
-        
-        if (!self$options$ci | self$options$nc<3)
-          return()
-        
-       table <- self$results$ci
-       
-       dtable <- results$ci.d
-        
-        d<- as.data.frame(dtable)
-        
-        para <- d[,1]
-        loglik<- d[,2]
-        df<- d[,3]
-        dev<- d[,4]
-        p<- d[,5]
-        
-        names <- dimnames(d)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["para"]] <-  d[name, 1]
-          row[["loglik"]] <-  d[name, 2]
-          row[["df"]] <-  d[name, 3]
-          row[["dev"]] <-  d[name, 4]
-          row[["p"]] <-d[name, 5]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-      },  
-      
+      # .populateCiTable = function(results) {
+      #   
+      #   if (!self$options$ci | self$options$nc<3)
+      #     return()
+      #   
+      #  table <- self$results$ci
+      #  
+      #  dtable <- results$ci.d
+      #   
+      #   d<- as.data.frame(dtable)
+      #   
+      #   para <- d[,1]
+      #   loglik<- d[,2]
+      #   df<- d[,3]
+      #   dev<- d[,4]
+      #   p<- d[,5]
+      #   
+      #   names <- dimnames(d)[[1]]
+      #   
+      #   
+      #   for (name in names) {
+      #     
+      #     row <- list()
+      #     
+      #     row[["para"]] <-  d[name, 1]
+      #     row[["loglik"]] <-  d[name, 2]
+      #     row[["df"]] <-  d[name, 3]
+      #     row[["dev"]] <-  d[name, 4]
+      #     row[["p"]] <-d[name, 5]
+      #     
+      #     table$addRow(rowKey=name, values=row)
+      #     
+      #   }
+      #   
+      # },  
+      # 
       # cluster membership-----------
       
       .populateMemTable= function(results) {
