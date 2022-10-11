@@ -291,11 +291,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       #   }
       #   
         
-        ######### Measurement Invariance#################
+        if(self$options$mi==TRUE){ 
         
-        
-        if(self$options$nc >= 2){
-          
+          ######### Measurement Invariance#################
+       
           mglca2 <- glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
@@ -303,6 +302,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                ncluster = nclust,
                                seed = 1)
           
+       
           
           # --- Measurement invariance --- #
           mglca3 <- glca::glca(formula = formula, 
@@ -321,6 +321,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             mi.d <- mi[["dtable"]]
           }
           
+        }
+         
+        if(self$options$ci==TRUE){  
+          
+          
+          mglca2 <- glca::glca(formula = formula, 
+                               group = group, 
+                               data = data, 
+                               nclass = nc, 
+                               ncluster = nclust,
+                               seed = 1)
+          
           # --- Equality of coefficients --- #            
           mglca4 <- glca::glca(formula = formula, 
                                group = group, 
@@ -337,6 +349,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           } else {
             ci.d <- ci[["dtable"]]
           }
+        
         }
         
         # Marginal prevalences for latent cluster------

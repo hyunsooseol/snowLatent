@@ -93,7 +93,7 @@ options:
       default: FALSE  
 
     - name: mi
-      title: Measurement
+      title: Measurement invariance
       type: Bool
       default: FALSE
 
