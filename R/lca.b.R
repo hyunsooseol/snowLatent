@@ -223,7 +223,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
          mem <- pos$Membership
         
-         mem<- as.factor(mem)
+         # mem<- as.factor(mem)
          
         # Class Prevalences plot----------
           
@@ -472,7 +472,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     mem <- results$mem
    
-    if (self$options$member
+    mem<- as.factor(mem)
+    
+     if (self$options$member
         && self$results$member$isNotFilled()) {
     
     

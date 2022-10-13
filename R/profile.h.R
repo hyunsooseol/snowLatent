@@ -23,18 +23,18 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 vars,
                 suggested=list(
                     "nominal",
-                    "ordinal"),
+                    "continuous"),
                 permitted=list(
-                    "factor"))
+                    "factor",
+                    "numeric"))
             private$..group <- jmvcore::OptionVariable$new(
                 "group",
                 group,
                 suggested=list(
                     "nominal",
-                    "continuous"),
+                    "ordinal"),
                 permitted=list(
-                    "factor",
-                    "numeric"))
+                    "factor"))
             private$..mc <- jmvcore::OptionBool$new(
                 "mc",
                 mc,
@@ -87,7 +87,7 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="mc",
-                title="Variable means across membership",
+                title="Variable means across group",
                 visible="(mc)",
                 clearWith=list(
                     "vars"),
@@ -172,7 +172,7 @@ profile <- function(
             `if`( ! missing(vars), vars, NULL),
             `if`( ! missing(group), group, NULL))
 
-    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- profileOptions$new(
         vars = vars,

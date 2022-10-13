@@ -17,23 +17,24 @@ analyses:
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Latent Class Analysis
-    menuSubgroup: LDA
+    menuSubgroup: LCA
   - title: Multiple Group LCA
     name: glca
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Multiple Group LCA
-    menuSubgroup: LDA
+    menuSubgroup: LCA
   - title: Multilevel LCA
     name: mlca
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Multilevel LCA
-    menuSubgroup: LDA
+    menuSubgroup: LCA
   - title: Profile plot
     name: profile
     ns: snowLatent
     menuGroup: snowLatent
+    menuSubgroup: Profile
     menuTitle: Profile plot
 datasets:
   - name: gss
@@ -47,6 +48,11 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
+  - name: iris
+    path: iris.omv
+    description: Profile plot
+    tags:
+      - Profile
 usesNative: true
 minApp: 1.0.8
 

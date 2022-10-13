@@ -15,7 +15,7 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Membership Variable
+        label: Grouping Variable(Required)
         children:
           - type: VariablesListBox
             name: group

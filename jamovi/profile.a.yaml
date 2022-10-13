@@ -16,20 +16,20 @@ options:
       type: Variables
       suggested:
          - nominal
-         - ordinal
-      permitted:
-        - factor
-
-    - name: group
-      title: Membership Variable
-      type: Variable
-      suggested:
-         - nominal
          - continuous
       permitted:
         - factor
         - numeric
- 
+
+    - name: group
+      title: Grouping Variable(Required)
+      type: Variable
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+
     - name: mc
       title: Variable means
       type: Bool 
