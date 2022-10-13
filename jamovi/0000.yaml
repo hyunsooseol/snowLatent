@@ -1,12 +1,12 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.1.0
+version: 2.2.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2022-10-02'
+date: '2022-10-13'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, and Multilevel
@@ -17,16 +17,24 @@ analyses:
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Latent Class Analysis
+    menuSubgroup: LDA
   - title: Multiple Group LCA
     name: glca
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Multiple Group LCA
+    menuSubgroup: LDA
   - title: Multilevel LCA
     name: mlca
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: Multilevel LCA
+    menuSubgroup: LDA
+  - title: Profile plot
+    name: profile
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Profile plot
 datasets:
   - name: gss
     path: gss08.omv

@@ -1,0 +1,37 @@
+title: Profile plot
+name: profile
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Variables
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Membership Variable
+        children:
+          - type: VariablesListBox
+            name: group
+            maxItemCount: 1
+            isTarget: true
+  - type: LayoutBox
+    stretchFactor: 1
+    margin: large
+    children:
+      - type: CheckBox
+        name: mc
+      - type: CheckBox
+        name: plot1
+      - type: TextBox
+        name: angle
+        format: number
+        suggestedValues:
+          - value: 0
+          - value: 45

@@ -1,0 +1,33 @@
+---
+name:  profile
+title: Profile plot
+jrs:   '1.1'
+refs: snowLatent
+
+items:
+    - name:  mc
+      title: 'Variable means across membership' 
+      type:  Table
+      visible: (mc)
+      clearWith:
+        - vars
+      refs: snowLatent
+
+      columns:
+          - name: .name[x]
+            title: ""
+            type: 'text'
+            content: ($key)
+    - name: plot1
+      title: 'Profile plot'
+      type: Image
+      visible: (plot1)
+      width: 600
+      height: 450
+      renderFun: .plot1
+      clearWith:
+            - vars
+            - angle
+
+
+...

@@ -1,0 +1,62 @@
+---
+name:  profile
+title: Profile plot
+menuGroup: snowLatent
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+
+    - name: group
+      title: Membership Variable
+      type: Variable
+      suggested:
+         - nominal
+         - continuous
+      permitted:
+        - factor
+        - numeric
+ 
+    - name: mc
+      title: Variable means
+      type: Bool 
+      default: TRUE
+
+    - name: angle
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 45
+      default: 0
+      description:
+          R: >
+            a number from 0 to 45 defining the angle of the x-axis labels, 
+            where 0 degrees represents completely horizontal labels.
+    - name: plot1
+      title: Profile plot
+      type: Bool
+      default: FALSE
+
+...
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
