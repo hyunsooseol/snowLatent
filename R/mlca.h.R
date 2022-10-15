@@ -19,7 +19,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cla = FALSE,
             cross = FALSE,
             co = FALSE,
-            mi = FALSE,
+            gof = FALSE,
             ci = FALSE,
             item = FALSE,
             post = FALSE,
@@ -101,9 +101,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "co",
                 co,
                 default=FALSE)
-            private$..mi <- jmvcore::OptionBool$new(
-                "mi",
-                mi,
+            private$..gof <- jmvcore::OptionBool$new(
+                "gof",
+                gof,
                 default=FALSE)
             private$..ci <- jmvcore::OptionBool$new(
                 "ci",
@@ -143,7 +143,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cla)
             self$.addOption(private$..cross)
             self$.addOption(private$..co)
-            self$.addOption(private$..mi)
+            self$.addOption(private$..gof)
             self$.addOption(private$..ci)
             self$.addOption(private$..item)
             self$.addOption(private$..post)
@@ -165,7 +165,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cla = function() private$..cla$value,
         cross = function() private$..cross$value,
         co = function() private$..co$value,
-        mi = function() private$..mi$value,
+        gof = function() private$..gof$value,
         ci = function() private$..ci$value,
         item = function() private$..item$value,
         post = function() private$..post$value,
@@ -186,7 +186,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cla = NA,
         ..cross = NA,
         ..co = NA,
-        ..mi = NA,
+        ..gof = NA,
         ..ci = NA,
         ..item = NA,
         ..post = NA,
@@ -207,7 +207,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         margin = function() private$.items[["margin"]],
         cla = function() private$.items[["cla"]],
         cross = function() private$.items[["cross"]],
-        mi = function() private$.items[["mi"]],
+        gof = function() private$.items[["gof"]],
         ci = function() private$.items[["ci"]],
         member = function() private$.items[["member"]],
         item = function() private$.items[["item"]],
@@ -436,9 +436,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `content`="($key)"))))
             self$add(jmvcore::Table$new(
                 options=options,
-                name="mi",
-                title="Measurement invariance",
-                visible="(mi)",
+                name="gof",
+                title="Goodness of fit for coefficients",
+                visible="(gof)",
                 refs="glca",
                 clearWith=list(
                     "vars",
@@ -454,26 +454,33 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `content`="($key)"),
                     list(
-                        `name`="para", 
-                        `title`="Parameter", 
-                        `type`="number"),
-                    list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="entropy", 
+                        `title`="Entropy", 
                         `type`="number"),
                     list(
                         `name`="df", 
                         `title`="df", 
                         `type`="integer"),
                     list(
-                        `name`="dev", 
-                        `title`="Deviance", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
+                        `name`="gsq", 
+                        `title`="G\u00B2", 
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="ci",
@@ -628,7 +635,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cla .
 #' @param cross .
 #' @param co .
-#' @param mi .
+#' @param gof .
 #' @param ci .
 #' @param item .
 #' @param post .
@@ -645,7 +652,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$mi} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$gof} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item} \tab \tab \tab \tab \tab an array of tables \cr
@@ -677,7 +684,7 @@ mlca <- function(
     cla = FALSE,
     cross = FALSE,
     co = FALSE,
-    mi = FALSE,
+    gof = FALSE,
     ci = FALSE,
     item = FALSE,
     post = FALSE,
@@ -715,7 +722,7 @@ mlca <- function(
         cla = cla,
         cross = cross,
         co = co,
-        mi = mi,
+        gof = gof,
         ci = ci,
         item = item,
         post = post,

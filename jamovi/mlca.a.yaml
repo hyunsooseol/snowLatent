@@ -92,8 +92,8 @@ options:
       type: Bool 
       default: FALSE  
 
-    - name: mi
-      title: Measurement invariance
+    - name: gof
+      title: Goodness of fit
       type: Bool
       default: FALSE
 
@@ -117,7 +117,6 @@ options:
       type: Bool 
       default: FALSE 
 
-
     - name: member
       title: Cluster membership
       type: Bool 
@@ -127,7 +126,7 @@ options:
       title: Profile plot
       type: Bool 
       default: FALSE   
-     
-     
+ 
 ...
  
+

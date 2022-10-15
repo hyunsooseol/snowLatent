@@ -194,10 +194,10 @@ items:
           type: 'text'
           content: ($key)
 
-    - name: mi
-      title: 'Measurement invariance'
+    - name: gof
+      title: 'Goodness of fit for coefficients'
       type: Table
-      visible: (mi)
+      visible: (gof)
       refs: glca
       clearWith:
         - vars
@@ -206,28 +206,33 @@ items:
         - group
         - covs
         - nclust
- 
+
       columns:
         - name: name
           title: 'Model'
           type: 'text'
           content: ($key)
-        - name: para
-          title: Parameter
-          type: number
         - name: loglik
           title: Log-likelihood
           type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: caic
+          title: CAIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: entropy
+          title: Entropy 
+          type: number
         - name: df
           title: df 
-          type: integer 
-        - name: dev
-          title: Deviance 
+          type: integer
+        - name: gsq
+          title: G² 
           type: number
-        - name: p
-          title: p 
-          type: number
-          format: zto,pvalue
 
     - name: ci
       title: 'Equality of coefficients'

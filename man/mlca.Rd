@@ -19,7 +19,7 @@ mlca(
   cla = FALSE,
   cross = FALSE,
   co = FALSE,
-  mi = FALSE,
+  gof = FALSE,
   ci = FALSE,
   item = FALSE,
   post = FALSE,
@@ -57,7 +57,7 @@ mlca(
 
 \item{co}{.}
 
-\item{mi}{.}
+\item{gof}{.}
 
 \item{ci}{.}
 
@@ -82,7 +82,7 @@ A results object containing:
   \code{results$margin} \tab \tab \tab \tab \tab a table \cr
   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
-  \code{results$mi} \tab \tab \tab \tab \tab a table \cr
+  \code{results$gof} \tab \tab \tab \tab \tab a table \cr
   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
   \code{results$member} \tab \tab \tab \tab \tab a table \cr
   \code{results$item} \tab \tab \tab \tab \tab an array of tables \cr

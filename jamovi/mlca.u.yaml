@@ -121,10 +121,10 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Invariance check(Class>2)
+            label: 'Invariance of coefficients'
             children:
               - type: CheckBox
-                name: mi
+                name: gof
               - type: CheckBox
                 name: ci
           - type: Label
