@@ -385,6 +385,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateFitTable = function(results) {
         
+        if (!self$options$fit)
+          return()
+        
+        
         table <- self$results$fit
         
         fit <- results$fit
@@ -412,6 +416,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateModel1Table = function(results) {
         
+        if (!self$options$comp1)
+          return()
        
         table <- self$results$comp1
         
@@ -832,7 +838,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      
+      ########################################################
       .cleanData = function() {
         
         vars <- self$options$vars
