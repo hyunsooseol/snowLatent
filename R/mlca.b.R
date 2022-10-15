@@ -457,13 +457,15 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateRel1Table = function(results) {
         
-        if (!self$options$rel1 | is.null(results$dtable1))
+        if (!self$options$rel1)
           return()
         
-       
         table <- self$results$rel1
         
         dtable1 <- results$dtable1
+        
+        if (is.null(dtable1))
+          return()
         
         d<- as.data.frame(dtable1)
         
@@ -736,13 +738,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   if (!self$options$ci)
     return()
   
-  
+  table <- self$results$ci
   ci.d <- results$ci.d
   
   if(is.null(ci.d))
     return()
-  
-  table <- self$results$ci
   
   d<- as.data.frame(ci.d)
   
