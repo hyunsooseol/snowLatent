@@ -261,15 +261,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           ci.g <- cf[["gtable"]]
           
-          if(is.null(cf$gtable)) {
+          if(is.null(ci.g)) {
             ci.g <- NULL
           } else {
             ci.g <- cf[["gtable"]]
           }
           
+          ################################
           ci.d <- cf[["dtable"]]
           
-            if(is.null(cf$dtable)) {
+            if(is.null(ci.d)) {
               ci.d <- NULL
             } else {
               ci.d <- cf[["dtable"]]
@@ -385,10 +386,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateFitTable = function(results) {
         
-        if (!self$options$fit)
-          return()
-        
-        
+       
         table <- self$results$fit
         
         fit <- results$fit
@@ -416,9 +414,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateModel1Table = function(results) {
         
-        if (!self$options$comp1)
-          return()
-       
+      
         table <- self$results$comp1
         
         gtable1 <- results$gtable1
