@@ -239,7 +239,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(is.null(res$gtable)) {
           gtable1 <- NULL
         } else {
-          gtable1 <- res[["gtable"]]   # Relative model fit
+          gtable1 <- res[["gtable"]]   
         }
         
         
@@ -454,9 +454,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'clust'=clust,
             'member'=member,
             'co'=co,
-            # 'ci.g'=ci.g,
-            # 'ci.d'=ci.d,
-            'gamma'=gamma
+           'gamma'=gamma
            
           )
         
