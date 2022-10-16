@@ -11,8 +11,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             fit = TRUE,
-            mia = TRUE,
-            mir = TRUE,
+            mia = FALSE,
+            mir = FALSE,
             cia = FALSE,
             cir = FALSE,
             marginal = FALSE,
@@ -66,11 +66,11 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..mia <- jmvcore::OptionBool$new(
                 "mia",
                 mia,
-                default=TRUE)
+                default=FALSE)
             private$..mir <- jmvcore::OptionBool$new(
                 "mir",
                 mir,
-                default=TRUE)
+                default=FALSE)
             private$..cia <- jmvcore::OptionBool$new(
                 "cia",
                 cia,
@@ -548,8 +548,8 @@ glca <- function(
     group,
     nc = 2,
     fit = TRUE,
-    mia = TRUE,
-    mir = TRUE,
+    mia = FALSE,
+    mir = FALSE,
     cia = FALSE,
     cir = FALSE,
     marginal = FALSE,

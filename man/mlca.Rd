@@ -13,7 +13,7 @@ mlca(
   nclust = 2,
   nb = 10,
   fit = TRUE,
-  comp1 = TRUE,
+  comp1 = FALSE,
   rel1 = FALSE,
   margin = FALSE,
   cla = FALSE,

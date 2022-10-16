@@ -201,7 +201,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-         self$results$text$setContent(lca)
+         #self$results$text$setContent(lca)
        
         # Model fit measure----------
         
@@ -236,7 +236,13 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         gtable1 <- res[["gtable"]] #Absolute model fit
 
-
+        if(is.null(res$gtable)) {
+          gtable1 <- NULL
+        } else {
+          gtable1 <- res[["gtable"]]   # Relative model fit
+        }
+        
+        
         if(is.null(res$dtable)) {
           dtable1 <- NULL
         } else {
@@ -258,7 +264,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(jmvcore::isError(lca2)){
          
           err_string <- stringr::str_interp(
-            " lca2 Error in if (maxdiff < eps) break : missing value where TRUE/FALSE needed."
+            " Error in if (maxdiff < eps) break : Covariates can not be computed."
           )
           stop(err_string)
           
@@ -459,93 +465,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       
       ################ populating Tables################################
-        
-        # # GOF for coefficients----------------------
-        # 
-        # .populateGofTable = function(results) {
-        #   
-        #   if (!self$options$gof)
-        #     return()
-        #   
-        #   table <- self$results$gof  
-        #   
-        #   ci.g <- results$ci.g
-        #   
-        #   if(is.null(ci.g))
-        #     return()   
-        #   
-        #   g<- as.data.frame(ci.g)
-        #   
-        #   loglik <- g[,1]
-        #   aic <- g[,2]
-        #   caic <- g[,3]
-        #   bic <- g[,4]
-        #   entropy <- g[,5]
-        #   df <- g[,6]
-        #   gsq <- g[,7]
-        #   
-        #   names <- dimnames(g)[[1]]
-        #   
-        #   
-        #   for (name in names) {
-        #     
-        #     row <- list()
-        #     
-        #     row[["loglik"]]   <-  g[name, 1]
-        #     row[["aic"]] <-  g[name, 2]
-        #     row[["caic"]] <-  g[name, 3]
-        #     row[["bic"]] <-  g[name, 4]
-        #     row[["entropy"]] <-  g[name, 5]
-        #     row[["df"]] <-  g[name, 6]
-        #     row[["gsq"]] <-  g[name, 7]
-        #     
-        #     table$addRow(rowKey=name, values=row)
-        #     
-        #   }
-        #   
-        # },
-        # 
-        
-        # Equality of coefficients table--------
-        
-        # .populateCiTable = function(results) {
-        #   
-        #   if (!self$options$ci)
-        #     return()
-        #   
-        #   table <- self$results$ci
-        #   ci.d <- results$ci.d
-        #   
-        #   if(is.null(ci.d))
-        #     return()
-        #   
-        #   d<- as.data.frame(ci.d)
-        #   
-        #   para <- d[,1]
-        #   loglik<- d[,2]
-        #   df<- d[,3]
-        #   dev<- d[,4]
-        #   p<- d[,5]
-        #   
-        #   names <- dimnames(d)[[1]]
-        #   
-        #   
-        #   for (name in names) {
-        #     
-        #     row <- list()
-        #     
-        #     row[["para"]] <-  d[name, 1]
-        #     row[["loglik"]] <-  d[name, 2]
-        #     row[["df"]] <-  d[name, 3]
-        #     row[["dev"]] <-  d[name, 4]
-        #     row[["p"]] <-d[name, 5]
-        #     
-        #     table$addRow(rowKey=name, values=row)
-        #     
-        #   }
-        #   
-        # },
-        
+     
         # Model Fit table-------------   
       
       .populateFitTable = function(results) {
@@ -578,12 +498,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateModel1Table = function(results) {
         
-      
+        if (!self$options$comp1)
+             return()
+        
         table <- self$results$comp1
         
         gtable1 <- results$gtable1
-        g<- as.data.frame(gtable1)
         
+        if(is.null(gtable1))
+        return()
+        
+        g<- as.data.frame(gtable1)
+       
         loglik <- g[,1]
         aic <- g[,2]
         caic <- g[,3]
@@ -913,6 +839,92 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
+# # GOF for coefficients----------------------
+# 
+# .populateGofTable = function(results) {
+#   
+#   if (!self$options$gof)
+#     return()
+#   
+#   table <- self$results$gof  
+#   
+#   ci.g <- results$ci.g
+#   
+#   if(is.null(ci.g))
+#     return()   
+#   
+#   g<- as.data.frame(ci.g)
+#   
+#   loglik <- g[,1]
+#   aic <- g[,2]
+#   caic <- g[,3]
+#   bic <- g[,4]
+#   entropy <- g[,5]
+#   df <- g[,6]
+#   gsq <- g[,7]
+#   
+#   names <- dimnames(g)[[1]]
+#   
+#   
+#   for (name in names) {
+#     
+#     row <- list()
+#     
+#     row[["loglik"]]   <-  g[name, 1]
+#     row[["aic"]] <-  g[name, 2]
+#     row[["caic"]] <-  g[name, 3]
+#     row[["bic"]] <-  g[name, 4]
+#     row[["entropy"]] <-  g[name, 5]
+#     row[["df"]] <-  g[name, 6]
+#     row[["gsq"]] <-  g[name, 7]
+#     
+#     table$addRow(rowKey=name, values=row)
+#     
+#   }
+#   
+# },
+# 
+
+# Equality of coefficients table--------
+
+# .populateCiTable = function(results) {
+#   
+#   if (!self$options$ci)
+#     return()
+#   
+#   table <- self$results$ci
+#   ci.d <- results$ci.d
+#   
+#   if(is.null(ci.d))
+#     return()
+#   
+#   d<- as.data.frame(ci.d)
+#   
+#   para <- d[,1]
+#   loglik<- d[,2]
+#   df<- d[,3]
+#   dev<- d[,4]
+#   p<- d[,5]
+#   
+#   names <- dimnames(d)[[1]]
+#   
+#   
+#   for (name in names) {
+#     
+#     row <- list()
+#     
+#     row[["para"]] <-  d[name, 1]
+#     row[["loglik"]] <-  d[name, 2]
+#     row[["df"]] <-  d[name, 3]
+#     row[["dev"]] <-  d[name, 4]
+#     row[["p"]] <-d[name, 5]
+#     
+#     table$addRow(rowKey=name, values=row)
+#     
+#   }
+#   
+# },
+
       ########################################################
       .cleanData = function() {
         

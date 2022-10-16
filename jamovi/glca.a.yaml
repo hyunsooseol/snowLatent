@@ -53,12 +53,12 @@ options:
     - name: mia
       title: Absolute model fit
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: mir
       title: Relative model fit
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: cia
       title: Absolute model fit

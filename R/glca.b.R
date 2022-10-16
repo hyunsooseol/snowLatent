@@ -240,7 +240,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if(jmvcore::isError(mglca3)){
             
             err_string <- stringr::str_interp(
-              "mglca3 Error in if (maxdiff < eps) break : missing value where TRUE/FALSE needed."
+              " Error in if (maxdiff < eps) break : Covariates can not be computed."
             )
             stop(err_string)
             
@@ -278,7 +278,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if(jmvcore::isError(mglca4)){
             
             err_string <- stringr::str_interp(
-              " mglca4 Error in if (maxdiff < eps) break : missing value where TRUE/FALSE needed."
+              " Error in if (maxdiff < eps) break : Covariates can not be computed."
             )
             stop(err_string)
             
@@ -410,12 +410,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
       .populateMiaTable = function(results) {
         
-        nc <- self$options$nc
+        if (!self$options$mia)
+          return()
         
         table <- self$results$mia
-        
-        
+      
         gtable <- results$mi.g
+        
+        if(is.null(gtable))
+          return()
+        
         g<- as.data.frame(gtable)
       
        
@@ -453,13 +457,15 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateMirTable = function(results) {
         
-        if(is.null(results$mi.d))
+        if (!self$options$mir)
           return()
-        
        
         table <- self$results$mir
         
         dtable <- results$mi.d
+        
+        if(is.null(dtable))
+          return()
         
         d<- as.data.frame(dtable)
         
@@ -493,10 +499,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       .populateCiaTable = function(results) {
         
         
-      table <- self$results$cia
-      gtable <- results$ci.g
+        if (!self$options$cia)
+          return()
         
-        g<- as.data.frame(gtable)
+      table <- self$results$cia
+      ctable <- results$ci.g
+        
+      if(is.null(ctable))
+        return()  
+      
+      g<- as.data.frame(ctable)
         
         loglik <- g[,1]
         aic <- g[,2]
@@ -535,15 +547,17 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateCirTable = function(results) {
         
-        if(is.null(results$ci.d))
+        
+        if (!self$options$cir)
+          return()
+      
+        table <- self$results$cir
+        cdtable <- results$ci.d
+        
+        if(is.null(cdtable))
           return()
         
-       
-        
-        table <- self$results$cir
-        dtable <- results$ci.d
-        
-        d<- as.data.frame(dtable)
+        d<- as.data.frame(cdtable)
         
         para <- d[,1]
         loglik<- d[,2]
@@ -575,6 +589,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
         .populateClassTable= function(results) {  
           
+          if (!self$options$marginal)
+            return()
+          
           table <- self$results$marginal
           
           margin <- results$margin
@@ -600,6 +617,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateCgTable= function(results) {
 
+        if (!self$options$preval)
+          return()
+        
+        
         table <- self$results$preval
 
         cg<- results$prev
