@@ -201,7 +201,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-         #self$results$text$setContent(lca)
+         self$results$text$setContent(lca)
        
         # Model fit measure----------
         
@@ -268,7 +268,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           cf <- glca::gofglca(lca, lca2, test = "chisq", nboot = nb)
           
-          self$results$text$setContent(cf)
+         # self$results$text$setContent(cf)
           
           ci.g <- cf[["gtable"]]
           ci.d <- cf[["dtable"]]
