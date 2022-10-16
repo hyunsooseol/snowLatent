@@ -7,6 +7,7 @@
 #' @importFrom glca glca
 #' @importFrom glca item
 #' @importFrom glca gofglca
+#' @importFrom stringr str_interp
 #' @export
 #' 
 
@@ -112,11 +113,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populate  gof for coeff ---------------
           
-          private$.populateGofTable(results)
+       #   private$.populateGofTable(results)
           
           # populate equality coefficients ---------------
           
-           private$.populateCiTable(results)
+        #   private$.populateCiTable(results)
           
         
           # populate item probabilities---------
@@ -200,7 +201,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         #################################################################
         
-         self$results$text$setContent(lca)
+         #self$results$text$setContent(lca)
        
         # Model fit measure----------
         
@@ -244,39 +245,116 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
 ####  Invariance of equality  ########################################################       
-         
-         # gof table----------
         
-          lca2 <- glca::glca(formula = formula, 
+           lca2 <- try(glca::glca(formula = formula, 
                              group = group, 
                              data = data, 
                              nclass = nc, 
                              ncluster = nclust,
                              coeff.inv = FALSE,
-                             seed = 1)
+                             seed= 1)
+           )
+        
+        if(jmvcore::isError(lca2)){
+         
+          err_string <- stringr::str_interp(
+            " lca2 Error in if (maxdiff < eps) break : missing value where TRUE/FALSE needed."
+          )
+          stop(err_string)
+          
+          } 
+        
+        if (! jmvcore::isError(lca2) ){
           
           cf <- glca::gofglca(lca, lca2, test = "chisq", nboot = nb)
           
-         # self$results$text$setContent(cf)
+          self$results$text$setContent(cf)
           
           ci.g <- cf[["gtable"]]
+          ci.d <- cf[["dtable"]]
+         
+        } 
+         
+   ######## Goodness of fit table----------  
           
-          if(is.null(ci.g)) {
-            ci.g <- NULL
-          } else {
-            ci.g <- cf[["gtable"]]
+          if(isTRUE(self$options$gof)){
+         
+          table <- self$results$gof  
+  
+          if(is.null(ci.g))
+            return()
+          
+          g<- as.data.frame(ci.g)
+          
+          loglik <- g[,1]
+          aic <- g[,2]
+          caic <- g[,3]
+          bic <- g[,4]
+          entropy <- g[,5]
+          df <- g[,6]
+          gsq <- g[,7]
+          
+          names <- dimnames(g)[[1]]
+          
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            row[["loglik"]]   <-  g[name, 1]
+            row[["aic"]] <-  g[name, 2]
+            row[["caic"]] <-  g[name, 3]
+            row[["bic"]] <-  g[name, 4]
+            row[["entropy"]] <-  g[name, 5]
+            row[["df"]] <-  g[name, 6]
+            row[["gsq"]] <-  g[name, 7]
+            
+            table$addRow(rowKey=name, values=row)
+            
           }
           
-          ################################
-          ci.d <- cf[["dtable"]]
+          }
           
-            if(is.null(ci.d)) {
-              ci.d <- NULL
-            } else {
-              ci.d <- cf[["dtable"]]
-            }
-
+          
+  ############ Testing equality of coefficients-------------
+          
+          if(isTRUE(self$options$ci)){
+         
+            table <- self$results$ci
+            
+            if(is.null(ci.d))
+              return()
+           
+          d<- as.data.frame(ci.d)
+          
+          para <- d[,1]
+          loglik<- d[,2]
+          df<- d[,3]
+          dev<- d[,4]
+          p<- d[,5]
+          
+          names <- dimnames(d)[[1]]
+          
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            row[["para"]] <-  d[name, 1]
+            row[["loglik"]] <-  d[name, 2]
+            row[["df"]] <-  d[name, 3]
+            row[["dev"]] <-  d[name, 4]
+            row[["p"]] <-d[name, 5]
+            
+            table$addRow(rowKey=name, values=row)
+            
+          }
         
+          
+          }
+          
+################################################################
+          
         # Marginal prevalences for latent cluster------
         
         clust <- lca[["param"]][["delta"]]
@@ -370,8 +448,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             'clust'=clust,
             'member'=member,
             'co'=co,
-            'ci.g'=ci.g,
-            'ci.d'=ci.d,
+            # 'ci.g'=ci.g,
+            # 'ci.d'=ci.d,
             'gamma'=gamma
            
           )
@@ -381,8 +459,94 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       
       ################ populating Tables################################
-
-      # Model Fit table-------------   
+        
+        # # GOF for coefficients----------------------
+        # 
+        # .populateGofTable = function(results) {
+        #   
+        #   if (!self$options$gof)
+        #     return()
+        #   
+        #   table <- self$results$gof  
+        #   
+        #   ci.g <- results$ci.g
+        #   
+        #   if(is.null(ci.g))
+        #     return()   
+        #   
+        #   g<- as.data.frame(ci.g)
+        #   
+        #   loglik <- g[,1]
+        #   aic <- g[,2]
+        #   caic <- g[,3]
+        #   bic <- g[,4]
+        #   entropy <- g[,5]
+        #   df <- g[,6]
+        #   gsq <- g[,7]
+        #   
+        #   names <- dimnames(g)[[1]]
+        #   
+        #   
+        #   for (name in names) {
+        #     
+        #     row <- list()
+        #     
+        #     row[["loglik"]]   <-  g[name, 1]
+        #     row[["aic"]] <-  g[name, 2]
+        #     row[["caic"]] <-  g[name, 3]
+        #     row[["bic"]] <-  g[name, 4]
+        #     row[["entropy"]] <-  g[name, 5]
+        #     row[["df"]] <-  g[name, 6]
+        #     row[["gsq"]] <-  g[name, 7]
+        #     
+        #     table$addRow(rowKey=name, values=row)
+        #     
+        #   }
+        #   
+        # },
+        # 
+        
+        # Equality of coefficients table--------
+        
+        # .populateCiTable = function(results) {
+        #   
+        #   if (!self$options$ci)
+        #     return()
+        #   
+        #   table <- self$results$ci
+        #   ci.d <- results$ci.d
+        #   
+        #   if(is.null(ci.d))
+        #     return()
+        #   
+        #   d<- as.data.frame(ci.d)
+        #   
+        #   para <- d[,1]
+        #   loglik<- d[,2]
+        #   df<- d[,3]
+        #   dev<- d[,4]
+        #   p<- d[,5]
+        #   
+        #   names <- dimnames(d)[[1]]
+        #   
+        #   
+        #   for (name in names) {
+        #     
+        #     row <- list()
+        #     
+        #     row[["para"]] <-  d[name, 1]
+        #     row[["loglik"]] <-  d[name, 2]
+        #     row[["df"]] <-  d[name, 3]
+        #     row[["dev"]] <-  d[name, 4]
+        #     row[["p"]] <-d[name, 5]
+        #     
+        #     table$addRow(rowKey=name, values=row)
+        #     
+        #   }
+        #   
+        # },
+        
+        # Model Fit table-------------   
       
       .populateFitTable = function(results) {
         
@@ -685,91 +849,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },   
       
-# GOF for coefficients----------------------
-
-.populateGofTable = function(results) {
-  
-  if (!self$options$gof)
-    return()
-  
-  table <- self$results$gof  
-  
-  ci.g <- results$ci.g
-  
-  if(is.null(ci.g))
-    return()   
-  
-  g<- as.data.frame(ci.g)
-  
-  loglik <- g[,1]
-  aic <- g[,2]
-  caic <- g[,3]
-  bic <- g[,4]
-  entropy <- g[,5]
-  df <- g[,6]
-  gsq <- g[,7]
-  
-  names <- dimnames(g)[[1]]
-  
-  
-  for (name in names) {
-    
-    row <- list()
-    
-    row[["loglik"]]   <-  g[name, 1]
-    row[["aic"]] <-  g[name, 2]
-    row[["caic"]] <-  g[name, 3]
-    row[["bic"]] <-  g[name, 4]
-    row[["entropy"]] <-  g[name, 5]
-    row[["df"]] <-  g[name, 6]
-    row[["gsq"]] <-  g[name, 7]
-    
-    table$addRow(rowKey=name, values=row)
-    
-  }
-  
-},
-
-
-# Equality of coefficients table--------
-
-.populateCiTable = function(results) {
-  
-  if (!self$options$ci)
-    return()
-  
-  table <- self$results$ci
-  ci.d <- results$ci.d
-  
-  if(is.null(ci.d))
-    return()
-  
-  d<- as.data.frame(ci.d)
-  
-  para <- d[,1]
-  loglik<- d[,2]
-  df<- d[,3]
-  dev<- d[,4]
-  p<- d[,5]
-  
-  names <- dimnames(d)[[1]]
-  
-  
-  for (name in names) {
-    
-    row <- list()
-    
-    row[["para"]] <-  d[name, 1]
-    row[["loglik"]] <-  d[name, 2]
-    row[["df"]] <-  d[name, 3]
-    row[["dev"]] <-  d[name, 4]
-    row[["p"]] <-d[name, 5]
-    
-    table$addRow(rowKey=name, values=row)
-    
-  }
-  
-},
 
 # posterior probability----------
       
@@ -787,19 +866,19 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },
       
       # logistic table----------
-      
+
       .populateLogTable=function(results){
-        
+
         if(!self$options$co)
           return()
-        
+
         co <- results$co
-        
+
         self$results$text3$setContent(co)
-        
-        
+
+
       },
-      
+
       # Gamma probability---------
       
       .populateGamTable=function(results){

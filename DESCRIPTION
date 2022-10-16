@@ -13,4 +13,5 @@ Imports: jmvcore (>= 0.8.5),
          R6,
          stats,
          glca,
-         ggplot2
+         ggplot2,
+         stringr

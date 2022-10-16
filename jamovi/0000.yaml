@@ -48,6 +48,11 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
+  - name: election
+    path: election.omv
+    description: Profile plot
+    tags:
+      - Multiple group LCA
   - name: iris
     path: iris.omv
     description: Profile plot

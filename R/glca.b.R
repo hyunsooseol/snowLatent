@@ -7,6 +7,7 @@
 #' @importFrom glca glca
 #' @importFrom glca item
 #' @importFrom glca gofglca
+#' @importFrom stringr str_interp
 #' @export
 #' 
 glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -220,14 +221,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # Measurement invariance----------------
         
-        if(self$options$nc >= 2){
-          
-          # lca1 <- glca::glca(formula = formula,
-          #                     # group = group,
-          #                      data = data,
-          #                      nclass = nc,
-          #                      seed = 1)
-
           mglca2 <- glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
@@ -235,14 +228,30 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                seed = 1)
           
           
-          mglca3 <- glca::glca(formula = formula, 
+          mglca3 <-try(glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
                                nclass = nc, 
                                measure.inv = FALSE,
                                seed = 1)
           
+          )
+          
+          if(jmvcore::isError(mglca3)){
+            
+            err_string <- stringr::str_interp(
+              "mglca3 Error in if (maxdiff < eps) break : missing value where TRUE/FALSE needed."
+            )
+            stop(err_string)
+            
+          } 
+          
+          if (! jmvcore::isError(mglca3) ){
+          
           mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
+          
+          #self$results$text$setContent(mi)
+          
           
           mi.g <- mi[["gtable"]] #Absolute model fit
           
@@ -253,15 +262,29 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             mi.d <- mi[["dtable"]] # Relative model fit
           }
           
-        
+          }
            # --- Equality of coefficients --- #            
          
-          mglca4 <- glca::glca(formula = formula, 
+          mglca4 <- try(glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
                                nclass = nc, 
                                coeff.inv = FALSE,
                                seed = 1)
+          )
+                        
+                        
+                        
+          if(jmvcore::isError(mglca4)){
+            
+            err_string <- stringr::str_interp(
+              " mglca4 Error in if (maxdiff < eps) break : missing value where TRUE/FALSE needed."
+            )
+            stop(err_string)
+            
+          } 
+          
+          if (! jmvcore::isError(mglca4) ){
           
           ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
           
@@ -272,8 +295,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           } else {
             ci.d <- ci[["dtable"]] # Relative model fit
           }
-        }
-          
+        
+          }
       
         # Class prevalences by group----------
         
