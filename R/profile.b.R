@@ -17,78 +17,144 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           if(is.null(self$options$group))
             return()
           
-             data <- self$data
-             data <- as.data.frame(data)
-             data <- jmvcore::naOmit(data)
+          group <- self$options$group
+          
+          vars <- self$options$vars
+          
+          
+          data <- self$data
+          
+          data <- jmvcore::naOmit(data)
+          
+          
+          formula <- jmvcore::constructFormula(self$options$group, self$options$vars)
+          formula <- as.formula(formula)
+          
+          #### ANALYSIS##############################################
+          
+          
+           group.means<- MASS::lda(formula, data=data)
+          
+          ########################################################
+          
+          # Group means---------------
+          
+          gm <- group.means$means
+          
+          vars <- self$options$vars 
+          
+          names<- dimnames(gm)[[1]]
+          
+          table <- self$results$mc
+          
+          for (i in seq_along(vars)) {
+            
+            var <- vars[[i]]
+            
+            table$addColumn(name = paste0(var),
+                            type = 'number',
+                            format = 'zto')
+            
+          }
+          
+          for (name in names) {
+            
+            row <- list()
             
             
-             vars <- self$options$vars
-             nVars <- length(vars)
-            
-             group<- self$options$group
-            
-
-             for (var in vars) {
-               data[[var]] <-as.numeric(as.character(data[[var]]))
-             }
-
-
-            # Using aggregate to calculate mean across class variable-----
-            ave <-  stats::aggregate(data[,self$options$vars], list(data[,self$options$group]), mean)
-            
-            names(ave)[1]   <-  self$options$group
-            
-           
-            # The means of class table-------
-            
-            ave1 <- ave[,-1]
-            
-            names<- dimnames(ave1)[[1]]
-            
-            table <- self$results$mc
-            
-            for (i in seq_along(vars)) {
+            for(j in seq_along(vars)){
               
-              var <- vars[[i]]
+              var <- vars[[j]]
               
-              table$addColumn(name = paste0(var),
-                              type = 'number',
-                              format = 'zto')
-              
-            }
-            
-            for (name in names) {
-              
-              row <- list()
-              
-              
-              for(j in seq_along(vars)){
-                
-                var <- vars[[j]]
-                
-                row[[var]] <- ave1[name, j]
-                
-              }
-              
-              table$addRow(rowKey=name, values=row)
-              
+              row[[var]] <- gm[name, j]
               
             }
             
+            table$addRow(rowKey=name, values=row)
             
+            
+          }
+          
+          
+          
+            #  data <- self$data
+            #  data <- as.data.frame(data)
+            #  data <- jmvcore::naOmit(data)
+            # 
+            # 
+            #  vars <- self$options$vars
+            #  nVars <- length(vars)
+            # 
+            #  group<- self$options$group
+            # 
+            # 
+            #  for (var in vars) {
+            #    data[[var]] <-as.numeric(as.character(data[[var]]))
+            #  }
+            # 
+            # 
+            # # Using aggregate to calculate mean across class variable-----
+            # ave <-  stats::aggregate(data[,self$options$vars], list(data[,self$options$group]), mean)
+            # 
+            #  self$results$text$setContent(ave)
+            # 
+            #  table <- self$results$mc
+            #  
+            #  names<- levels(ave[,1])
+            #  
+            #  
+            # # The means of class table-------
+            # 
+            # ave1 <- ave[,-1]
+            # 
+            # 
+            # for (i in seq_along(vars)) {
+            # 
+            #   var <- vars[[i]]
+            # 
+            #   table$addColumn(name = paste0(var),
+            #                   type = 'number',
+            #                   format = 'zto')
+            # 
+            # }
+            # 
+            # for (i in 1:3) {
+            # 
+            #   row <- list()
+            # 
+            # 
+            #   for(j in seq_along(vars)){
+            # 
+            #     var <- vars[[j]]
+            # 
+            #     row[[var]] <- ave1[i, j]
+            # 
+            #   }
+            # 
+            #   table$addRow(rowKey=i, values=row)
+            # 
+            # 
+            # }
+            # 
+
             # reshape to long for ggplot
+
+            plotData1 <-  reshape2::melt(gm, id.vars=self$options$group)
             
-            plotData1       <-  reshape2::melt(ave, id.vars=self$options$group)
-            names(plotData1)[1]   <-  self$options$group
-            
-            # self$results$text$setContent(plotData1)
-            
+            #self$results$text$setContent(plotData1)
+          
+          
+          names(plotData1)[1]   <-  self$options$group
+          names(plotData1)[2]   <-  "variable"
+
+          #self$results$text$setContent(plotData1)
+
             # plot data function---------
-            
+
             image   <-  self$results$plot1
             image$setState(plotData1)
-            
-          
+
+
           
         },
         

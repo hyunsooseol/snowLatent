@@ -14,10 +14,11 @@ items:
       refs: snowLatent
 
       columns:
-          - name: .name[x]
-            title: ""
-            type: 'text'
-            content: ($key)
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
     - name: plot1
       title: 'Profile plot'
       type: Image

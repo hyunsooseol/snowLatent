@@ -94,7 +94,7 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="snowLatent",
                 columns=list(
                     list(
-                        `name`=".name[x]", 
+                        `name`="name", 
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
