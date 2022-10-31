@@ -90,7 +90,8 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Variable means across group",
                 visible="(mc)",
                 clearWith=list(
-                    "vars"),
+                    "vars",
+                    "group"),
                 refs="snowLatent",
                 columns=list(
                     list(
@@ -108,6 +109,7 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 clearWith=list(
                     "vars",
+                    "group",
                     "angle")))}))
 
 profileBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(

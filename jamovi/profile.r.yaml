@@ -11,6 +11,7 @@ items:
       visible: (mc)
       clearWith:
         - vars
+        - group
       refs: snowLatent
 
       columns:
@@ -28,6 +29,7 @@ items:
       renderFun: .plot1
       clearWith:
             - vars
+            - group
             - angle
 
 
