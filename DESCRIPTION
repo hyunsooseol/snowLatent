@@ -15,4 +15,4 @@ Imports: jmvcore (>= 0.8.5),
          glca,
          ggplot2,
          stringr,
-         data.table
+         reshape2

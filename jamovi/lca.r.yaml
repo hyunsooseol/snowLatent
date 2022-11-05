@@ -242,8 +242,8 @@ items:
     - name:  plot2
       title: Item by class
       type:  Image
-      width: 500
-      height: 500
+      width: 700
+      height: 700
       renderFun: .plot2
       visible: (plot2)
       refs: snowLatent
@@ -252,6 +252,7 @@ items:
         - covs
         - nc
         - nb
+        - angle
 
     - name:  text2
       title: Prevalence for level-1 class(Gamma)

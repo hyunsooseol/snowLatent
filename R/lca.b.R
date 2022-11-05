@@ -6,7 +6,7 @@
 #' @import glca
 #' @import ggplot2
 #' @importFrom glca glca
-#' @importFrom data.table melt
+#' @importFrom reshape2 melt
 #' @importFrom glca item
 #' @importFrom glca gofglca
 #' @export
@@ -247,8 +247,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image1 <- self$results$plot2
         
-        ic <- data.table::melt(lca$param$rho)
-        colnames(ic) <-c("Class", "Factor_level", "value", "L1")
+        ic <- reshape2::melt(lca$param$rho)
+        colnames(ic) <-c("Class", "Level", "value", "L1")
         
         image1$setState(ic)
         
@@ -620,13 +620,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
    ic <- image1$state
    
-   plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Class, y = value, fill = Factor_level)) + 
+   plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Class, y = value, fill = Level)) + 
      ggplot2::geom_bar(stat = "identity", position = "stack")+ 
      ggplot2::facet_wrap(~ L1)+
      ggplot2::scale_x_discrete("Class", expand = c(0, 0)) +
      ggplot2::scale_y_continuous("Proportion", expand = c(0, 0)) +
      ggplot2::theme_bw()
    
+   if (self$options$angle > 0) {
+     plot2 <- plot2 + ggplot2::theme(
+       axis.text.x = ggplot2::element_text(
+         angle = self$options$angle, hjust = 1
+       )
+     )
+   }
    
    plot2 <- plot2+ggtheme
    print(plot2)

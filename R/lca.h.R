@@ -18,7 +18,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             gamma = FALSE,
             coef = FALSE,
             plot1 = FALSE,
-            plot2 = FALSE, ...) {
+            plot2 = FALSE,
+            angle = 0, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -93,6 +94,12 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=45,
+                default=0)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -109,6 +116,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..coef)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
+            self$.addOption(private$..angle)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -125,7 +133,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         gamma = function() private$..gamma$value,
         coef = function() private$..coef$value,
         plot1 = function() private$..plot1$value,
-        plot2 = function() private$..plot2$value),
+        plot2 = function() private$..plot2$value,
+        angle = function() private$..angle$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -141,7 +150,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..gamma = NA,
         ..coef = NA,
         ..plot1 = NA,
-        ..plot2 = NA)
+        ..plot2 = NA,
+        ..angle = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -433,8 +443,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot2",
                 title="Item by class",
-                width=500,
-                height=500,
+                width=700,
+                height=700,
                 renderFun=".plot2",
                 visible="(plot2)",
                 refs="snowLatent",
@@ -442,7 +452,8 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb")))
+                    "nb",
+                    "angle")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
@@ -485,6 +496,8 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param coef .
 #' @param plot1 .
 #' @param plot2 .
+#' @param angle a number from 0 to 45 defining the angle of the x-axis labels,
+#'   where 0 degrees represents completely horizontal labels.
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -523,7 +536,8 @@ lca <- function(
     gamma = FALSE,
     coef = FALSE,
     plot1 = FALSE,
-    plot2 = FALSE) {
+    plot2 = FALSE,
+    angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
@@ -551,7 +565,8 @@ lca <- function(
         gamma = gamma,
         coef = coef,
         plot1 = plot1,
-        plot2 = plot2)
+        plot2 = plot2,
+        angle = angle)
 
     analysis <- lcaClass$new(
         options = options,

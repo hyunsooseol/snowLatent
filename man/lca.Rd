@@ -18,7 +18,8 @@ lca(
   gamma = FALSE,
   coef = FALSE,
   plot1 = FALSE,
-  plot2 = FALSE
+  plot2 = FALSE,
+  angle = 0
 )
 }
 \arguments{
@@ -49,6 +50,9 @@ lca(
 \item{plot1}{.}
 
 \item{plot2}{.}
+
+\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:
