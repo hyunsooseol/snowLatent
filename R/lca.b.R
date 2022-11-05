@@ -4,7 +4,9 @@
 #' @import jmvcore
 #' @import stats
 #' @import glca
+#' @import ggplot2
 #' @importFrom glca glca
+#' @importFrom data.table melt
 #' @importFrom glca item
 #' @importFrom glca gofglca
 #' @export
@@ -241,6 +243,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
         image$setState(lca)
           
+        # Item by class plot---------
+        
+        image1 <- self$results$plot2
+        
+        ic <- data.table::melt(lca$param$rho)
+        colnames(ic) <-c("Class", "Factor_level", "value", "L1")
+        
+        image1$setState(ic)
+        
+        
         
         #Good codes for model fit####################################
         
@@ -602,8 +614,30 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       },
       
+ # item by class plot-----------
  
-     ### Helper functions =================================     
+ .plot2 = function(image1, ggtheme, theme, ...) {    
+   
+   ic <- image1$state
+   
+   plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Class, y = value, fill = Factor_level)) + 
+     ggplot2::geom_bar(stat = "identity", position = "stack")+ 
+     ggplot2::facet_wrap(~ L1)+
+     ggplot2::scale_x_discrete("Class", expand = c(0, 0)) +
+     ggplot2::scale_y_continuous("Proportion", expand = c(0, 0)) +
+     ggplot2::theme_bw()
+   
+   
+   plot2 <- plot2+ggtheme
+   print(plot2)
+   TRUE
+  
+ },
+     
+ 
+ 
+ 
+ ### Helper functions =================================     
      
      .cleanData = function() {
        

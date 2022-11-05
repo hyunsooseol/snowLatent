@@ -76,6 +76,8 @@ children:
             children:
               - type: CheckBox
                 name: plot1
+              - type: CheckBox
+                name: plot2
           - type: Label
             label: Probability
             children:

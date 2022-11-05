@@ -17,7 +17,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             item = FALSE,
             gamma = FALSE,
             coef = FALSE,
-            plot1 = FALSE, ...) {
+            plot1 = FALSE,
+            plot2 = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -88,6 +89,10 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -103,6 +108,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..gamma)
             self$.addOption(private$..coef)
             self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -118,7 +124,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         item = function() private$..item$value,
         gamma = function() private$..gamma$value,
         coef = function() private$..coef$value,
-        plot1 = function() private$..plot1$value),
+        plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -133,7 +140,8 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..item = NA,
         ..gamma = NA,
         ..coef = NA,
-        ..plot1 = NA)
+        ..plot1 = NA,
+        ..plot2 = NA)
 )
 
 lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -151,6 +159,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$.items[["post"]],
         member = function() private$.items[["member"]],
         plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
     public=list(
@@ -420,6 +429,20 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "covs",
                     "nc",
                     "nb")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Item by class",
+                width=500,
+                height=500,
+                renderFun=".plot2",
+                visible="(plot2)",
+                refs="snowLatent",
+                clearWith=list(
+                    "vars",
+                    "covs",
+                    "nc",
+                    "nb")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
@@ -461,6 +484,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param gamma .
 #' @param coef .
 #' @param plot1 .
+#' @param plot2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -474,6 +498,7 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
@@ -497,7 +522,8 @@ lca <- function(
     item = FALSE,
     gamma = FALSE,
     coef = FALSE,
-    plot1 = FALSE) {
+    plot1 = FALSE,
+    plot2 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lca requires jmvcore to be installed (restart may be required)")
@@ -524,7 +550,8 @@ lca <- function(
         item = item,
         gamma = gamma,
         coef = coef,
-        plot1 = plot1)
+        plot1 = plot1,
+        plot2 = plot2)
 
     analysis <- lcaClass$new(
         options = options,

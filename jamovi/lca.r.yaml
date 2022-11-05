@@ -239,6 +239,20 @@ items:
         - nc
         - nb
 
+    - name:  plot2
+      title: Item by class
+      type:  Image
+      width: 500
+      height: 500
+      renderFun: .plot2
+      visible: (plot2)
+      refs: snowLatent
+      clearWith:
+        - vars
+        - covs
+        - nc
+        - nb
+
     - name:  text2
       title: Prevalence for level-1 class(Gamma)
       type:  Preformatted
