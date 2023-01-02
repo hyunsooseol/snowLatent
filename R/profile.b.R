@@ -177,20 +177,10 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ggplot2::geom_point(size=4,ggplot2::aes(color=factor(group)))+
             ggplot2::xlab("") +
             ggplot2::ylab("Mean value") +  
-            
+            ggplot2::labs(color = "")+
             ggtheme
             
-            # plot1 <-
-            #   ggplot2::ggplot(plotData1,
-            #   ggplot2::aes_string(x = "variable",y = "value",
-            #            group = as.factor("group"),
-            #            colour = as.factor("group"))) +
-            #   ggplot2::geom_path(size = 1.2) +
-            #   ggplot2::geom_point(size = 4) +
-            #   ggplot2::xlab("") +
-            #   ggplot2::ylab("Mean value") +
-            #   ggtheme
-            # 
+            
             
             if (self$options$angle > 0) {
               plot1 <- plot1 + ggplot2::theme(
