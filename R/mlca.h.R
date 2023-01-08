@@ -35,12 +35,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
-                vars,
-                suggested=list(
-                    "nominal",
-                    "ordinal"),
-                permitted=list(
-                    "factor"))
+                vars)
             private$..covs <- jmvcore::OptionVariables$new(
                 "covs",
                 covs,
@@ -705,7 +700,6 @@ mlca <- function(
             `if`( ! missing(covs), covs, NULL),
             `if`( ! missing(group), group, NULL))
 
-    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- mlcaOptions$new(

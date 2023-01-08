@@ -14,12 +14,7 @@ options:
     - name: vars
       title: Variables
       type: Variables
-      suggested:
-         - nominal
-         - ordinal
-      permitted:
-        - factor
-
+ 
     - name: covs
       title: Covariates
       type: Variables
