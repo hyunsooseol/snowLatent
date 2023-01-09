@@ -8,6 +8,7 @@
 #' @importFrom glca glca
 #' @importFrom reshape2 melt
 #' @importFrom glca item
+#' @importFrom ggplot2 ggplot
 #' @importFrom glca gofglca
 #' @export
 
@@ -274,8 +275,30 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           dtable <- res[["dtable"]] # Relative model fit 
         }
         
-         
-      results <-
+        # Elbow plot-------------
+        
+        out1 <- gtable[,c(2:4)]
+        
+        
+        cla <- c(2:self$options$nc)
+        
+        out1 <- data.frame(out1,cla)
+        
+        # self$results$text1$setContent(out1)
+        
+        colnames(out1) <- c('AIC',
+                            'CAIC','BIC','Class')
+        
+        elbow <- reshape2::melt(out1,
+                                id.vars='Class',
+                                variable.name="Fit",
+                                value.name='Value')
+        
+        image2 <- self$results$plot3
+        image2$setState(elbow )
+        
+        
+        results <-
               list(
                 'fit'=fit,
                 'gam'= gam,
@@ -642,6 +665,31 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  },
      
  
+ .plot3 = function(image2, ggtheme, theme,...) {
+   
+   
+   elbow <- image2$state
+   
+   
+   # plot3 <- ggplot2::ggplot(elbow,ggplot2::aes(x = Class, y = Value, group = Fit))+
+   #   ggplot2::geom_line(size=1.1,ggplot2::aes(color=Fit))+
+   #   ggplot2::geom_point(size=3,ggplot2::aes(color=Fit))
+   #   ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
+   
+   plot3 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
+     ggplot2::geom_line(size = 1.1) +
+     ggplot2::geom_point(size = 3) +
+     ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
+   
+   
+   
+   plot3 <- plot3+ggtheme
+   
+   
+   print(plot3)
+   TRUE
+   
+ },
  
  
  ### Helper functions =================================     

@@ -254,6 +254,20 @@ items:
         - nb
         - angle
 
+    - name: plot3
+      title: 'Elbow plot'
+      type: Image
+      visible: (plot3)
+      width: 500
+      height: 500
+      refs: snowLatent
+      renderFun: .plot3
+      clearWith:
+        - vars
+        - covs
+        - nc
+        - nb
+
     - name:  text2
       title: Prevalence for level-1 class(Gamma)
       type:  Preformatted
