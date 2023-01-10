@@ -275,6 +275,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           dtable <- res[["dtable"]] # Relative model fit 
         }
         
+       
         # Elbow plot-------------
         
         out1 <- gtable[,c(2:4)]
@@ -296,6 +297,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image2 <- self$results$plot3
         image2$setState(elbow )
+        
+        # adding class--------
+        
+        gtable<- as.data.frame(gtable)
+        dtable<- as.data.frame(dtable)
+        
+        gtable$class <-c(2:self$options$nc)  
+        dtable$Class <-c(2:self$options$nc)  
+        
+        # self$results$text$setContent(gtable)
+
         
         
         results <-
@@ -356,12 +368,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          loglik <- g[,1]
          aic <- g[,2]
          caic <- g[,3]
-         bic <- g[,4] 
+         bic <- g[,4]
          entropy <- g[,5]
-         df <- g[,6] 
-         gsq <- g[,7] 
+         df <- g[,6]
+         gsq <- g[,7]
          p <- g[,8]
-         
+         class <- g[,9]
        
          names <- dimnames(g)[[1]]
          
@@ -370,6 +382,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
            row <- list()
            
+           row[["class"]]   <-  g[name, 9]
            row[["loglik"]]   <-  g[name, 1]
            row[["aic"]] <-  g[name, 2]
            row[["caic"]] <-  g[name, 3]
@@ -402,11 +415,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     d<- as.data.frame(dtable)
     
-   para <- d[,1]
-   loglik<- d[,2]
-   df<- d[,3]
-   dev<- d[,4]
-   p<- d[,5]
+   # para <- d[,1]
+   # loglik<- d[,2]
+   # df<- d[,3]
+   # dev<- d[,4]
+   # p<- d[,5]
    
    names <- dimnames(d)[[1]]
    
@@ -415,6 +428,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
      row <- list()
      
+     row[["class"]] <-  d[name, 6]
      row[["para"]] <-  d[name, 1]
      row[["loglik"]] <-  d[name, 2]
      row[["df"]] <-  d[name, 3]

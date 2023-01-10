@@ -250,10 +250,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nb"),
                 columns=list(
                     list(
-                        `name`="name", 
-                        `title`="Model", 
-                        `type`="text", 
-                        `content`="($key)"),
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="number"),
                     list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 
@@ -300,10 +299,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nb"),
                 columns=list(
                     list(
-                        `name`="name", 
-                        `title`="Model", 
-                        `type`="text", 
-                        `content`="($key)"),
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="number"),
                     list(
                         `name`="para", 
                         `title`="Parameter", 

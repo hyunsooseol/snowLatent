@@ -64,10 +64,9 @@ items:
         - nb
 
       columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
+        - name: class
+          title: Class
+          type: number
         - name: loglik
           title: Log-likelihood
           type: number
@@ -106,10 +105,9 @@ items:
         - nb
 
       columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
+        - name: class
+          title: Class
+          type: number
         - name: para
           title: Parameter
           type: number
