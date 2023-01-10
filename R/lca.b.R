@@ -365,15 +365,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          g<- as.data.frame(gtable)
          
-         loglik <- g[,1]
-         aic <- g[,2]
-         caic <- g[,3]
-         bic <- g[,4]
-         entropy <- g[,5]
-         df <- g[,6]
-         gsq <- g[,7]
-         p <- g[,8]
-         class <- g[,9]
+         # loglik <- g[,1]
+         # aic <- g[,2]
+         # caic <- g[,3]
+         # bic <- g[,4]
+         # entropy <- g[,5]
+         # df <- g[,6]
+         # gsq <- g[,7]
+         # p <- g[,8]
+         # class <- g[,9]
        
          names <- dimnames(g)[[1]]
          
