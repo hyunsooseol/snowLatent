@@ -273,9 +273,16 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           dtable <- NULL 
         } else {
           dtable <- res[["dtable"]] # Relative model fit 
-        }
+        
+          new <- c(2:self$options$nc)
+          #add column called new
+          dtable <- cbind(dtable, new)
+         
+          }
         
        
+        if(self$options$nc>2){
+        
         # Elbow plot-------------
         
         out1 <- gtable[,c(2:4)]
@@ -298,17 +305,22 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         image2 <- self$results$plot3
         image2$setState(elbow )
         
+        }
+        
+        
         # adding class--------
         
         gtable<- as.data.frame(gtable)
         dtable<- as.data.frame(dtable)
         
-        gtable$class <-c(2:self$options$nc)  
-        dtable$Class <-c(2:self$options$nc)  
+        #define new column to add
+        new <- c(2:self$options$nc)
+       
+        #add column called new
+        gtable <- cbind(gtable, new)
+      #  dtable <- cbind(dtable, new1)
         
-        # self$results$text$setContent(gtable)
-
-        
+       #self$results$text$setContent(dtable)
         
         results <-
               list(
@@ -374,7 +386,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          # gsq <- g[,7]
          # p <- g[,8]
          # class <- g[,9]
-       
+
          names <- dimnames(g)[[1]]
          
        
@@ -414,6 +426,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     dtable <- results$dtable
     
     d<- as.data.frame(dtable)
+    
     
    # para <- d[,1]
    # loglik<- d[,2]
@@ -681,6 +694,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  
  .plot3 = function(image2, ggtheme, theme,...) {
    
+   if(self$options$nc <3)
+     return()
    
    elbow <- image2$state
    

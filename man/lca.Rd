@@ -12,7 +12,7 @@ lca(
   nb = 50,
   fit = TRUE,
   comp = TRUE,
-  rel = TRUE,
+  rel = FALSE,
   cp = FALSE,
   item = FALSE,
   gamma = FALSE,
