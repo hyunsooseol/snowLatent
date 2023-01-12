@@ -274,9 +274,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         } else {
           dtable <- res[["dtable"]] # Relative model fit 
         
-          new <- c(2:self$options$nc)
+          # new <- c(2:self$options$nc)
           #add column called new
-          dtable <- cbind(dtable, new)
+          #dtable <- cbind(dtable, new)
          
           }
         
@@ -320,7 +320,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         gtable <- cbind(gtable, new)
       #  dtable <- cbind(dtable, new1)
         
-       #self$results$text$setContent(dtable)
+        if(!is.null(res$dtable)){
+        
+        new <- c(2:self$options$nc)
+        #add column called new
+        dtable <- cbind(dtable, new)
+        }
+        
+        
+        #self$results$text$setContent(dtable)
         
         results <-
               list(
@@ -424,6 +432,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     
     dtable <- results$dtable
+    
+    #new <- c(2:self$options$nc)
+    #add column called new
+    #dtable <- cbind(dtable, new)
     
     d<- as.data.frame(dtable)
     
