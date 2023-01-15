@@ -1,12 +1,12 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.2.9
+version: 2.3.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2023-01-12'
+date: '2023-01-15'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, and Multilevel

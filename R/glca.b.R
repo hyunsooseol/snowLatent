@@ -4,10 +4,12 @@
 #' @import jmvcore
 #' @import stats
 #' @import glca
+#' @import ggplot2
 #' @importFrom glca glca
 #' @importFrom glca item
 #' @importFrom glca gofglca
 #' @importFrom stringr str_interp
+#' @importFrom ggplot2 ggplot
 #' @export
 #' 
 glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -360,6 +362,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #image$setSize(100 + 100 * length(self$options$vars), 200)
         
         image$setState(lca)
+        
+        # Item probabilities by group plot--------
+        
+        ic<- lca[["param"]][["rho"]]
+        ic <- reshape2::melt(ic) 
+        colnames(ic) <-c("Class", "Level", "value", "Variable", "Group") 
+        image2 <- self$results$plot2
+        image2$setState(ic )
         
         results <-
           list(
@@ -731,7 +741,40 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
       
-      
+     # item probailities by group plot-----------
+     
+     .plot2 = function(image2, ggtheme, theme, ...) {    
+       
+       ic <- image2$state
+       
+       if (is.null(ic))
+         return()
+       
+       plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Variable, y = value, fill = Level)) + 
+         ggplot2::geom_bar(stat = "identity", position = "stack")+ 
+         ggplot2::facet_wrap(ggplot2::vars(Group,Class) )+
+         ggplot2::scale_x_discrete("Variable", expand = c(0, 0)) +
+         ggplot2::scale_y_continuous("Probability", expand = c(0, 0)) +
+         ggplot2::theme_bw()
+       
+       plot2 <- plot2+ggtheme
+       
+       if (self$options$angle > 0) {
+         plot2 <- plot2 + ggplot2::theme(
+           axis.text.x = ggplot2::element_text(
+             angle = self$options$angle, hjust = 1
+           )
+         )
+       }
+       
+       print(plot2)
+       TRUE
+     
+     
+     },
+     
+     
+     
       ### Helper functions =================================     
       
       # .cleanData = function() {

@@ -21,7 +21,9 @@ glca(
   item = FALSE,
   gamma = FALSE,
   co = FALSE,
-  plot1 = FALSE
+  plot1 = FALSE,
+  plot2 = FALSE,
+  angle = 0
 )
 }
 \arguments{
@@ -58,6 +60,10 @@ glca(
 \item{co}{.}
 
 \item{plot1}{.}
+
+\item{plot2}{.}
+
+\item{angle}{.}
 }
 \value{
 A results object containing:
@@ -72,6 +78,7 @@ A results object containing:
   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr

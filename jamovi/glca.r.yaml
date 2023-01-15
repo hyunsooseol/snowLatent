@@ -245,6 +245,21 @@ items:
         - group
         - covs
 
+    - name:  plot2
+      title: Item probabilities by group
+      type:  Image
+      width: 700
+      height: 700
+      renderFun: .plot2
+      visible: (plot2)
+      refs: snowLatent
+      clearWith:
+        - vars
+        - nc
+        - group
+        - covs
+        - angle
+        
     - name: text1
       title: Item response probabilities
       type:  Preformatted 

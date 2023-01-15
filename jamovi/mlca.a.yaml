@@ -121,6 +121,23 @@ options:
       title: Profile plot
       type: Bool 
       default: FALSE   
+
+    - name: plot2
+      title: Item by class
+      type: Bool
+      default: FALSE
+
+    - name: angle
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 90
+      default: 0
+      description:
+          R: >
+            a number from 0 to 90 defining the angle of the x-axis labels, 
+            where 0 degrees represents completely horizontal labels.
+
  
 ...
  

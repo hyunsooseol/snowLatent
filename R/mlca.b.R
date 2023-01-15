@@ -4,6 +4,7 @@
 #' @import jmvcore
 #' @import stats
 #' @import glca
+#' @importFrom ggplot2 ggplot
 #' @importFrom glca glca
 #' @importFrom glca item
 #' @importFrom glca gofglca
@@ -34,8 +35,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. When group and cluster(>1) are given, the multilevel latent class models will be fitted.</p>
             <p>3. The rationale of snowLatent module is described in the <a href='https://docs.google.com/viewer?a=v&pid=sites&srcid=a29yZWEuYWMua3J8a3VzdGF0bGFifGd4OjU0Nzc0NjU4OGJkODVjNDk'>documentation</a>.</p>
-            <p>4. The result table does not printed if the results from glca R package are not available.</p>
-            <p>5. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -155,11 +155,12 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ########  Multilevel glca R package ################
         
         # library(glca)
-        # mlca = glca(item(ECIGT, ECIGAR, ESLT, EELCIGT, EHOOKAH) ~ SEX,
-        #             group = SCH_ID, data = nyts18, 
-        #             nclass = 3, ncluster = 2, seed=1)
+        # f <- item(starts.with = "E") ~ SEX
+        # mlca = glca::glca(f,group = SCH_ID, data = nyts18, 
+        #                   nclass = 3, ncluster = 3, seed=1)
         # 
-        ################################
+        # summary(mlca)
+        # 
         
         # Constructing formula----------------        
         
@@ -439,6 +440,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # cla <- as.data.frame(cla)
         
         ###################################
+        
+        # Item by class plot---------
+        
+        image2 <- self$results$plot2
+        
+        ic<- lca[["param"]][["rho"]]
+        
+        ic <- reshape2::melt(ic) 
+        
+        colnames(ic) <-c("Class", "Level", "value", "L1") 
+        
+        image2$setState(ic)
         
         
         results <-
@@ -836,7 +849,37 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         TRUE
         
       },
-      
+  
+# item by class plot-----------
+
+.plot2 = function(image2, ggtheme, theme, ...) {    
+  
+  ic <- image2$state
+  
+  plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Class, y = value, fill = Level)) + 
+    ggplot2::geom_bar(stat = "identity", position = "stack")+ 
+    ggplot2::facet_wrap(~ L1)+
+    ggplot2::scale_x_discrete("Class", expand = c(0, 0)) +
+    ggplot2::scale_y_continuous("Probability", expand = c(0, 0)) +
+    ggplot2::theme_bw()
+  
+  
+    plot2 <- plot2+ggtheme
+  
+  if (self$options$angle > 0) {
+    plot2 <- plot2 + ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = self$options$angle, hjust = 1
+      )
+    )
+  }
+  
+  print(plot2)
+  TRUE
+  
+},
+
+
 # # GOF for coefficients----------------------
 # 
 # .populateGofTable = function(results) {

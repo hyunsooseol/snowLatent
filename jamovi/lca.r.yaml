@@ -236,7 +236,7 @@ items:
         - covs
         - nc
         - nb
-
+ 
     - name:  plot2
       title: Item by class
       type:  Image

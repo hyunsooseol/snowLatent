@@ -21,7 +21,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             item = FALSE,
             gamma = FALSE,
             co = FALSE,
-            plot1 = FALSE, ...) {
+            plot1 = FALSE,
+            plot2 = FALSE,
+            angle = 0, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -102,6 +104,16 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot1",
                 plot1,
                 default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=90,
+                default=0)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -119,6 +131,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..gamma)
             self$.addOption(private$..co)
             self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
+            self$.addOption(private$..angle)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -136,7 +150,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         item = function() private$..item$value,
         gamma = function() private$..gamma$value,
         co = function() private$..co$value,
-        plot1 = function() private$..plot1$value),
+        plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value,
+        angle = function() private$..angle$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -153,7 +169,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..item = NA,
         ..gamma = NA,
         ..co = NA,
-        ..plot1 = NA)
+        ..plot1 = NA,
+        ..plot2 = NA,
+        ..angle = NA)
 )
 
 glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -170,6 +188,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         marginal = function() private$.items[["marginal"]],
         preval = function() private$.items[["preval"]],
         plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]],
         text1 = function() private$.items[["text1"]],
         text3 = function() private$.items[["text3"]],
         text4 = function() private$.items[["text4"]],
@@ -454,6 +473,21 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "group",
                     "covs")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Item probabilities by group",
+                width=700,
+                height=700,
+                renderFun=".plot2",
+                visible="(plot2)",
+                refs="snowLatent",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "group",
+                    "covs",
+                    "angle")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -511,6 +545,8 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param gamma .
 #' @param co .
 #' @param plot1 .
+#' @param plot2 .
+#' @param angle .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -523,6 +559,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
@@ -553,7 +590,9 @@ glca <- function(
     item = FALSE,
     gamma = FALSE,
     co = FALSE,
-    plot1 = FALSE) {
+    plot1 = FALSE,
+    plot2 = FALSE,
+    angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("glca requires jmvcore to be installed (restart may be required)")
@@ -586,7 +625,9 @@ glca <- function(
         item = item,
         gamma = gamma,
         co = co,
-        plot1 = plot1)
+        plot1 = plot1,
+        plot2 = plot2,
+        angle = angle)
 
     analysis <- glcaClass$new(
         options = options,

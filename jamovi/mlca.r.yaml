@@ -333,6 +333,23 @@ items:
         - covs
         - nclust
 
+    - name:  plot2
+      title: Item by class
+      type:  Image
+      width: 700
+      height: 700
+      renderFun: .plot2
+      visible: (plot2)
+      refs: snowLatent
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - covs
+        - nclust
+        - angle
+
     - name: text3
       title: Logistic regression
       type:  Preformatted 

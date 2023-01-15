@@ -52,7 +52,7 @@ lca(
 
 \item{plot2}{.}
 
-\item{angle}{a number from 0 to 45 defining the angle of the x-axis labels,
+\item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
 where 0 degrees represents completely horizontal labels.}
 
 \item{plot3}{.}

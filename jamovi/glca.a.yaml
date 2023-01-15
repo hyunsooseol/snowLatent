@@ -100,5 +100,16 @@ options:
       type: Bool 
       default: FALSE   
      
-     
+    - name: plot2 
+      title: Item probabilities by group
+      type: Bool 
+      default: FALSE       
+      
+    - name: angle
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 90
+      default: 0
+
 ...

@@ -25,7 +25,9 @@ mlca(
   post = FALSE,
   gamma = FALSE,
   member = FALSE,
-  plot1 = FALSE
+  plot1 = FALSE,
+  plot2 = FALSE,
+  angle = 0
 )
 }
 \arguments{
@@ -70,6 +72,11 @@ mlca(
 \item{member}{.}
 
 \item{plot1}{.}
+
+\item{plot2}{.}
+
+\item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
+where 0 degrees represents completely horizontal labels.}
 }
 \value{
 A results object containing:
@@ -87,6 +94,7 @@ A results object containing:
   \code{results$member} \tab \tab \tab \tab \tab a table \cr
   \code{results$item} \tab \tab \tab \tab \tab an array of tables \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
