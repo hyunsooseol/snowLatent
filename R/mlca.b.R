@@ -113,11 +113,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populate  gof for coeff ---------------
           
-       #   private$.populateGofTable(results)
+         # private$.populateGofTable(results)
           
           # populate equality coefficients ---------------
           
-        #   private$.populateCiTable(results)
+          #private$.populateCiTable(results)
           
         
           # populate item probabilities---------
@@ -253,7 +253,11 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 ####  Invariance of equality  ########################################################       
         
-           lca2 <- try(glca::glca(formula = formula, 
+          
+        if(!is.null(self$options$covs)){
+          
+        
+         lca2 <- try(glca::glca(formula = formula, 
                              group = group, 
                              data = data, 
                              nclass = nc, 
@@ -282,10 +286,18 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
         } 
          
-   ######## Goodness of fit table----------  
-          
-          if(isTRUE(self$options$gof)){
+        }
          
+         
+         ######## Goodness of fit table----------  
+         
+        if(!is.null(self$options$covs)&&isTRUE(self$options$gof)){
+         
+         # if(isTRUE(self$options$gof)){
+         
+            # if(is.null(self$options$covs))
+            #   return() 
+            
           table <- self$results$gof  
   
           if(is.null(ci.g))
@@ -322,11 +334,17 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           }
           
-          
+      
   ############ Testing equality of coefficients-------------
-          
-          if(isTRUE(self$options$ci)){
-         
+        
+        if(!is.null(self$options$covs)&&isTRUE(self$options$ci)){
+        # if(!is.null(self$options$covs)){
+        #   
+        #   if(isTRUE(self$options$ci)){
+            # 
+            # if(is.null(self$options$covs))
+            #   return() 
+            
             table <- self$results$ci
             
             if(is.null(ci.d))
@@ -357,9 +375,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
           }
         
-          
           }
-          
+        
+        
+        
 ################################################################
           
         # Marginal prevalences for latent cluster------
