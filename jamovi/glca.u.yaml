@@ -75,15 +75,15 @@ children:
                 name: plot1
               - type: CheckBox
                 name: plot2
-                children:
-                  - type: TextBox
-                    name: angle
-                    format: number
-                    enable: (plot2)
-                    suggestedValues:
-                       - value: 0
-                       - value: 45
-                       - value: 90
+              - type: CheckBox
+                name: plot3    
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45
+                  - value: 90
           - type: Label
             label: Logistic regression
             children:

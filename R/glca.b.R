@@ -266,8 +266,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
           
           }
-           # --- Equality of coefficients --- #            
+           # Equality of coefficients ---             
          
+          
           mglca4 <- try(glca::glca(formula = formula, 
                                group = group, 
                                data = data, 
@@ -301,7 +302,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
           }
       
-        # Class prevalences by group----------
+       
+          # Class prevalences by group----------
         
          prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
         
@@ -335,18 +337,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           co<- lca$coefficient
         }
       
-        
-        # if(!is.null(self$options$covs) ) {
-        #   
-        #   # if (!self$options$co)
-        #   #        return()
-        #   
-        #   co<- lca$coefficient
-        #   
-        #   self$results$text3$setContent(co)
-        #   
-        # }
-        # 
        
          # Class Prevalences plot----------
         
@@ -363,13 +353,34 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image$setState(lca)
         
-        # Item probabilities by group plot--------
+        # Item probabilities by group plot(default:Measure.inv=TRUE)--------
         
         ic<- lca[["param"]][["rho"]]
         ic <- reshape2::melt(ic) 
         colnames(ic) <-c("Class", "Level", "value", "Variable", "Group") 
         image2 <- self$results$plot2
         image2$setState(ic )
+        
+        # Item probabilities by group plot(Measure.inv=FALSE)--------
+        
+        if(self$options$plot3==TRUE){
+          
+          mglca3 <-glca::glca(formula = formula, 
+                                  group = group, 
+                                  data = data, 
+                                  nclass = nc, 
+                                  measure.inv = FALSE,
+                                  seed = 1)
+          
+          icf<- mglca3[["param"]][["rho"]]
+          icf <- reshape2::melt(icf) 
+          colnames(icf) <-c("Class", "Level", "value", "Variable", "Group") 
+          image3 <- self$results$plot3
+          image3$setState(icf )
+          
+          
+        }
+        
         
         results <-
           list(
@@ -509,10 +520,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateCiaTable = function(results) {
         
-        
-        if (!self$options$cia)
-          return()
-        
+        if(is.null(self$options$covs))
+          return() 
+       
       table <- self$results$cia
       ctable <- results$ci.g
         
@@ -559,7 +569,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       .populateCirTable = function(results) {
         
         
-        if (!self$options$cir)
+        if(is.null(self$options$covs))
           return()
       
         table <- self$results$cir
@@ -624,7 +634,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         },
         
-      # populate class prevalences by group table---------------
+      # class prevalences by group table---------------
       
       .populateCgTable= function(results) {
 
@@ -771,6 +781,39 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        TRUE
      
      
+     },
+     
+     
+     # item probailities by group plot(Measure.inv=FALSE)-----------
+     
+     .plot3 = function(image3, ggtheme, theme, ...) {    
+       
+       ic <- image3$state
+       
+       if (is.null(ic))
+         return()
+       
+       plot3 <- ggplot2::ggplot(ic, ggplot2::aes(x = Variable, y = value, fill = Level)) + 
+         ggplot2::geom_bar(stat = "identity", position = "stack")+ 
+         ggplot2::facet_wrap(ggplot2::vars(Group,Class) )+
+         ggplot2::scale_x_discrete("Variable", expand = c(0, 0)) +
+         ggplot2::scale_y_continuous("Probability", expand = c(0, 0)) +
+         ggplot2::theme_bw()
+       
+       plot3 <- plot3+ggtheme
+       
+       if (self$options$angle > 0) {
+         plot3 <- plot3 + ggplot2::theme(
+           axis.text.x = ggplot2::element_text(
+             angle = self$options$angle, hjust = 1
+           )
+         )
+       }
+       
+       print(plot3)
+       TRUE
+       
+       
      },
      
      

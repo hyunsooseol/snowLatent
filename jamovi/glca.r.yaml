@@ -246,12 +246,27 @@ items:
         - covs
 
     - name:  plot2
-      title: Item probabilities by group
+      title: Item response probabilities by group(Measurement invariance=TRUE)
       type:  Image
       width: 700
       height: 700
       renderFun: .plot2
       visible: (plot2)
+      refs: snowLatent
+      clearWith:
+        - vars
+        - nc
+        - group
+        - covs
+        - angle
+
+    - name:  plot3
+      title: Item response probabilities by group(Measurement invariance=FALSE)
+      type:  Image
+      width: 700
+      height: 700
+      renderFun: .plot3
+      visible: (plot3)
       refs: snowLatent
       clearWith:
         - vars
@@ -277,5 +292,4 @@ items:
       type:  Preformatted      
 
     
-
 ...

@@ -101,10 +101,15 @@ options:
       default: FALSE   
      
     - name: plot2 
-      title: Item probabilities by group
+      title: Item probabilities(Invariance=T)
       type: Bool 
       default: FALSE       
       
+    - name: plot3 
+      title: Item probabilities(Invariance=F)
+      type: Bool 
+      default: FALSE       
+
     - name: angle
       title: Angle of x-axis labels
       type: Number
