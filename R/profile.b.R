@@ -75,109 +75,67 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
           }
           
-          
-          
-            #  data <- self$data
-            #  data <- as.data.frame(data)
-            #  data <- jmvcore::naOmit(data)
-            # 
-            # 
-            #  vars <- self$options$vars
-            #  nVars <- length(vars)
-            # 
-            #  group<- self$options$group
-            # 
-            # 
-            #  for (var in vars) {
-            #    data[[var]] <-as.numeric(as.character(data[[var]]))
-            #  }
-            # 
-            # 
-            # # Using aggregate to calculate mean across class variable-----
-            # ave <-  stats::aggregate(data[,self$options$vars], list(data[,self$options$group]), mean)
-            # 
-            #  self$results$text$setContent(ave)
-            # 
-            #  table <- self$results$mc
-            #  
-            #  names<- levels(ave[,1])
-            #  
-            #  
-            # # The means of class table-------
-            # 
-            # ave1 <- ave[,-1]
-            # 
-            # 
-            # for (i in seq_along(vars)) {
-            # 
-            #   var <- vars[[i]]
-            # 
-            #   table$addColumn(name = paste0(var),
-            #                   type = 'number',
-            #                   format = 'zto')
-            # 
-            # }
-            # 
-            # for (i in 1:3) {
-            # 
-            #   row <- list()
-            # 
-            # 
-            #   for(j in seq_along(vars)){
-            # 
-            #     var <- vars[[j]]
-            # 
-            #     row[[var]] <- ave1[i, j]
-            # 
-            #   }
-            # 
-            #   table$addRow(rowKey=i, values=row)
-            # 
-            # 
-            # }
-            # 
-
-            # reshape to long for ggplot
+          # reshape to long for ggplot
 
             plotData1 <-  reshape2::melt(gm, id.vars=self$options$group)
             
             #self$results$text$setContent(plotData1)
           
-           colnames(plotData1) <- c("group","variable","value")
-          
-          
-          
-          # names(plotData1)[1]   <- self$options$group
-          # names(plotData1)[2]   <-  "variable"
-
-          #self$results$text$setContent(plotData1)
-
-            # plot data function---------
+           colnames(plotData1) <- c("Group","Variable","Value")
+         
+           # plot data function---------
 
             image   <-  self$results$plot1
             image$setState(plotData1)
 
 
+            # Box plot-------------------
+            
+            if(isTRUE(self$options$plot2)){
+              
+              x <- self$options$vars
+              y <- self$options$group
+              x<- self$data[x]
+              y<- self$data[y]
+              # state <- list(pre, tar)
+              # image2 <- self$results$plot2 
+              # image2$setState(state)
+              # xCol <- jmvcore::toNumeric(self$data[x])
+              # yCol <- jmvcore::toNumeric(self$data[y])
+              
+              d <- cbind(x, y)
+              d <- jmvcore::naOmit(data)
+              
+              d <-  reshape2::melt(data, id.vars=self$options$group)
+              colnames(d) <- c("Group","Variable","Value")
+              
+              #self$results$text$setContent(data)
+              
+              image2 <- self$results$plot2
+              image2$setState(d) 
+              
+            }
+            
           
         },
         
         .plot1 = function(image, ggtheme, theme, ...) {
           
           
-          if(is.null(self$options$group))
-            return()
+          if (is.null(image$state))
+            return(FALSE)
           
           plotData1 <- image$state
           
           plot1<-ggplot2::ggplot(plotData1, 
-                 ggplot2::aes(x=variable, 
-                              y=value, 
-                              group=group))+
-            ggplot2::geom_line(size=1.2,ggplot2::aes(color=factor(group)))+
-            ggplot2::geom_point(size=4,ggplot2::aes(color=factor(group)))+
-            ggplot2::xlab("") +
+                 ggplot2::aes(x=Variable, 
+                              y=Value, 
+                              group=Group))+
+            ggplot2::geom_line(size=1.2,ggplot2::aes(color=factor(Group)))+
+            ggplot2::geom_point(size=4,ggplot2::aes(color=factor(Group)))+
+            ggplot2::xlab("Variable") +
             ggplot2::ylab("Mean value") +  
-            ggplot2::labs(color = "")+
+            ggplot2::labs(color = "Group")+
             ggtheme
             
             
@@ -193,7 +151,42 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             print(plot1)
             TRUE
           
+        },
+        
+        .plot2 = function(image2,ggtheme, theme,...) {
+          
+          if (is.null(image2$state))
+            return(FALSE)
+          
+          # pre <- image2$state[[1]]
+          # tar <- image2$state[[2]]
+          # pre <- image2$state[[1]]
+          # tar <- as.factor(image2$state[[2]])
+          # plot2<- caret::featurePlot(pre, tar, "box")
+          
+          d <- image2$state
+          
+          plot2 <- ggplot2::ggplot(d, 
+                                   ggplot2::aes(x=Group, 
+                                                y=Value, 
+                                                color=Group))+  
+            ggplot2::geom_boxplot()+ 
+            ggplot2::facet_wrap(~Variable)+
+           
+            ggtheme
+          
+          if (self$options$angle > 0) {
+            plot2 <- plot2 + ggplot2::theme(
+              axis.text.x = ggplot2::element_text(
+                angle = self$options$angle, hjust = 1
+              )
+            )
+          }
+          
+          print(plot2)
+          TRUE
         }
+        
           
             
         )

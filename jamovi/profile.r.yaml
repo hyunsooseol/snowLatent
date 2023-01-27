@@ -21,7 +21,7 @@ items:
           content: ($key)
 
     - name: plot1
-      title: 'Profile plot'
+      title: 'Line plot'
       type: Image
       visible: (plot1)
       width: 600
@@ -32,5 +32,15 @@ items:
             - group
             - angle
 
-
+    - name: plot2
+      title: 'Box plot'
+      type: Image
+      visible: (plot2)
+      width: 600
+      height: 600
+      renderFun: .plot2
+      clearWith:
+            - vars
+            - group
+            - angle
 ...

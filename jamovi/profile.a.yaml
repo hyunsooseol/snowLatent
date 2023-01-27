@@ -46,10 +46,14 @@ options:
             a number from 0 to 90 defining the angle of the x-axis labels, 
             where 0 degrees represents completely horizontal labels.
     - name: plot1
-      title: Profile plot
+      title: Line plot
       type: Bool
       default: FALSE
 
+    - name: plot2
+      title: Box plot
+      type: Bool
+      default: FALSE
 ...
 
  
