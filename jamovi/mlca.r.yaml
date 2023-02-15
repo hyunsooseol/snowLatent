@@ -68,10 +68,9 @@ items:
         - nclust
 
       columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
+        - name: cluster
+          title: 'Cluster'
+          type: number
         - name: loglik
           title: Log-likelihood
           type: number
@@ -112,10 +111,9 @@ items:
         - nclust
 
       columns:
-        - name: name
-          title: 'Model'
-          type: 'text'
-          content: ($key)
+        - name: cluster
+          title: 'Cluster'
+          type: number
         - name: para
           title: Parameter
           type: number
@@ -350,6 +348,22 @@ items:
         - nclust
         - angle
 
+    - name: plot3
+      title: 'Elbow plot'
+      type: Image
+      visible: (plot3)
+      width: 500
+      height: 500
+      refs: snowLatent
+      renderFun: .plot3
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - covs
+        - nclust
+    
     - name: text3
       title: Logistic regression
       type:  Preformatted 

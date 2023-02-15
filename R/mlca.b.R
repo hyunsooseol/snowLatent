@@ -251,7 +251,56 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
 
 
-####  Invariance of equality  ########################################################       
+        # Elbow plot------------------------------
+        
+        if(self$options$nclust>2){
+          
+          # Elbow plot-------------
+          
+          out1 <- gtable1[,c(2:4)]
+          
+          
+          cla <- c(2:self$options$nclust)
+          
+          out1 <- data.frame(out1,cla)
+          
+          # self$results$text1$setContent(out1)
+          
+          colnames(out1) <- c('AIC',
+                              'CAIC','BIC','Cluster')
+          
+          elbow <- reshape2::melt(out1,
+                                  id.vars='Cluster',
+                                  variable.name="Fit",
+                                  value.name='Value')
+          
+          image2 <- self$results$plot3
+          image2$setState(elbow )
+          
+        }
+        
+        # adding class--------
+        
+        gtable1<- as.data.frame(gtable1)
+        dtable1<- as.data.frame(dtable1)
+        
+        #define new column to add
+        new <- c(2:self$options$nclust)
+        
+        #add column called new
+        gtable1 <- cbind(gtable1, new)
+        #  dtable <- cbind(dtable, new1)
+        
+        # if(!is.null(res$dtable1)){
+        #   
+        #   new <- c(2:self$options$nclust)
+        #   #add column called new
+        #   dtable1 <- cbind(dtable1, new)
+        # }
+        # 
+       #self$results$text$setContent(dtable1)
+        
+        ####  Invariance of equality  ########################################################       
         
           
         if(!is.null(self$options$covs)){
@@ -540,14 +589,14 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         g<- as.data.frame(gtable1)
        
-        loglik <- g[,1]
-        aic <- g[,2]
-        caic <- g[,3]
-        bic <- g[,4] 
-        entropy <- g[,5]
-        df <- g[,6] 
-        gsq <- g[,7] 
-        p <- g[,8]
+        # loglik <- g[,1]
+        # aic <- g[,2]
+        # caic <- g[,3]
+        # bic <- g[,4] 
+        # entropy <- g[,5]
+        # df <- g[,6] 
+        # gsq <- g[,7] 
+        # p <- g[,8]
         
         
         names <- dimnames(g)[[1]]
@@ -557,6 +606,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           row <- list()
           
+          row[["cluster"]]   <-  g[name, 9]
           row[["loglik"]]   <-  g[name, 1]
           row[["aic"]] <-  g[name, 2]
           row[["caic"]] <-  g[name, 3]
@@ -587,13 +637,17 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (is.null(dtable1))
           return()
         
+        new <- c(2:self$options$nclust)
+        #add column called new
+        dtable1 <- cbind(dtable1, new)
+        
         d<- as.data.frame(dtable1)
         
-        para <- d[,1]
-        loglik<- d[,2]
-        df<- d[,3]
-        dev<- d[,4]
-        p<- d[,5]
+        # para <- d[,1]
+        # loglik<- d[,2]
+        # df<- d[,3]
+        # dev<- d[,4]
+        # p<- d[,5]
         
         names <- dimnames(d)[[1]]
         
@@ -602,6 +656,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           row <- list()
           
+          row[["cluster"]] <-  d[name, 6]
           row[["para"]] <-  d[name, 1]
           row[["loglik"]] <-  d[name, 2]
           row[["df"]] <-  d[name, 3]
@@ -898,6 +953,33 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
 },
 
+.plot3 = function(image2, ggtheme, theme,...) {
+  
+  if(self$options$nclust <3)
+    return()
+  
+  elbow <- image2$state
+  
+  
+  # plot3 <- ggplot2::ggplot(elbow,ggplot2::aes(x = Class, y = Value, group = Fit))+
+  #   ggplot2::geom_line(size=1.1,ggplot2::aes(color=Fit))+
+  #   ggplot2::geom_point(size=3,ggplot2::aes(color=Fit))
+  #   ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
+  
+  plot3 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Cluster, y = Value, color = Fit)) +
+    ggplot2::geom_line(size = 1.1) +
+    ggplot2::geom_point(size = 3) +
+    ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Cluster), by = 1))
+  
+  
+  
+  plot3 <- plot3+ggtheme
+  
+  
+  print(plot3)
+  TRUE
+  
+},
 
 # # GOF for coefficients----------------------
 # 
