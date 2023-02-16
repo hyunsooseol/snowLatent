@@ -59,16 +59,15 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (self$options$cia)
           self$results$cia$setNote(
             "Note",
-            "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
+            "Model2: measure.inv=TRUE; Model3: measure.inv=FALSE."
           )
         
         
         if (self$options$cir)
           self$results$cir$setNote(
             "Note",
-            "Model1: coeff.inv=TRUE; Model2: coeff.inv=FALSE."
+            "Model2: coeff.inv=TRUE; Model3: coeff.inv=FALSE."
           )
-
         
         
         if (length(self$options$vars) <= 1)
@@ -268,6 +267,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
            # Equality of coefficients ---             
          
+          if(self$options$cia==TRUE | self$options$cir==TRUE){
+            
+            
+            lca = glca::glca(formula=as.formula(paste0('glca::item(', vars, ')~1')),
+                             group= group,
+                             data=data,
+                             nclass = nc, 
+                             seed = 1)
+          }
+          
           
           mglca4 <- try(glca::glca(formula = formula, 
                                group = group, 
@@ -290,7 +299,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           if (! jmvcore::isError(mglca4) ){
           
-          ci <- glca::gofglca(mglca2, mglca4, test = "chisq")
+          ci <- glca::gofglca(lca, mglca2, mglca4, test = "chisq")
           
           ci.g <- ci[["gtable"]] #Absolute model fit
          

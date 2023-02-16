@@ -52,14 +52,14 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (self$options$gof)
           self$results$gof$setNote(
             "Note",
-            "Model1: Coeff.inv=TRUE; Model2: Coeff.inv=FALSE."
+            "Model2: Coeff.inv=TRUE; Model3: Coeff.inv=FALSE."
           )
         
         
         if (self$options$ci)
           self$results$ci$setNote(
             "Note",
-            "Model1: Coeff.inv=TRUE; Model2: Coeff.inv=FALSE."
+            "Model2: Coeff.inv=TRUE; Model3: Coeff.inv=FALSE."
           )
         
         
@@ -306,6 +306,14 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(!is.null(self$options$covs)){
           
         
+          lca0 = glca::glca(formula=as.formula(paste0('glca::item(', vars, ')~1')),
+                            group= group,
+                            data=data,
+                            nclass = nc, 
+                            ncluster = nclust,
+                            seed = 1)
+          
+          
          lca2 <- try(glca::glca(formula = formula, 
                              group = group, 
                              data = data, 
@@ -326,7 +334,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if (! jmvcore::isError(lca2) ){
           
-          cf <- glca::gofglca(lca, lca2, test = "chisq", nboot = nb)
+          cf <- glca::gofglca(lca0, lca, lca2, test = "chisq", nboot = nb)
           
          # self$results$text$setContent(cf)
           
