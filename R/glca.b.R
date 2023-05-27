@@ -182,8 +182,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # With covariates-------------
         
-        if( !is.null(self$options$covs) ) {
-            
+        #if( !is.null(self$options$covs) ) {
+        if(length(self$options$covs)>=1){
+          
           covs <- self$options$covs
           covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse='+')
