@@ -95,8 +95,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           
           # logistic table-----------
-          
-          private$.populateLogTable(results)
+          #private$.populateLogTable(results)
           
           
           # populate item probabilities---------
@@ -145,7 +144,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         vars <- paste0(vars, collapse=',')
         formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
         
-        if( !is.null(self$options$covs) ) {
+        #if( !is.null(self$options$covs) ) {
+        if(length(self$options$covs)>=1){
+          
           covs <- self$options$covs
           covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse='+')
@@ -208,12 +209,35 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         # logistic regression coefficients-------------
         
-        if( !is.null(self$options$covs) ) {
-        
+        if(length(self$options$covs)>=1){
+          #if( !is.null(self$options$covs) ) {
+          #coef<- coef(lca)
+          
+          table <- self$results$coef
+          
+          #coef <- results$coef
           coef<- coef(lca)
+          coef<- coef[[1]]
+          codf<- do.call("rbind", lapply(coef, as.data.frame))
+          
+          
+          names<- dimnames(codf)[[1]]
+          
+          for (name in names) {
+            
+            row <- list()
+            
+            row[["odds"]]   <-  codf[name, 1]
+            row[["co"]] <-  codf[name, 2]
+            row[["error"]] <-  codf[name, 3]
+            row[["t"]] <-  codf[name, 4]
+            row[["p"]] <-  codf[name, 5]
+            
+            table$addRow(rowKey=name, values=row)
+            
+          }
           
         }
-        
         
         # populate output results-------------
         
@@ -338,7 +362,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'gtable'=gtable,
                 'dtable'=dtable,
                 'pos'=pos,
-               'coef'= coef,
+              # 'coef'= coef,
                'mem'=mem,
                'gamma'=gamma
                 )
@@ -562,37 +586,37 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   # populate multinomial logistic regression-----
   
-  .populateLogTable= function(results) {
-  
-    
-    if(is.null(self$options$covs))
-      return()
-  
-    table <- self$results$coef
-    
-    coef <- results$coef
-    coef<- coef[[1]]
-    codf<- do.call("rbind", lapply(coef, as.data.frame))
-    
-   
-    names<- dimnames(codf)[[1]]
-    
-    for (name in names) {
-      
-      row <- list()
-      
-      row[["odds"]]   <-  codf[name, 1]
-      row[["co"]] <-  codf[name, 2]
-      row[["error"]] <-  codf[name, 3]
-      row[["t"]] <-  codf[name, 4]
-      row[["p"]] <-  codf[name, 5]
-    
-      table$addRow(rowKey=name, values=row)
-      
-    }     
-    
-  },
-  
+  # .populateLogTable= function(results) {
+  # 
+  #   
+  #   if(is.null(self$options$covs))
+  #     return()
+  # 
+  #   table <- self$results$coef
+  #   
+  #   coef <- results$coef
+  #   coef<- coef[[1]]
+  #   codf<- do.call("rbind", lapply(coef, as.data.frame))
+  #   
+  #  
+  #   names<- dimnames(codf)[[1]]
+  #   
+  #   for (name in names) {
+  #     
+  #     row <- list()
+  #     
+  #     row[["odds"]]   <-  codf[name, 1]
+  #     row[["co"]] <-  codf[name, 2]
+  #     row[["error"]] <-  codf[name, 3]
+  #     row[["t"]] <-  codf[name, 4]
+  #     row[["p"]] <-  codf[name, 5]
+  #   
+  #     table$addRow(rowKey=name, values=row)
+  #     
+  #   }     
+  #   
+  # },
+  # 
         # item probabilities----------
       
       .populateItemTable= function(results) {
