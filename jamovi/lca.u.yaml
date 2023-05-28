@@ -57,12 +57,16 @@ children:
               - type: CheckBox
                 name: rel
           - type: Label
-            label: Statistics
+            label: Probability
             children:
               - type: CheckBox
                 name: cp
               - type: CheckBox
-                name: coef
+                name: item
+              - type: Output
+                name: post
+              - type: Output
+                name: member
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -89,18 +93,13 @@ children:
                       - value: 90
               - type: CheckBox
                 name: plot3
-
           - type: Label
-            label: Probability
+            label: Logistic regression
             children:
               - type: CheckBox
-                name: item
-              - type: Output
-                name: post
-              - type: Output
-                name: member
+                name: coef
   - type: CollapseBox
-    label: Additional outputs
+    label: Additional output
     margin: normal
     collapsed: true
     children:

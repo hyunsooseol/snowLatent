@@ -60,6 +60,11 @@ children:
                 name: cia
               - type: CheckBox
                 name: cir
+          - type: Label
+            label: Logistic regression
+            children:
+              - type: CheckBox
+                name: co
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -84,11 +89,6 @@ children:
                   - value: 0
                   - value: 45
                   - value: 90
-          - type: Label
-            label: Logistic regression
-            children:
-              - type: CheckBox
-                name: co
           - type: Label
             label: Prevalences
             children:
