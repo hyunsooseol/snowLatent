@@ -57,12 +57,15 @@ children:
               - type: CheckBox
                 name: rel
           - type: Label
-            label: Probability
+            label: 'Probability'
             children:
               - type: CheckBox
                 name: cp
               - type: CheckBox
                 name: item
+          - type: Label
+            label: 'Save'
+            children:
               - type: Output
                 name: post
               - type: Output

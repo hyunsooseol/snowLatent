@@ -37,32 +37,32 @@ analyses:
     menuSubgroup: Profile
     menuTitle: Profile plot
 datasets:
+  - name: health
+    path: health.omv
+    description: National Longitudinal Study of Adolescent to Adult Health
+    tags:
+      - LCA
   - name: gss
     path: gss08.omv
     description: Attitudes toward abortion
     tags:
       - LCA
       - Multiple group LCA
-  - name: nyts
-    path: nyts18.omv
-    description: Tobacco smoking behavior
-    tags:
-      - Multilevel LCA
   - name: election
     path: election.omv
     description: Profile plot
     tags:
       - Multiple group LCA
+  - name: nyts
+    path: nyts18.omv
+    description: Tobacco smoking behavior
+    tags:
+      - Multilevel LCA
   - name: iris
     path: iris.omv
     description: Profile plot
     tags:
       - Profile
-  - name: health
-    path: health.omv
-    description: National Longitudinal Study of Adolescent to Adult Health
-    tags:
-      - LCA
 usesNative: true
 minApp: 1.0.8
 

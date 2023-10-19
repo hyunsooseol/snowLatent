@@ -104,15 +104,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           # populate posterior probabilities--
           
-          private$.populatePosteriorOutputs(results)
+         # private$.populatePosteriorOutputs(results)
           
           # populate class membership--
           
-          private$.populateMemberOutputs(results)
+        #  private$.populateMemberOutputs(results)
           
           # populate item probabilities---------
           
-          private$.populateGamTable(results)
+       #   private$.populateGamTable(results)
           
         
         }
@@ -201,11 +201,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         item<- lca[["param"]][["rho"]][["ALL"]]
        # item<- do.call("rbind", lapply(item, as.data.frame))  
         
-        # gamma probability----------
-        
-        gamma <- lca[["param"]][["gamma"]]
-        
-        
+      
         # logistic regression coefficients-------------
         
         if(length(self$options$covs)>=1){
@@ -238,21 +234,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
-        # populate output results-------------
-        
-        
-        pos<- lca$posterior$ALL
-        
-        # class membership-------------
-        
-        
-        pos$Membership <- as.numeric(factor(apply(pos, 1, which.max)))
-        
-         mem <- pos$Membership
-        
-         # mem<- as.factor(mem)
-         
-        # Class Prevalences plot----------
+         # Class Prevalences plot----------
           
          image <- self$results$plot1
         #  
@@ -275,7 +257,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         colnames(ic) <-c("Class", "Level", "value", "L1")
         
         image1$setState(ic)
-        
         
         
         #Good codes for model fit####################################
@@ -350,7 +331,68 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         dtable <- cbind(dtable, new)
         }
         
-       
+        # populate output results-------------
+        pos<- lca$posterior$ALL
+        
+        # class membership-------------
+        mem <- as.numeric(factor(apply(pos, 1, which.max)))
+        mem<- as.factor(mem)
+        
+        if(isTRUE(self$options$post)){
+          
+          # pos <- self$results$post
+          
+          if (self$options$post
+              && self$results$post$isNotFilled()) {
+            
+            keys <- 1:self$options$nc
+            measureTypes <- rep("continuous", self$options$nc)
+            
+            titles <- paste("Class", keys)
+            descriptions <- paste("Class", keys)
+            
+            self$results$post$set(
+              keys=keys,
+              titles=titles,
+              descriptions=descriptions,
+              measureTypes=measureTypes
+            )                
+            
+            self$results$post$setRowNums(rownames(data))
+            
+            for (i in 1:self$options$nc) {
+              scores <- as.numeric(pos[, i])
+              self$results$post$setValues(index=i, scores)
+            }
+            
+            
+          }
+          
+        } 
+        
+        if(isTRUE(self$options$member)){
+          
+          
+          if (self$options$member
+              && self$results$member$isNotFilled()) {
+            
+            
+            self$results$member$setValues(mem)
+            
+            self$results$member$setRowNums(rownames(data))
+            
+          }
+          
+        }
+        
+        
+        if(isTRUE(self$options$gamma)){
+          # gamma probability----------
+          gamma <- lca[["param"]][["gamma"]]
+          
+          options(max.print = 1000000)
+          self$results$text2$setContent(gamma)
+        }
         #self$results$text$setContent(dtable)
         
         results <-
@@ -359,11 +401,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'gam'= gam,
                 'item'=item,
                 'gtable'=gtable,
-                'dtable'=dtable,
-                'pos'=pos,
+                'dtable'=dtable
+              #  'pos'=pos,
               # 'coef'= coef,
-               'mem'=mem,
-               'gamma'=gamma
+              # 'mem'=mem,
+              # 'gamma'=gamma
                 )
           
             
@@ -513,110 +555,59 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
       # posterior probability----------
          
-      .populatePosteriorOutputs= function(results) {
-        
-        # nc<- self$options$nc
-        # 
-        # data <- jmvcore::naOmit(data)
-        # 
-        # data<- as.data.frame(data)
-        # 
-        # vars <- colnames(data)
-        # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        # vars <- paste0(vars, collapse=',')
-        # 
-        # formula <- as.formula(paste0('glca::item(', vars, ')~1'))
-        # 
-        # 
-        # ################ LCA model estimates############################ 
-        # 
-        # lca = glca::glca(formula, data = data, nclass = nc, n.init=1)
-        # ###############################################################
-        # 
-        # pos<- lca$posterior$ALL
-        
-        pos <- results$pos
-        
-        
-        if (self$options$post
-            && self$results$post$isNotFilled()) {
-         
-          keys <- 1:self$options$nc
-          measureTypes <- rep("continuous", self$options$nc)
-          
-          titles <- paste("Class", keys)
-          descriptions <- paste("Class", keys)
-          
-          self$results$post$set(
-            keys=keys,
-            titles=titles,
-            descriptions=descriptions,
-            measureTypes=measureTypes
-          )                
-          
-          self$results$post$setRowNums(rownames(data))
-          
-          for (i in 1:self$options$nc) {
-            scores <- as.numeric(pos[, i])
-            self$results$post$setValues(index=i, scores)
-          }
-          
-          
-        }
-      },
-      
-  .populateMemberOutputs= function(results) {
-    
-    
-    mem <- results$mem
-   
-    mem<- as.factor(mem)
-    
-     if (self$options$member
-        && self$results$member$isNotFilled()) {
-    
-    
-    self$results$member$setValues(mem)
-    
-    self$results$member$setRowNums(rownames(data))
-    
-    }
-  },
-  
-  # populate multinomial logistic regression-----
-  
-  # .populateLogTable= function(results) {
-  # 
+      # .populatePosteriorOutputs= function(results) {
+      #   
+      #   if(!self$options$post) return()
+      #   
+      #   pos <- results$pos
+      #   
+      #   if (self$options$post
+      #       && self$results$post$isNotFilled()) {
+      #    
+      #     keys <- 1:self$options$nc
+      #     measureTypes <- rep("continuous", self$options$nc)
+      #     
+      #     titles <- paste("Class", keys)
+      #     descriptions <- paste("Class", keys)
+      #     
+      #     self$results$post$set(
+      #       keys=keys,
+      #       titles=titles,
+      #       descriptions=descriptions,
+      #       measureTypes=measureTypes
+      #     )                
+      #     
+      #     self$results$post$setRowNums(rownames(data))
+      #     
+      #     for (i in 1:self$options$nc) {
+      #       scores <- as.numeric(pos[, i])
+      #       self$results$post$setValues(index=i, scores)
+      #     }
+      #     
+      #     
+      #   }
+      # },
+      # 
+  # .populateMemberOutputs= function(results) {
   #   
-  #   if(is.null(self$options$covs))
-  #     return()
-  # 
-  #   table <- self$results$coef
+  #   if(!self$options$member) return()
   #   
-  #   coef <- results$coef
-  #   coef<- coef[[1]]
-  #   codf<- do.call("rbind", lapply(coef, as.data.frame))
-  #   
+  #   mem <- results$mem
   #  
-  #   names<- dimnames(codf)[[1]]
+  #   mem<- as.factor(mem)
   #   
-  #   for (name in names) {
-  #     
-  #     row <- list()
-  #     
-  #     row[["odds"]]   <-  codf[name, 1]
-  #     row[["co"]] <-  codf[name, 2]
-  #     row[["error"]] <-  codf[name, 3]
-  #     row[["t"]] <-  codf[name, 4]
-  #     row[["p"]] <-  codf[name, 5]
+  #    if (self$options$member
+  #       && self$results$member$isNotFilled()) {
   #   
-  #     table$addRow(rowKey=name, values=row)
-  #     
-  #   }     
   #   
+  #   self$results$member$setValues(mem)
+  #   
+  #   self$results$member$setRowNums(rownames(data))
+  #   
+  #   }
   # },
   # 
-        # item probabilities----------
+   # item probabilities----------
       
       .populateItemTable= function(results) {
         
@@ -668,18 +659,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
   # gamma probabilities----------
   
-  .populateGamTable= function(results) {
-    
-    if (!self$options$gamma)
-      return()
-    
-    res <- results$gamma
-    
-    options(max.print = 1000000)
-    
-    self$results$text2$setContent(res)
-    
-  }, 
+  # .populateGamTable= function(results) {
+  #   
+  #   if (!self$options$gamma)
+  #     return()
+  #   
+  #   res <- results$gamma
+  #   
+  #   options(max.print = 1000000)
+  #   
+  #   self$results$text2$setContent(res)
+  #   
+  # }, 
   
   # plot-------------------------------------
   
