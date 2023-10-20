@@ -30,11 +30,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
            
-            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
-            <p>2. The result table does not printed if the results from glca R package are not available.</p>
-            <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>2. If you select the Equality of coefficients option, the logistic regression result does not appear in the screen.</p> 
+            <p>3. The result table does not printed if the results from glca R package are not available.</p>
+            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>

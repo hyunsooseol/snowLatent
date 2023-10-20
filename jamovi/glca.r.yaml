@@ -231,6 +231,10 @@ items:
           type: 'text'
           content: ($key)
 
+    - name: text3
+      title: Logistic regression
+      type:  Preformatted  
+
     - name:  plot1
       title: Profile plot
       type:  Image
@@ -279,10 +283,6 @@ items:
       title: Item response probabilities
       type:  Preformatted 
 
-    - name: text3
-      title: Logistic regression
-      type:  Preformatted   
- 
     - name:  text4
       title: Prevalence for level-1 class(gamma)
       type:  Preformatted

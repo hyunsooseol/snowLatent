@@ -195,11 +195,11 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cir = function() private$.items[["cir"]],
         marginal = function() private$.items[["marginal"]],
         preval = function() private$.items[["preval"]],
+        text3 = function() private$.items[["text3"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
         text1 = function() private$.items[["text1"]],
-        text3 = function() private$.items[["text3"]],
         text4 = function() private$.items[["text4"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
@@ -468,6 +468,10 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text3",
+                title="Logistic regression"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -516,10 +520,6 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="text1",
                 title="Item response probabilities"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text3",
-                title="Logistic regression"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
@@ -584,11 +584,11 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$cir} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
