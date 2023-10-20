@@ -50,7 +50,7 @@ datasets:
       - Multiple group LCA
   - name: election
     path: election.omv
-    description: Profile plot
+    description: Election data
     tags:
       - Multiple group LCA
   - name: nyts
