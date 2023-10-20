@@ -11,8 +11,10 @@ glca(
   group,
   nc = 2,
   fit = TRUE,
+  test = "boot",
   mia = FALSE,
   mir = FALSE,
+  test1 = "boot",
   cia = FALSE,
   cir = FALSE,
   marginal = FALSE,
@@ -40,9 +42,13 @@ glca(
 
 \item{fit}{.}
 
+\item{test}{.}
+
 \item{mia}{.}
 
 \item{mir}{.}
+
+\item{test1}{.}
 
 \item{cia}{.}
 

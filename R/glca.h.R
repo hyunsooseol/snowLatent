@@ -11,8 +11,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             fit = TRUE,
+            test = "boot",
             mia = FALSE,
             mir = FALSE,
+            test1 = "boot",
             cia = FALSE,
             cir = FALSE,
             marginal = FALSE,
@@ -61,6 +63,13 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit",
                 fit,
                 default=TRUE)
+            private$..test <- jmvcore::OptionList$new(
+                "test",
+                test,
+                options=list(
+                    "boot",
+                    "chisq"),
+                default="boot")
             private$..mia <- jmvcore::OptionBool$new(
                 "mia",
                 mia,
@@ -69,6 +78,13 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "mir",
                 mir,
                 default=FALSE)
+            private$..test1 <- jmvcore::OptionList$new(
+                "test1",
+                test1,
+                options=list(
+                    "boot",
+                    "chisq"),
+                default="boot")
             private$..cia <- jmvcore::OptionBool$new(
                 "cia",
                 cia,
@@ -125,8 +141,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..fit)
+            self$.addOption(private$..test)
             self$.addOption(private$..mia)
             self$.addOption(private$..mir)
+            self$.addOption(private$..test1)
             self$.addOption(private$..cia)
             self$.addOption(private$..cir)
             self$.addOption(private$..marginal)
@@ -146,8 +164,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         group = function() private$..group$value,
         nc = function() private$..nc$value,
         fit = function() private$..fit$value,
+        test = function() private$..test$value,
         mia = function() private$..mia$value,
         mir = function() private$..mir$value,
+        test1 = function() private$..test1$value,
         cia = function() private$..cia$value,
         cir = function() private$..cir$value,
         marginal = function() private$..marginal$value,
@@ -166,8 +186,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..group = NA,
         ..nc = NA,
         ..fit = NA,
+        ..test = NA,
         ..mia = NA,
         ..mir = NA,
+        ..test1 = NA,
         ..cia = NA,
         ..cir = NA,
         ..marginal = NA,
@@ -267,14 +289,15 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="mia",
-                title="Absolute model fit for measurement invariance",
+                title="`Absolute model fit for measurement invariance - ${test}`",
                 visible="(mia)",
                 refs="glca",
                 clearWith=list(
                     "vars",
                     "covs",
                     "nc",
-                    "group"),
+                    "group",
+                    "test"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -308,18 +331,24 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
-                        `type`="number"))))
+                        `type`="number"),
+                    list(
+                        `name`="boot", 
+                        `title`="Bootstrap p-value", 
+                        `type`="number", 
+                        `visible`="(test)"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="mir",
-                title="Relative model fit for measurement invariance",
+                title="`Relative model fit for measurement invariance - ${test}`",
                 visible="(mir)",
                 refs="glca",
                 clearWith=list(
                     "vars",
                     "covs",
                     "nc",
-                    "group"),
+                    "group",
+                    "test"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -350,14 +379,15 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cia",
-                title="Absolute model fit for the equality of coefficients",
+                title="`Absolute model fit for the equality of coefficients - ${test1}`",
                 visible="(cia)",
                 refs="glca",
                 clearWith=list(
                     "vars",
                     "covs",
                     "nc",
-                    "group"),
+                    "group",
+                    "test1"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -391,18 +421,24 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
-                        `type`="number"))))
+                        `type`="number"),
+                    list(
+                        `name`="boot", 
+                        `title`="Bootstrap p-value", 
+                        `type`="number", 
+                        `visible`="(test1)"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cir",
-                title="Relative model fit for the equality of coefficients",
+                title="`Relative model fit for the equality of coefficients - ${test1}`",
                 visible="(cir)",
                 refs="glca",
                 clearWith=list(
                     "vars",
                     "covs",
                     "nc",
-                    "group"),
+                    "group",
+                    "test1"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -559,8 +595,10 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param nc .
 #' @param fit .
+#' @param test .
 #' @param mia .
 #' @param mir .
+#' @param test1 .
 #' @param cia .
 #' @param cir .
 #' @param marginal .
@@ -607,8 +645,10 @@ glca <- function(
     group,
     nc = 2,
     fit = TRUE,
+    test = "boot",
     mia = FALSE,
     mir = FALSE,
+    test1 = "boot",
     cia = FALSE,
     cir = FALSE,
     marginal = FALSE,
@@ -643,8 +683,10 @@ glca <- function(
         group = group,
         nc = nc,
         fit = fit,
+        test = test,
         mia = mia,
         mir = mir,
+        test1 = test1,
         cia = cia,
         cir = cir,
         marginal = marginal,

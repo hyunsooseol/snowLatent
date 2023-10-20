@@ -53,7 +53,7 @@ items:
           type: number
 
     - name: mia
-      title: 'Absolute model fit for measurement invariance'
+      title: '`Absolute model fit for measurement invariance - ${test}`'
       type: Table
       visible: (mia)
       refs: glca
@@ -62,6 +62,7 @@ items:
         - covs
         - nc
         - group
+        - test
 
       columns:
         - name: name
@@ -76,7 +77,7 @@ items:
           type: number
         - name: caic
           title: CAIC 
-          type: number 
+          type: number
         - name: bic
           title: BIC 
           type: number
@@ -89,9 +90,13 @@ items:
         - name: gsq
           title: G² 
           type: number
- 
+        - name: boot
+          title: Bootstrap p-value 
+          type: number
+          visible: (test)
+
     - name: mir
-      title: 'Relative model fit for measurement invariance'
+      title:  '`Relative model fit for measurement invariance - ${test}`'
       type: Table
       visible: (mir)
       refs: glca
@@ -100,6 +105,7 @@ items:
         - covs
         - nc
         - group
+        - test
 
       columns:
         - name: name
@@ -124,7 +130,7 @@ items:
           format: zto,pvalue
 
     - name: cia
-      title: 'Absolute model fit for the equality of coefficients'
+      title: '`Absolute model fit for the equality of coefficients - ${test1}`'
       type: Table
       visible: (cia)
       refs: glca
@@ -133,6 +139,7 @@ items:
         - covs
         - nc
         - group
+        - test1
 
       columns:
         - name: name
@@ -160,9 +167,13 @@ items:
         - name: gsq
           title: G² 
           type: number
+        - name: boot
+          title: Bootstrap p-value 
+          type: number
+          visible: (test1)  
  
     - name: cir
-      title: 'Relative model fit for the equality of coefficients'
+      title: '`Relative model fit for the equality of coefficients - ${test1}`'
       type: Table
       visible: (cir)
       refs: glca
@@ -171,6 +182,7 @@ items:
         - covs
         - nc
         - group
+        - test1
 
       columns:
         - name: name

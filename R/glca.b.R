@@ -250,7 +250,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           if (! jmvcore::isError(mglca3) ){
           
-          mi <- glca::gofglca(mglca2, mglca3, test = "chisq")
+          test <- self$options$test
+          mi <- glca::gofglca(mglca2, mglca3, test = test)
           
           #self$results$text$setContent(mi)
           
@@ -299,7 +300,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           if (! jmvcore::isError(mglca4) ){
           
-          ci <- glca::gofglca(lca, mglca2, mglca4, test = "chisq")
+          test1 <- self$options$test1
+          
+          ci <- glca::gofglca(lca, mglca2, mglca4, test = test1)
           
           ci.g <- ci[["gtable"]] #Absolute model fit
          
@@ -461,7 +464,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         entropy <- g[,5]
         df <- g[,6] 
         gsq <- g[,7] 
-       
+        
+        if(self$options$test=='boot'){
+        boot <- g[,8]
+        }
         
         names <- dimnames(g)[[1]]
         
@@ -476,12 +482,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           row[["entropy"]] <-  g[name, 5]
           row[["df"]] <-  g[name, 6]
           row[["gsq"]] <-  g[name, 7]
-         
+          
+          if(self$options$test=='boot'){
+            row[["boot"]] <-  g[name, 8]
+          }
           
           table$addRow(rowKey=name, values=row)
           
         }     
         
+          
       },
       
       # Populate relative model fit---------------
@@ -525,7 +535,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
       },
     
-      #-----------------------
+      # Model fit for Equality of coefficients-------------
       
       .populateCiaTable = function(results) {
         
@@ -547,6 +557,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         entropy <- g[,5]
         df <- g[,6] 
         gsq <- g[,7] 
+        
+        if(self$options$test1=='boot'){
+          boot <- g[,8]
+        }
       
         
         
@@ -565,6 +579,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           row[["df"]] <-  g[name, 6]
           row[["gsq"]] <-  g[name, 7]
         
+          if(self$options$test1=='boot'){
+           
+            row[["boot"]] <-  g[name, 8]
+          }
           
           
           table$addRow(rowKey=name, values=row)
