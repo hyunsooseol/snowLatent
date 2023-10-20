@@ -30,7 +30,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
            
-            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. When group and cluster(>1) are given, the multilevel latent class models will be fitted.</p>
@@ -48,6 +47,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "p: Bootstrap p value; H0: Model fit data adequately."
           )
         
+       
         if (self$options$gof)
           self$results$gof$setNote(
             "Note",
@@ -334,7 +334,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if (! jmvcore::isError(lca2) ){
           
-          cf <- glca::gofglca(lca0, lca, lca2, test = "chisq", nboot = nb)
+          cf <- glca::gofglca(lca0, lca, lca2, test = "boot", nboot = nb)
           
          # self$results$text$setContent(cf)
           
