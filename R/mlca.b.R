@@ -47,18 +47,23 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "p: Bootstrap p value; H0: Model fit data adequately."
           )
         
+        if (self$options$rel1)
+          self$results$rel1$setNote(
+            "Note",
+            "p: Bootstrap p value."
+          )
        
         if (self$options$gof)
           self$results$gof$setNote(
             "Note",
-            "Model2: Coeff.inv=TRUE; Model3: Coeff.inv=FALSE."
+            "Model 2: Coeff.inv=TRUE; Model 3: Coeff.inv=FALSE."
           )
         
         
         if (self$options$ci)
           self$results$ci$setNote(
             "Note",
-            "Model2: Coeff.inv=TRUE; Model3: Coeff.inv=FALSE."
+            "p: Chi-Square p value; Model 2:Coeff.inv=TRUE; Model 3: Coeff.inv=FALSE."
           )
         
         
@@ -334,7 +339,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if (! jmvcore::isError(lca2) ){
           
-          cf <- glca::gofglca(lca0, lca, lca2, test = "boot", nboot = nb)
+          cf <- glca::gofglca(lca0, lca, lca2, test = "chisq", nboot = nb)
           
          # self$results$text$setContent(cf)
           
