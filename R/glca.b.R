@@ -355,7 +355,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         image <- self$results$plot1
         
         vars <- length(self$options$vars) 
-        
         width <- 100 + vars * 100
         
         image$setSize(width, 700)
@@ -370,7 +369,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         ic<- lca[["param"]][["rho"]]
         ic <- reshape2::melt(ic) 
         colnames(ic) <-c("Class", "Level", "value", "Variable", "Group") 
+        
+        
         image2 <- self$results$plot2
+        
+        vars <- length(self$options$vars) 
+        width <- 100 + vars * 100
+        image2$setSize(width, 700)
+        
         image2$setState(ic )
         
         # Item probabilities by group plot(Measure.inv=FALSE)--------
@@ -387,7 +393,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           icf<- mglca3[["param"]][["rho"]]
           icf <- reshape2::melt(icf) 
           colnames(icf) <-c("Class", "Level", "value", "Variable", "Group") 
+          
           image3 <- self$results$plot3
+          
+          vars <- length(self$options$vars) 
+          width <- 100 + vars * 100
+          image3$setSize(width, 700)
+          
           image3$setState(icf )
           
           
