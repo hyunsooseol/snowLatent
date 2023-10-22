@@ -248,10 +248,8 @@ items:
       type:  Preformatted  
 
     - name:  plot1
-      title: Profile plot
+      title: 'Profile plot'
       type:  Image
-      width: 700
-      height: 700
       renderFun: .plot1
       visible: (plot1)
       refs: glca
@@ -264,8 +262,6 @@ items:
     - name:  plot2
       title: Item response probabilities by group(Measurement invariance=TRUE)
       type:  Image
-      width: 700
-      height: 700
       renderFun: .plot2
       visible: (plot2)
       refs: snowLatent
@@ -279,8 +275,6 @@ items:
     - name:  plot3
       title: Item response probabilities by group(Measurement invariance=FALSE)
       type:  Image
-      width: 700
-      height: 700
       renderFun: .plot3
       visible: (plot3)
       refs: snowLatent

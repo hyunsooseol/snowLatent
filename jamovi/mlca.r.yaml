@@ -316,10 +316,8 @@ items:
               content: ($key)
 
     - name:  plot1
-      title: Profile plot
+      title: 'Profile plot'
       type:  Image
-      width: 700
-      height: 700
       renderFun: .plot1
       visible: (plot1)
       refs: glca
@@ -332,10 +330,10 @@ items:
         - nclust
 
     - name:  plot2
-      title: Item by class
+      title: 'Item by class'
       type:  Image
-      width: 700
-      height: 700
+      width: 650
+      height: 650
       renderFun: .plot2
       visible: (plot2)
       refs: snowLatent

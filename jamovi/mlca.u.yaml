@@ -88,7 +88,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plot
+            label: 'Plots'
             children:
               - type: CheckBox
                 name: plot1
