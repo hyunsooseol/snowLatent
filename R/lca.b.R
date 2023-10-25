@@ -55,13 +55,21 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(isTRUE(self$options$plot1)){
           
           width <- self$options$width
-          width <- max(min(width, 800),200)
+        #  width <- max(min(width, 800),200)
           height <- self$options$height
-          height <- max(min(height, 600),150)
+         # height <- max(min(height, 600),150)
           self$results$plot1$setSize(width, height)
         }
         
         
+        # if(isTRUE(self$options$plot3)){
+        #   
+        #   width <- self$options$width
+        #   width <- max(min(width, 800),200)
+        #   height <- self$options$height
+        #   height <- max(min(height, 600),150)
+        #   self$results$plot3$setSize(width, height)
+        # }
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')

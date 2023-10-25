@@ -40,12 +40,12 @@ options:
     - name: fit
       title: Fit measures
       type: Bool
-      default: True
+      default: TRUE
 
     - name: comp
       title: Absolute model fit
       type: Bool
-      default: TRUE
+      default: FALSE
 
     - name: rel
       title: Relative model fit(Class>2)
@@ -115,4 +115,5 @@ options:
       type: Integer
       title: "X"
       default: 500
+
 ...

@@ -11,7 +11,7 @@ lca(
   nc = 2,
   nb = 50,
   fit = TRUE,
-  comp = TRUE,
+  comp = FALSE,
   rel = FALSE,
   cp = FALSE,
   item = FALSE,

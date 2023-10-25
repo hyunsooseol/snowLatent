@@ -255,9 +255,9 @@ items:
     - name: plot3
       title: 'Elbow plot'
       type: Image
-      visible: (plot3)
       width: 500
       height: 500
+      visible: (plot3)
       refs: snowLatent
       renderFun: .plot3
       clearWith:

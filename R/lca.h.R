@@ -11,7 +11,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             nc = 2,
             nb = 50,
             fit = TRUE,
-            comp = TRUE,
+            comp = FALSE,
             rel = FALSE,
             cp = FALSE,
             item = FALSE,
@@ -59,7 +59,7 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..comp <- jmvcore::OptionBool$new(
                 "comp",
                 comp,
-                default=TRUE)
+                default=FALSE)
             private$..rel <- jmvcore::OptionBool$new(
                 "rel",
                 rel,
@@ -476,9 +476,9 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot3",
                 title="Elbow plot",
-                visible="(plot3)",
                 width=500,
                 height=500,
+                visible="(plot3)",
                 refs="snowLatent",
                 renderFun=".plot3",
                 clearWith=list(
@@ -566,7 +566,7 @@ lca <- function(
     nc = 2,
     nb = 50,
     fit = TRUE,
-    comp = TRUE,
+    comp = FALSE,
     rel = FALSE,
     cp = FALSE,
     item = FALSE,
