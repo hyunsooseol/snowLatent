@@ -70,6 +70,11 @@ children:
                 name: post
               - type: Output
                 name: member
+          - type: Label
+            label: 'Logistic regression'
+            children:
+              - type: CheckBox
+                name: coef
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -79,28 +84,34 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plot
+            label: "Plot option"
+            children:
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45
+                  - value: 90            
+          - type: Label
+            label: 'Plots'
             children:
               - type: CheckBox
                 name: plot1
-              - type: CheckBox
-                name: plot2
+                style: list-inline
                 children:
                   - type: TextBox
-                    name: angle
+                    name: width
                     format: number
-                    enable: (plot2)
-                    suggestedValues:
-                      - value: 0
-                      - value: 45
-                      - value: 90
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot1)
+              - type: CheckBox
+                name: plot2
               - type: CheckBox
                 name: plot3
-          - type: Label
-            label: Logistic regression
-            children:
-              - type: CheckBox
-                name: coef
   - type: CollapseBox
     label: Additional output
     margin: normal

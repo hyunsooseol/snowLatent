@@ -52,6 +52,17 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              )
         
         
+        if(isTRUE(self$options$plot1)){
+          
+          width <- self$options$width
+          width <- max(min(width, 800),200)
+          height <- self$options$height
+          height <- max(min(height, 600),150)
+          self$results$plot1$setSize(width, height)
+        }
+        
+        
+        
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
         
@@ -245,7 +256,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #  image$setSize(width, 700)
         # 
         #image$setSize(100 + 100 * length(self$options$vars), 200)
-        image$setSize(100 + 100 * length(self$options$vars), 700)  
+     #   image$setSize(100 + 100 * length(self$options$vars), 700)  
          
         image$setState(lca)
           

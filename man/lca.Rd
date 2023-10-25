@@ -20,7 +20,9 @@ lca(
   plot1 = FALSE,
   plot2 = FALSE,
   angle = 0,
-  plot3 = FALSE
+  plot3 = FALSE,
+  width = 500,
+  height = 500
 )
 }
 \arguments{
@@ -56,6 +58,10 @@ lca(
 where 0 degrees represents completely horizontal labels.}
 
 \item{plot3}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:

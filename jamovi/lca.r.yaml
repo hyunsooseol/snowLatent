@@ -234,7 +234,9 @@ items:
         - covs
         - nc
         - nb
- 
+        - width
+        - height 
+        
     - name:  plot2
       title: 'Item by class'
       type:  Image
