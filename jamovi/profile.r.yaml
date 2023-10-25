@@ -5,6 +5,11 @@ jrs:   '1.1'
 refs: snowLatent
 
 items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
     - name:  mc
       title: 'Variable means across group' 
       type:  Table
@@ -24,23 +29,23 @@ items:
       title: 'Line plot'
       type: Image
       visible: (plot1)
-      width: 600
-      height: 450
       renderFun: .plot1
       clearWith:
             - vars
             - group
             - angle
+            - width
+            - height
 
     - name: plot2
       title: 'Box plot'
       type: Image
       visible: (plot2)
-      width: 600
-      height: 600
       renderFun: .plot2
       clearWith:
             - vars
             - group
             - angle
+            - width1
+            - height1
 ...

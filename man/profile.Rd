@@ -4,7 +4,17 @@
 \alias{profile}
 \title{Profile plot}
 \usage{
-profile(data, vars, group, mc = TRUE, angle = 0, plot1 = FALSE, plot2 = FALSE)
+profile(
+  data,
+  vars,
+  group,
+  mc = TRUE,
+  angle = 0,
+  plot1 = FALSE,
+  plot2 = FALSE,
+  width = 500,
+  height = 500
+)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -21,10 +31,15 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot1}{.}
 
 \item{plot2}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
+  \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr

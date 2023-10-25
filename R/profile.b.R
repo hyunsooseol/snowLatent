@@ -12,7 +12,54 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "profileClass",
     inherit = profileBase,
     private = list(
-        .run = function() {
+      .init = function() {
+        
+        if (is.null(self$data) | is.null(self$options$vars) | is.null(self$options$group)) {
+          self$results$instructions$setVisible(visible = TRUE)
+          
+        }
+        
+        self$results$instructions$setContent(
+          "<html>
+            <head>
+            </head>
+            <body>
+            <div class='instructions'>
+           
+            <p>_____________________________________________________________________________________________</p>
+            <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>_____________________________________________________________________________________________</p>
+            
+            </div>
+            </body>
+            </html>"
+        )
+        
+        if(isTRUE(self$options$plot1)){
+          
+          width <- self$options$width
+          width <- max(min(width, 800),200)
+          height <- self$options$height
+          height <- max(min(height, 600),150)
+          self$results$plot1$setSize(width, height)
+        }
+      
+        if(isTRUE(self$options$plot2)){
+          
+          width <- self$options$width1
+          width <- max(min(width, 800),200)
+          height <- self$options$height1
+          height <- max(min(height, 600),150)
+          self$results$plot2$setSize(width, height)
+        }
+        
+        
+        
+        
+      },
+      
+      
+              .run = function() {
 
           if(is.null(self$options$group))
             return()
