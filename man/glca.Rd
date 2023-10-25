@@ -26,7 +26,9 @@ glca(
   plot1 = FALSE,
   plot2 = FALSE,
   plot3 = FALSE,
-  angle = 0
+  angle = 0,
+  width = 500,
+  height = 500
 )
 }
 \arguments{
@@ -73,6 +75,10 @@ glca(
 \item{plot3}{.}
 
 \item{angle}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:

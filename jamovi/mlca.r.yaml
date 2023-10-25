@@ -328,6 +328,8 @@ items:
         - group
         - covs
         - nclust
+        - width
+        - height
 
     - name:  plot2
       title: 'Item by class'

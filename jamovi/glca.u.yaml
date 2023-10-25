@@ -78,21 +78,34 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Plot
+            label: "Plot option"
             children:
-              - type: CheckBox
-                name: plot1
-              - type: CheckBox
-                name: plot2
-              - type: CheckBox
-                name: plot3
               - type: TextBox
                 name: angle
                 format: number
                 suggestedValues:
                   - value: 0
                   - value: 45
-                  - value: 90
+                  - value: 90            
+          - type: Label
+            label: 'Plots'
+            children:
+              - type: CheckBox
+                name: plot1
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot1)
+              - type: CheckBox
+                name: plot2
+              - type: CheckBox
+                name: plot3
           - type: Label
             label: Prevalences
             children:

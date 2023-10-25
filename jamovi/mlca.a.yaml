@@ -142,6 +142,16 @@ options:
       title: 'Elbow plot'
       type: Bool
       default: FALSE     
+
+    - name: width
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height
+      type: Integer
+      title: "X"
+      default: 500
 ...
  
 

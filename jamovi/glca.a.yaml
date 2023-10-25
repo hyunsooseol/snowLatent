@@ -137,4 +137,14 @@ options:
       max: 90
       default: 0
 
+    - name: width
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height
+      type: Integer
+      title: "X"
+      default: 500
+
 ...

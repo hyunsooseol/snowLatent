@@ -258,6 +258,8 @@ items:
         - nc
         - group
         - covs
+        - width
+        - height
 
     - name:  plot2
       title: Item response probabilities by group(Measurement invariance=TRUE)
