@@ -334,11 +334,9 @@ items:
     - name:  plot2
       title: 'Item by class'
       type:  Image
-      width: 650
-      height: 650
       renderFun: .plot2
       visible: (plot2)
-      refs: snowLatent
+      refs: snowRMM
       clearWith:
         - vars
         - nc
@@ -347,14 +345,14 @@ items:
         - covs
         - nclust
         - angle
+        - width1
+        - height1
 
     - name: plot3
       title: 'Elbow plot'
       type: Image
       visible: (plot3)
-      width: 500
-      height: 500
-      refs: snowLatent
+      refs: snowRMM
       renderFun: .plot3
       clearWith:
         - vars
@@ -363,6 +361,8 @@ items:
         - group
         - covs
         - nclust
+        - width2
+        - height2
     
     - name: text3
       title: Logistic regression
