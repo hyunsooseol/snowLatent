@@ -24,7 +24,9 @@ lca(
   width = 500,
   height = 500,
   width1 = 500,
-  height1 = 500
+  height1 = 500,
+  width2 = 500,
+  height2 = 500
 )
 }
 \arguments{
@@ -68,6 +70,10 @@ where 0 degrees represents completely horizontal labels.}
 \item{width1}{.}
 
 \item{height1}{.}
+
+\item{width2}{.}
+
+\item{height2}{.}
 }
 \value{
 A results object containing:

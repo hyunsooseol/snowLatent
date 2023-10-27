@@ -72,13 +72,30 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(isTRUE(self$options$plot1)){
           
           width <- self$options$width
-          width <- max(min(width, 800),200)
           height <- self$options$height
-          height <- max(min(height, 600),150)
+         
           self$results$plot1$setSize(width, height)
         }
         
+       
+        if(isTRUE(self$options$plot2)){
+          
+          width <- self$options$width1
+          height <- self$options$height1
+          
+          self$results$plot2$setSize(width, height)
+        }
         
+        if(isTRUE(self$options$plot3)){
+          
+          width <- self$options$width1
+          height <- self$options$height1
+          
+          self$results$plot3$setSize(width, height)
+        }
+        
+        
+         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
         
@@ -385,9 +402,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         image2 <- self$results$plot2
         
-        vars <- length(self$options$vars) 
-        width <- 100 + vars * 100
-        image2$setSize(width, 700)
+        # vars <- length(self$options$vars) 
+        # width <- 100 + vars * 100
+        # image2$setSize(width, 700)
         
         image2$setState(ic )
         
@@ -408,9 +425,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           image3 <- self$results$plot3
           
-          vars <- length(self$options$vars) 
-          width <- 100 + vars * 100
-          image3$setSize(width, 700)
+          # vars <- length(self$options$vars) 
+          # width <- 100 + vars * 100
+          # image3$setSize(width, 700)
           
           image3$setState(icf )
           

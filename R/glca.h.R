@@ -28,7 +28,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot3 = FALSE,
             angle = 0,
             width = 500,
-            height = 500, ...) {
+            height = 500,
+            width1 = 500,
+            height1 = 500, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -145,6 +147,14 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height",
                 height,
                 default=500)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -169,6 +179,8 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -193,7 +205,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot3 = function() private$..plot3$value,
         angle = function() private$..angle$value,
         width = function() private$..width$value,
-        height = function() private$..height$value),
+        height = function() private$..height$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -217,7 +231,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot3 = NA,
         ..angle = NA,
         ..width = NA,
-        ..height = NA)
+        ..height = NA,
+        ..width1 = NA,
+        ..height1 = NA)
 )
 
 glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -544,26 +560,30 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Item response probabilities by group(Measurement invariance=TRUE)",
                 renderFun=".plot2",
                 visible="(plot2)",
-                refs="snowLatent",
+                refs="snowRMM",
                 clearWith=list(
                     "vars",
                     "nc",
                     "group",
                     "covs",
-                    "angle")))
+                    "angle",
+                    "width1",
+                    "height1")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
                 title="Item response probabilities by group(Measurement invariance=FALSE)",
                 renderFun=".plot3",
                 visible="(plot3)",
-                refs="snowLatent",
+                refs="snowRMM",
                 clearWith=list(
                     "vars",
                     "nc",
                     "group",
                     "covs",
-                    "angle")))
+                    "angle",
+                    "width1",
+                    "height1")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -625,6 +645,8 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param angle .
 #' @param width .
 #' @param height .
+#' @param width1 .
+#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -676,7 +698,9 @@ glca <- function(
     plot3 = FALSE,
     angle = 0,
     width = 500,
-    height = 500) {
+    height = 500,
+    width1 = 500,
+    height1 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("glca requires jmvcore to be installed (restart may be required)")
@@ -716,7 +740,9 @@ glca <- function(
         plot3 = plot3,
         angle = angle,
         width = width,
-        height = height)
+        height = height,
+        width1 = width1,
+        height1 = height1)
 
     analysis <- glcaClass$new(
         options = options,

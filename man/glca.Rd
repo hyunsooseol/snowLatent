@@ -28,7 +28,9 @@ glca(
   plot3 = FALSE,
   angle = 0,
   width = 500,
-  height = 500
+  height = 500,
+  width1 = 500,
+  height1 = 500
 )
 }
 \arguments{
@@ -79,6 +81,10 @@ glca(
 \item{width}{.}
 
 \item{height}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:
