@@ -30,7 +30,11 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             angle = 0,
             plot3 = FALSE,
             width = 500,
-            height = 500, ...) {
+            height = 500,
+            width1 = 500,
+            height1 = 500,
+            width2 = 500,
+            height2 = 500, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -151,6 +155,22 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height",
                 height,
                 default=500)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
+            private$..width2 <- jmvcore::OptionInteger$new(
+                "width2",
+                width2,
+                default=500)
+            private$..height2 <- jmvcore::OptionInteger$new(
+                "height2",
+                height2,
+                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -177,6 +197,10 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot3)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
+            self$.addOption(private$..width2)
+            self$.addOption(private$..height2)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -203,7 +227,11 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         angle = function() private$..angle$value,
         plot3 = function() private$..plot3$value,
         width = function() private$..width$value,
-        height = function() private$..height$value),
+        height = function() private$..height$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value,
+        width2 = function() private$..width2$value,
+        height2 = function() private$..height2$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -229,7 +257,11 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..angle = NA,
         ..plot3 = NA,
         ..width = NA,
-        ..height = NA)
+        ..height = NA,
+        ..width1 = NA,
+        ..height1 = NA,
+        ..width2 = NA,
+        ..height2 = NA)
 )
 
 mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -626,11 +658,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="plot2",
                 title="Item by class",
-                width=650,
-                height=650,
                 renderFun=".plot2",
                 visible="(plot2)",
-                refs="snowLatent",
+                refs="snowRMM",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -638,15 +668,15 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "group",
                     "covs",
                     "nclust",
-                    "angle")))
+                    "angle",
+                    "width1",
+                    "height1")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
                 title="Elbow plot",
                 visible="(plot3)",
-                width=500,
-                height=500,
-                refs="snowLatent",
+                refs="snowRMM",
                 renderFun=".plot3",
                 clearWith=list(
                     "vars",
@@ -654,7 +684,9 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nb",
                     "group",
                     "covs",
-                    "nclust")))
+                    "nclust",
+                    "width2",
+                    "height2")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
@@ -719,6 +751,10 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot3 .
 #' @param width .
 #' @param height .
+#' @param width1 .
+#' @param height1 .
+#' @param width2 .
+#' @param height2 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -774,7 +810,11 @@ mlca <- function(
     angle = 0,
     plot3 = FALSE,
     width = 500,
-    height = 500) {
+    height = 500,
+    width1 = 500,
+    height1 = 500,
+    width2 = 500,
+    height2 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mlca requires jmvcore to be installed (restart may be required)")
@@ -816,7 +856,11 @@ mlca <- function(
         angle = angle,
         plot3 = plot3,
         width = width,
-        height = height)
+        height = height,
+        width1 = width1,
+        height1 = height1,
+        width2 = width2,
+        height2 = height2)
 
     analysis <- mlcaClass$new(
         options = options,
