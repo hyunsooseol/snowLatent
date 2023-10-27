@@ -560,7 +560,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Item response probabilities by group(Measurement invariance=TRUE)",
                 renderFun=".plot2",
                 visible="(plot2)",
-                refs="snowRMM",
+                refs="snowLatent",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -575,7 +575,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Item response probabilities by group(Measurement invariance=FALSE)",
                 renderFun=".plot3",
                 visible="(plot3)",
-                refs="snowRMM",
+                refs="snowLatent",
                 clearWith=list(
                     "vars",
                     "nc",

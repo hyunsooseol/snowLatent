@@ -266,7 +266,7 @@ items:
       type:  Image
       renderFun: .plot2
       visible: (plot2)
-      refs: snowRMM
+      refs: snowLatent
       clearWith:
         - vars
         - nc
@@ -281,7 +281,7 @@ items:
       type:  Image
       renderFun: .plot3
       visible: (plot3)
-      refs: snowRMM
+      refs: snowLatent
       clearWith:
         - vars
         - nc

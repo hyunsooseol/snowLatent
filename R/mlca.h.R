@@ -660,7 +660,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Item by class",
                 renderFun=".plot2",
                 visible="(plot2)",
-                refs="snowRMM",
+                refs="snowLatent",
                 clearWith=list(
                     "vars",
                     "nc",
@@ -676,7 +676,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="plot3",
                 title="Elbow plot",
                 visible="(plot3)",
-                refs="snowRMM",
+                refs="snowLatent",
                 renderFun=".plot3",
                 clearWith=list(
                     "vars",
