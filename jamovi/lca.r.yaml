@@ -240,8 +240,6 @@ items:
     - name:  plot2
       title: 'Item by class'
       type:  Image
-      width: 650
-      height: 650
       renderFun: .plot2
       visible: (plot2)
       refs: snowLatent
@@ -251,12 +249,12 @@ items:
         - nc
         - nb
         - angle
+        - width1
+        - height1
 
     - name: plot3
       title: 'Elbow plot'
       type: Image
-      width: 500
-      height: 500
       visible: (plot3)
       refs: snowLatent
       renderFun: .plot3
@@ -265,6 +263,8 @@ items:
         - covs
         - nc
         - nb
+        - width2
+        - height2
 
     - name:  text2
       title: Prevalence for level-1 class(Gamma)

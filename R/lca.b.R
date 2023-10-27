@@ -33,7 +33,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
            
-            <h2><b>Instructions</b></h2>
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. The result table does not printed if the results from glca R package are not available.</p>
@@ -55,21 +54,29 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(isTRUE(self$options$plot1)){
           
           width <- self$options$width
-        #  width <- max(min(width, 800),200)
           height <- self$options$height
-         # height <- max(min(height, 600),150)
+        
           self$results$plot1$setSize(width, height)
         }
         
         
-        # if(isTRUE(self$options$plot3)){
-        #   
-        #   width <- self$options$width
-        #   width <- max(min(width, 800),200)
-        #   height <- self$options$height
-        #   height <- max(min(height, 600),150)
-        #   self$results$plot3$setSize(width, height)
-        # }
+        if(isTRUE(self$options$plot2)){
+          
+          width <- self$options$width1
+          height <- self$options$height1
+          
+          self$results$plot2$setSize(width, height)
+        }  
+        
+        
+        if(isTRUE(self$options$plot3)){
+          
+          width <- self$options$width2
+          height <- self$options$height2
+          
+          self$results$plot3$setSize(width, height)
+        }  
+        
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
