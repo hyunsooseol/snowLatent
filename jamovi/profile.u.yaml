@@ -37,16 +37,6 @@ children:
             children:
               - type: CheckBox
                 name: mc
-          - type: Label
-            label: "Plot option"
-            children:
-              - type: TextBox
-                name: angle
-                format: number
-                suggestedValues:
-                  - value: 0
-                  - value: 45
-                  - value: 90            
       - type: LayoutBox
         margin: large
         cell:
@@ -81,4 +71,10 @@ children:
                     name: height1
                     format: number
                     enable: (plot2)
-
+              - type: TextBox
+                name: angle
+                format: number
+                suggestedValues:
+                  - value: 0
+                  - value: 45
+                  - value: 90         
