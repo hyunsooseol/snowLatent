@@ -1,12 +1,12 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.3.6
+version: 2.3.7
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2023-10-10'
+date: '2023-01-01'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA
@@ -36,6 +36,11 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Profile plot
+  - title: Radar Chart
+    name: radar
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Radar Chart
 datasets:
   - name: health
     path: health.omv
@@ -63,6 +68,11 @@ datasets:
     description: Profile plot
     tags:
       - Profile
+  - name: crime
+    path: crime.omv
+    description: Radar chart
+    tags:
+      - Radar chart
 usesNative: true
 minApp: 1.0.8
 

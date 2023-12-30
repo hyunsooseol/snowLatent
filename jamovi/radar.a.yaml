@@ -1,0 +1,49 @@
+---
+name:  radar
+title: Radar Chart
+menuGroup: snowLatent
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+
+    - name: labels
+      title: 'Labels'
+      type: Variable
+      suggested:
+         - nominal
+      permitted:
+        - id
+        - factor
+  
+    - name: vars
+      title: Variables
+      type: Variables
+
+    - name: num
+      title: 'Label number'
+      default: 4
+      type: Integer
+      min: 4
+ 
+    - name: plot
+      title: 'Radar chart'
+      type: Bool
+      default: false
+
+    - name: width
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height
+      type: Integer
+      title: "Height"
+      default: 500    
+
+...

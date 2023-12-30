@@ -1,0 +1,29 @@
+---
+name:  radar
+title: Radar Chart
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: Instructions
+      type: Html
+      visible: True
+
+    - name:  text
+      title: '' 
+      type:  Preformatted
+
+    - name:  plot
+      title: 'Radar Chart'
+      type:  Image
+      requiresData: true
+      visible: (plot)
+      renderFun: .plot
+      clearWith:
+        - vars
+        - labels
+        - num
+        - width
+        - height
+
+...
