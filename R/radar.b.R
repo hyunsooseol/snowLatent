@@ -47,6 +47,9 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
   .run = function() {
 
+    
+    if (is.null(self$options$labels)) return()
+    
         if (!is.null(self$options$vars)) {
           
           vars <- self$options$vars

@@ -10,7 +10,7 @@ items:
       visible: True
 
     - name:  text
-      title: '' 
+      title: 'Variables summary' 
       type:  Preformatted
 
     - name:  plot

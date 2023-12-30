@@ -93,7 +93,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title=""))
+                title="Variables summary"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",

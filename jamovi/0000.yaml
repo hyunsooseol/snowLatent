@@ -6,7 +6,7 @@ jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2023-01-01'
+date: '2024-01-01'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA
@@ -40,6 +40,7 @@ analyses:
     name: radar
     ns: snowLatent
     menuGroup: snowLatent
+    menuSubgroup: Profile
     menuTitle: Radar Chart
 datasets:
   - name: health
