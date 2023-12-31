@@ -19,6 +19,7 @@ items:
       requiresData: true
       visible: (plot)
       renderFun: .plot
+      refs: snowLatent
       clearWith:
         - vars
         - labels

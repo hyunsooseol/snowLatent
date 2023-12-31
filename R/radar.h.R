@@ -101,6 +101,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 visible="(plot)",
                 renderFun=".plot",
+                refs="snowLatent",
                 clearWith=list(
                     "vars",
                     "labels",

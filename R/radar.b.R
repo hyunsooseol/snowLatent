@@ -92,6 +92,9 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     # Bind variables summary to the data
     df_scaled2 <- as.data.frame(rbind(col_summary, df_scaled))
     
+    # plot error is happened------
+    #df_scaled2 <- df_scaled2[-c(1:3), ]
+    
     self$results$text$setContent(df_scaled2)
     
     ##### plot-------------------
