@@ -10,7 +10,7 @@ items:
       visible: True
 
     - name:  text
-      title: 'Variables summary' 
+      title: 'Summary measures of rescale variables' 
       type:  Preformatted
 
     - name:  plot
@@ -28,7 +28,7 @@ items:
         - height
 
     - name:  plot1
-      title: 'Multiple individual chart'
+      title: 'Multiple charts'
       type:  Image
       requiresData: true
       visible: (plot1)

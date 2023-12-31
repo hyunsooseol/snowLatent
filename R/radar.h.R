@@ -126,7 +126,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Variables summary"))
+                title="Summary measures of rescale variables"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -144,7 +144,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
-                title="Multiple individual chart",
+                title="Multiple charts",
                 requiresData=TRUE,
                 visible="(plot1)",
                 renderFun=".plot1",
@@ -177,7 +177,7 @@ radarBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'auto')
         }))
 
-#' Radar Chart
+#' Radar chart
 #'
 #' 
 #' @param data The data as a data frame.

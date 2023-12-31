@@ -1,6 +1,6 @@
 ---
 name:  radar
-title: Radar Chart
+title: Radar chart
 menuGroup: snowLatent
 version: '1.0.0'
 jas: '1.2'
@@ -47,19 +47,19 @@ options:
       default: 500    
 
     - name: plot1
-      title: 'Multiple individuals chart'
+      title: 'Multiple charts'
       type: Bool
       default: false
 
     - name: width1
       type: Integer
-      title: "Size: "
+      title: "Width "
       default: 500
       
     - name: height1
       type: Integer
-      title: "X"
-      default: 500
+      title: "Height"
+      default: 500    
 
     - name: num1
       title: 'Row numbers'

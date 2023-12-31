@@ -36,12 +36,12 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Profile plot
-  - title: Radar Chart
+  - title: Radar chart
     name: radar
     ns: snowLatent
     menuGroup: snowLatent
     menuSubgroup: Profile
-    menuTitle: Radar Chart
+    menuTitle: Radar chart
 datasets:
   - name: health
     path: health.omv

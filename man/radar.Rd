@@ -2,7 +2,7 @@
 % Please edit documentation in R/radar.h.R
 \name{radar}
 \alias{radar}
-\title{Radar Chart}
+\title{Radar chart}
 \usage{
 radar(
   data,
@@ -51,5 +51,5 @@ A results object containing:
 }
 }
 \description{
-Radar Chart
+Radar chart
 }
