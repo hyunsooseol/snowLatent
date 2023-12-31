@@ -37,6 +37,7 @@ items:
       clearWith:
         - vars
         - labels
+        - num1
         - width1
         - height1
 

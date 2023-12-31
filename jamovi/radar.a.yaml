@@ -61,4 +61,9 @@ options:
       title: "X"
       default: 500
 
+    - name: num1
+      title: 'Row numbers'
+      type: String
+      default: '4,6,8'
+     
 ...

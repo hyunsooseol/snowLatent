@@ -14,7 +14,8 @@ radar(
   height = 500,
   plot1 = FALSE,
   width1 = 500,
-  height1 = 500
+  height1 = 500,
+  num1 = "4,6,8"
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ radar(
 \item{width1}{.}
 
 \item{height1}{.}
+
+\item{num1}{.}
 }
 \value{
 A results object containing:

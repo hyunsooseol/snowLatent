@@ -64,14 +64,16 @@ children:
             children:
               - type: CheckBox
                 name: plot1
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width1
-                    format: number
-                    enable: (plot1)
-                  - type: TextBox
-                    name: height1
-                    format: number
-                    enable: (plot1)     
+              - name: num1
+                type: TextBox
+                format: string
+                stretchFactor: 2
+              - type: TextBox
+                name: width1
+                format: number
+                enable: (plot1)
+              - type: TextBox
+                name: height1
+                format: number
+                enable: (plot1)
    

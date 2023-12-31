@@ -112,10 +112,21 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
     # plot1(Compare individual)------------- 
    
+    if(isTRUE(self$options$plot1)){
+    
+      num1 <- self$options$num1
+      
+      i <- strsplit(self$options$num1, ',')[[1]]
+      i <- as.numeric(i) 
+      
+      df <- df_scaled2[c(1:3,i),]
+      
       image1 <- self$results$plot1
-      image1$setState(df_scaled2) 
+      image1$setState(df) 
     
     }
+        }
+    
     
        
   },
@@ -156,12 +167,12 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     if (is.null(image1$state))
       return(FALSE)
     
-    df_scaled2 <- image1$state
+    df <- image1$state
     
     color=c(1:8)
     #color=c("#00AFBB", "#E7B800", "#FC4E07")
     
-    plot1<- fmsb::radarchart(df_scaled2,
+    plot1<- fmsb::radarchart(df,
                      cglty = 1,       # Grid line type
                      cglcol = "gray", # Grid line color
                      # col = c("#00AFBB", "#E7B800", "#FC4E07"),
@@ -172,7 +183,7 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                      pfcol = scales::alpha(color, 0.5))        # Line type for each line
     
     legend("topright",
-           legend = rownames(df_scaled2[-c(1,2),]), 
+           legend = rownames(df[-c(1,2),]), 
            bty = "n", pch = 20, col = color,
            text.col = "grey25", pt.cex = 2)
     
