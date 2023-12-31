@@ -126,9 +126,7 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     }
         }
-    
-    
-       
+   
   },
   
   # Compare average plot---------------
@@ -180,7 +178,7 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                      # pcol = 1:8,      # Color for each line
                      plwd = 2,        # Width for each line
                      plty = 1,
-                     pfcol = scales::alpha(color, 0.5))        # Line type for each line
+                     pfcol = scales::alpha(color, 0.3))        # Line type for each line
     
     legend("topright",
            legend = rownames(df[-c(1,2),]), 
