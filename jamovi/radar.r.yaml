@@ -10,7 +10,7 @@ items:
       visible: True
 
     - name:  text
-      title: 'Summary measures of rescale variables' 
+      title: 'Summary of rescaling variables' 
       type:  Preformatted
 
     - name:  plot

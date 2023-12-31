@@ -126,7 +126,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Summary measures of rescale variables"))
+                title="Summary of rescaling variables"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
