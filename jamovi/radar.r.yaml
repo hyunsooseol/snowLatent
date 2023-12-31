@@ -14,7 +14,7 @@ items:
       type:  Preformatted
 
     - name:  plot
-      title: 'Radar Chart'
+      title: 'Individual chart'
       type:  Image
       requiresData: true
       visible: (plot)
@@ -26,5 +26,18 @@ items:
         - num
         - width
         - height
+
+    - name:  plot1
+      title: 'Multiple individual chart'
+      type:  Image
+      requiresData: true
+      visible: (plot1)
+      renderFun: .plot1
+      refs: snowLatent
+      clearWith:
+        - vars
+        - labels
+        - width1
+        - height1
 
 ...

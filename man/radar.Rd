@@ -4,7 +4,18 @@
 \alias{radar}
 \title{Radar Chart}
 \usage{
-radar(data, labels, vars, num = 4, plot = FALSE, width = 500, height = 500)
+radar(
+  data,
+  labels,
+  vars,
+  num = 4,
+  plot = FALSE,
+  width = 500,
+  height = 500,
+  plot1 = FALSE,
+  width1 = 500,
+  height1 = 500
+)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -20,6 +31,12 @@ radar(data, labels, vars, num = 4, plot = FALSE, width = 500, height = 500)
 \item{width}{.}
 
 \item{height}{.}
+
+\item{plot1}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:
@@ -27,6 +44,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 }
 \description{

@@ -11,7 +11,10 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             num = 4,
             plot = FALSE,
             width = 500,
-            height = 500, ...) {
+            height = 500,
+            plot1 = FALSE,
+            width1 = 500,
+            height1 = 500, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -47,6 +50,18 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height",
                 height,
                 default=500)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
 
             self$.addOption(private$..labels)
             self$.addOption(private$..vars)
@@ -54,6 +69,9 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
+            self$.addOption(private$..plot1)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
         }),
     active = list(
         labels = function() private$..labels$value,
@@ -61,14 +79,20 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         num = function() private$..num$value,
         plot = function() private$..plot$value,
         width = function() private$..width$value,
-        height = function() private$..height$value),
+        height = function() private$..height$value,
+        plot1 = function() private$..plot1$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value),
     private = list(
         ..labels = NA,
         ..vars = NA,
         ..num = NA,
         ..plot = NA,
         ..width = NA,
-        ..height = NA)
+        ..height = NA,
+        ..plot1 = NA,
+        ..width1 = NA,
+        ..height1 = NA)
 )
 
 radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -77,7 +101,8 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         text = function() private$.items[["text"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -97,7 +122,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="Radar Chart",
+                title="Individual chart",
                 requiresData=TRUE,
                 visible="(plot)",
                 renderFun=".plot",
@@ -107,7 +132,20 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "labels",
                     "num",
                     "width",
-                    "height")))}))
+                    "height")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Multiple individual chart",
+                requiresData=TRUE,
+                visible="(plot1)",
+                renderFun=".plot1",
+                refs="snowLatent",
+                clearWith=list(
+                    "vars",
+                    "labels",
+                    "width1",
+                    "height1")))}))
 
 radarBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "radarBase",
@@ -140,11 +178,15 @@ radarBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot .
 #' @param width .
 #' @param height .
+#' @param plot1 .
+#' @param width1 .
+#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
@@ -155,7 +197,10 @@ radar <- function(
     num = 4,
     plot = FALSE,
     width = 500,
-    height = 500) {
+    height = 500,
+    plot1 = FALSE,
+    width1 = 500,
+    height1 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("radar requires jmvcore to be installed (restart may be required)")
@@ -175,7 +220,10 @@ radar <- function(
         num = num,
         plot = plot,
         width = width,
-        height = height)
+        height = height,
+        plot1 = plot1,
+        width1 = width1,
+        height1 = height1)
 
     analysis <- radarClass$new(
         options = options,

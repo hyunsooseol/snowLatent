@@ -40,6 +40,13 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot$setSize(width, height)
         }
 
+        if(isTRUE(self$options$plot1)){
+          width <- self$options$width1
+          height <- self$options$height1
+          self$results$plot1$setSize(width, height)
+        }
+        
+        
         
       },
       
@@ -97,15 +104,23 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     self$results$text$setContent(df_scaled2)
     
-    ##### plot-------------------
+    # plot(Compare average)-------------------
     
     image <- self$results$plot
     image$setState(df_scaled2) 
     
-        }
+   
+    # plot1(Compare individual)------------- 
+   
+      image1 <- self$results$plot1
+      image1$setState(df_scaled2) 
+    
+    }
+    
+       
   },
   
-  # Radar chart plot---------------
+  # Compare average plot---------------
   
   .plot = function(image, ...) {
     
@@ -134,7 +149,41 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   TRUE
    
     
+  },
+  
+  .plot1 = function(image1, ...) {
+    
+    if (is.null(image1$state))
+      return(FALSE)
+    
+    df_scaled2 <- image1$state
+    
+    color=c(1:8)
+    #color=c("#00AFBB", "#E7B800", "#FC4E07")
+    
+    plot1<- fmsb::radarchart(df_scaled2,
+                     cglty = 1,       # Grid line type
+                     cglcol = "gray", # Grid line color
+                     # col = c("#00AFBB", "#E7B800", "#FC4E07"),
+                     pcol=color,
+                     # pcol = 1:8,      # Color for each line
+                     plwd = 2,        # Width for each line
+                     plty = 1,
+                     pfcol = scales::alpha(color, 0.5))        # Line type for each line
+    
+    legend("topright",
+           legend = rownames(df_scaled2[-c(1,2),]), 
+           bty = "n", pch = 20, col = color,
+           text.col = "grey25", pt.cex = 2)
+    
+    
+    print(plot1)
+    TRUE
+    
+    
   }
  
+  
+  
         )
 )

@@ -36,7 +36,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: 'Plot'
+            label: ''
             children:
               - type: CheckBox
                 name: plot
@@ -52,3 +52,26 @@ children:
                 name: height
                 format: number
                 enable: (plot)
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: ""
+            children:
+              - type: CheckBox
+                name: plot1
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot1)     
+   
