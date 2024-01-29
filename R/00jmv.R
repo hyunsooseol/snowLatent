@@ -14,5 +14,4 @@
         `author`="Kim, Y., Chung, H.", 
         `year`=2021, 
         `title`="glca: An R Package for Multiple-Group Latent Class Analysis", 
-        `publisher`="(Version 1.3.3) [R package]. URL https://CRAN.R-project.org/package=glca", 
-        `url`="https://CRAN.R-project.org/package=glca"))
+        `publisher`="(Version 1.3.3) [R package]. URL https://CRAN.R-project.org/package=glca"))

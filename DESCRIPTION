@@ -1,14 +1,14 @@
 Package: snowLatent
 Type: Package
 Title: Latent Class Analysis for jamovi
-Version: 2.3.7
+Version: 2.3.8
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 Description: This module allows users to conduct LCA, Multiple group LCA, and Multilevel LCA based on glca R package.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Imports: jmvcore (>= 0.8.5), 
          R6,
          stats,

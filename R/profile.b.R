@@ -61,7 +61,7 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
               .run = function() {
 
-          if(is.null(self$options$group))
+          if (is.null(self$data) | is.null(self$options$vars) | is.null(self$options$group))
             return()
           
           group <- self$options$group
