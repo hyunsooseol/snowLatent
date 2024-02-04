@@ -117,7 +117,8 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Radar Chart")
+                title="Radar Chart",
+                refs="snowLatent")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",

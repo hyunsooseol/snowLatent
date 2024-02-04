@@ -2,6 +2,7 @@
 name:  radar
 title: Radar Chart
 jrs:   '1.1'
+refs: snowLatent
 
 items:
     - name: instructions

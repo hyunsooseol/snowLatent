@@ -36,7 +36,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: ''
+            label: 'Individual'
             children:
               - type: CheckBox
                 name: plot
@@ -60,7 +60,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: ""
+            label: "Multiple"
             children:
               - type: CheckBox
                 name: plot1
