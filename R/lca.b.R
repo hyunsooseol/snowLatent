@@ -80,114 +80,100 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
-        
-        
-        
+ 
       },
       
       .run = function() {
-        
-        ready <- TRUE
-        
+ 
         if (is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
+            length(self$options$vars) < 2) return()
+ 
+        nc <- self$options$nc
+        nb <- self$options$nb
+        covs <- self$options$covs
+        vars <- self$options$vars         
+         
+        data <- private$.cleanData()
+        results <- private$.compute(data)               
           
-          ready <- FALSE
-        
-        if (ready) {
-          
-          data <- private$.cleanData()
-          
-          results <- private$.compute(data)               
-          
-          # populate fit table------------
-          
-          private$.populateFitTable(results)
-          
-          
-          # populate Model comparison(Absolute model fit)-----------
-          
-          private$.populateModelTable(results)
-          
-          # populate Relative model fit---------------
-          
-          
-          private$.populateRelTable(results)
-          
-          # populate class probability table-----
-          
-          private$.populateClassTable(results)
-          
-          
-          # logistic table-----------
-          #private$.populateLogTable(results)
-          
-          
-          # populate item probabilities---------
-          
-          private$.populateItemTable(results)
-          
-          
-          # populate posterior probabilities--
-          
-         # private$.populatePosteriorOutputs(results)
-          
-          # populate class membership--
-          
-        #  private$.populateMemberOutputs(results)
-          
-          # populate item probabilities---------
-          
-       #   private$.populateGamTable(results)
-          
-        
-        }
+         # populate fit table------------
+         private$.populateFitTable(results)
+         # populate Model comparison(Absolute model fit)-----------
+         private$.populateModelTable(results)
+         # populate Relative model fit---------------
+         private$.populateRelTable(results)
+         # populate class probability table-----
+         private$.populateClassTable(results)
+         # populate item probabilities---------
+         private$.populateItemTable(results)
+ 
       },
         
         
       .compute = function(data) {
         
         
-        ######## glca R package ################
-        
-        # library(glca)
-        # data("gss08")
-        # 
-        # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ AGE,
-        #            data = gss08, nclass = 3, n.init = 1)
-        # summary(lca)
-        
-        ################################
-        
+   #      ######## glca R package ################
+   #      
+   #      # library(glca)
+   #      # data("gss08")
+   #      # 
+   #      # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ AGE,
+   #      #            data = gss08, nclass = 3, n.init = 1)
+   #      # summary(lca)
+   #      
+   #      ################################
+   #      
+   #      nc <- self$options$nc
+   #      nb <- self$options$nb
+   #     
+   #    ############ Construct formula###################        
+   #        
+   #      vars <- self$options$vars
+   #      vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+   #      vars <- paste0(vars, collapse=',')
+   #      formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+   #      
+   #      #if( !is.null(self$options$covs) ) {
+   #      if(length(self$options$covs)>=1){
+   #        
+   #        covs <- self$options$covs
+   #        covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+   #        covs <- paste0(covs, collapse='+')
+   #        
+   #        formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+   #      } 
+   #      
+   # ################### LCA model estimates############################
+   # 
+   #        lca = glca::glca(formula=formula,data=data,
+   #                         nclass=nc, seed = 1)
+   # 
+   #  #################################################################
+   #      
+   #      self$results$text$setContent(lca)
+
         nc <- self$options$nc
         nb <- self$options$nb
-       
-      ############ Construct formula###################        
-          
+        covs <- self$options$covs
         vars <- self$options$vars
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        vars <- paste0(vars, collapse=',')
-        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
-        
-        #if( !is.null(self$options$covs) ) {
-        if(length(self$options$covs)>=1){
-          
-          covs <- self$options$covs
-          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
-          covs <- paste0(covs, collapse='+')
-          
-          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
-        } 
-        
-   ################### LCA model estimates############################
+        ##############################
+        lca <- private$.computeLCA()
+        self$results$text$setContent(lca)        
+        ################################        
 
-          lca = glca::glca(formula=formula,data=data,
-                           nclass=nc, seed = 1)
+# Formula is needed again-----------
+vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+vars <- paste0(vars, collapse=',')
+formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
 
-    #################################################################
-        
-        self$results$text$setContent(lca)
-       
+if (length(covs) >= 1) {
+  covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+  covs <- paste0(covs, collapse='+')
+  formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+}
+
+  
         #fit measure----------
         
         loglik<- lca$gof$loglik
@@ -216,18 +202,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # } else
         #   gam <- NaN
         
-        
         gam <- lapply(lca$posterior, colMeans)
         gam<- gam$ALL
         gam <- as.data.frame(gam)
-        
-        
+
         # item probabilities------
-          
         item<- lca[["param"]][["rho"]][["ALL"]]
        # item<- do.call("rbind", lapply(item, as.data.frame))  
-        
-      
+
         # logistic regression coefficients-------------
         
         if(length(self$options$covs)>=1){
@@ -261,33 +243,22 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
         
          # Class Prevalences plot----------
-          
-         image <- self$results$plot1
-        #  
-        #  vars <- length(self$options$vars) 
-        #  
-        #  width <- 100 + vars * 100
-        #  
-        #  image$setSize(width, 700)
-        # 
-        #image$setSize(100 + 100 * length(self$options$vars), 200)
-     #   image$setSize(100 + 100 * length(self$options$vars), 700)  
-         
-        image$setState(lca)
+         # image <- self$results$plot1
+         # image$setState(lca)
+        
           
         # Item by class plot---------
-        
-        image1 <- self$results$plot2
-        
+       
         ic <- reshape2::melt(lca$param$rho)
         colnames(ic) <-c("Class", "Level", "value", "L1")
         
+        image1 <- self$results$plot2
         image1$setState(ic)
         
         
         #Good codes for model fit####################################
         
-        args <- list(test = "boot", nboot=nb)
+        args <- list(test = "boot", nboot=self$options$nb)
       
         for(n in 2:self$options$nc)
           args[[n+1]] <- glca::glca(formula = formula, 
@@ -316,10 +287,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # Elbow plot-------------
         
         out1 <- gtable[,c(2:4)]
-        
-        
         cla <- c(2:self$options$nc)
-        
         out1 <- data.frame(out1,cla)
         
         # self$results$text1$setContent(out1)
@@ -397,18 +365,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         } 
         
         if(isTRUE(self$options$member)){
-          
-          
+
           if (self$options$member
               && self$results$member$isNotFilled()) {
-            
-            
+
             self$results$member$setValues(mem)
-            
             self$results$member$setRowNums(rownames(data))
-            
           }
-          
         }
         
         
@@ -428,17 +391,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 'item'=item,
                 'gtable'=gtable,
                 'dtable'=dtable
-              #  'pos'=pos,
-              # 'coef'= coef,
-              # 'mem'=mem,
-              # 'gamma'=gamma
                 )
           
             
       },   
       
       
-      ################ populating Tables################################
+################ populating Tables################################
       
    # populating fit table-------------   
    
@@ -466,29 +425,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    },
    
    # Model comparison(Absolute model fit)----------------
-   
-   
+
       .populateModelTable = function(results) {
-       
        
          table <- self$results$comp
          gtable <- results$gtable
          
          g<- as.data.frame(gtable)
-         
-         # loglik <- g[,1]
-         # aic <- g[,2]
-         # caic <- g[,3]
-         # bic <- g[,4]
-         # entropy <- g[,5]
-         # df <- g[,6]
-         # gsq <- g[,7]
-         # p <- g[,8]
-         # class <- g[,9]
-
          names <- dimnames(g)[[1]]
-         
-       
+
          for (name in names) {
            
            row <- list()
@@ -503,11 +448,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            row[["gsq"]] <-  g[name, 7]
            row[["p"]] <-  g[name, 8]
            
-           
            table$addRow(rowKey=name, values=row)
-           
          }     
-         
       },
   
   # Populate relative model fit---------------
@@ -518,32 +460,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       return()
    
     nc <- self$options$nc
-    
     table <- self$results$rel
-    
-    
     dtable <- results$dtable
-    
-    #new <- c(2:self$options$nc)
-    #add column called new
-    #dtable <- cbind(dtable, new)
-    
     d<- as.data.frame(dtable)
-    
-    
-   # para <- d[,1]
-   # loglik<- d[,2]
-   # df<- d[,3]
-   # dev<- d[,4]
-   # p<- d[,5]
-   
+  
    names <- dimnames(d)[[1]]
-   
-   
    for (name in names) {
-     
-     row <- list()
-     
+       row <- list()
+  
      row[["class"]] <-  d[name, 6]
      row[["para"]] <-  d[name, 1]
      row[["loglik"]] <-  d[name, 2]
@@ -561,19 +485,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       .populateClassTable= function(results) {  
          
         table <- self$results$cp
-        
         gam <- results$gam
         names<- dimnames(gam)[[1]]
          
-       
          for (name in names) {
-           
            row <- list()
-           
            row[['value']] <- gam[name,1]
-           
            table$addRow(rowKey=name, values=row)
-           
+   
          }
          
       },
@@ -637,51 +556,28 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .populateItemTable= function(results) {
         
-       
         tables <- self$results$item
-        
         vars <- self$options$vars
-        
         for(i in seq_along(vars)){
-          
           item <- results$item[[ vars[i] ]]
-          
-         
           table <- tables[[i]]
-          
           names<- row.names(item)
           dims <- colnames(item)
-          
-          #item<- as.data.frame(item)
-          #names<- dimnames(item)[[1]]
-          #dims <- dimnames(item)[[2]]
-          
-         
-           for (dim in dims) {
 
+           for (dim in dims) {
              table$addColumn(name = paste0(dim),
                              type = 'text',
                              combineBelow=TRUE)
            }
-
-          
           for (name in names) {
-            
             row <- list()
-            
             for(j in seq_along(dims)){
-              
               row[[dims[j]]] <- item[name,j]
-              
             }
-            
             table$addRow(rowKey=name, values=row)
-            
-          }
-          
-        }
-        
-        },   
+         }
+         }
+         },   
 
   # gamma probabilities----------
   
@@ -700,13 +596,20 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
   # plot-------------------------------------
   
-   .plot1 = function(image, ...) {
+ .plot1 = function(image, ...) {
      
-     lca <- image$state
+     if(!self$options$plot1)
+       return(FALSE)
+    
+     data <- private$.cleanData()
      
-     if (is.null(lca))
-       return()
-      
+     nc <- self$options$nc
+     nb <- self$options$nb
+     covs <- self$options$covs
+     vars <- self$options$vars
+     
+     lca <- private$.computeLCA()
+
      par(mfcol = c(2, 1))
       plot1 <- plot(lca, ask=FALSE)
       
@@ -763,11 +666,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      ggplot2::geom_point(size = 3) +
      ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
    
-   
-   
    plot3 <- plot3+ggtheme
-   
-   
+
    print(plot3)
    TRUE
    
@@ -776,7 +676,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  
  ### Helper functions =================================     
      
-     .cleanData = function() {
+ .cleanData = function() {
        
        data <- list()
        
@@ -797,9 +697,30 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            data <- data[!is.na(data[[cov]]), ]
        
        return(data)
-     }
-     
-     
+     },
+ 
+ .computeLCA = function() {
+   
+   data <- private$.cleanData()
+   nc <- self$options$nc
+   covs <- self$options$covs
+   vars <- self$options$vars         
+   
+   vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+   vars <- paste0(vars, collapse=',')
+   formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+   
+   if (length(covs) >= 1) {
+     covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+     covs <- paste0(covs, collapse='+')
+     formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+   }
+   
+   lca <- glca::glca(formula=formula, data=data, nclass=nc, seed=1)
+   return(lca)
+ }
+ 
+
     )
 )
 

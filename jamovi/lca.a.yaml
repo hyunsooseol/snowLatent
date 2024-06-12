@@ -81,7 +81,7 @@ options:
       default: FALSE   
       
     - name: plot1 
-      title: Profile plot
+      title: 'Profile plot'
       type: Bool 
       default: FALSE   
      

@@ -229,6 +229,7 @@ items:
       renderFun: .plot1
       visible: (plot1)
       refs: glca
+      requiresData: true
       clearWith:
         - vars
         - covs
