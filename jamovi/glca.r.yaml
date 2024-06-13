@@ -243,16 +243,13 @@ items:
           type: 'text'
           content: ($key)
 
-    - name: text3
-      title: Logistic regression
-      type:  Preformatted  
-
     - name:  plot1
       title: 'Profile plot'
       type:  Image
       renderFun: .plot1
       visible: (plot1)
       refs: glca
+      requiresData: true
       clearWith:
         - vars
         - nc
@@ -277,11 +274,12 @@ items:
         - height1    
 
     - name:  plot3
-      title: Item response probabilities by group(Measurement invariance=FALSE)
+      title: 'Item response probabilities by group(Measurement invariance=FALSE)'
       type:  Image
       renderFun: .plot3
       visible: (plot3)
       refs: snowLatent
+      requiresData: true
       clearWith:
         - vars
         - nc
@@ -291,6 +289,10 @@ items:
         - width1
         - height1        
     
+    - name: text3
+      title: Logistic regression
+      type:  Preformatted  
+      
     - name: text1
       title: Item response probabilities
       type:  Preformatted 

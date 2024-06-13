@@ -23,7 +23,7 @@ glca(
   item = FALSE,
   gamma = FALSE,
   co = FALSE,
-  plot1 = FALSE,
+  plot1 = TRUE,
   plot2 = FALSE,
   plot3 = FALSE,
   angle = 0,
@@ -98,10 +98,10 @@ A results object containing:
   \code{results$cir} \tab \tab \tab \tab \tab a table \cr
   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
-  \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
+  \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr

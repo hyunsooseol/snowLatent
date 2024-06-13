@@ -118,7 +118,7 @@ options:
     - name: plot1 
       title: Profile plot
       type: Bool 
-      default: FALSE   
+      default: TRUE   
      
     - name: plot2 
       title: Item probabilities(Invariance=T)

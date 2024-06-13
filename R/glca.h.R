@@ -23,7 +23,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             item = FALSE,
             gamma = FALSE,
             co = FALSE,
-            plot1 = FALSE,
+            plot1 = TRUE,
             plot2 = FALSE,
             plot3 = FALSE,
             angle = 0,
@@ -124,7 +124,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
-                default=FALSE)
+                default=TRUE)
             private$..plot2 <- jmvcore::OptionBool$new(
                 "plot2",
                 plot2,
@@ -249,10 +249,10 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cir = function() private$.items[["cir"]],
         marginal = function() private$.items[["marginal"]],
         preval = function() private$.items[["preval"]],
-        text3 = function() private$.items[["text3"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
+        text3 = function() private$.items[["text3"]],
         text1 = function() private$.items[["text1"]],
         text4 = function() private$.items[["text4"]],
         text2 = function() private$.items[["text2"]]),
@@ -536,10 +536,6 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `type`="text", 
                         `content`="($key)"))))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text3",
-                title="Logistic regression"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -547,6 +543,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 visible="(plot1)",
                 refs="glca",
+                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",
@@ -576,6 +573,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot3",
                 visible="(plot3)",
                 refs="snowLatent",
+                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",
@@ -584,6 +582,10 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "angle",
                     "width1",
                     "height1")))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text3",
+                title="Logistic regression"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
@@ -658,10 +660,10 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$cir} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$marginal} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$preval} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
@@ -693,7 +695,7 @@ glca <- function(
     item = FALSE,
     gamma = FALSE,
     co = FALSE,
-    plot1 = FALSE,
+    plot1 = TRUE,
     plot2 = FALSE,
     plot3 = FALSE,
     angle = 0,
