@@ -75,8 +75,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot1$setSize(width, height)
         }
         
-        
-        
         if(isTRUE(self$options$plot2)){
           
           width <- self$options$width1
@@ -85,107 +83,21 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$plot2$setSize(width, height)
         }
         
-        
-        if(isTRUE(self$options$plot3)){
+          if(isTRUE(self$options$plot3)){
           
           width <- self$options$width2
           height <- self$options$height2
           
           self$results$plot3$setSize(width, height)
         }
-        
-        
-        
-        
+  
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
-        
-        
+  
       },
       
       .run = function() {
-        
-        ready <- TRUE
-        
-        if (is.null(self$options$group) || is.null(self$options$vars) || 
-            length(self$options$vars) < 2)
-          
-          ready <- FALSE
-        
-        if (ready) {
-          
-          data <- private$.cleanData()
-          
-          results <- private$.compute(data)               
-          
-          # populate Fit table----------
-          
-          private$.populateFitTable(results)
-          
-         
-          # Absolute model fit for cluster-----------
-          
-          private$.populateModel1Table(results)
-          
-          # populate Relative model fit for cluster---------------
-          
-          private$.populateRel1Table(results)
-          
-          
-          # Marginal prevalences for latent clusters------
-          
-          private$.populateMarginTable(results)
-          
-          # Marginal prevalences for latent classes----
-          
-          
-          private$.populateClaTable(results)
-          
-          #Class prevalences by cluster------------
-          
-          private$.populateCrossTable(results)
-          
-          # populate  gof for coeff ---------------
-          
-         # private$.populateGofTable(results)
-          
-          # populate equality coefficients ---------------
-          
-          #private$.populateCiTable(results)
-          
-        
-          # populate item probabilities---------
-          
-          private$.populateItemTable(results)
-          
-         
-          # populate posterior probabilities--
-          
-          private$.populatePosTable(results)
-          
-          # populate cluster membership--
-          
-          private$.populateMemTable(results)
-          
-           #logistic table-----------
-          
-            private$.populateLogTable(results)
-          
-          # cluster prob.(gamma)----------
-          
-          private$.populateGamTable(results)
-          
-          
-        }
-      },
       
-      
-      .compute = function(data) {
-        
-        if (is.null(self$options$group))
-          return()
-        
-        
         ########  Multilevel glca R package ################
         
         # library(glca)
@@ -196,111 +108,238 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # summary(mlca)
         # 
         
-        # Constructing formula----------------        
-        
-        vars <- self$options$vars
-        #vars <- colnames(data[, -1] )
-        
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        vars <- paste0(vars, collapse=',')
-        
-        # formula with no covariates----------     
-        
-        formula <- as.formula(paste0('glca::item(', vars, ')~1'))
-       
-        # With covariates-------------
-        
-        #if( !is.null(self$options$covs) ) {
-        
-        if(length(self$options$covs)>=1){ 
-          covs <- self$options$covs
-          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
-          covs <- paste0(covs, collapse='+')
+        if (is.null(self$options$group) || is.null(self$options$vars) || 
+            length(self$options$vars) < 2) return()
+ 
           
-          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+          data <- private$.cleanData()
+  
+          vars <- self$options$vars
+          group <- self$options$group
+          covs <- self$options$covs
+          nc <- self$options$nc  
+          nb <- self$options$nb
+          nclust <- self$options$nclust
+          
+##############################
+lca <- private$.computeLCA()
+self$results$text$setContent(lca) 
+
+# Item probability(rho)---                    
+
+if(isTRUE(self$options$item)){ 
+    item<- lca$param$rho
+    self$results$text5$setContent(item)          
+}
+ 
+ # logistic table----------
+if(isTRUE(self$options$cluster)){
+      beta <- lca$param$beta
+      self$results$text4$setContent(beta)
+          }      
+if(isTRUE(self$options$co)){
+    co <- lca$coefficient
+    self$results$text3$setContent(co)
+          }
+          
+
+# Model fit
+if(isTRUE(self$options$fit)){
+            
+            table <- self$results$fit
+            class <- self$options$nc 
+            
+            # Model fit measure----------
+            loglik<- lca$gof$loglik
+            aic<- lca$gof$aic
+            caic<- lca$gof$caic
+            bic<- lca$gof$bic
+            entropy<- lca$gof$entropy
+            df<- lca$gof$df
+            gsq<- lca$gof$Gsq
+            
+            fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq)
+           
+            row <- list()
+            
+            row[['class']] <- class
+            row[['loglik']] <- fit[,1]
+            row[['aic']] <- fit[,2]
+            row[['caic']] <- fit[,3]
+            row[['bic']] <- fit[,4]
+            row[['entropy']] <- fit[,5]
+            row[['df']] <- fit[,6]
+            row[['gsq']] <- fit[,7]
+            
+            table$setRow(rowNo = 1, values = row)
+          
+          }
+
+
+##############################          
+clu <- private$.computeCLUST()
+
+# Absolute model fit for cluster
+        
+          if(isTRUE(self$options$comp1)){
+            
+            table <- self$results$comp1
+            gtable1 <- clu$gtable1
+            
+            if(is.null(gtable1))
+              return()
+            
+            gtable1<- as.data.frame(gtable1)
+            #define new column to add
+            new <- c(2:self$options$nclust)
+            #add column called new
+            g <- cbind(gtable1, new)
+            names <- dimnames(g)[[1]]
+          
+            for (name in names) {
+               row <- list()
+              
+              row[["cluster"]]   <-  g[name, 9]
+              row[["loglik"]]   <-  g[name, 1]
+              row[["aic"]] <-  g[name, 2]
+              row[["caic"]] <-  g[name, 3]
+              row[["bic"]] <-  g[name, 4]
+              row[["entropy"]] <-  g[name, 5]
+              row[["df"]] <-  g[name, 6]
+              row[["gsq"]] <-  g[name, 7]
+              row[["p"]] <-  g[name, 8]
+ 
+              table$addRow(rowKey=name, values=row)
+            }
         }
-       
-        group <- data[, 1]
-        
-        nc <- self$options$nc
-        nb <- self$options$nb
-        nclust<- self$options$nclust 
-       
-        ################### LCA model estimates############################
-        
-        lca = glca::glca(formula=formula,
-                         group= group,
-                         data=data,
-                         nclass = nc, 
-                         ncluster = nclust,
-                         seed = 1)
-        
-        #################################################################
-        
-         self$results$text$setContent(lca)
-       
-        # Model fit measure----------
-        
-        loglik<- lca$gof$loglik
-        aic<- lca$gof$aic
-        caic<- lca$gof$caic
-        bic<- lca$gof$bic
-        entropy<- lca$gof$entropy
-        df<- lca$gof$df
-        gsq<- lca$gof$Gsq
-        
-        fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq)
-        
-       
-        # CLUSTER: Absolute and relative model fit-------
-        
-        args <- list(test = "boot", nboot=nb)
+          
+#Relative model fit for cluster     
+            
+          if(isTRUE(self$options$rel1)){            
+           
+            table <- self$results$rel1
+            dtable1 <- clu$dtable1
+            
+            if (is.null(dtable1))
+              return()
+            
+            dtable1<- as.data.frame(dtable1)
+            #define new column to add
+            new <- c(2:self$options$nclust)
+            #add column called new
+            d <- cbind(dtable1, new)
+            names <- dimnames(d)[[1]]
 
-        for(n in 2:self$options$nclust)
+            for (name in names) {
+              
+              row <- list()
+              
+              row[["cluster"]] <-  d[name, 6]
+              row[["para"]] <-  d[name, 1]
+              row[["loglik"]] <-  d[name, 2]
+              row[["df"]] <-  d[name, 3]
+              row[["dev"]] <-  d[name, 4]
+              row[["p"]] <-d[name, 5]
+              
+              table$addRow(rowKey=name, values=row)
+             }
+            
+          
+          
+          
+          
+          
+           
+          
+            }
 
-          args[[n+1]] <- glca::glca(formula = formula,
-                                       group=group,
-                                       data = data,
-                                       nclass = nc,
-                                       ncluster = n,
-                                       seed = 1)
-
-        res <- do.call(glca::gofglca, args)
-
-        #self$results$text$setContent(res)
-
-        
-        gtable1 <- res[["gtable"]] #Absolute model fit
-
-        if(is.null(res$gtable)) {
-          gtable1 <- NULL
-        } else {
-          gtable1 <- res[["gtable"]]   
-        }
-        
-        
-        if(is.null(res$dtable)) {
-          dtable1 <- NULL
-        } else {
-          dtable1 <- res[["dtable"]]   # Relative model fit
-        }
-
-
-        # Elbow plot------------------------------
+# Marginal prevalences for latent cluster---------
+# delta is NULL !!!
+                    
+          # if(isTRUE(self$options$margin)){
+          #   
+          #   table <- self$results$margin
+          #  
+          #   mar <- lca[["param"]][["delta"]]
+          #   mar<- as.data.frame(mar)
+          #   
+          #   #self$results$text$setContent(clust)
+          #   
+          #   names<- dimnames(mar)[[1]]
+          #   
+          #   for (name in names) {
+          #     row <- list()
+          #     row[['value']] <- mar[name,1]
+          #     table$addRow(rowKey=name, values=row)
+          #     
+          #   }
+          # }               
+          
+          
+          
+# Marginal prevalences for latent classes----------
+          
+if(isTRUE(self$options$cla)){
+            
+            table <- self$results$cla
+            
+            if( is.null(lca[["posterior"]][["class"]]) ) {
+              cla <- colMeans(do.call(rbind, lca[["posterior"]]))
+            } else {
+              cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+            }
+            
+            cla <- as.data.frame(cla)
+            names<- dimnames(cla)[[1]]
+            
+            for (name in names) {
+              row <- list()
+              row[['value']] <- cla[name,1]
+              table$addRow(rowKey=name, values=row)
+            }
+            
+          }
+          
+# Class prevalences by cluster----------------------
+# lca[["posterior"]][["wclass"]]) is NULL !!!
+          
+          # if(isTRUE(self$options$cross)){
+          #   
+          #   table <- self$results$cross
+          #   
+          #   if( is.null(lca[["posterior"]][["wclass"]]) ) {
+          #     cross <- NULL 
+          #   } else {
+          #     cross <- lca[["posterior"]][["wclass"]]
+          #   }
+          #   
+          #   names<- dimnames(cross)[[1]]
+          #   dims <- dimnames(cross)[[2]]
+          #   
+          #   for (dim in dims) {
+          #     table$addColumn(name = paste0(dim),
+          #                     type = 'character')
+          #   }
+          #   for (name in names) {
+          #     row <- list()
+          #     for(j in seq_along(dims)){
+          #       row[[dims[j]]] <- cross[name,j]
+          #     }
+          #     table$addRow(rowKey=name, values=row)
+          #   }
+          # }          
+          
+                    
+# Elbow plot------------------------------
         
         if(self$options$nclust>2){
           
           # Elbow plot-------------
           
-          out1 <- gtable1[,c(2:4)]
-          
-          
+          out1 <- clu$gtable1[,c(2:4)]
           cla <- c(2:self$options$nclust)
-          
           out1 <- data.frame(out1,cla)
-          
-          # self$results$text1$setContent(out1)
-          
+ 
           colnames(out1) <- c('AIC',
                               'CAIC','BIC','Cluster')
           
@@ -314,135 +353,73 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
-        # adding class--------
-        
-        gtable1<- as.data.frame(gtable1)
-        dtable1<- as.data.frame(dtable1)
-        
-        #define new column to add
-        new <- c(2:self$options$nclust)
-        
-        #add column called new
-        gtable1 <- cbind(gtable1, new)
-        #  dtable <- cbind(dtable, new1)
-        
-        # if(!is.null(res$dtable1)){
-        #   
-        #   new <- c(2:self$options$nclust)
-        #   #add column called new
-        #   dtable1 <- cbind(dtable1, new)
-        # }
+        # # adding class--------
+        # gtable1<- as.data.frame(clu$gtable1)
+        # dtable1<- as.data.frame(clu$dtable1)
         # 
-       #self$results$text$setContent(dtable1)
+        # #define new column to add
+        # new <- c(2:self$options$nclust)
+        # 
+        # #add column called new
+        # gtable1 <- cbind(clu$gtable1, new)
+
+########################
+
+inv <- private$.computeINV()        
+     
+# Goodness of fit table----------  
+
+if(isTRUE(self$options$gof)){
         
-        ####  Invariance of equality  ########################################################       
-        
-          
-        if(!is.null(self$options$covs)){
-          
-        
-          lca0 = glca::glca(formula=as.formula(paste0('glca::item(', vars, ')~1')),
-                            group= group,
-                            data=data,
-                            nclass = nc, 
-                            ncluster = nclust,
-                            seed = 1)
-          
-          
-         lca2 <- try(glca::glca(formula = formula, 
-                             group = group, 
-                             data = data, 
-                             nclass = nc, 
-                             ncluster = nclust,
-                             coeff.inv = FALSE,
-                             seed= 1)
-           )
-        
-        if(jmvcore::isError(lca2)){
-         
-          err_string <- stringr::str_interp(
-            " Error in if (maxdiff < eps) break : Covariates can not be computed."
-          )
-          stop(err_string)
-          
-          } 
-        
-        if (! jmvcore::isError(lca2) ){
-          
-          cf <- glca::gofglca(lca0, lca, lca2, test = "chisq", nboot = nb)
-          
-         # self$results$text$setContent(cf)
-          
-          ci.g <- cf[["gtable"]]
-          ci.d <- cf[["dtable"]]
-         
-        } 
-         
+          if(!is.null(self$options$covs)){
+            
+            table <- self$results$gof  
+            
+            if(is.null(inv$ci.g))
+              return()
+            
+            g<- as.data.frame(inv$ci.g)
+           
+            loglik <- g[,1]
+            aic <- g[,2]
+            caic <- g[,3]
+            bic <- g[,4]
+            entropy <- g[,5]
+            df <- g[,6]
+            gsq <- g[,7]
+            
+            names <- dimnames(g)[[1]]
+            
+            for (name in names) {
+              row <- list()
+              
+              row[["loglik"]]   <-  g[name, 1]
+              row[["aic"]] <-  g[name, 2]
+              row[["caic"]] <-  g[name, 3]
+              row[["bic"]] <-  g[name, 4]
+              row[["entropy"]] <-  g[name, 5]
+              row[["df"]] <-  g[name, 6]
+              row[["gsq"]] <-  g[name, 7]
+              
+              table$addRow(rowKey=name, values=row)
+            }
+            
+          }
+
         }
-         
-         
-         ######## Goodness of fit table----------  
-         
-        if(!is.null(self$options$covs)&&isTRUE(self$options$gof)){
-         
-         # if(isTRUE(self$options$gof)){
-         
-            # if(is.null(self$options$covs))
-            #   return() 
-            
-          table <- self$results$gof  
-  
-          if(is.null(ci.g))
-            return()
-          
-          g<- as.data.frame(ci.g)
-          
-          loglik <- g[,1]
-          aic <- g[,2]
-          caic <- g[,3]
-          bic <- g[,4]
-          entropy <- g[,5]
-          df <- g[,6]
-          gsq <- g[,7]
-          
-          names <- dimnames(g)[[1]]
-          
-          
-          for (name in names) {
-            
-            row <- list()
-            
-            row[["loglik"]]   <-  g[name, 1]
-            row[["aic"]] <-  g[name, 2]
-            row[["caic"]] <-  g[name, 3]
-            row[["bic"]] <-  g[name, 4]
-            row[["entropy"]] <-  g[name, 5]
-            row[["df"]] <-  g[name, 6]
-            row[["gsq"]] <-  g[name, 7]
-            
-            table$addRow(rowKey=name, values=row)
-            
-          }
-          
-          }
-          
-      
-  ############ Testing equality of coefficients-------------
-        
+                 
+#Testing equality of coefficients-------------
+ 
+if(isTRUE(self$options$ci)){
+               
         if(!is.null(self$options$covs)&&isTRUE(self$options$ci)){
-        # if(!is.null(self$options$covs)){
-        #   
-        #   if(isTRUE(self$options$ci)){
-            # 
-            # if(is.null(self$options$covs))
-            #   return() 
-            
+  
             table <- self$results$ci
             
-            if(is.null(ci.d))
+            if(is.null(inv$ci.d))
               return()
            
-          d<- as.data.frame(ci.d)
+          d<- as.data.frame(inv$ci.d)
           
           para <- d[,1]
           loglik<- d[,2]
@@ -451,10 +428,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           p<- d[,5]
           
           names <- dimnames(d)[[1]]
-          
-          
+
           for (name in names) {
-            
             row <- list()
             
             row[["para"]] <-  d[name, 1]
@@ -464,505 +439,158 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             row[["p"]] <-d[name, 5]
             
             table$addRow(rowKey=name, values=row)
-            
-          }
+           }
         
           }
         
-        
+        } 
         
 ################################################################
-          
-        # Marginal prevalences for latent cluster------
+# Marginal prevalences for latent cluster------
         
-        clust <- lca[["param"]][["delta"]]
-        clust<- as.data.frame(clust)
+        #clust <- lca[["param"]][["delta"]]
+        #clust<- as.data.frame(clust)
         
         # Marginal prevalences for latent classes ----------
         # cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
         # cla<- as.data.frame(cla)
 
-        if( is.null(lca[["posterior"]][["class"]]) ) {
-          cla <- colMeans(do.call(rbind, lca[["posterior"]]))
-        } else {
-          cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-        }
-
-        cla <- as.data.frame(cla)
+        # if( is.null(lca[["posterior"]][["class"]]) ) {
+        #   cla <- colMeans(do.call(rbind, lca[["posterior"]]))
+        # } else {
+        #   cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+        # }
+        # 
+        # cla <- as.data.frame(cla)
 
         # Class prevalences by cluster-----------
         #cross<- lca[["posterior"]][["wclass"]]
-        
-        if( is.null(lca[["posterior"]][["wclass"]]) ) {
-          cross <- NULL 
-        } else {
-          cross <- lca[["posterior"]][["wclass"]]
-        }
-        
+        # 
+        # if( is.null(lca[["posterior"]][["wclass"]]) ) {
+        #   cross <- NULL 
+        # } else {
+        #   cross <- lca[["posterior"]][["wclass"]]
+        # }
+        # 
         # item response probability---------
         
-        item<- lca[["param"]][["rho"]]
+        #item<- lca[["param"]][["rho"]]
         
         #item<- do.call("rbind", lapply(item, as.data.frame))
         
         
         # posterior probability---------
         
-        post <-lca[["posterior"]][["class"]]
+        #post <-lca[["posterior"]][["class"]]
         
-        # Cluster membership------------
-        
-        member<- lca[["posterior"]][["cluster"]]
-        
+ 
         # logistic regression coef.--------
         
-        co <- lca[["coefficient"]]
-        
-        
+      #  co <- lca[["coefficient"]]
+
         # cluster prob.(gamma)----------
         
-        gamma <- lca[["param"]][["gamma"]]
-        
+        #gamma <- lca[["param"]][["gamma"]]
         
         # Class Prevalences plot----------
-        
-        image <- self$results$plot1
-        
-        # vars <- length(self$options$vars) 
-        # width <- 100 + vars * 100
-        # image$setSize(width, 700)
-        
-        
-        #image$setSize(100 + 100 * length(self$options$vars), 200)
-        
-        image$setState(lca)
-        
-       ##############################
-        #example with args
-        
-        # # --- Class prevalences (Marginal prevalences for latent classes) --- #
-        # args <- list()
-        # args[[1]] <- lca[["posterior"]][["1"]]
-        # args[[2]] <- lca[["posterior"]][["2"]]
-        # 
-        # cla <- colMeans(do.call(rbind, args))
-        # cla <- as.data.frame(cla)
-        
-        ###################################
-        
+        # image <- self$results$plot1
+        # image$setState(lca)
+
         # Item by class plot---------
         
         image2 <- self$results$plot2
-        
         ic<- lca[["param"]][["rho"]]
-        
         ic <- reshape2::melt(ic) 
-        
         colnames(ic) <-c("Class", "Level", "value", "L1") 
-        
         image2$setState(ic)
-        
-        
-        results <-
-          list(
-           
-            'fit'=fit,
-            'cla'=cla,
-            'cross'=cross,
-            'item'=item,
-            'post'=post,
-            'gtable1'=gtable1,
-            'dtable1'=dtable1,
-            'clust'=clust,
-            'member'=member,
-            'co'=co,
-           'gamma'=gamma
-           
-          )
-        
-        
-      },   
-      
-      
-      ################ populating Tables################################
-     
-        # Model Fit table-------------   
-      
-      .populateFitTable = function(results) {
-        
-       
-        table <- self$results$fit
-        
-        fit <- results$fit
-        
-        class <- self$options$nc 
-       
-        row <- list()
-        
-        row[['class']] <- class
-        row[['loglik']] <- fit[,1]
-        row[['aic']] <- fit[,2]
-        row[['caic']] <- fit[,3]
-        row[['bic']] <- fit[,4]
-        row[['entropy']] <- fit[,5]
-        row[['df']] <- fit[,6]
-        row[['gsq']] <- fit[,7]
-        
-        table$setRow(rowNo = 1, values = row)
-        
-        
-      },
-      
-       
-      # Absolute model fit for cluster------------
-      
-      .populateModel1Table = function(results) {
-        
-        if (!self$options$comp1)
-             return()
-        
-        table <- self$results$comp1
-        
-        gtable1 <- results$gtable1
-        
-        if(is.null(gtable1))
-        return()
-        
-        g<- as.data.frame(gtable1)
-       
-        # loglik <- g[,1]
-        # aic <- g[,2]
-        # caic <- g[,3]
-        # bic <- g[,4] 
-        # entropy <- g[,5]
-        # df <- g[,6] 
-        # gsq <- g[,7] 
-        # p <- g[,8]
-        
-        
-        names <- dimnames(g)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["cluster"]]   <-  g[name, 9]
-          row[["loglik"]]   <-  g[name, 1]
-          row[["aic"]] <-  g[name, 2]
-          row[["caic"]] <-  g[name, 3]
-          row[["bic"]] <-  g[name, 4]
-          row[["entropy"]] <-  g[name, 5]
-          row[["df"]] <-  g[name, 6]
-          row[["gsq"]] <-  g[name, 7]
-          row[["p"]] <-  g[name, 8]
-          
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }     
-        
-      },
-      
-      # Relative model fit for cluster---------------
-      
-      .populateRel1Table = function(results) {
-        
-        if (!self$options$rel1)
-          return()
-        
-        table <- self$results$rel1
-        
-        dtable1 <- results$dtable1
-        
-        if (is.null(dtable1))
-          return()
-        
-        new <- c(2:self$options$nclust)
-        #add column called new
-        dtable1 <- cbind(dtable1, new)
-        
-        d<- as.data.frame(dtable1)
-        
-        # para <- d[,1]
-        # loglik<- d[,2]
-        # df<- d[,3]
-        # dev<- d[,4]
-        # p<- d[,5]
-        
-        names <- dimnames(d)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[["cluster"]] <-  d[name, 6]
-          row[["para"]] <-  d[name, 1]
-          row[["loglik"]] <-  d[name, 2]
-          row[["df"]] <-  d[name, 3]
-          row[["dev"]] <-  d[name, 4]
-          row[["p"]] <-d[name, 5]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-      },  
-      
-      
-      # Marginal prevalences for latent cluster---------
-      
-      .populateMarginTable= function(results) {  
-        
-        if (!self$options$margin)
-          return()
-        
-        table <- self$results$margin
-        
-        clust<- results$clust
-      
-      
-        names<- dimnames(clust)[[1]]
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[['value']] <- clust[name,1]
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-      },
-      
-      # Marginal prevalences for latent classes----------
-      
-      .populateClaTable= function(results){
-        
-        if (!self$options$cla)
-          return()
-        
-        table <- self$results$cla
-        
-        cla<- results$cla
-        
-        names<- dimnames(cla)[[1]]
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          row[['value']] <- cla[name,1]
-          
-          table$addRow(rowKey=name, values=row)
-        
-        
-      }
-      
-      },
-      
-      # Class prevalences by cluster----------------------
-      
-      .populateCrossTable=function(results){
-        
-        if (!self$options$cross)
-          return()
-        
-        
-        table <- self$results$cross
-        
-        cross<- results$cross
-        
-        names<- dimnames(cross)[[1]]
-        dims <- dimnames(cross)[[2]]
-        
-        
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'character')
-        }
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- cross[name,j]
-            
-          }
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-        
-      },
-      
-      # cluster membership-----------
-      
-      .populateMemTable= function(results) {
-      
-        if (!self$options$member)
-          return()
-        
-        member <- results$member
-        
-        m<- as.data.frame(member)
-       #------------------------------------- 
-        
-        m$Membership <- as.numeric(factor(apply(m, 1, which.max)))
-        
-        #---------------------------------
-        table <- self$results$member
-        
-        names<- dimnames(m)[[1]]
-        
-        dims <- dimnames(m)[[2]]
-        
-        for (dim in dims) {
-          
-          table$addColumn(name = paste0(dim),
-                          type = 'number')
-        }
-        
-        
-        for (name in names) {
-          
-          row <- list()
-          
-          for(j in seq_along(dims)){
-            
-            row[[dims[j]]] <- m[name,j]
-            
-          }
-          
-          table$addRow(rowKey=name, values=row)
-          
-        }
-        
-        
-      },
+ 
+ 
+      # # cluster membership-----------
+      # 
+      #   if(isTRUE(self$options$member)){
+      #   
+      #     member<- lca[["posterior"]][["cluster"]]
+      #     m<- as.data.frame(member)
+      #     m$Membership <- as.numeric(factor(apply(m, 1, which.max)))
+      #   
+      #   table <- self$results$member
+      #   names<- dimnames(m)[[1]]
+      #   dims <- dimnames(m)[[2]]
+      #   
+      #   for (dim in dims) {
+      #     table$addColumn(name = paste0(dim),
+      #                     type = 'number')
+      #   }
+      #   for (name in names) {
+      #     row <- list()
+      #     for(j in seq_along(dims)){
+      #       row[[dims[j]]] <- m[name,j]
+      #     }
+      #   table$addRow(rowKey=name, values=row)
+      #           }
+      #         }
        
       # item probabilities----------
       
-      .populateItemTable= function(results) {
+       # if(isTRUE(self$options$item)){
         
-        if (!self$options$item)
-          return()
+       
+       
+        # tables <- self$results$item
+        # vars <- self$options$vars
+        # 
+        # for(i in seq_along(vars)){
+        #      
+        #          item <- item[[ vars[i] ]]
+        #       
+        #          table <- tables[[i]]
+        #           names<- row.names(item)
+        #           dims <- colnames(item)
+        # 
+        #   for (dim in dims) {
+        #          table$addColumn(name = paste0(dim),
+        #                     type = 'text',
+        #                     combineBelow=TRUE)
+        #   }
+        #       for (name in names) {
+        #          row <- list()
+        #          for(j in seq_along(dims)){
+        #            row[[dims[j]]] <- item[name,j]
+        #          }
+        #          table$addRow(rowKey=name, values=row)
+        #        }
+        #      }
+
+ #       }
+ 
+ 
+      
+        },
+      
+      
+#Plot#######################
+
+.plot1 = function(image, ...) {
         
-        tables <- self$results$item
+        if (is.null(self$options$group) || is.null(self$options$vars) || 
+            length(self$options$vars) < 2) return()
+        
+        data <- private$.cleanData()
         
         vars <- self$options$vars
+        group <- self$options$group
+        covs <- self$options$covs
+        nc <- self$options$nc  
+        nb <- self$options$nb
+        nclust <- self$options$nclust
         
-        for(i in seq_along(vars)){
-          
-          item <- results$item[[ vars[i] ]]
-          
-          
-          table <- tables[[i]]
-          
-          names<- row.names(item)
-          dims <- colnames(item)
-          
-          #item<- as.data.frame(item)
-          #names<- dimnames(item)[[1]]
-          #dims <- dimnames(item)[[2]]
-          
-          
-          for (dim in dims) {
-            
-            table$addColumn(name = paste0(dim),
-                            type = 'text',
-                            combineBelow=TRUE)
-          }
-          
-          
-          for (name in names) {
-            
-            row <- list()
-            
-            for(j in seq_along(dims)){
-              
-              row[[dims[j]]] <- item[name,j]
-              
-            }
-            
-            table$addRow(rowKey=name, values=row)
-            
-          }
-          
-        }
-        
-      },   
-      
-
-# posterior probability----------
-      
-      .populatePosTable= function(results) {
-        
-        if(!self$options$post)
-          return()
-        
-        post <- results$post
-        
-        options(max.print = 1000000)
-        
-        self$results$text2$setContent(post)
-        
-      },
-      
-      # logistic table----------
-
-      .populateLogTable=function(results){
-
-        if(!self$options$co)
-          return()
-
-        co <- results$co
-
-        self$results$text3$setContent(co)
-
-
-      },
-
-      # Gamma probability---------
-      
-      .populateGamTable=function(results){
-        
-        if(!self$options$gamma)
-          return()
-        
-        gamma <- results$gamma
-        
-        options(max.print = 1000000)
-        
-        self$results$text4$setContent(gamma)
-        
-        
-      },
-      
-      
-      ######## plot#######################
-      .plot1 = function(image, ...) {
-        
-        lca <- image$state
-        
-        if (is.null(lca))
-          return()
+        lca <- private$.computeLCA()
         
         par(mfcol = c(3, 1))
         plot1 <- plot(lca, ask=FALSE)
         
         print(plot1)
-        
         TRUE
-        
       },
   
 # item by class plot-----------
@@ -1022,94 +650,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   
 },
 
-# # GOF for coefficients----------------------
-# 
-# .populateGofTable = function(results) {
-#   
-#   if (!self$options$gof)
-#     return()
-#   
-#   table <- self$results$gof  
-#   
-#   ci.g <- results$ci.g
-#   
-#   if(is.null(ci.g))
-#     return()   
-#   
-#   g<- as.data.frame(ci.g)
-#   
-#   loglik <- g[,1]
-#   aic <- g[,2]
-#   caic <- g[,3]
-#   bic <- g[,4]
-#   entropy <- g[,5]
-#   df <- g[,6]
-#   gsq <- g[,7]
-#   
-#   names <- dimnames(g)[[1]]
-#   
-#   
-#   for (name in names) {
-#     
-#     row <- list()
-#     
-#     row[["loglik"]]   <-  g[name, 1]
-#     row[["aic"]] <-  g[name, 2]
-#     row[["caic"]] <-  g[name, 3]
-#     row[["bic"]] <-  g[name, 4]
-#     row[["entropy"]] <-  g[name, 5]
-#     row[["df"]] <-  g[name, 6]
-#     row[["gsq"]] <-  g[name, 7]
-#     
-#     table$addRow(rowKey=name, values=row)
-#     
-#   }
-#   
-# },
-# 
-
-# Equality of coefficients table--------
-
-# .populateCiTable = function(results) {
-#   
-#   if (!self$options$ci)
-#     return()
-#   
-#   table <- self$results$ci
-#   ci.d <- results$ci.d
-#   
-#   if(is.null(ci.d))
-#     return()
-#   
-#   d<- as.data.frame(ci.d)
-#   
-#   para <- d[,1]
-#   loglik<- d[,2]
-#   df<- d[,3]
-#   dev<- d[,4]
-#   p<- d[,5]
-#   
-#   names <- dimnames(d)[[1]]
-#   
-#   
-#   for (name in names) {
-#     
-#     row <- list()
-#     
-#     row[["para"]] <-  d[name, 1]
-#     row[["loglik"]] <-  d[name, 2]
-#     row[["df"]] <-  d[name, 3]
-#     row[["dev"]] <-  d[name, 4]
-#     row[["p"]] <-d[name, 5]
-#     
-#     table$addRow(rowKey=name, values=row)
-#     
-#   }
-#   
-# },
-
-      ########################################################
-      .cleanData = function() {
+#Private function##########################################################
+        
+.cleanData = function() {
         
         vars <- self$options$vars
         covs <- self$options$covs
@@ -1130,7 +673,227 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         data <- data[!is.na(data[[groupVarName]]), ]
         
         return(data)
-      }
+      },
+
+.computeLCA = function() { 
+  
+  data <- private$.cleanData()
+  
+  vars <- self$options$vars
+  group <- self$options$group
+  covs <- self$options$covs
+  nc <- self$options$nc  
+  nb <- self$options$nb
+  nclust <- self$options$nclust
+  
+  # Constructing formula----------------        
+  
+  vars <- self$options$vars
+  #vars <- colnames(data[, -1] )
+  
+  vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+  vars <- paste0(vars, collapse=',')
+  
+  # formula with no covariates----------     
+  
+  formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+  
+  # With covariates-------------
+  
+  #if( !is.null(self$options$covs) ) {
+  
+  if(length(self$options$covs)>=1){ 
+    covs <- self$options$covs
+    covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+    covs <- paste0(covs, collapse='+')
+    
+    formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+  }
+  
+  group <- data[, 1]
+ 
+  ################### LCA model estimates############################
+  
+  lca = glca::glca(formula=formula,
+                   group= group,
+                   data=data,
+                   nclass = nc, 
+                   ncluster = nclust,
+                   seed = 1)
+  
+  #################################################################
+ 
+  return(lca)
+
+},
+
+.computeCLUST = function() {
+  
+  data <- private$.cleanData()
+  
+  vars <- self$options$vars
+  group <- self$options$group
+  covs <- self$options$covs
+  nc <- self$options$nc  
+  nb <- self$options$nb
+  nclust <- self$options$nclust
+  
+  # Constructing formula----------------        
+  
+  vars <- self$options$vars
+  #vars <- colnames(data[, -1] )
+  
+  vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+  vars <- paste0(vars, collapse=',')
+  
+  # formula with no covariates----------     
+  
+  formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+  
+  # With covariates-------------
+  
+  #if( !is.null(self$options$covs) ) {
+  
+  if(length(self$options$covs)>=1){ 
+    covs <- self$options$covs
+    covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+    covs <- paste0(covs, collapse='+')
+    
+    formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+  }
+  
+  group <- data[, 1]
+  
+  # CLUSTER: Absolute and relative model fit-------
+  
+  args <- list(test = "boot", nboot=nb)
+  
+  for(n in 2:self$options$nclust)
+    
+    args[[n+1]] <- glca::glca(formula = formula,
+                              group=group,
+                              data = data,
+                              nclass = nc,
+                              ncluster = n,
+                              seed = 1)
+  
+  res <- do.call(glca::gofglca, args)
+  
+  gtable1 <- res[["gtable"]] #Absolute model fit
+  
+  if(is.null(res$gtable)) {
+    gtable1 <- NULL
+  } else {
+    gtable1 <- res[["gtable"]]   
+  }
+  
+  
+  if(is.null(res$dtable)) {
+    dtable1 <- NULL
+  } else {
+    dtable1 <- res[["dtable"]]   # Relative model fit
+  }
+  
+  retlist <- list(gtable1=gtable1, dtable1=dtable1)
+  return(retlist)
+
+},
+
+.computeINV = function() {
+  
+  data <- private$.cleanData()
+  
+  vars <- self$options$vars
+  group <- self$options$group
+  covs <- self$options$covs
+  nc <- self$options$nc  
+  nb <- self$options$nb
+  nclust <- self$options$nclust
+  
+  # Constructing formula----------------        
+  
+  vars <- self$options$vars
+  #vars <- colnames(data[, -1] )
+  
+  vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+  vars <- paste0(vars, collapse=',')
+  
+  # formula with no covariates----------     
+  
+  formula <- as.formula(paste0('glca::item(', vars, ')~1'))
+  
+  # With covariates-------------
+  
+  #if( !is.null(self$options$covs) ) {
+  
+  if(length(self$options$covs)>=1){ 
+    covs <- self$options$covs
+    covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+    covs <- paste0(covs, collapse='+')
+    
+    formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+  }
+  
+  group <- data[, 1]
+  
+  #Invariance of equality---       
+
+  if(!is.null(self$options$covs)){
+    
+    lca0 = glca::glca(formula=as.formula(paste0('glca::item(', vars, ')~1')),
+                      group= group,
+                      data=data,
+                      nclass = nc, 
+                      ncluster = nclust,
+                      seed = 1)
+
+    lca = glca::glca(formula=formula,
+                     group= group,
+                     data=data,
+                     nclass = nc, 
+                     ncluster = nclust,
+                     seed = 1)
+    
+    lca2 <- try(glca::glca(formula = formula, 
+                           group = group, 
+                           data = data, 
+                           nclass = nc, 
+                           ncluster = nclust,
+                           coeff.inv = FALSE,
+                           seed= 1)
+    )
+    
+    if(jmvcore::isError(lca2)){
       
+      err_string <- stringr::str_interp(
+        " Error in if (maxdiff < eps) break : Covariates can not be computed."
+      )
+      stop(err_string)
+      
+    } 
+    
+    if (! jmvcore::isError(lca2) ){
+      
+      cf <- glca::gofglca(lca0, lca, lca2, test = "chisq", nboot = nb)
+      
+      # self$results$text$setContent(cf)
+      
+      ci.g <- cf[["gtable"]]
+      ci.d <- cf[["dtable"]]
+      
+    } 
+    
+  }
+  
+  retlist <- list(ci.g=ci.g, ci.d=ci.d)
+  return(retlist)
+  
+}
+
+
+
+
+
+
     )
 )

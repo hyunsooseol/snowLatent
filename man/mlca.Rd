@@ -15,17 +15,13 @@ mlca(
   fit = TRUE,
   comp1 = FALSE,
   rel1 = FALSE,
-  margin = FALSE,
   cla = FALSE,
-  cross = FALSE,
+  cluster = FALSE,
   co = FALSE,
   gof = FALSE,
   ci = FALSE,
   item = FALSE,
-  post = FALSE,
-  gamma = FALSE,
-  member = FALSE,
-  plot1 = FALSE,
+  plot1 = TRUE,
   plot2 = FALSE,
   angle = 0,
   plot3 = FALSE,
@@ -58,11 +54,9 @@ mlca(
 
 \item{rel1}{.}
 
-\item{margin}{.}
-
 \item{cla}{.}
 
-\item{cross}{.}
+\item{cluster}{.}
 
 \item{co}{.}
 
@@ -71,12 +65,6 @@ mlca(
 \item{ci}{.}
 
 \item{item}{.}
-
-\item{post}{.}
-
-\item{gamma}{.}
-
-\item{member}{.}
 
 \item{plot1}{.}
 
@@ -107,19 +95,15 @@ A results object containing:
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
-  \code{results$margin} \tab \tab \tab \tab \tab a table \cr
   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
-  \code{results$cross} \tab \tab \tab \tab \tab a table \cr
   \code{results$gof} \tab \tab \tab \tab \tab a table \cr
   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
-  \code{results$member} \tab \tab \tab \tab \tab a table \cr
-  \code{results$item} \tab \tab \tab \tab \tab an array of tables \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

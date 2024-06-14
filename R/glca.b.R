@@ -130,7 +130,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         test1 <- self$options$test1
         
         lca <- private$.computeLCA()
-       # self$results$text$setContent(lca) 
+        self$results$text$setContent(lca) 
         
         # Model fit
         if(isTRUE(self$options$fit)){

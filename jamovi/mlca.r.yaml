@@ -11,7 +11,7 @@ items:
       visible: True
       
     - name:  text
-      title: Model information
+      title: 'Model information'
       type:  Preformatted
 
     - name: fit
@@ -131,26 +131,26 @@ items:
           type: number
           format: zto,pvalue
 
-    - name: margin
-      title: 'Marginal prevalences for latent clusters'
-      type: Table
-      visible: (margin)
-      refs: glca
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-        - covs
-        - nclust     
-      
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-        - name: value
-          title: 'Probability'   
+    # - name: margin
+    #   title: 'Marginal prevalences for latent clusters'
+    #   type: Table
+    #   visible: (margin)
+    #   refs: glca
+    #   clearWith:
+    #     - vars
+    #     - nc
+    #     - nb
+    #     - group
+    #     - covs
+    #     - nclust     
+    #   
+    #   columns:
+    #     - name: name
+    #       title: ''
+    #       type: 'text'
+    #       content: ($key)
+    #     - name: value
+    #       title: 'Probability'   
 
     - name: cla
       title: 'Marginal prevalences for latent classes'
@@ -173,24 +173,24 @@ items:
         - name: value
           title: 'Probability'     
 
-    - name: cross
-      title: 'Class prevalences by cluster'
-      type: Table
-      refs: glca
-      visible: (cross)
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-        - covs
-        - nclust
-
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
+    # - name: cross
+    #   title: 'Class prevalences by cluster'
+    #   type: Table
+    #   refs: glca
+    #   visible: (cross)
+    #   clearWith:
+    #     - vars
+    #     - nc
+    #     - nb
+    #     - group
+    #     - covs
+    #     - nclust
+    # 
+    #   columns:
+    #     - name: name
+    #       title: ''
+    #       type: 'text'
+    #       content: ($key)
 
     - name: gof
       title: 'Goodness of fit for coefficients'
@@ -267,53 +267,53 @@ items:
           type: number
           format: zto,pvalue
 
-    - name: member
-      title: 'Cluster membership'
-      type: Table
-      refs: glca
-      visible: (member)
-      clearWith:
-        - vars
-        - nc
-        - nb
-        - group
-        - covs
-        - nclust
+    # - name: member
+    #   title: 'Cluster membership'
+    #   type: Table
+    #   refs: glca
+    #   visible: (member)
+    #   clearWith:
+    #     - vars
+    #     - nc
+    #     - nb
+    #     - group
+    #     - covs
+    #     - nclust
+    # 
+    #   columns:
+    #     - name: name
+    #       title: ''
+    #       type: 'text'
+    #       content: ($key)
 
-      columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
-
-    - name: item
-      title: 'Item response probabilities(Rho)'
-      type: Array
-      visible: (item)
-      items: (vars)
-      clearWith:
-            - vars
-            - covs
-            - nc
-            - nb
-            - group
-            - nclust
-      
-      template:
-          title: Probability of $key
-          type: Table
-          clearWith:
-            - vars
-            - covs
-            - nc
-            - nb
-            - group
-            - nclust
-          columns: 
-            - name: name
-              title: ''
-              type: 'text'
-              content: ($key)
+    # - name: item
+    #   title: 'Item response probabilities(Rho)'
+    #   type: Array
+    #   visible: (item)
+    #   items: (vars)
+    #   clearWith:
+    #         - vars
+    #         - covs
+    #         - nc
+    #         - nb
+    #         - group
+    #         - nclust
+    #   
+    #   template:
+    #       title: Probability of $key
+    #       type: Table
+    #       clearWith:
+    #         - vars
+    #         - covs
+    #         - nc
+    #         - nb
+    #         - group
+    #         - nclust
+    #       columns: 
+    #         - name: name
+    #           title: ''
+    #           type: 'text'
+    #           content: ($key)
 
     - name:  plot1
       title: 'Profile plot'
@@ -321,6 +321,7 @@ items:
       renderFun: .plot1
       visible: (plot1)
       refs: glca
+      requiresData: true
       clearWith:
         - vars
         - nc
@@ -365,16 +366,18 @@ items:
         - height2
     
     - name: text3
-      title: Logistic regression
+      title: Logistic regression by cluster
       type:  Preformatted 
 
-    - name: text2
-      title: Class probability
-      type:  Preformatted      
-
     - name: text4
-      title: Cluster probability(Gamma)
-      type:  Preformatted  
+      title: Logistic regression by class
+      type:  Preformatted 
+
+    - name: text5
+      title: Item probability(rho)
+      type:  Preformatted 
+
+ 
 
 ...
 

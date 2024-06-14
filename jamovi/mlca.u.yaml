@@ -69,16 +69,12 @@ children:
               - type: CheckBox
                 name: comp1
               - type: CheckBox
-                name: rel1                
+                name: rel1
           - type: Label
             label: Prevalence
             children:
               - type: CheckBox
-                name: margin
-              - type: CheckBox
                 name: cla
-              - type: CheckBox
-                name: cross
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -88,7 +84,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plots'
+            label: Plots
             children:
               - type: CheckBox
                 name: plot1
@@ -122,7 +118,7 @@ children:
                     format: number
                     enable: (plot2)
               - type: CheckBox
-                name: plot3        
+                name: plot3
                 style: list-inline
                 children:
                   - type: TextBox
@@ -143,16 +139,10 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Probability'
+            label: Probability
             children:
               - type: CheckBox
                 name: item
-              - type: CheckBox
-                name: post
-              - type: CheckBox
-                name: gamma
-              - type: CheckBox
-                name: member 
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -162,14 +152,16 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Invariance of coefficients'
+            label: Invariance of coefficients
             children:
               - type: CheckBox
                 name: gof
               - type: CheckBox
                 name: ci
           - type: Label
-            label: Logistic regression
+            label: 'Logistic regression'
             children:
               - type: CheckBox
-                name: co 
+                name: cluster
+              - type: CheckBox
+                name: co
