@@ -71,12 +71,21 @@ children:
               - type: CheckBox
                 name: rel1
           - type: Label
-            label: Prevalence
+            label: 'Latent class'
             children:
               - type: CheckBox
                 name: cla
               - type: CheckBox
                 name: cross  
+          - type: Label
+            label: 'Latent cluster'
+            children:
+              - type: CheckBox
+                name: mpc
+              - type: CheckBox
+                name: cpc  
+              - type: CheckBox
+                name: cn
       - type: LayoutBox
         stretchFactor: 1
         margin: large

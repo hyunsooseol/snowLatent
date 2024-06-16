@@ -192,6 +192,46 @@ items:
           type: 'text'
           content: ($key)
 
+    - name: mpc
+      title: 'Marginal prevalences for latent clusters'
+      type: Table
+      refs: glca
+      visible: (mpc)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - covs
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: value
+          title: 'Probability'     
+
+    - name: cpc
+      title: 'Class prevalences by clusters'
+      type: Table
+      refs: glca
+      visible: (cpc)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - covs
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+
     - name: gof
       title: 'Goodness of fit for coefficients'
       type: Table
@@ -267,54 +307,6 @@ items:
           type: number
           format: zto,pvalue
 
-    # - name: member
-    #   title: 'Cluster membership'
-    #   type: Table
-    #   refs: glca
-    #   visible: (member)
-    #   clearWith:
-    #     - vars
-    #     - nc
-    #     - nb
-    #     - group
-    #     - covs
-    #     - nclust
-    # 
-    #   columns:
-    #     - name: name
-    #       title: ''
-    #       type: 'text'
-    #       content: ($key)
-
-    # - name: item
-    #   title: 'Item response probabilities(Rho)'
-    #   type: Array
-    #   visible: (item)
-    #   items: (vars)
-    #   clearWith:
-    #         - vars
-    #         - covs
-    #         - nc
-    #         - nb
-    #         - group
-    #         - nclust
-    #   
-    #   template:
-    #       title: Probability of $key
-    #       type: Table
-    #       clearWith:
-    #         - vars
-    #         - covs
-    #         - nc
-    #         - nb
-    #         - group
-    #         - nclust
-    #       columns: 
-    #         - name: name
-    #           title: ''
-    #           type: 'text'
-    #           content: ($key)
-
     - name:  plot1
       title: 'Profile plot'
       type:  Image
@@ -377,7 +369,9 @@ items:
       title: Item probability(rho)
       type:  Preformatted 
 
- 
+    - name: text6
+      title: Cluster number
+      type:  Preformatted  
 
 ...
 

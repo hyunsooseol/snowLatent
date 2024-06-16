@@ -67,18 +67,28 @@ options:
       type: Bool
       default: FALSE
 
-    # - name: margin 
-    #   title: Prevalences for latent clusters(Delta) 
-    #   type: Bool 
-    #   default: FALSE    
-
     - name: cla
-      title: Prevalences for latent classes
+      title: Marginal prevalences for latent classes
       type: Bool 
       default: FALSE    
 
     - name: cross
-      title: Class prevalences by group
+      title: Class prevalences by group(levels=2)
+      type: Bool
+      default: FALSE
+
+    - name: mpc
+      title: 'Marginal prevalences for latent clusters'
+      type: Bool 
+      default: FALSE 
+
+    - name: cpc
+      title: 'Class prevalences by clusters'
+      type: Bool
+      default: FALSE
+
+    - name: cn
+      title: 'Cluster number'
       type: Bool
       default: FALSE
 

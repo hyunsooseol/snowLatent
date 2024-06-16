@@ -299,24 +299,20 @@ if(isTRUE(self$options$cla)){
             }
             
           }
-          
-# Class prevalences by cluster----------------------
-# lca[["posterior"]][["wclass"]]) is NULL !!!
 
 # Class prevalences by group
 #prev = as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
 
-          if(isTRUE(self$options$cross)){
+if(isTRUE(self$options$cross)){
 
             table <- self$results$cross
 
-            if(is.null(as.matrix(do.call(rbind, lapply(lca$posterior, colMeans))))                    ) {
-              cross <- NULL
-            } else {
-              cross <- as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
- 
-            }
-
+            cross <- tryCatch({
+              as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
+            }, error = function(e) {
+              NULL
+            })
+            
             names<- dimnames(cross)[[1]]
             dims <- dimnames(cross)[[2]]
 
@@ -332,6 +328,60 @@ if(isTRUE(self$options$cla)){
               table$addRow(rowKey=name, values=row)
             }
           }
+
+
+# Marginal prevalences for latent clusters
+
+if(isTRUE(self$options$mpc)){
+  
+  table <- self$results$mpc
+  
+  mpc <- tryCatch({
+    colMeans(lca$posterior$cluster)
+  }, error = function(e) {
+    NULL
+  })
+  
+  mpc <- as.data.frame(mpc)
+  names<- dimnames(mpc)[[1]]
+  
+  for (name in names) {
+    row <- list()
+    row[['value']] <- mpc[name,1]
+    table$addRow(rowKey=name, values=row)
+ 
+}
+
+
+# Class prevalences by cluster---
+
+if(isTRUE(self$options$cpc)){
+  
+  table <- self$results$cpc
+ 
+  cross <- tryCatch({
+    as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
+  }, error = function(e) {
+    NULL
+  })
+  
+  names<- dimnames(cross)[[1]]
+  dims <- dimnames(cross)[[2]]
+  
+  for (dim in dims) {
+    table$addColumn(name = paste0(dim),
+                    type = 'character')
+  }
+  for (name in names) {
+    row <- list()
+    for(j in seq_along(dims)){
+      row[[dims[j]]] <- cross[name,j]
+    }
+    table$addRow(rowKey=name, values=row)
+  }
+}
+
+
 
                     
 # Elbow plot------------------------------
@@ -567,11 +617,63 @@ if(isTRUE(self$options$ci)){
 
  #       }
  
- 
+
+        }
       
-        },
-      
-      
+  
+# Class prevalences for latent clusters
+# lca$posterior$wclass
+
+if(isTRUE(self$options$cpc)){
+  
+  table <- self$results$cpc
+  
+  cpc <- tryCatch({
+     lca$posterior$wclass
+  }, error = function(e) {
+    NULL
+  })
+  
+  names<- dimnames(cpc)[[1]]
+  dims <- dimnames(cpc)[[2]]
+  
+  for (dim in dims) {
+    table$addColumn(name = paste0(dim),
+                    type = 'character')
+  }
+  for (name in names) {
+    row <- list()
+    for(j in seq_along(dims)){
+      row[[dims[j]]] <- cpc[name,j]
+    }
+    table$addRow(rowKey=name, values=row)
+  }
+  
+}
+
+# Cluster number---
+
+if(isTRUE(self$options$cn)){
+  
+  # data<- lca[["posterior"]][["cluster"]]
+  # data$cluster<- factor(apply(data, 1, which.max))
+  
+  cn <- tryCatch({
+    dat<- lca[["posterior"]][["cluster"]]
+    dat$cluster<- factor(apply(dat, 1, which.max))
+    cn <- dat
+  }, error = function(e) {
+    NULL
+  })
+  
+  self$results$text6$setContent(cn) 
+}
+
+
+},
+
+
+
 #Plot#######################
 
 .plot1 = function(image, ...) {

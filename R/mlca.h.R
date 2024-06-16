@@ -17,6 +17,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rel1 = FALSE,
             cla = FALSE,
             cross = FALSE,
+            mpc = FALSE,
+            cpc = FALSE,
+            cn = FALSE,
             cluster = FALSE,
             co = FALSE,
             gof = FALSE,
@@ -94,6 +97,18 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cross",
                 cross,
                 default=FALSE)
+            private$..mpc <- jmvcore::OptionBool$new(
+                "mpc",
+                mpc,
+                default=FALSE)
+            private$..cpc <- jmvcore::OptionBool$new(
+                "cpc",
+                cpc,
+                default=FALSE)
+            private$..cn <- jmvcore::OptionBool$new(
+                "cn",
+                cn,
+                default=FALSE)
             private$..cluster <- jmvcore::OptionBool$new(
                 "cluster",
                 cluster,
@@ -168,6 +183,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..rel1)
             self$.addOption(private$..cla)
             self$.addOption(private$..cross)
+            self$.addOption(private$..mpc)
+            self$.addOption(private$..cpc)
+            self$.addOption(private$..cn)
             self$.addOption(private$..cluster)
             self$.addOption(private$..co)
             self$.addOption(private$..gof)
@@ -196,6 +214,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rel1 = function() private$..rel1$value,
         cla = function() private$..cla$value,
         cross = function() private$..cross$value,
+        mpc = function() private$..mpc$value,
+        cpc = function() private$..cpc$value,
+        cn = function() private$..cn$value,
         cluster = function() private$..cluster$value,
         co = function() private$..co$value,
         gof = function() private$..gof$value,
@@ -223,6 +244,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..rel1 = NA,
         ..cla = NA,
         ..cross = NA,
+        ..mpc = NA,
+        ..cpc = NA,
+        ..cn = NA,
         ..cluster = NA,
         ..co = NA,
         ..gof = NA,
@@ -251,6 +275,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rel1 = function() private$.items[["rel1"]],
         cla = function() private$.items[["cla"]],
         cross = function() private$.items[["cross"]],
+        mpc = function() private$.items[["mpc"]],
+        cpc = function() private$.items[["cpc"]],
         gof = function() private$.items[["gof"]],
         ci = function() private$.items[["ci"]],
         plot1 = function() private$.items[["plot1"]],
@@ -258,7 +284,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot3 = function() private$.items[["plot3"]],
         text3 = function() private$.items[["text3"]],
         text4 = function() private$.items[["text4"]],
-        text5 = function() private$.items[["text5"]]),
+        text5 = function() private$.items[["text5"]],
+        text6 = function() private$.items[["text6"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -456,6 +483,47 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `content`="($key)"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="mpc",
+                title="Marginal prevalences for latent clusters",
+                refs="glca",
+                visible="(mpc)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "covs",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="value", 
+                        `title`="Probability"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="cpc",
+                title="Class prevalences by clusters",
+                refs="glca",
+                visible="(cpc)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "covs",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="gof",
                 title="Goodness of fit for coefficients",
                 visible="(gof)",
@@ -602,7 +670,11 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text5",
-                title="Item probability(rho)"))}))
+                title="Item probability(rho)"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text6",
+                title="Cluster number"))}))
 
 mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mlcaBase",
@@ -640,6 +712,9 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param rel1 .
 #' @param cla .
 #' @param cross .
+#' @param mpc .
+#' @param cpc .
+#' @param cn .
 #' @param cluster .
 #' @param co .
 #' @param gof .
@@ -665,6 +740,8 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$mpc} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cpc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$gof} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -673,6 +750,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text6} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -695,6 +773,9 @@ mlca <- function(
     rel1 = FALSE,
     cla = FALSE,
     cross = FALSE,
+    mpc = FALSE,
+    cpc = FALSE,
+    cn = FALSE,
     cluster = FALSE,
     co = FALSE,
     gof = FALSE,
@@ -738,6 +819,9 @@ mlca <- function(
         rel1 = rel1,
         cla = cla,
         cross = cross,
+        mpc = mpc,
+        cpc = cpc,
+        cn = cn,
         cluster = cluster,
         co = co,
         gof = gof,
