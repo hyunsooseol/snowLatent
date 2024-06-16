@@ -220,11 +220,11 @@ if(isTRUE(self$options$comp1)){
 
 if(isTRUE(self$options$rel1)){            
            
-       if (is.null(dtable1)) return()
-  
             table <- self$results$rel1
-
             dtable1 <- clu$dtable1
+            
+            if (is.null(dtable1)) return()
+            
             dtable1<- as.data.frame(dtable1)
             #define new column to add
             new <- c(2:self$options$nclust)
