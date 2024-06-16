@@ -104,6 +104,7 @@ A results object containing:
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cn} \tab \tab \tab \tab \tab a table \cr
   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
   \code{results$mpc} \tab \tab \tab \tab \tab a table \cr

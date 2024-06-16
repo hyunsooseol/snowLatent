@@ -507,19 +507,40 @@ if(isTRUE(self$options$cpc)){
 
 if(isTRUE(self$options$cn)){
   
-  # data<- lca[["posterior"]][["cluster"]]
-  # data$cluster<- factor(apply(data, 1, which.max))
+  # # data<- lca[["posterior"]][["cluster"]]
+  # # data$cluster<- factor(apply(data, 1, which.max))
+  # 
+  # cn <- tryCatch({
+  #   dat<- lca[["posterior"]][["cluster"]]
+  #   dat$Membership<- factor(apply(dat, 1, which.max))
+  #   cn <- dat
+  # }, error = function(e) {
+  #   NULL
+  # })
+  # 
+  # self$results$text6$setContent(cn) 
+
+      member<- lca[["posterior"]][["cluster"]]
+      m<- as.data.frame(member)
+      m$Membership <- as.numeric(factor(apply(m, 1, which.max)))
+   
+   table <- self$results$cn
+   names<- dimnames(m)[[1]]
+   dims <- dimnames(m)[[2]]
+    
+   for (dim in dims) {
+      table$addColumn(name = paste0(dim),
+                      type = 'number')
+    }
+    for (name in names) {
+      row <- list()
+      for(j in seq_along(dims)){
+        row[[dims[j]]] <- m[name,j]
+      }
+    table$addRow(rowKey=name, values=row)
+            }
   
-  cn <- tryCatch({
-    dat<- lca[["posterior"]][["cluster"]]
-    dat$Membership<- factor(apply(dat, 1, which.max))
-    cn <- dat
-  }, error = function(e) {
-    NULL
-  })
-  
-  self$results$text6$setContent(cn) 
-}
+  }
 
 
 # Item by class plot---------

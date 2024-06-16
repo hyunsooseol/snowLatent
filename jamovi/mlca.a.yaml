@@ -92,11 +92,6 @@ options:
       type: Bool
       default: FALSE
 
-    # - name: cluster
-    #   title: 'Cluster'
-    #   type: Bool 
-    #   default: FALSE
-
     - name: co
       title: 'Coefficients'
       type: Bool 

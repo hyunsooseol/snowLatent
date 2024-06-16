@@ -131,26 +131,24 @@ items:
           type: number
           format: zto,pvalue
 
-    # - name: margin
-    #   title: 'Marginal prevalences for latent clusters'
-    #   type: Table
-    #   visible: (margin)
-    #   refs: glca
-    #   clearWith:
-    #     - vars
-    #     - nc
-    #     - nb
-    #     - group
-    #     - covs
-    #     - nclust     
-    #   
-    #   columns:
-    #     - name: name
-    #       title: ''
-    #       type: 'text'
-    #       content: ($key)
-    #     - name: value
-    #       title: 'Probability'   
+    - name: cn
+      title: 'Cluster membership'
+      type: Table
+      visible: (cn)
+      refs: glca
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - covs
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
 
     - name: cla
       title: 'Marginal prevalences for latent classes'
@@ -358,20 +356,12 @@ items:
         - height2
     
     - name: text3
-      title: Logistic regression by cluster
+      title: Logistic regression
       type:  Preformatted 
-
-    # - name: text4
-    #   title: Logistic regression by class
-    #   type:  Preformatted 
 
     - name: text5
       title: Item probability(rho)
       type:  Preformatted 
-
-    - name: text6
-      title: Cluster number
-      type:  Preformatted  
 
 ...
 

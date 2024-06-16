@@ -265,6 +265,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         comp1 = function() private$.items[["comp1"]],
         rel1 = function() private$.items[["rel1"]],
+        cn = function() private$.items[["cn"]],
         cla = function() private$.items[["cla"]],
         cross = function() private$.items[["cross"]],
         mpc = function() private$.items[["mpc"]],
@@ -275,8 +276,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
         text3 = function() private$.items[["text3"]],
-        text5 = function() private$.items[["text5"]],
-        text6 = function() private$.items[["text6"]]),
+        text5 = function() private$.items[["text5"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -431,6 +431,25 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="cn",
+                title="Cluster membership",
+                visible="(cn)",
+                refs="glca",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "covs",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cla",
@@ -653,15 +672,11 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
-                title="Logistic regression by cluster"))
+                title="Logistic regression"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text5",
-                title="Item probability(rho)"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text6",
-                title="Cluster number"))}))
+                title="Item probability(rho)"))}))
 
 mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mlcaBase",
@@ -724,6 +739,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cn} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$mpc} \tab \tab \tab \tab \tab a table \cr
@@ -735,7 +751,6 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text6} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
