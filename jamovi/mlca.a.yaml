@@ -73,7 +73,7 @@ options:
       default: FALSE    
 
     - name: cross
-      title: Class prevalences by group(levels=2)
+      title: Class prevalences by group
       type: Bool
       default: FALSE
 
