@@ -173,6 +173,4 @@ children:
             label: 'Logistic regression'
             children:
               - type: CheckBox
-                name: cluster
-              - type: CheckBox
                 name: co

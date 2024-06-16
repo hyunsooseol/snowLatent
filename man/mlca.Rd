@@ -20,7 +20,6 @@ mlca(
   mpc = FALSE,
   cpc = FALSE,
   cn = FALSE,
-  cluster = FALSE,
   co = FALSE,
   gof = FALSE,
   ci = FALSE,
@@ -67,8 +66,6 @@ mlca(
 \item{cpc}{.}
 
 \item{cn}{.}
-
-\item{cluster}{.}
 
 \item{co}{.}
 
@@ -117,7 +114,6 @@ A results object containing:
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text6} \tab \tab \tab \tab \tab a preformatted \cr
 }

@@ -20,7 +20,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             mpc = FALSE,
             cpc = FALSE,
             cn = FALSE,
-            cluster = FALSE,
             co = FALSE,
             gof = FALSE,
             ci = FALSE,
@@ -109,10 +108,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cn",
                 cn,
                 default=FALSE)
-            private$..cluster <- jmvcore::OptionBool$new(
-                "cluster",
-                cluster,
-                default=FALSE)
             private$..co <- jmvcore::OptionBool$new(
                 "co",
                 co,
@@ -186,7 +181,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..mpc)
             self$.addOption(private$..cpc)
             self$.addOption(private$..cn)
-            self$.addOption(private$..cluster)
             self$.addOption(private$..co)
             self$.addOption(private$..gof)
             self$.addOption(private$..ci)
@@ -217,7 +211,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         mpc = function() private$..mpc$value,
         cpc = function() private$..cpc$value,
         cn = function() private$..cn$value,
-        cluster = function() private$..cluster$value,
         co = function() private$..co$value,
         gof = function() private$..gof$value,
         ci = function() private$..ci$value,
@@ -247,7 +240,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..mpc = NA,
         ..cpc = NA,
         ..cn = NA,
-        ..cluster = NA,
         ..co = NA,
         ..gof = NA,
         ..ci = NA,
@@ -283,7 +275,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
         text3 = function() private$.items[["text3"]],
-        text4 = function() private$.items[["text4"]],
         text5 = function() private$.items[["text5"]],
         text6 = function() private$.items[["text6"]]),
     private = list(),
@@ -665,10 +656,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Logistic regression by cluster"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
-                name="text4",
-                title="Logistic regression by class"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
                 name="text5",
                 title="Item probability(rho)"))
             self$add(jmvcore::Preformatted$new(
@@ -715,7 +702,6 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param mpc .
 #' @param cpc .
 #' @param cn .
-#' @param cluster .
 #' @param co .
 #' @param gof .
 #' @param ci .
@@ -748,7 +734,6 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text6} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
@@ -776,7 +761,6 @@ mlca <- function(
     mpc = FALSE,
     cpc = FALSE,
     cn = FALSE,
-    cluster = FALSE,
     co = FALSE,
     gof = FALSE,
     ci = FALSE,
@@ -822,7 +806,6 @@ mlca <- function(
         mpc = mpc,
         cpc = cpc,
         cn = cn,
-        cluster = cluster,
         co = co,
         gof = gof,
         ci = ci,

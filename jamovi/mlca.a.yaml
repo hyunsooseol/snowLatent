@@ -88,17 +88,17 @@ options:
       default: FALSE
 
     - name: cn
-      title: 'Cluster number'
+      title: 'Cluster membership'
       type: Bool
       default: FALSE
 
-    - name: cluster
-      title: 'Cluster'
-      type: Bool 
-      default: FALSE
+    # - name: cluster
+    #   title: 'Cluster'
+    #   type: Bool 
+    #   default: FALSE
 
     - name: co
-      title: 'Cluster by class'
+      title: 'Coefficients'
       type: Bool 
       default: FALSE  
 
@@ -116,21 +116,6 @@ options:
       title: Item probability(Rho)
       type: Bool 
       default: FALSE
-
-    # - name: post
-    #   title: Class probability
-    #   type: Bool 
-    #   default: FALSE 
-
-    # - name: gamma
-    #   title: Cluster probability(Gamma)
-    #   type: Bool 
-    #   default: FALSE 
-
-    # - name: member
-    #   title: Cluster membership
-    #   type: Bool 
-    #   default: FALSE
 
     - name: plot1 
       title: Profile plot

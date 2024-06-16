@@ -361,9 +361,9 @@ items:
       title: Logistic regression by cluster
       type:  Preformatted 
 
-    - name: text4
-      title: Logistic regression by class
-      type:  Preformatted 
+    # - name: text4
+    #   title: Logistic regression by class
+    #   type:  Preformatted 
 
     - name: text5
       title: Item probability(rho)

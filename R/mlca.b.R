@@ -32,9 +32,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
-            <p>2. When group and cluster(>1) are given, the multilevel latent class models will be fitted.</p>
-            <p>3. The result table does not printed if the results from glca R package are not available.</p>
-            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>2. The result table does not printed if the results from glca R package are not available.</p>
+            <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -134,10 +133,12 @@ if(isTRUE(self$options$item)){
 }
  
  # logistic table----------
-if(isTRUE(self$options$cluster)){
-      beta <- lca$param$beta
-      self$results$text4$setContent(beta)
-          }      
+
+# if(isTRUE(self$options$cluster)){
+#       beta <- lca$param$beta
+#       self$results$text4$setContent(beta)
+# }  
+
 if(isTRUE(self$options$co)){
     co <- lca$coefficient
     self$results$text3$setContent(co)
@@ -182,7 +183,7 @@ clu <- private$.computeCLUST()
 
 # Absolute model fit for cluster
         
-          if(isTRUE(self$options$comp1)){
+if(isTRUE(self$options$comp1)){
             
             table <- self$results$comp1
             gtable1 <- clu$gtable1
@@ -215,15 +216,15 @@ clu <- private$.computeCLUST()
         }
           
 #Relative model fit for cluster     
-            
-          if(isTRUE(self$options$rel1)){            
+# If Number of clusters are less than 3, the checkbox should be unchecked !!!
+
+if(isTRUE(self$options$rel1)){            
            
+       if (is.null(dtable1)) return()
+  
             table <- self$results$rel1
+
             dtable1 <- clu$dtable1
-            
-            if (is.null(dtable1))
-              return()
-            
             dtable1<- as.data.frame(dtable1)
             #define new column to add
             new <- c(2:self$options$nclust)
@@ -244,40 +245,9 @@ clu <- private$.computeCLUST()
               
               table$addRow(rowKey=name, values=row)
              }
-            
-          
-          
-          
-          
-          
-           
-          
+ 
             }
 
-# Marginal prevalences for latent cluster---------
-# delta is NULL !!!
-                    
-          # if(isTRUE(self$options$margin)){
-          #   
-          #   table <- self$results$margin
-          #  
-          #   mar <- lca[["param"]][["delta"]]
-          #   mar<- as.data.frame(mar)
-          #   
-          #   #self$results$text$setContent(clust)
-          #   
-          #   names<- dimnames(mar)[[1]]
-          #   
-          #   for (name in names) {
-          #     row <- list()
-          #     row[['value']] <- mar[name,1]
-          #     table$addRow(rowKey=name, values=row)
-          #     
-          #   }
-          # }               
-          
-          
-          
 # Marginal prevalences for latent classes----------
           
 if(isTRUE(self$options$cla)){
@@ -308,6 +278,7 @@ if(isTRUE(self$options$cla)){
           }
 
 # Class prevalences by group
+
 # Only group = SCH_LEV can be applied !!!
 #prev = as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
 
@@ -359,7 +330,7 @@ if(isTRUE(self$options$mpc)){
     table$addRow(rowKey=name, values=row)
  
 }
-
+}
 
 # Class prevalences by cluster---
 
@@ -390,11 +361,9 @@ if(isTRUE(self$options$cpc)){
 }
 
 
-
-                    
 # Elbow plot------------------------------
         
-        if(self$options$nclust>2){
+ if(self$options$nclust>2){
           
           # Elbow plot-------------
           
@@ -471,10 +440,8 @@ if(isTRUE(self$options$gof)){
         }
                  
 #Testing equality of coefficients-------------
- 
-if(isTRUE(self$options$ci)){
-               
-        if(!is.null(self$options$covs)&&isTRUE(self$options$ci)){
+
+if(!is.null(self$options$covs)&&isTRUE(self$options$ci)){
   
             table <- self$results$ci
             
@@ -505,130 +472,7 @@ if(isTRUE(self$options$ci)){
         
           }
         
-        } 
-        
-################################################################
-# Marginal prevalences for latent cluster------
-        
-        #clust <- lca[["param"]][["delta"]]
-        #clust<- as.data.frame(clust)
-        
-        # Marginal prevalences for latent classes ----------
-        # cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-        # cla<- as.data.frame(cla)
 
-        # if( is.null(lca[["posterior"]][["class"]]) ) {
-        #   cla <- colMeans(do.call(rbind, lca[["posterior"]]))
-        # } else {
-        #   cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-        # }
-        # 
-        # cla <- as.data.frame(cla)
-
-        # Class prevalences by cluster-----------
-        #cross<- lca[["posterior"]][["wclass"]]
-        # 
-        # if( is.null(lca[["posterior"]][["wclass"]]) ) {
-        #   cross <- NULL 
-        # } else {
-        #   cross <- lca[["posterior"]][["wclass"]]
-        # }
-        # 
-        # item response probability---------
-        
-        #item<- lca[["param"]][["rho"]]
-        
-        #item<- do.call("rbind", lapply(item, as.data.frame))
-        
-        
-        # posterior probability---------
-        
-        #post <-lca[["posterior"]][["class"]]
-        
- 
-        # logistic regression coef.--------
-        
-      #  co <- lca[["coefficient"]]
-
-        # cluster prob.(gamma)----------
-        
-        #gamma <- lca[["param"]][["gamma"]]
-        
-        # Class Prevalences plot----------
-        # image <- self$results$plot1
-        # image$setState(lca)
-
-        # Item by class plot---------
-        
-        image2 <- self$results$plot2
-        ic<- lca[["param"]][["rho"]]
-        ic <- reshape2::melt(ic) 
-        colnames(ic) <-c("Class", "Level", "value", "L1") 
-        image2$setState(ic)
- 
- 
-      # # cluster membership-----------
-      # 
-      #   if(isTRUE(self$options$member)){
-      #   
-      #     member<- lca[["posterior"]][["cluster"]]
-      #     m<- as.data.frame(member)
-      #     m$Membership <- as.numeric(factor(apply(m, 1, which.max)))
-      #   
-      #   table <- self$results$member
-      #   names<- dimnames(m)[[1]]
-      #   dims <- dimnames(m)[[2]]
-      #   
-      #   for (dim in dims) {
-      #     table$addColumn(name = paste0(dim),
-      #                     type = 'number')
-      #   }
-      #   for (name in names) {
-      #     row <- list()
-      #     for(j in seq_along(dims)){
-      #       row[[dims[j]]] <- m[name,j]
-      #     }
-      #   table$addRow(rowKey=name, values=row)
-      #           }
-      #         }
-       
-      # item probabilities----------
-      
-       # if(isTRUE(self$options$item)){
-        
-       
-       
-        # tables <- self$results$item
-        # vars <- self$options$vars
-        # 
-        # for(i in seq_along(vars)){
-        #      
-        #          item <- item[[ vars[i] ]]
-        #       
-        #          table <- tables[[i]]
-        #           names<- row.names(item)
-        #           dims <- colnames(item)
-        # 
-        #   for (dim in dims) {
-        #          table$addColumn(name = paste0(dim),
-        #                     type = 'text',
-        #                     combineBelow=TRUE)
-        #   }
-        #       for (name in names) {
-        #          row <- list()
-        #          for(j in seq_along(dims)){
-        #            row[[dims[j]]] <- item[name,j]
-        #          }
-        #          table$addRow(rowKey=name, values=row)
-        #        }
-        #      }
-
- #       }
- 
-
-        }
-      
-  
 # Class prevalences for latent clusters
 # lca$posterior$wclass
 
@@ -668,7 +512,7 @@ if(isTRUE(self$options$cn)){
   
   cn <- tryCatch({
     dat<- lca[["posterior"]][["cluster"]]
-    dat$cluster<- factor(apply(dat, 1, which.max))
+    dat$Membership<- factor(apply(dat, 1, which.max))
     cn <- dat
   }, error = function(e) {
     NULL
@@ -678,8 +522,19 @@ if(isTRUE(self$options$cn)){
 }
 
 
-},
+# Item by class plot---------
 
+if(isTRUE(self$options$plot2)){
+
+image2 <- self$results$plot2
+ic<- lca[["param"]][["rho"]]
+ic <- reshape2::melt(ic) 
+colnames(ic) <-c("Class", "Level", "value", "L1") 
+image2$setState(ic)
+}
+
+  
+},
 
 
 #Plot#######################
@@ -1005,8 +860,115 @@ if(isTRUE(self$options$cn)){
 }
 
 
+################################################################
+# Marginal prevalences for latent cluster------
+
+#clust <- lca[["param"]][["delta"]]
+#clust<- as.data.frame(clust)
+
+# Marginal prevalences for latent classes ----------
+# cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+# cla<- as.data.frame(cla)
+
+# if( is.null(lca[["posterior"]][["class"]]) ) {
+#   cla <- colMeans(do.call(rbind, lca[["posterior"]]))
+# } else {
+#   cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+# }
+# 
+# cla <- as.data.frame(cla)
+
+# Class prevalences by cluster-----------
+#cross<- lca[["posterior"]][["wclass"]]
+# 
+# if( is.null(lca[["posterior"]][["wclass"]]) ) {
+#   cross <- NULL 
+# } else {
+#   cross <- lca[["posterior"]][["wclass"]]
+# }
+# 
+# item response probability---------
+
+#item<- lca[["param"]][["rho"]]
+
+#item<- do.call("rbind", lapply(item, as.data.frame))
 
 
+# posterior probability---------
+
+#post <-lca[["posterior"]][["class"]]
+
+
+# logistic regression coef.--------
+
+#  co <- lca[["coefficient"]]
+
+# cluster prob.(gamma)----------
+
+#gamma <- lca[["param"]][["gamma"]]
+
+# Class Prevalences plot----------
+# image <- self$results$plot1
+# image$setState(lca)
+
+
+# # cluster membership-----------
+# 
+#   if(isTRUE(self$options$member)){
+#   
+#     member<- lca[["posterior"]][["cluster"]]
+#     m<- as.data.frame(member)
+#     m$Membership <- as.numeric(factor(apply(m, 1, which.max)))
+#   
+#   table <- self$results$member
+#   names<- dimnames(m)[[1]]
+#   dims <- dimnames(m)[[2]]
+#   
+#   for (dim in dims) {
+#     table$addColumn(name = paste0(dim),
+#                     type = 'number')
+#   }
+#   for (name in names) {
+#     row <- list()
+#     for(j in seq_along(dims)){
+#       row[[dims[j]]] <- m[name,j]
+#     }
+#   table$addRow(rowKey=name, values=row)
+#           }
+#         }
+
+# item probabilities----------
+
+# if(isTRUE(self$options$item)){
+
+
+
+# tables <- self$results$item
+# vars <- self$options$vars
+# 
+# for(i in seq_along(vars)){
+#      
+#          item <- item[[ vars[i] ]]
+#       
+#          table <- tables[[i]]
+#           names<- row.names(item)
+#           dims <- colnames(item)
+# 
+#   for (dim in dims) {
+#          table$addColumn(name = paste0(dim),
+#                     type = 'text',
+#                     combineBelow=TRUE)
+#   }
+#       for (name in names) {
+#          row <- list()
+#          for(j in seq_along(dims)){
+#            row[[dims[j]]] <- item[name,j]
+#          }
+#          table$addRow(rowKey=name, values=row)
+#        }
+#      }
+
+#       }
 
 
     )
