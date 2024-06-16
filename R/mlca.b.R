@@ -284,11 +284,17 @@ if(isTRUE(self$options$cla)){
             
             table <- self$results$cla
             
-            if( is.null(lca[["posterior"]][["class"]]) ) {
-              cla <- colMeans(do.call(rbind, lca[["posterior"]]))
-            } else {
-              cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-            }
+            # if( is.null(lca[["posterior"]][["class"]]) ) {
+            #   cla <- colMeans(do.call(rbind, lca[["posterior"]]))
+            # } else {
+            #   cla <- colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+            # }
+            
+            cla <- tryCatch({
+              colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
+            }, error = function(e) {
+              NULL
+            })
             
             cla <- as.data.frame(cla)
             names<- dimnames(cla)[[1]]
@@ -302,6 +308,7 @@ if(isTRUE(self$options$cla)){
           }
 
 # Class prevalences by group
+# Only group = SCH_LEV can be applied !!!
 #prev = as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
 
 if(isTRUE(self$options$cross)){
