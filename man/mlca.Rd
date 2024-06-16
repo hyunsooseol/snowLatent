@@ -16,6 +16,10 @@ mlca(
   comp1 = FALSE,
   rel1 = FALSE,
   cla = FALSE,
+  cross = FALSE,
+  mpc = FALSE,
+  cpc = FALSE,
+  cn = FALSE,
   cluster = FALSE,
   co = FALSE,
   gof = FALSE,
@@ -55,6 +59,14 @@ mlca(
 \item{rel1}{.}
 
 \item{cla}{.}
+
+\item{cross}{.}
+
+\item{mpc}{.}
+
+\item{cpc}{.}
+
+\item{cn}{.}
 
 \item{cluster}{.}
 
@@ -96,6 +108,9 @@ A results object containing:
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cross} \tab \tab \tab \tab \tab a table \cr
+  \code{results$mpc} \tab \tab \tab \tab \tab a table \cr
+  \code{results$cpc} \tab \tab \tab \tab \tab a table \cr
   \code{results$gof} \tab \tab \tab \tab \tab a table \cr
   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -104,6 +119,7 @@ A results object containing:
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text6} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
