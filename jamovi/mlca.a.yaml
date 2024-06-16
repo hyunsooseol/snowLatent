@@ -77,10 +77,10 @@ options:
       type: Bool 
       default: FALSE    
 
-    # - name: cross
-    #   title: Class prevalences by cluster
-    #   type: Bool 
-    #   default: FALSE
+    - name: cross
+      title: Class prevalences by group
+      type: Bool
+      default: FALSE
 
     - name: cluster
       title: 'Cluster'

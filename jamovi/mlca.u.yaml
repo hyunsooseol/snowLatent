@@ -75,6 +75,8 @@ children:
             children:
               - type: CheckBox
                 name: cla
+              - type: CheckBox
+                name: cross  
       - type: LayoutBox
         stretchFactor: 1
         margin: large

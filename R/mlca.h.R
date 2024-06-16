@@ -16,6 +16,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             comp1 = FALSE,
             rel1 = FALSE,
             cla = FALSE,
+            cross = FALSE,
             cluster = FALSE,
             co = FALSE,
             gof = FALSE,
@@ -88,6 +89,10 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..cla <- jmvcore::OptionBool$new(
                 "cla",
                 cla,
+                default=FALSE)
+            private$..cross <- jmvcore::OptionBool$new(
+                "cross",
+                cross,
                 default=FALSE)
             private$..cluster <- jmvcore::OptionBool$new(
                 "cluster",
@@ -162,6 +167,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..comp1)
             self$.addOption(private$..rel1)
             self$.addOption(private$..cla)
+            self$.addOption(private$..cross)
             self$.addOption(private$..cluster)
             self$.addOption(private$..co)
             self$.addOption(private$..gof)
@@ -189,6 +195,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp1 = function() private$..comp1$value,
         rel1 = function() private$..rel1$value,
         cla = function() private$..cla$value,
+        cross = function() private$..cross$value,
         cluster = function() private$..cluster$value,
         co = function() private$..co$value,
         gof = function() private$..gof$value,
@@ -215,6 +222,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..comp1 = NA,
         ..rel1 = NA,
         ..cla = NA,
+        ..cross = NA,
         ..cluster = NA,
         ..co = NA,
         ..gof = NA,
@@ -242,6 +250,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         comp1 = function() private$.items[["comp1"]],
         rel1 = function() private$.items[["rel1"]],
         cla = function() private$.items[["cla"]],
+        cross = function() private$.items[["cross"]],
         gof = function() private$.items[["gof"]],
         ci = function() private$.items[["ci"]],
         plot1 = function() private$.items[["plot1"]],
@@ -428,6 +437,25 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Probability"))))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="cross",
+                title="Class prevalences by group",
+                refs="glca",
+                visible="(cross)",
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "nb",
+                    "group",
+                    "covs",
+                    "nclust"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="gof",
                 title="Goodness of fit for coefficients",
                 visible="(gof)",
@@ -611,6 +639,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param comp1 .
 #' @param rel1 .
 #' @param cla .
+#' @param cross .
 #' @param cluster .
 #' @param co .
 #' @param gof .
@@ -635,6 +664,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$rel1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$cla} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$cross} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$gof} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$ci} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
@@ -664,6 +694,7 @@ mlca <- function(
     comp1 = FALSE,
     rel1 = FALSE,
     cla = FALSE,
+    cross = FALSE,
     cluster = FALSE,
     co = FALSE,
     gof = FALSE,
@@ -706,6 +737,7 @@ mlca <- function(
         comp1 = comp1,
         rel1 = rel1,
         cla = cla,
+        cross = cross,
         cluster = cluster,
         co = co,
         gof = gof,

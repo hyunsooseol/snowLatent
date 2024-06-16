@@ -302,33 +302,37 @@ if(isTRUE(self$options$cla)){
           
 # Class prevalences by cluster----------------------
 # lca[["posterior"]][["wclass"]]) is NULL !!!
-          
-          # if(isTRUE(self$options$cross)){
-          #   
-          #   table <- self$results$cross
-          #   
-          #   if( is.null(lca[["posterior"]][["wclass"]]) ) {
-          #     cross <- NULL 
-          #   } else {
-          #     cross <- lca[["posterior"]][["wclass"]]
-          #   }
-          #   
-          #   names<- dimnames(cross)[[1]]
-          #   dims <- dimnames(cross)[[2]]
-          #   
-          #   for (dim in dims) {
-          #     table$addColumn(name = paste0(dim),
-          #                     type = 'character')
-          #   }
-          #   for (name in names) {
-          #     row <- list()
-          #     for(j in seq_along(dims)){
-          #       row[[dims[j]]] <- cross[name,j]
-          #     }
-          #     table$addRow(rowKey=name, values=row)
-          #   }
-          # }          
-          
+
+# Class prevalences by group
+#prev = as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
+
+          if(isTRUE(self$options$cross)){
+
+            table <- self$results$cross
+
+            if(is.null(as.matrix(do.call(rbind, lapply(lca$posterior, colMeans))))                    ) {
+              cross <- NULL
+            } else {
+              cross <- as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
+ 
+            }
+
+            names<- dimnames(cross)[[1]]
+            dims <- dimnames(cross)[[2]]
+
+            for (dim in dims) {
+              table$addColumn(name = paste0(dim),
+                              type = 'character')
+            }
+            for (name in names) {
+              row <- list()
+              for(j in seq_along(dims)){
+                row[[dims[j]]] <- cross[name,j]
+              }
+              table$addRow(rowKey=name, values=row)
+            }
+          }
+
                     
 # Elbow plot------------------------------
         

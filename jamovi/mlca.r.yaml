@@ -173,24 +173,24 @@ items:
         - name: value
           title: 'Probability'     
 
-    # - name: cross
-    #   title: 'Class prevalences by cluster'
-    #   type: Table
-    #   refs: glca
-    #   visible: (cross)
-    #   clearWith:
-    #     - vars
-    #     - nc
-    #     - nb
-    #     - group
-    #     - covs
-    #     - nclust
-    # 
-    #   columns:
-    #     - name: name
-    #       title: ''
-    #       type: 'text'
-    #       content: ($key)
+    - name: cross
+      title: 'Class prevalences by group'
+      type: Table
+      refs: glca
+      visible: (cross)
+      clearWith:
+        - vars
+        - nc
+        - nb
+        - group
+        - covs
+        - nclust
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
 
     - name: gof
       title: 'Goodness of fit for coefficients'
