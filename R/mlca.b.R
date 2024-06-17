@@ -33,7 +33,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. The result table does not printed if the results from glca R package are not available.</p>
-            <p>3. The Raltive model fit option requires the number of clusters to be greater than 2. If this is not the case, some other analyses will not show results.</p> 
+            <p>3. The Raltive model fit option requires the number of clusters to be greater than 2. Check box should be unchecked.</p> 
             <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
