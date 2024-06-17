@@ -140,7 +140,9 @@ if(isTRUE(self$options$item)){
 # }  
 
 if(isTRUE(self$options$co)){
-    co <- lca$coefficient
+  
+   co<- lca$param$beta
+  #co <- lca$coefficient
     self$results$text3$setContent(co)
           }
           
