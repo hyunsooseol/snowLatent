@@ -359,9 +359,39 @@ items:
       title: Logistic regression
       type:  Preformatted 
 
-    - name: text5
-      title: Item probability(rho)
-      type:  Preformatted 
+    # - name: text5
+    #   title: Item probability(rho)
+    #   type:  Preformatted 
+
+    - name: item
+      title: 'Item response probabilities(Rho)'
+      type: Array
+      visible: (item)
+      items: (vars)
+      clearWith:
+            - vars
+            - covs
+            - nc
+            - nb
+            - group
+            - nclust
+      
+      template:
+          title: Probability of $key
+          type: Table
+          clearWith:
+            - vars
+            - covs
+            - nc
+            - nb
+            - group
+            - nclust
+          columns: 
+            - name: name
+              title: ''
+              type: 'text'
+              content: ($key)
+
 
 ...
 

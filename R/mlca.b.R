@@ -127,10 +127,10 @@ self$results$text$setContent(lca)
 
 # Item probability(rho)---                    
 
-if(isTRUE(self$options$item)){ 
-    item<- lca$param$rho
-    self$results$text5$setContent(item)          
-}
+# if(isTRUE(self$options$item)){ 
+#     item<- lca$param$rho
+#     self$results$text5$setContent(item)          
+# }
  
  # logistic table----------
 
@@ -219,6 +219,7 @@ if(isTRUE(self$options$comp1)){
           
 #Relative model fit for cluster     
 # If Number of clusters are less than 3, the checkbox should be unchecked !!!
+# Cluster >2 , otherwise errors occur !!!
 
 if(isTRUE(self$options$rel1)){            
            
@@ -555,6 +556,41 @@ ic <- reshape2::melt(ic)
 colnames(ic) <-c("Class", "Level", "value", "L1") 
 image2$setState(ic)
 }
+
+
+# item probabilities----------
+
+ if(isTRUE(self$options$item)){
+
+ tables <- self$results$item
+ vars <- self$options$vars
+
+ item<- lca$param$rho
+ item<- do.call("rbind", lapply(item, as.data.frame))
+ 
+ for(i in seq_along(vars)){
+
+          item <- item[[ vars[i] ]]
+
+          table <- tables[[i]]
+           names<- row.names(item)
+           dims <- colnames(item)
+
+   for (dim in dims) {
+          table$addColumn(name = paste0(dim),
+                     type = 'text',
+                     combineBelow=TRUE)
+   }
+       for (name in names) {
+          row <- list()
+          for(j in seq_along(dims)){
+            row[[dims[j]]] <- item[name,j]
+          }
+          table$addRow(rowKey=name, values=row)
+        }
+      }
+       }
+
 
   
 },
