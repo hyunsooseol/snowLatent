@@ -354,17 +354,13 @@ items:
         - nclust
         - width2
         - height2
-    
-    - name: text3
-      title: Logistic regression
-      type:  Preformatted 
 
     # - name: text5
     #   title: Item probability(rho)
-    #   type:  Preformatted 
+    #   type:  Preformatted
 
     - name: item
-      title: 'Item response probabilities(Rho)'
+      title: 'Item response probability(Rho)'
       type: Array
       visible: (item)
       items: (vars)
@@ -375,7 +371,6 @@ items:
             - nb
             - group
             - nclust
-      
       template:
           title: Probability of $key
           type: Table
@@ -386,13 +381,16 @@ items:
             - nb
             - group
             - nclust
-          columns: 
+       
+          columns:
             - name: name
               title: ''
               type: 'text'
               content: ($key)
 
-
+    - name: text3
+      title: Logistic regression
+      type:  Preformatted 
 ...
 
 

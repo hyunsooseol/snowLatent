@@ -33,7 +33,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <p>_____________________________________________________________________________________________</p>
             <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
             <p>2. The result table does not printed if the results from glca R package are not available.</p>
-            <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
+            <p>3. The Raltive model fit option requires the number of clusters to be greater than 2. If this is not the case, some other analyses will not show results.</p> 
+            <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
             <p>_____________________________________________________________________________________________</p>
             
             </div>
@@ -141,9 +142,9 @@ self$results$text$setContent(lca)
 
 if(isTRUE(self$options$co)){
   
-   co<- lca$param$beta
-  #co <- lca$coefficient
-    self$results$text3$setContent(co)
+   #co<- lca$param$beta
+  co <- lca$coefficient
+  self$results$text3$setContent(co)
           }
           
 
@@ -563,36 +564,38 @@ image2$setState(ic)
  if(isTRUE(self$options$item)){
 
  tables <- self$results$item
+ 
+ itemprob<- lca$param$rho
  vars <- self$options$vars
 
- item<- lca$param$rho
- item<- do.call("rbind", lapply(item, as.data.frame))
+ #self$results$text5$setContent(itemprob) 
  
  for(i in seq_along(vars)){
-
-          item <- item[[ vars[i] ]]
-
-          table <- tables[[i]]
-           names<- row.names(item)
-           dims <- colnames(item)
-
+   
+   item <- itemprob[[ vars[i] ]]
+   #self$results$text5$setContent(item) 
+   
+   table <- tables[[i]]
+   names<- row.names(item)
+   dims <- colnames(item)
+   
    for (dim in dims) {
-          table$addColumn(name = paste0(dim),
+     table$addColumn(name = paste0(dim),
                      type = 'text',
                      combineBelow=TRUE)
    }
-       for (name in names) {
-          row <- list()
-          for(j in seq_along(dims)){
-            row[[dims[j]]] <- item[name,j]
-          }
-          table$addRow(rowKey=name, values=row)
-        }
-      }
+   for (name in names) {
+     row <- list()
+     for(j in seq_along(dims)){
+       row[[dims[j]]] <- item[name,j]
+     
        }
-
-
+     table$addRow(rowKey=name, values=row)
+   }
   
+}
+
+ } 
 },
 
 
@@ -652,11 +655,9 @@ image2$setState(ic)
 
 .plot3 = function(image2, ggtheme, theme,...) {
   
-  if(self$options$nclust <3)
-    return()
+  if(self$options$nclust <3) return()
   
   elbow <- image2$state
-  
   
   # plot3 <- ggplot2::ggplot(elbow,ggplot2::aes(x = Class, y = Value, group = Fit))+
   #   ggplot2::geom_line(size=1.1,ggplot2::aes(color=Fit))+
@@ -667,12 +668,8 @@ image2$setState(ic)
     ggplot2::geom_line(size = 1.1) +
     ggplot2::geom_point(size = 3) +
     ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Cluster), by = 1))
-  
-  
-  
+
   plot3 <- plot3+ggtheme
-  
-  
   print(plot3)
   TRUE
   
@@ -1000,32 +997,30 @@ image2$setState(ic)
 
 # if(isTRUE(self$options$item)){
 
-
-
 # tables <- self$results$item
 # vars <- self$options$vars
 # 
-# for(i in seq_along(vars)){
-#      
-#          item <- item[[ vars[i] ]]
-#       
-#          table <- tables[[i]]
-#           names<- row.names(item)
-#           dims <- colnames(item)
-# 
-#   for (dim in dims) {
-#          table$addColumn(name = paste0(dim),
-#                     type = 'text',
-#                     combineBelow=TRUE)
-#   }
-#       for (name in names) {
-#          row <- list()
-#          for(j in seq_along(dims)){
-#            row[[dims[j]]] <- item[name,j]
-#          }
-#          table$addRow(rowKey=name, values=row)
-#        }
-#      }
+ # for(i in seq_along(vars)){
+ #      
+ #          item <- item[[ vars[i] ]]
+ #       
+ #          table <- tables[[i]]
+ #           names<- row.names(item)
+ #           dims <- colnames(item)
+ # 
+ #   for (dim in dims) {
+ #          table$addColumn(name = paste0(dim),
+ #                     type = 'text',
+ #                     combineBelow=TRUE)
+ #   }
+ #       for (name in names) {
+ #          row <- list()
+ #          for(j in seq_along(dims)){
+ #            row[[dims[j]]] <- item[name,j]
+ #          }
+ #          table$addRow(rowKey=name, values=row)
+ #        }
+ #      }
 
 #       }
 

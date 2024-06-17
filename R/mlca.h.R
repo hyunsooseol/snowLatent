@@ -275,8 +275,8 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
-        text3 = function() private$.items[["text3"]],
-        item = function() private$.items[["item"]]),
+        item = function() private$.items[["item"]],
+        text3 = function() private$.items[["text3"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -669,14 +669,10 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nclust",
                     "width2",
                     "height2")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text3",
-                title="Logistic regression"))
             self$add(jmvcore::Array$new(
                 options=options,
                 name="item",
-                title="Item response probabilities(Rho)",
+                title="Item response probability(Rho)",
                 visible="(item)",
                 items="(vars)",
                 clearWith=list(
@@ -701,7 +697,11 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             `name`="name", 
                             `title`="", 
                             `type`="text", 
-                            `content`="($key)")))))}))
+                            `content`="($key)")))))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text3",
+                title="Logistic regression"))}))
 
 mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mlcaBase",
@@ -774,8 +774,8 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$item} \tab \tab \tab \tab \tab an array of tables \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
