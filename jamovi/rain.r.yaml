@@ -1,7 +1,8 @@
 ---
 name:  rain
-title: raincloud plot
+title: Raincloud plot
 jrs:   '1.1'
+refs: snowLatent
 
 items:
     - name: instructions
@@ -14,7 +15,7 @@ items:
       type:  Preformatted
 
     - name: plot
-      title: 'raincloud'
+      title: 'Raincloud plot'
       type: Image
       visible: (plot)
       renderFun: .plot

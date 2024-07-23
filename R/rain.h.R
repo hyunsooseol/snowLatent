@@ -91,7 +91,8 @@ rainResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="raincloud plot")
+                title="Raincloud plot",
+                refs="snowLatent")
             self$add(jmvcore::Html$new(
                 options=options,
                 name="instructions",
@@ -104,7 +105,7 @@ rainResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="raincloud",
+                title="Raincloud plot",
                 visible="(plot)",
                 renderFun=".plot",
                 clearWith=list(
@@ -135,7 +136,7 @@ rainBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'auto')
         }))
 
-#' raincloud plot
+#' Raincloud plot
 #'
 #' 
 #' @param data The data as a data frame.

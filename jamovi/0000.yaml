@@ -10,7 +10,7 @@ date: '2024-07-23'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA
-  based on glca R package and also provides various types of profile plot.
+  based on glca R package and also provides various types of profile plots.
 analyses:
   - title: Latent Class Analysis
     name: lca
@@ -42,12 +42,12 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Radar chart
-  - title: raincloud plot
+  - title: Raincloud plot
     name: rain
     ns: snowLatent
     menuGroup: snowLatent
     menuSubgroup: Profile
-    menuTitle: raincloud plot
+    menuTitle: Raincloud plot
 datasets:
   - name: health
     path: health.omv
@@ -75,7 +75,7 @@ datasets:
     description: Profile plot
     tags:
       - Profile
-      - raincloud
+      - Raincloud
   - name: crime
     path: crime.omv
     description: Radar chart

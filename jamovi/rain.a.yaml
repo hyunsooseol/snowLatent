@@ -1,6 +1,6 @@
 ---
 name:  rain
-title: raincloud plot
+title: Raincloud plot
 menuGroup: snowLatent
 version: '1.0.0'
 jas: '1.2'
@@ -41,7 +41,7 @@ options:
             a number from 0 to 90 defining the angle of the x-axis labels, 
             where 0 degrees represents completely horizontal labels.
     - name: plot
-      title: 'rain cloud'
+      title: 'Raincloud'
       type: Bool
       default: FALSE
 
