@@ -1,0 +1,42 @@
+---
+name:  rain
+title: raincloud plot
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
+    - name:  text
+      title: ''
+      type:  Preformatted
+
+    - name: plot
+      title: 'raincloud'
+      type: Image
+      visible: (plot)
+      renderFun: .plot
+      clearWith:
+            - vars
+            - group
+            - angle
+            - width
+            - height
+
+    # - name: plot2
+    #   title: 'Box plot'
+    #   type: Image
+    #   visible: (plot2)
+    #   renderFun: .plot2
+    #   clearWith:
+    #         - vars
+    #         - group
+    #         - angle
+    #         - width1
+    #         - height1
+...
+
+
+

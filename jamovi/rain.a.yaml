@@ -1,0 +1,74 @@
+---
+name:  rain
+title: raincloud plot
+menuGroup: snowLatent
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+      description:
+          R: >
+            The data as a data frame.
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - nominal
+         - continuous
+      permitted:
+        - factor
+        - numeric
+
+    - name: group
+      title: Grouping Variable(Required)
+      type: Variable
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+        - factor
+
+    - name: angle
+      title: Angle of x-axis labels
+      type: Number
+      min: 0
+      max: 90
+      default: 0
+      description:
+          R: >
+            a number from 0 to 90 defining the angle of the x-axis labels, 
+            where 0 degrees represents completely horizontal labels.
+    - name: plot
+      title: 'rain cloud'
+      type: Bool
+      default: FALSE
+
+    # - name: plot2
+    #   title: Box plot
+    #   type: Bool
+    #   default: FALSE
+
+    - name: width
+      type: Integer
+      title: "Size: "
+      default: 500
+
+    - name: height
+      type: Integer
+      title: "X"
+      default: 500
+    # 
+    # - name: width1
+    #   type: Integer
+    #   title: "Size: "
+    #   default: 500
+    #   
+    # - name: height1
+    #   type: Integer
+    #   title: "X"
+    #   default: 500
+...
+
+ 

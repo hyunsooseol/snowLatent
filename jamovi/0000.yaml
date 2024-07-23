@@ -1,16 +1,16 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.4.0
+version: 2.4.1
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2024-06-13'
+date: '2024-07-23'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA
-  based on glca R package.
+  based on glca R package and also provides various types of profile plot.
 analyses:
   - title: Latent Class Analysis
     name: lca
@@ -42,6 +42,12 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Radar chart
+  - title: raincloud plot
+    name: rain
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuSubgroup: Profile
+    menuTitle: raincloud plot
 datasets:
   - name: health
     path: health.omv
@@ -69,6 +75,7 @@ datasets:
     description: Profile plot
     tags:
       - Profile
+      - raincloud
   - name: crime
     path: crime.omv
     description: Radar chart
