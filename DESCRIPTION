@@ -18,4 +18,4 @@ Imports: jmvcore (>= 0.8.5),
          reshape2,
          fmsb,
          scales,
-         PupillometryR
+         dplyr
