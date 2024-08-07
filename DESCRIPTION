@@ -12,6 +12,7 @@ RoxygenNote: 7.3.1
 Imports: jmvcore (>= 0.8.5), 
          R6,
          stats,
+         glca,
          ggplot2,
          stringr,
          reshape2,
