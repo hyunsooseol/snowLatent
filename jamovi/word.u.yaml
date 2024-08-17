@@ -1,0 +1,90 @@
+title: Wordcloud analysis
+name: word
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Words
+        children:
+          - type: VariablesListBox
+            name: words
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Frequency
+        children:
+          - type: VariablesListBox
+            name: freq
+            maxItemCount: 1
+            isTarget: true
+  - type: LayoutBox
+    margin: large
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: "Wordcloud options"
+            children:
+              - type: TextBox
+                name: minf
+                format: number
+              - type: TextBox
+                name: maxw
+                format: number
+              - type: TextBox
+                name: min
+                format: number 
+              - type: TextBox
+                name: max
+                format: number
+              - type: TextBox
+                name: rot
+                format: number  
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: "Plots"
+            children:
+              - type: CheckBox
+                name: plot
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (plot)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot)
+              - type: CheckBox
+                name: plot1
+                children:
+                  - type: TextBox
+                    name: maxn
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot1)

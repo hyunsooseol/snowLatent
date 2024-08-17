@@ -48,6 +48,11 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Raincloud plot
+  - title: Wordcloud analysis
+    name: word
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Wordcloud analysis
 datasets:
   - name: health
     path: health.omv

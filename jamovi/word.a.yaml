@@ -1,0 +1,93 @@
+---
+name:  word
+title: Wordcloud analysis
+menuGroup: snowLatent
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: words
+      title: Words
+      type: Variable
+      suggested:
+        - nominal
+      permitted:
+        - factor  
+
+    - name: freq
+      title: Frequency
+      type: Variable
+      suggested:
+         - continuous
+      permitted:
+        - numeric
+
+    - name: minf
+      title: 'Min.freq'
+      type: Integer
+      default: 1
+      min: 1 
+
+    - name: maxw
+      title: 'Max.words'
+      type: Integer
+      default: 100
+      min: 1 
+
+    - name: min
+      title: 'Min.size'
+      type: Number
+      default: 1
+      min: 1
+      
+    - name: max
+      title: 'Max.size'
+      type: Number
+      default: 5
+      min: 1 
+
+    - name: rot
+      title: 'Prop.rotation'
+      type: Number
+      default: 0.35
+      min: 0.1
+
+    - name: plot
+      title: 'Wordcloud' 
+      type: Bool
+      default: TRUE 
+
+    - name: width
+      type: Integer
+      title: "Width"
+      default: 500
+      
+    - name: height
+      type: Integer
+      title: "Height"
+      default: 500    
+
+    - name: plot1
+      title: 'Word frequencies' 
+      type: Bool
+      default: false 
+
+    - name: maxn
+      title: 'Max.number'
+      type: Number
+      default: 10
+      min: 1 
+
+    - name: width1
+      type: Integer
+      title: "Width"
+      default: 500
+
+    - name: height1
+      type: Integer
+      title: "Height"
+      default: 500
+...

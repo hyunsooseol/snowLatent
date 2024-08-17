@@ -1,0 +1,46 @@
+---
+name:  word
+title: Wordcloud analysis
+jrs:   '1.1'
+refs: snowLatent
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+      
+    - name:  text
+      title: ''
+      type:  Preformatted
+
+    - name: plot
+      title: 'Wordcloud plot'
+      type: Image
+      visible: (plot)
+      renderFun: .plot
+      requiresData: true
+      clearWith:
+            - words
+            - freq
+            - minf
+            - max
+            - min
+            - rot
+            - width
+            - height
+
+    - name: plot1
+      title: 'Plot word frequencies'
+      type: Image
+      visible: (plot1)
+      renderFun: .plot1
+      requiresData: true
+      clearWith:
+            - words
+            - freq
+            - maxn
+            - width1
+            - height1
+ 
+...
