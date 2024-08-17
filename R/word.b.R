@@ -5,6 +5,7 @@
 #' @import ggplot2
 #' @import wordcloud
 #' @import RColorBrewer
+#' @import dplyr
 #' @export
 
 wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -132,8 +133,8 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       if (is.null(self$options$words) | is.null(self$options$freq)) return()
       
-      words <- self$options$words
-      freq <- self$options$freq
+      # words <- self$options$words
+      # freq <- self$options$freq
       
       maxn <- self$options$maxn
     
@@ -143,13 +144,24 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
       #Change the name of variables---
       names(data) <- c("word", "freq")
+      #self$results$text$setContent(data[1:maxn,]$freq)
+      Words<- data[1:maxn,]$word
+      Words<- as.vector(Words) 
       
+       Frequency<- data[1:maxn,]$freq
+       Frequency<- as.vector(Frequency)
+       
+       df<- data.frame(Words, Frequency)
+        
+       self$results$text$setContent(df)
       
-       plot1<- barplot(data[1:maxn,]$freq, 
-               las = 2, 
-               names.arg = data[1:maxn,]$word,
-               main ="Most frequent words",
-               ylab = "Word frequencies")
+       df$Words <- factor(df$Words, levels = df$Words[order(df$Frequency)])
+       Words<- stats::reorder(Words, dplyr::desc(Frequency))
+       
+       library(ggplot2)
+       plot1<- ggplot2::ggplot(data=df, ggplot2::aes(x=Words, y=Frequency)) +
+         ggplot2::geom_bar(stat = "identity", fill = "steelblue")+
+         ggplot2::geom_text(aes(label=Frequency), vjust=1.6, color="white", size=3.5)
       
       plot1 <- plot1+ggtheme
       print(plot1)

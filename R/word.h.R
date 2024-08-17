@@ -18,8 +18,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             height = 500,
             plot1 = FALSE,
             maxn = 10,
-            width = 500,
-            height = 500, ...) {
+            width1 = 500,
+            height1 = 500, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -38,9 +38,9 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "freq",
                 freq,
                 suggested=list(
-                    "continuous"),
+                    "nominal"),
                 permitted=list(
-                    "numeric"))
+                    "factor"))
             private$..minf <- jmvcore::OptionInteger$new(
                 "minf",
                 minf,
@@ -87,13 +87,13 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 maxn,
                 default=10,
                 min=1)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
                 default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
                 default=500)
 
             self$.addOption(private$..words)
@@ -108,8 +108,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..height)
             self$.addOption(private$..plot1)
             self$.addOption(private$..maxn)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
         }),
     active = list(
         words = function() private$..words$value,
@@ -124,8 +124,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
         maxn = function() private$..maxn$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value),
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value),
     private = list(
         ..words = NA,
         ..freq = NA,
@@ -139,8 +139,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..height = NA,
         ..plot1 = NA,
         ..maxn = NA,
-        ..width = NA,
-        ..height = NA)
+        ..width1 = NA,
+        ..height1 = NA)
 )
 
 wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -194,7 +194,9 @@ wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "words",
                     "freq",
-                    "maxn")))}))
+                    "maxn",
+                    "width1",
+                    "height1")))}))
 
 wordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "wordBase",
@@ -233,8 +235,8 @@ wordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param height .
 #' @param plot1 .
 #' @param maxn .
-#' @param width .
-#' @param height .
+#' @param width1 .
+#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -258,8 +260,8 @@ word <- function(
     height = 500,
     plot1 = FALSE,
     maxn = 10,
-    width = 500,
-    height = 500) {
+    width1 = 500,
+    height1 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("word requires jmvcore to be installed (restart may be required)")
@@ -273,6 +275,7 @@ word <- function(
             `if`( ! missing(freq), freq, NULL))
 
     for (v in words) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in freq) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- wordOptions$new(
         words = words,
@@ -287,8 +290,8 @@ word <- function(
         height = height,
         plot1 = plot1,
         maxn = maxn,
-        width = width,
-        height = height)
+        width1 = width1,
+        height1 = height1)
 
     analysis <- wordClass$new(
         options = options,

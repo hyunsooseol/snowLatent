@@ -34,7 +34,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: "Wordcloud options"
+            label: "Options"
             children:
               - type: TextBox
                 name: minf
