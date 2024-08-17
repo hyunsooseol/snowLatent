@@ -52,6 +52,7 @@ analyses:
     name: word
     ns: snowLatent
     menuGroup: snowLatent
+    menuSubgroup: Profile
     menuTitle: Wordcloud analysis
 datasets:
   - name: health
@@ -86,6 +87,11 @@ datasets:
     description: Radar chart
     tags:
       - Radar chart
+  - name: wordcloud
+    path: crude.omv
+    description: Wordcloud
+    tags:
+      - Wordcloud
 usesNative: true
 minApp: 1.0.8
 
