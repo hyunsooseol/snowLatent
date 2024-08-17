@@ -153,7 +153,7 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        
        df<- data.frame(Words, Frequency)
         
-       self$results$text$setContent(df)
+       #self$results$text$setContent(df)
       
        df$Words <- factor(df$Words, levels = df$Words[order(df$Frequency)])
        Words<- stats::reorder(Words, dplyr::desc(Frequency))
