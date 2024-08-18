@@ -166,6 +166,15 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          ggplot2::geom_text(aes(label=Frequency), vjust=1.6, color="white", size=3.5)
       
       plot1 <- plot1+ggtheme
+      
+      if (self$options$angle > 0) {
+        plot1 <- plot1 + ggplot2::theme(
+          axis.text.x = ggplot2::element_text(
+            angle = self$options$angle, hjust = 1
+          )
+        )
+      }
+      
       print(plot1)
       TRUE  
     }

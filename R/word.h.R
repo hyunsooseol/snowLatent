@@ -19,7 +19,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             maxn = 10,
             width1 = 500,
-            height1 = 500, ...) {
+            height1 = 500,
+            angle = 0, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -95,6 +96,12 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height1",
                 height1,
                 default=500)
+            private$..angle <- jmvcore::OptionNumber$new(
+                "angle",
+                angle,
+                min=0,
+                max=90,
+                default=0)
 
             self$.addOption(private$..words)
             self$.addOption(private$..freq)
@@ -110,6 +117,7 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..maxn)
             self$.addOption(private$..width1)
             self$.addOption(private$..height1)
+            self$.addOption(private$..angle)
         }),
     active = list(
         words = function() private$..words$value,
@@ -125,7 +133,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         maxn = function() private$..maxn$value,
         width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value),
+        height1 = function() private$..height1$value,
+        angle = function() private$..angle$value),
     private = list(
         ..words = NA,
         ..freq = NA,
@@ -140,7 +149,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..maxn = NA,
         ..width1 = NA,
-        ..height1 = NA)
+        ..height1 = NA,
+        ..angle = NA)
 )
 
 wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -197,7 +207,8 @@ wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "freq",
                     "maxn",
                     "width1",
-                    "height1")))}))
+                    "height1",
+                    "angle")))}))
 
 wordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "wordBase",
@@ -238,6 +249,7 @@ wordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param maxn .
 #' @param width1 .
 #' @param height1 .
+#' @param angle .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -262,7 +274,8 @@ word <- function(
     plot1 = FALSE,
     maxn = 10,
     width1 = 500,
-    height1 = 500) {
+    height1 = 500,
+    angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("word requires jmvcore to be installed (restart may be required)")
@@ -292,7 +305,8 @@ word <- function(
         plot1 = plot1,
         maxn = maxn,
         width1 = width1,
-        height1 = height1)
+        height1 = height1,
+        angle = angle)
 
     analysis <- wordClass$new(
         options = options,

@@ -43,5 +43,6 @@ items:
             - maxn
             - width1
             - height1
+            - angle
  
 ...

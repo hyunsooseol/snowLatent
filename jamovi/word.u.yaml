@@ -88,3 +88,11 @@ children:
                     name: height1
                     format: number
                     enable: (plot1)
+                  - type: TextBox
+                    name: angle
+                    enable: (plot1)
+                    format: number
+                    suggestedValues:
+                      - value: 0
+                      - value: 45
+                      - value: 90                    
