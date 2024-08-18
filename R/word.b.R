@@ -1,7 +1,7 @@
 
 # This file is a generated template, your changes will not be overwritten
 #' @importFrom  wordcloud wordcloud
-#' @importFrom RColorBrewer::brewer.pal
+#' @importFrom RColorBrewer brewer.pal
 #' @import ggplot2
 #' @import wordcloud
 #' @import RColorBrewer
@@ -27,8 +27,7 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             <body>
             <div class='instructions'>
             <p>____________________________________________________________________________________</p>
-            <p>1. You must enter row number(s) of <b>4</b> or more.</p>
-            <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub.</a></p>
+            <p> Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub.</a></p>
             <p>____________________________________________________________________________________</p>
             
             </div>
@@ -57,17 +56,17 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         if (is.null(self$options$words) | is.null(self$options$freq)) return()
         
-         words <- self$options$words
-         freq <- self$options$freq
+         # words <- self$options$words
+         # freq <- self$options$freq
         # 
         # minf <- self$options$minf
         # max <- self$options$max
         # min <- self$options$min
         # rot <- self$options$rot
         # 
-        data <- self$data
-        data <- jmvcore::naOmit(data)
-        data <- as.data.frame(data)
+        # data <- self$data
+        # data <- jmvcore::naOmit(data)
+        # data <- as.data.frame(data)
        
         #data$words <- as.character(data$words)
         #data$freq <- as.numeric(as.character(data$freq)
@@ -116,6 +115,8 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         data <- as.data.frame(data)
         
         colors <- RColorBrewer::brewer.pal(8, "Dark2")
+        
+        set.seed(1234)
         plot <- wordcloud::wordcloud(words = as.character(data[,words]),
                                   freq = as.numeric(as.character(data[,freq])),
                                   min.freq = minf,
@@ -159,6 +160,7 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        Words<- stats::reorder(Words, dplyr::desc(Frequency))
        
        library(ggplot2)
+       set.seed(1234)
        plot1<- ggplot2::ggplot(data=df, ggplot2::aes(x=Words, y=Frequency)) +
          ggplot2::geom_bar(stat = "identity", fill = "steelblue")+
          ggplot2::geom_text(aes(label=Frequency), vjust=1.6, color="white", size=3.5)

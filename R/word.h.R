@@ -175,6 +175,7 @@ wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(plot)",
                 renderFun=".plot",
                 requiresData=TRUE,
+                refs="wordcloud",
                 clearWith=list(
                     "words",
                     "freq",

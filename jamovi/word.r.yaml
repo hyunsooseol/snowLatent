@@ -20,6 +20,7 @@ items:
       visible: (plot)
       renderFun: .plot
       requiresData: true
+      refs: wordcloud
       clearWith:
             - words
             - freq
