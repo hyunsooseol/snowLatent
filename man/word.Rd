@@ -19,7 +19,8 @@ word(
   plot1 = FALSE,
   maxn = 10,
   width1 = 500,
-  height1 = 500
+  height1 = 500,
+  angle = 0
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ word(
 \item{width1}{.}
 
 \item{height1}{.}
+
+\item{angle}{.}
 }
 \value{
 A results object containing:

@@ -11,29 +11,47 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "radarClass",
     inherit = radarBase,
     private = list(
+      .htmlwidget = NULL, 
       
       .init = function() {
-        
+        private$.htmlwidget <- HTMLWidget$new() 
+          
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
           
         }
         
+        # self$results$instructions$setContent(
+        #   "<html>
+        #     <head>
+        #     </head>
+        #     <body>
+        #     <div class='instructions'>
+        #     <p>____________________________________________________________________________________</p>
+        #     <p>1. You must enter row number(s) of <b>4</b> or more.</p>
+        #     <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub.</a></p>
+        #     <p>____________________________________________________________________________________</p>
+        #     
+        #     </div>
+        #     </body>
+        #     </html>"
+        # )
+        
         self$results$instructions$setContent(
-          "<html>
-            <head>
-            </head>
-            <body>
-            <div class='instructions'>
-            <p>____________________________________________________________________________________</p>
-            <p>1. You must enter row number(s) of <b>4</b> or more.</p>
-            <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub.</a></p>
-            <p>____________________________________________________________________________________</p>
+          private$.htmlwidget$generate_accordion(
+            title="Instructions",
+            content = paste(
+              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+              '<div style="text-align:justify;">',
+              '<ul>',
+              '<li>You must enter row number(s) of <b>4</b> or more.</li>',
+              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
+              '</ul></div></div>'
+              
+            )
             
-            </div>
-            </body>
-            </html>"
-        )
+          )
+        )      
         
         if(isTRUE(self$options$plot)){
           width <- self$options$width
