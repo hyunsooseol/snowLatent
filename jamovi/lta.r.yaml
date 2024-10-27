@@ -1,0 +1,27 @@
+---
+name:  lta
+title: Latent Transition Analysis
+jrs:   '1.1'
+refs: snowLatent
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+
+    - name:  text1
+      title: 'Coefficients'
+      type:  Preformatted
+
+    - name:  text2
+      title: 'Standard errors'
+      type:  Preformatted
+
+    - name:  text3
+      title: 'Wald'
+      type:  Preformatted
+
+    - name:  text4
+      title: 'p value'
+      type:  Preformatted
+...

@@ -1,12 +1,12 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.4.3
+version: 2.5.0
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2024-09-22'
+date: '2024-10-27'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA
@@ -54,6 +54,11 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Wordcloud analysis
+  - title: Latent Transition Analysis
+    name: lta
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Latent Transition Analysis
 datasets:
   - name: health
     path: health.omv

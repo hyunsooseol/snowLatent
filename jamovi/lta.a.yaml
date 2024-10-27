@@ -1,0 +1,117 @@
+---
+name:  lta
+title: Latent Transition Analysis
+menuGroup: snowLatent
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: vars
+      title: Variables
+      type: Variables
+      suggested:
+         - nominal
+         - ordinal
+      permitted:
+         - factor
+ 
+    - name: covs
+      title: Covariates(Optional)
+      type: Variables
+      suggested:
+         - nominal
+         - continuous
+      permitted:
+        - factor
+        - numeric   
+
+    - name: form1
+      title: 'LCA formula'
+      type: String
+      default: "lc(6) ~ ESMK_98+FSMK_98+DSMK_98+HSMK_98+EDRK_98+CDRK_98+WDRK_98+BDRK_98+EMRJ_98+CMRJ_98+OMRJ_98+SMRJ_98"
+
+    - name: form2
+      title: 'Regression'
+      type: String
+      default: "lc ~ SEX"
+  
+    - name: method
+      title: 'Method'
+      type: List
+      options:
+        - title: 'naive'
+          name:  'naive'
+        - title: 'BCH'
+          name:  'BCH'
+        - title: 'ML'
+          name:  'ML'  
+      default: 'naive'
+
+    - name: fit
+      title: 'Model fit'
+      type: Bool
+      default: FALSE
+
+    - name: est
+      title: 'Estimates'
+      type: Bool
+      default: FALSE
+
+    - name: desc
+      title: 'Descriptives'
+      type: Bool
+      default: TRUE
+
+    - name: cp
+      title: Class size 
+      type: Bool 
+      default: FALSE
+
+    - name: mem
+      title: Person Membership
+      type: Output
+
+    - name: plot1
+      title: 'Density'
+      type: Bool
+      default: FALSE  
+
+    - name: plot
+      title: 'Trajectory'
+      type: Bool
+      default: FALSE  
+
+    - name: raw
+      title: 'Raw data'
+      type: List
+      options:
+        - title: 'FALSE'
+          name:  'FALSE'
+        - title: 'TRUE'
+          name:  'TRUE'
+      default: 'FALSE'  
+
+    - name: width
+      type: Integer
+      title: "Width "
+      default: 500
+      
+    - name: height
+      type: Integer
+      title: "Height"
+      default: 500
+
+    - name: width1
+      type: Integer
+      title: "Size: "
+      default: 500
+      
+    - name: height1
+      type: Integer
+      title: "X"
+      default: 500   
+
+...

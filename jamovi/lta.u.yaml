@@ -1,0 +1,114 @@
+title: Latent Transition Analysis
+name: lta
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Variables
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Covariates(Optional)
+        children:
+          - type: VariablesListBox
+            name: covs
+            height: small
+            isTarget: true
+  - type: CollapseBox
+    label: 'LCA regression using 3-step approach'
+    margin: normal
+    collapsed: true
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: TextBox
+                name: form1
+                format: string
+                stretchFactor: 5
+              - type: TextBox
+                name: form2
+                format: string
+                stretchFactor: 3
+              - type: ComboBox
+                name: method
+  - type: CollapseBox
+    label: Latent Transition Analysis
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Tables
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: CheckBox
+                    name: desc
+                  - type: CheckBox
+                    name: fit
+                  - type: CheckBox
+                    name: est
+                  - type: CheckBox
+                    name: cp
+              - type: Label
+                label: Save
+                children:
+                  - type: Output
+                    name: mem
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:
+          - type: Label
+            label: Plots
+            children:
+              - type: CheckBox
+                name: plot1
+                style: list-inline
+                children:
+                  - type: TextBox
+                    name: width1
+                    format: number
+                    enable: (plot1)
+                  - type: TextBox
+                    name: height1
+                    format: number
+                    enable: (plot1)
+              - type: CheckBox
+                name: plot
+                children:
+                  - type: ComboBox
+                    name: raw
+                    enable: (plot)
+                  - type: TextBox
+                    name: width
+                    format: number
+                    enable: (plot)
+                  - type: TextBox
+                    name: height
+                    format: number
+                    enable: (plot)
+ 
