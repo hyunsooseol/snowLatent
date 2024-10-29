@@ -10,7 +10,7 @@ items:
       visible: True
 
     - name:  text1
-      title: 'Coefficients'
+      title: 'Regression using 3-step approach'
       type:  Preformatted
 
     - name:  text2

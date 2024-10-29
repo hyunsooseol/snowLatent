@@ -9,11 +9,32 @@ children:
     stretchFactor: 1
     children:
       - type: TargetLayoutBox
-        label: Variables
+        label: Model
         children:
-          - type: VariablesListBox
-            name: vars
-            isTarget: true
+          - type: ListBox
+            name: factors
+            height: large
+            addButton: Add New Factor
+            templateName: linreg-block-template
+            template:
+              type: LayoutBox
+              margin: normal
+              children:
+                - type: TextBox
+                  valueKey:
+                    - label
+                  borderless: true
+                  name: blockName
+                  stretchFactor: 1
+                  margin: normal
+                - type: VariablesListBox
+                  valueFilter: unique
+                  valueKey:
+                    - vars
+                  name: blockList
+                  isTarget: true
+                  height: auto
+                  ghostText: drag variables here
       - type: TargetLayoutBox
         label: Covariates(Optional)
         children:
@@ -39,10 +60,6 @@ children:
               - type: TextBox
                 name: form1
                 format: string
-                stretchFactor: 5
-              - type: TextBox
-                name: form2
-                format: string
                 stretchFactor: 3
               - type: ComboBox
                 name: method
@@ -55,6 +72,10 @@ children:
         margin: large
         stretchFactor: 1
         children:
+          - type: TextBox
+            name: cons
+            format: string
+            stretchFactor: 3
           - type: Label
             label: Tables
             children:
@@ -111,4 +132,3 @@ children:
                     name: height
                     format: number
                     enable: (plot)
- 

@@ -6,11 +6,12 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            vars = NULL,
+            factors = list(
+                list(label="l1[1]", vars=list())),
             covs = NULL,
-            form1 = "lc(6) ~ ESMK_98+FSMK_98+DSMK_98+HSMK_98+EDRK_98+CDRK_98+WDRK_98+BDRK_98+EMRJ_98+CMRJ_98+OMRJ_98+SMRJ_98",
-            form2 = "lc ~ SEX",
+            form1 = "lc1 ~ SEX",
             method = "naive",
+            cons = "cl1,cl2",
             fit = FALSE,
             est = FALSE,
             desc = TRUE,
@@ -29,14 +30,26 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
-            private$..vars <- jmvcore::OptionVariables$new(
-                "vars",
-                vars,
-                suggested=list(
-                    "nominal",
-                    "ordinal"),
-                permitted=list(
-                    "factor"))
+            private$..factors <- jmvcore::OptionArray$new(
+                "factors",
+                factors,
+                default=list(
+                    list(label="l1[1]", vars=list())),
+                template=jmvcore::OptionGroup$new(
+                    "factors",
+                    NULL,
+                    elements=list(
+                        jmvcore::OptionString$new(
+                            "label",
+                            NULL),
+                        jmvcore::OptionVariables$new(
+                            "vars",
+                            NULL,
+                            suggested=list(
+                                "nominal",
+                                "ordinal"),
+                            permitted=list(
+                                "factor")))))
             private$..covs <- jmvcore::OptionVariables$new(
                 "covs",
                 covs,
@@ -49,11 +62,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..form1 <- jmvcore::OptionString$new(
                 "form1",
                 form1,
-                default="lc(6) ~ ESMK_98+FSMK_98+DSMK_98+HSMK_98+EDRK_98+CDRK_98+WDRK_98+BDRK_98+EMRJ_98+CMRJ_98+OMRJ_98+SMRJ_98")
-            private$..form2 <- jmvcore::OptionString$new(
-                "form2",
-                form2,
-                default="lc ~ SEX")
+                default="lc1 ~ SEX")
             private$..method <- jmvcore::OptionList$new(
                 "method",
                 method,
@@ -62,6 +71,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "BCH",
                     "ML"),
                 default="naive")
+            private$..cons <- jmvcore::OptionString$new(
+                "cons",
+                cons,
+                default="cl1,cl2")
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -112,11 +125,11 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height1,
                 default=500)
 
-            self$.addOption(private$..vars)
+            self$.addOption(private$..factors)
             self$.addOption(private$..covs)
             self$.addOption(private$..form1)
-            self$.addOption(private$..form2)
             self$.addOption(private$..method)
+            self$.addOption(private$..cons)
             self$.addOption(private$..fit)
             self$.addOption(private$..est)
             self$.addOption(private$..desc)
@@ -131,11 +144,11 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..height1)
         }),
     active = list(
-        vars = function() private$..vars$value,
+        factors = function() private$..factors$value,
         covs = function() private$..covs$value,
         form1 = function() private$..form1$value,
-        form2 = function() private$..form2$value,
         method = function() private$..method$value,
+        cons = function() private$..cons$value,
         fit = function() private$..fit$value,
         est = function() private$..est$value,
         desc = function() private$..desc$value,
@@ -149,11 +162,11 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         width1 = function() private$..width1$value,
         height1 = function() private$..height1$value),
     private = list(
-        ..vars = NA,
+        ..factors = NA,
         ..covs = NA,
         ..form1 = NA,
-        ..form2 = NA,
         ..method = NA,
+        ..cons = NA,
         ..fit = NA,
         ..est = NA,
         ..desc = NA,
@@ -193,7 +206,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Coefficients"))
+                title="Regression using 3-step approach"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
@@ -232,11 +245,12 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' 
 #' @param data .
-#' @param vars .
+#' @param factors a list containing named lists that define the \code{label}
+#'   of the factor and the \code{vars} that belong to that factor
 #' @param covs .
 #' @param form1 .
-#' @param form2 .
 #' @param method .
+#' @param cons .
 #' @param fit .
 #' @param est .
 #' @param desc .
@@ -260,11 +274,12 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @export
 lta <- function(
     data,
-    vars,
+    factors = list(
+                list(label="l1[1]", vars=list())),
     covs,
-    form1 = "lc(6) ~ ESMK_98+FSMK_98+DSMK_98+HSMK_98+EDRK_98+CDRK_98+WDRK_98+BDRK_98+EMRJ_98+CMRJ_98+OMRJ_98+SMRJ_98",
-    form2 = "lc ~ SEX",
+    form1 = "lc1 ~ SEX",
     method = "naive",
+    cons = "cl1,cl2",
     fit = FALSE,
     est = FALSE,
     desc = TRUE,
@@ -280,22 +295,19 @@ lta <- function(
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
 
-    if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
     if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(vars), vars, NULL),
             `if`( ! missing(covs), covs, NULL))
 
-    for (v in vars) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- ltaOptions$new(
-        vars = vars,
+        factors = factors,
         covs = covs,
         form1 = form1,
-        form2 = form2,
         method = method,
+        cons = cons,
         fit = fit,
         est = est,
         desc = desc,

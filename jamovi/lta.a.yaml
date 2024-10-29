@@ -9,15 +9,29 @@ options:
     - name: data
       type: Data
 
-    - name: vars
-      title: Variables
-      type: Variables
-      suggested:
-         - nominal
-         - ordinal
-      permitted:
-         - factor
- 
+    - name: factors
+      title: Factors
+      type: Array
+      default:
+        - label: l1[1]
+          vars: []
+      template:
+          type: Group
+          elements:
+            - name: label
+              type: String
+            - name: vars
+              type: Variables
+              suggested:
+                - nominal
+                - ordinal
+              permitted:
+                - factor
+      description:
+          R: >
+            a list containing named lists that define the `label` of
+            the factor and the `vars` that belong to that factor
+
     - name: covs
       title: Covariates(Optional)
       type: Variables
@@ -29,14 +43,9 @@ options:
         - numeric   
 
     - name: form1
-      title: 'LCA formula'
-      type: String
-      default: "lc(6) ~ ESMK_98+FSMK_98+DSMK_98+HSMK_98+EDRK_98+CDRK_98+WDRK_98+BDRK_98+EMRJ_98+CMRJ_98+OMRJ_98+SMRJ_98"
-
-    - name: form2
       title: 'Regression'
       type: String
-      default: "lc ~ SEX"
+      default: "lc1 ~ SEX"
   
     - name: method
       title: 'Method'
@@ -50,6 +59,11 @@ options:
           name:  'ML'  
       default: 'naive'
 
+    - name: cons
+      title: 'Constraints'
+      type: String
+      default: 'cl1,cl2'
+ 
     - name: fit
       title: 'Model fit'
       type: Bool
