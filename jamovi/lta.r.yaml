@@ -35,11 +35,11 @@ items:
     - name:  text2
       title: 'Regression using 3-step approach'
       type:  Preformatted
+ 
+    - name:  text3
+      title: 'Wald'
+      type:  Preformatted
 
-    # - name:  text3
-    #   title: 'Wald'
-    #   type:  Preformatted
-    # 
     # - name:  text4
     #   title: 'p value'
     #   type:  Preformatted

@@ -96,6 +96,12 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               slca::estimate(data=data)
         par<- slca::param(obj)
       
+        # Additional outputs: Estimated parameters---
+        
+        if(isTRUE(self$options$par)){
+          self$results$text1$setContent(par) 
+        }
+        
       # Posterior prob. and membership---
       #obj[["posterior"]][["marginal"]][["lc1"]]
       pos <- obj[["posterior"]][["marginal"]][["lc1"]]
@@ -144,27 +150,47 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
         }
       } 
-      
-   # Additional outputs: Estimated parameters---
-      
-      if(isTRUE(self$options$par)){
-      self$results$text1$setContent(par) 
-      }
-      
+ 
       # Regression---
-       if(length(self$options$covs)>=1){
+       if(self$options$covs>=1){
         #LCA regression---
         #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
+       
+         form1 <- self$options$form1
+         form1 <- as.formula(form1)
          
-          form1 <- self$options$form1
-          form1 <- as.formula(form1)
-      
+         # # y~a+b+c---
+         # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+         # ind <- paste0(vars, collapse = '+')
+         # formula <- as.formula(paste0(label, ' ~ ', ind))
+         
+         
          reg <- slca::regress(obj, 
                              form1,
                              method=self$options$method,
                              data=data)
-         #self$results$text1$setContent(reg)
-       
+         
+         # coef, std.err, wald, p-value---
+         coef <- reg$coefficients
+         se <- as.vector(reg$std.err)  
+         wald <- as.vector(coef / se)  
+         pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)  
+         
+         variable_names <- colnames(reg$coefficients)  
+         class_info <- rep(rownames(reg$coefficients), each = length(variable_names))  
+         
+         
+         reg.df <- data.frame(
+           class = class_info[1:length(coef)],  # class 변수 추가
+           variable = variable_names,
+           coef = as.vector(coef),
+           std.err = se,
+           wald = wald,
+           p.value = pval
+         )
+         
+         self$results$text2$setContent(reg.df)
+         
         }  
   
         
@@ -209,29 +235,27 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      # Assuming 'factors' is a list of lists with each sublist containing 'label'
      factor_labels <- sapply(factors, function(factor) factor[["label"]]) 
      
-     # Initialize an empty string for the single formula
-     single_connection_formula <- ""
+     create_sequential_formulas <- function(factor_labels) {
      
-     # Loop to create only one connection formula
-     for (i in seq_along(factor_labels)) {
-       for (j in seq_along(factor_labels)) {
-         if (i != j) {
-           single_connection_formula <- paste0(factor_labels[i], " ~ ", factor_labels[j])
-           break  # Exit the inner loop after creating one formula
-         }
+       formulas <- c()
+       
+       # Loop through the factor labels to create formulas l1~l2, l2~l3, ..., ln-1~ln
+       for (i in seq_along(factor_labels)[-length(factor_labels)]) {
+        
+         formula <- paste0(factor_labels[i], " ~ ", factor_labels[i + 1])
+        
+         formulas <- c(formulas, formula)
        }
-       if (single_connection_formula != "") {
-         break  # Exit the outer loop if a formula has been created
-       }
+       
+       return(formulas)  
      }
-    
-     # Remove brackets from the formula
-     single_connection_formula <- gsub("\\[.*?\\]", "", single_connection_formula)
      
-     #self$results$text2$setContent(single_connection_formula)
-     single_connection_formula <- as.formula(single_connection_formula)
-    
-     formula_list <- list(formulas[[1]], formulas[[2]], single_connection_formula)
+     relation <- create_sequential_formulas(factor_labels)
+     #  Remove brackets from the formula
+     relation <- gsub("\\[.*?\\]", "", relation)
+     relation <- as.formula(relation)
+     
+     formula_list <- list(formulas[[1]], formulas[[2]], relation)
        
      #self$results$text3$setContent(formula_list)
      
@@ -246,14 +270,11 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         slca::estimate(data=data)
       par<- slca::param(obj)
 
-      self$results$text2$setContent(par)
+      #self$results$text2$setContent(par)
      
+         }   
+      
      
-   }   
-      
-      
-      
-      
     #---
     #res <- private$.computeRES()
     #---   
@@ -374,8 +395,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   #    return(retlist)
   # }, 
     
-  ### Helper functions =================================     
-  # 
+  ## Helper functions =================================
+
   # .cleanData = function() {
   # 
   #   data <- list()
@@ -385,12 +406,12 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   #     for (cov in self$options$covs)
   #       data[[cov]] <- jmvcore::toNumeric(self$data[[cov]])
   # 
-  #   for (var in self$options$vars)
-  # 
-  #     data[[var]] <- jmvcore::toNumeric(self$data[[var]])
-  # 
-  #   attr(data, 'row.names') <- seq_len(length(data[[1]]))
-  #   attr(data, 'class') <- 'data.frame'
+  #   # for (var in self$options$vars)
+  #   # 
+  #   #   data[[var]] <- jmvcore::toNumeric(self$data[[var]])
+  #   # 
+  #   # attr(data, 'row.names') <- seq_len(length(data[[1]]))
+  #   # attr(data, 'class') <- 'data.frame'
   # 
   #   if( !is.null(self$options$covs))
   #     for (cov in self$options$covs)

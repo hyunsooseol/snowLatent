@@ -43,7 +43,7 @@ children:
             height: small
             isTarget: true
   - type: CollapseBox
-    label: LCA regression using 3-step approach
+    label: 'LCA regression using 3-step approach'
     margin: normal
     collapsed: true
     children:
@@ -61,12 +61,16 @@ children:
                 name: form1
                 format: string
                 stretchFactor: 2
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
           - type: LayoutBox
             margin: large
             style: inline
-            children:  
+            children:
               - type: Label
-                label: 'Save'
+                label: Save
                 children:
                   - name: nc
                     type: TextBox
@@ -77,23 +81,23 @@ children:
                   - type: Output
                     name: post
               - type: Label
-                label: 'Additional output'
-                children:                  
+                label: Additional output
+                children:
                   - type: CheckBox
                     name: par
               - type: LayoutBox
                 margin: large
                 style: inline
                 children:
-                  - type: Label 
-                    label: 'Regression'
-                    children: 
+                  - type: Label
+                    label: Regression
+                    children:
                       - type: ComboBox
                         name: method
                       - type: CheckBox
-                        name: reg      
+                        name: reg
   - type: CollapseBox
-    label: Latent Transition Analysis
+    label: 'Latent Transition Analysis'
     collapsed: true
     stretchFactor: 1
     children:

@@ -9,7 +9,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             factors = list(
                 list(label="lc1[2]", vars=list())),
             covs = NULL,
-            form1 = "lc1 ~ SEX",
+            form1 = "lc1 ~ SEX+RACE",
             method = "naive",
             cons = "cl1,cl2",
             nc = 2,
@@ -54,7 +54,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..form1 <- jmvcore::OptionString$new(
                 "form1",
                 form1,
-                default="lc1 ~ SEX")
+                default="lc1 ~ SEX+RACE")
             private$..method <- jmvcore::OptionList$new(
                 "method",
                 method,
@@ -128,7 +128,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$.items[["post"]],
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
-        text2 = function() private$.items[["text2"]]),
+        text2 = function() private$.items[["text2"]],
+        text3 = function() private$.items[["text3"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -168,7 +169,11 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Regression using 3-step approach"))}))
+                title="Regression using 3-step approach"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text3",
+                title="Wald"))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -211,6 +216,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' @export
@@ -219,7 +225,7 @@ lta <- function(
     factors = list(
                 list(label="lc1[2]", vars=list())),
     covs,
-    form1 = "lc1 ~ SEX",
+    form1 = "lc1 ~ SEX+RACE",
     method = "naive",
     cons = "cl1,cl2",
     nc = 2,
