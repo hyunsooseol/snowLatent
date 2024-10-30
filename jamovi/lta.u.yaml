@@ -80,11 +80,6 @@ children:
                     name: member
                   - type: Output
                     name: post
-              - type: Label
-                label: Additional output
-                children:
-                  - type: CheckBox
-                    name: par
               - type: LayoutBox
                 margin: large
                 style: inline
@@ -96,6 +91,11 @@ children:
                         name: method
                       - type: CheckBox
                         name: reg
+              - type: Label
+                label: Additional output
+                children:
+                  - type: CheckBox
+                    name: par
   - type: CollapseBox
     label: 'Latent Transition Analysis'
     collapsed: true
