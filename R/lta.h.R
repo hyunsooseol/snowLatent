@@ -7,22 +7,14 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             factors = list(
-                list(label="l1[1]", vars=list())),
+                list(label="lc1[2]", vars=list())),
             covs = NULL,
             form1 = "lc1 ~ SEX",
             method = "naive",
             cons = "cl1,cl2",
-            fit = FALSE,
-            est = FALSE,
-            desc = TRUE,
-            cp = FALSE,
-            plot1 = FALSE,
-            plot = FALSE,
-            raw = "FALSE",
-            width = 500,
-            height = 500,
-            width1 = 500,
-            height1 = 500, ...) {
+            nc = 2,
+            par = FALSE,
+            reg = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -34,7 +26,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "factors",
                 factors,
                 default=list(
-                    list(label="l1[1]", vars=list())),
+                    list(label="lc1[2]", vars=list())),
                 template=jmvcore::OptionGroup$new(
                     "factors",
                     NULL,
@@ -75,73 +67,34 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cons",
                 cons,
                 default="cl1,cl2")
-            private$..fit <- jmvcore::OptionBool$new(
-                "fit",
-                fit,
+            private$..nc <- jmvcore::OptionInteger$new(
+                "nc",
+                nc,
+                min=2,
+                default=2)
+            private$..member <- jmvcore::OptionOutput$new(
+                "member")
+            private$..post <- jmvcore::OptionOutput$new(
+                "post")
+            private$..par <- jmvcore::OptionBool$new(
+                "par",
+                par,
                 default=FALSE)
-            private$..est <- jmvcore::OptionBool$new(
-                "est",
-                est,
+            private$..reg <- jmvcore::OptionBool$new(
+                "reg",
+                reg,
                 default=FALSE)
-            private$..desc <- jmvcore::OptionBool$new(
-                "desc",
-                desc,
-                default=TRUE)
-            private$..cp <- jmvcore::OptionBool$new(
-                "cp",
-                cp,
-                default=FALSE)
-            private$..mem <- jmvcore::OptionOutput$new(
-                "mem")
-            private$..plot1 <- jmvcore::OptionBool$new(
-                "plot1",
-                plot1,
-                default=FALSE)
-            private$..plot <- jmvcore::OptionBool$new(
-                "plot",
-                plot,
-                default=FALSE)
-            private$..raw <- jmvcore::OptionList$new(
-                "raw",
-                raw,
-                options=list(
-                    "FALSE",
-                    "TRUE"),
-                default="FALSE")
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
             self$.addOption(private$..form1)
             self$.addOption(private$..method)
             self$.addOption(private$..cons)
-            self$.addOption(private$..fit)
-            self$.addOption(private$..est)
-            self$.addOption(private$..desc)
-            self$.addOption(private$..cp)
-            self$.addOption(private$..mem)
-            self$.addOption(private$..plot1)
-            self$.addOption(private$..plot)
-            self$.addOption(private$..raw)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
+            self$.addOption(private$..nc)
+            self$.addOption(private$..member)
+            self$.addOption(private$..post)
+            self$.addOption(private$..par)
+            self$.addOption(private$..reg)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -149,36 +102,22 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         form1 = function() private$..form1$value,
         method = function() private$..method$value,
         cons = function() private$..cons$value,
-        fit = function() private$..fit$value,
-        est = function() private$..est$value,
-        desc = function() private$..desc$value,
-        cp = function() private$..cp$value,
-        mem = function() private$..mem$value,
-        plot1 = function() private$..plot1$value,
-        plot = function() private$..plot$value,
-        raw = function() private$..raw$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value),
+        nc = function() private$..nc$value,
+        member = function() private$..member$value,
+        post = function() private$..post$value,
+        par = function() private$..par$value,
+        reg = function() private$..reg$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
         ..form1 = NA,
         ..method = NA,
         ..cons = NA,
-        ..fit = NA,
-        ..est = NA,
-        ..desc = NA,
-        ..cp = NA,
-        ..mem = NA,
-        ..plot1 = NA,
-        ..plot = NA,
-        ..raw = NA,
-        ..width = NA,
-        ..height = NA,
-        ..width1 = NA,
-        ..height1 = NA)
+        ..nc = NA,
+        ..member = NA,
+        ..post = NA,
+        ..par = NA,
+        ..reg = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -186,10 +125,10 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        post = function() private$.items[["post"]],
+        member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
-        text2 = function() private$.items[["text2"]],
-        text3 = function() private$.items[["text3"]],
-        text4 = function() private$.items[["text4"]]),
+        text2 = function() private$.items[["text2"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -203,22 +142,33 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="post",
+                title="Posterior probabilities",
+                measureType="continuous",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc")))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="member",
+                title="Class membership",
+                measureType="nominal",
+                varTitle="Membership",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Regression using 3-step approach"))
+                title="Estimated parameters"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Standard errors"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text3",
-                title="Wald"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text4",
-                title="p value"))}))
+                title="Regression using 3-step approach"))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -251,46 +201,30 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param form1 .
 #' @param method .
 #' @param cons .
-#' @param fit .
-#' @param est .
-#' @param desc .
-#' @param cp .
-#' @param plot1 .
-#' @param plot .
-#' @param raw .
-#' @param width .
-#' @param height .
-#' @param width1 .
-#' @param height1 .
+#' @param nc .
+#' @param par .
+#' @param reg .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' @export
 lta <- function(
     data,
     factors = list(
-                list(label="l1[1]", vars=list())),
+                list(label="lc1[2]", vars=list())),
     covs,
     form1 = "lc1 ~ SEX",
     method = "naive",
     cons = "cl1,cl2",
-    fit = FALSE,
-    est = FALSE,
-    desc = TRUE,
-    cp = FALSE,
-    plot1 = FALSE,
-    plot = FALSE,
-    raw = "FALSE",
-    width = 500,
-    height = 500,
-    width1 = 500,
-    height1 = 500) {
+    nc = 2,
+    par = FALSE,
+    reg = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -308,17 +242,9 @@ lta <- function(
         form1 = form1,
         method = method,
         cons = cons,
-        fit = fit,
-        est = est,
-        desc = desc,
-        cp = cp,
-        plot1 = plot1,
-        plot = plot,
-        raw = raw,
-        width = width,
-        height = height,
-        width1 = width1,
-        height1 = height1)
+        nc = nc,
+        par = par,
+        reg = reg)
 
     analysis <- ltaClass$new(
         options = options,

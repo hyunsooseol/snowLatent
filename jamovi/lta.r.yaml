@@ -9,19 +9,39 @@ items:
       type: Html
       visible: True
 
+    - name: post
+      title: 'Posterior probabilities'
+      type: Output
+      measureType: continuous
+      clearWith:
+        - factors
+        - vars
+        - nc
+  
+    - name: member
+      title: 'Class membership'
+      type: Output
+      measureType: nominal
+      varTitle: Membership
+      clearWith:
+        - factors
+        - vars
+        - nc
+
     - name:  text1
-      title: 'Regression using 3-step approach'
+      title: 'Estimated parameters'
       type:  Preformatted
 
     - name:  text2
-      title: 'Standard errors'
+      title: 'Regression using 3-step approach'
       type:  Preformatted
 
-    - name:  text3
-      title: 'Wald'
-      type:  Preformatted
+    # - name:  text3
+    #   title: 'Wald'
+    #   type:  Preformatted
+    # 
+    # - name:  text4
+    #   title: 'p value'
+    #   type:  Preformatted
 
-    - name:  text4
-      title: 'p value'
-      type:  Preformatted
 ...

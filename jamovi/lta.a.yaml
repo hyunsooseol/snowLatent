@@ -13,7 +13,7 @@ options:
       title: Factors
       type: Array
       default:
-        - label: l1[1]
+        - label: lc1[2]
           vars: []
       template:
           type: Group
@@ -64,68 +64,27 @@ options:
       type: String
       default: 'cl1,cl2'
  
-    - name: fit
-      title: 'Model fit'
-      type: Bool
-      default: FALSE
-
-    - name: est
-      title: 'Estimates'
-      type: Bool
-      default: FALSE
-
-    - name: desc
-      title: 'Descriptives'
-      type: Bool
-      default: TRUE
-
-    - name: cp
-      title: Class size 
-      type: Bool 
-      default: FALSE
-
-    - name: mem
-      title: Person Membership
-      type: Output
-
-    - name: plot1
-      title: 'Density'
-      type: Bool
-      default: FALSE  
-
-    - name: plot
-      title: 'Trajectory'
-      type: Bool
-      default: FALSE  
-
-    - name: raw
-      title: 'Raw data'
-      type: List
-      options:
-        - title: 'FALSE'
-          name:  'FALSE'
-        - title: 'TRUE'
-          name:  'TRUE'
-      default: 'FALSE'  
-
-    - name: width
+    - name: nc
+      title: Class
       type: Integer
-      title: "Width "
-      default: 500
+      min: 2
+      default: 2
+
+    - name: member
+      title: Class membership
+      type: Output   
+
+    - name: post
+      title: Posterior probability 
+      type: Output  
       
-    - name: height
-      type: Integer
-      title: "Height"
-      default: 500
+    - name: par
+      title: 'Estimated parameters'
+      type: Bool
+      default: FALSE
 
-    - name: width1
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height1
-      type: Integer
-      title: "X"
-      default: 500   
-
+    - name: reg
+      title: 'Coefficients'
+      type: Bool
+      default: FALSE
 ...

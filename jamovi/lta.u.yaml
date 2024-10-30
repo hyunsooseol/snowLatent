@@ -43,7 +43,7 @@ children:
             height: small
             isTarget: true
   - type: CollapseBox
-    label: 'LCA regression using 3-step approach'
+    label: LCA regression using 3-step approach
     margin: normal
     collapsed: true
     children:
@@ -60,9 +60,38 @@ children:
               - type: TextBox
                 name: form1
                 format: string
-                stretchFactor: 3
-              - type: ComboBox
-                name: method
+                stretchFactor: 2
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:  
+              - type: Label
+                label: 'Save'
+                children:
+                  - name: nc
+                    type: TextBox
+                    label: Class
+                    format: number
+                  - type: Output
+                    name: member
+                  - type: Output
+                    name: post
+              - type: Label
+                label: 'Additional output'
+                children:                  
+                  - type: CheckBox
+                    name: par
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: Label 
+                    label: 'Regression'
+                    children: 
+                      - type: ComboBox
+                        name: method
+                      - type: CheckBox
+                        name: reg      
   - type: CollapseBox
     label: Latent Transition Analysis
     collapsed: true
@@ -78,57 +107,4 @@ children:
             stretchFactor: 3
           - type: Label
             label: Tables
-            children:
-              - type: LayoutBox
-                margin: large
-                children:
-                  - type: CheckBox
-                    name: desc
-                  - type: CheckBox
-                    name: fit
-                  - type: CheckBox
-                    name: est
-                  - type: CheckBox
-                    name: cp
-              - type: Label
-                label: Save
-                children:
-                  - type: Output
-                    name: mem
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 1
-          row: 0
-        fitToGrid: true
-        children:
-          - type: Label
-            label: Plots
-            children:
-              - type: CheckBox
-                name: plot1
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width1
-                    format: number
-                    enable: (plot1)
-                  - type: TextBox
-                    name: height1
-                    format: number
-                    enable: (plot1)
-              - type: CheckBox
-                name: plot
-                children:
-                  - type: ComboBox
-                    name: raw
-                    enable: (plot)
-                  - type: TextBox
-                    name: width
-                    format: number
-                    enable: (plot)
-                  - type: TextBox
-                    name: height
-                    format: number
-                    enable: (plot)
+            children: []

@@ -44,19 +44,19 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         #   )
         # )
 
-        if(isTRUE(self$options$plot1)){
-          
-          width <- self$options$width1
-          height <- self$options$height1
-          self$results$plot1$setSize(width, height)
-        }
-        
-        if(isTRUE(self$options$plot)){
-          
-          width <- self$options$width
-          height <- self$options$height
-          self$results$plot$setSize(width, height)
-        }      
+        # if(isTRUE(self$options$plot1)){
+        #   
+        #   width <- self$options$width1
+        #   height <- self$options$height1
+        #   self$results$plot1$setSize(width, height)
+        # }
+        # 
+        # if(isTRUE(self$options$plot)){
+        #   
+        #   width <- self$options$width
+        #   height <- self$options$height
+        #   self$results$plot$setSize(width, height)
+        # }      
  
       },
       
@@ -65,7 +65,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
     # if (is.null(self$options$factors) ||
     #     length(self$options$factors) < 3) return()
-    
     
      data <- self$data
      data <- jmvcore::naOmit(data)
@@ -81,6 +80,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      nfactors <- length(factors)
  
   if(nfactors==1){    
+      
       vars <- factors[[1]][["vars"]]
       factors <- factors[[1]]$label
     
@@ -90,12 +90,68 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       formula <- as.formula(paste0(factors, ' ~ ', ind))
       
       
-     library(magrittr)
+        library(magrittr)
         set.seed(1234)
         obj<- slca::slca(formula) %>%
               slca::estimate(data=data)
         par<- slca::param(obj)
+      
+      # Posterior prob. and membership---
+      #obj[["posterior"]][["marginal"]][["lc1"]]
+      pos <- obj[["posterior"]][["marginal"]][["lc1"]]
+      #self$results$text1$setContent(pos)
+      
+      # class membership---
+      mem <- as.numeric(factor(apply(pos, 1, which.max)))
+      mem<- as.factor(mem)
+      
+      # Class membership---
+      if(isTRUE(self$options$member)){
         
+        if (self$options$member
+            && self$results$member$isNotFilled()) {
+          
+          self$results$member$setValues(mem)
+          self$results$member$setRowNums(rownames(data))
+        }
+      }
+      
+      # Posterior prob.---
+      
+      if(isTRUE(self$options$post)){
+    
+        if (self$options$post
+            && self$results$post$isNotFilled()) {
+          
+          keys <- 1:self$options$nc
+          measureTypes <- rep("continuous", self$options$nc)
+          
+          titles <- paste("Class", keys)
+          descriptions <- paste("Class", keys)
+          
+          self$results$post$set(
+            keys=keys,
+            titles=titles,
+            descriptions=descriptions,
+            measureTypes=measureTypes
+          )                
+          
+          self$results$post$setRowNums(rownames(data))
+          
+          for (i in 1:self$options$nc) {
+            scores <- as.numeric(pos[, i])
+            self$results$post$setValues(index=i, scores)
+          }
+        }
+      } 
+      
+   # Additional outputs: Estimated parameters---
+      
+      if(isTRUE(self$options$par)){
+      self$results$text1$setContent(par) 
+      }
+      
+      # Regression---
        if(length(self$options$covs)>=1){
         #LCA regression---
         #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
@@ -107,14 +163,15 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                              form1,
                              method=self$options$method,
                              data=data)
-         self$results$text1$setContent(reg)
+         #self$results$text1$setContent(reg)
        
         }  
   
         
         }    
        
-   if(nfactors>1){
+   
+     if(nfactors>1){
      
      # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
      formulas <- list()
