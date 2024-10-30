@@ -155,10 +155,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        if(self$options$covs>=1){
         #LCA regression---
         #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
-       
+         #form1 <- lc1 ~ SEX + RACE
          form1 <- self$options$form1
          form1 <- as.formula(form1)
-         
+         self$results$text2$setContent(form1)
          # # y~a+b+c---
          # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
          # ind <- paste0(vars, collapse = '+')
@@ -166,7 +166,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          
          reg <- slca::regress(obj, 
-                             form1,
+                              form1,
                              method=self$options$method,
                              data=data)
          
@@ -181,7 +181,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
          
          reg.df <- data.frame(
-           class = class_info[1:length(coef)],  # class 변수 추가
+           class = class_info[1:length(coef)],  
            variable = variable_names,
            coef = as.vector(coef),
            std.err = se,
@@ -189,7 +189,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            p.value = pval
          )
          
-         self$results$text2$setContent(reg.df)
+         self$results$text3$setContent(reg.df)
          
         }  
   

@@ -9,7 +9,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             factors = list(
                 list(label="lc1[2]", vars=list())),
             covs = NULL,
-            form1 = "lc1 ~ SEX+RACE",
+            form1 = "lc1 ~ SEX",
             method = "naive",
             cons = "cl1,cl2",
             nc = 2,
@@ -54,7 +54,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..form1 <- jmvcore::OptionString$new(
                 "form1",
                 form1,
-                default="lc1 ~ SEX+RACE")
+                default="lc1 ~ SEX")
             private$..method <- jmvcore::OptionList$new(
                 "method",
                 method,
@@ -225,7 +225,7 @@ lta <- function(
     factors = list(
                 list(label="lc1[2]", vars=list())),
     covs,
-    form1 = "lc1 ~ SEX+RACE",
+    form1 = "lc1 ~ SEX",
     method = "naive",
     cons = "cl1,cl2",
     nc = 2,

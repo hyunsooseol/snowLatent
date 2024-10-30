@@ -44,7 +44,7 @@ options:
     - name: form1
       title: 'Regression'
       type: String
-      default: "lc1 ~ SEX"
+      default: 'lc1 ~ SEX'
   
     - name: method
       title: 'Method'
