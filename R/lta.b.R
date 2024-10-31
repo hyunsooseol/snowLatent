@@ -210,78 +210,65 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
   if(nfactors>1){
      
-     # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
-     formulas <- list()
-     
-     for (factor in factors) {
-       vars <- factor[["vars"]]
-       label <- factor[["label"]]
-       
-       # y~a+b+c---
-       vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-       ind <- paste0(vars, collapse = '+')
-       formula <- as.formula(paste0(label, ' ~ ', ind))
-       
-       # # Store the formula in the list
-       # formulas[[label]] <- formula
-       
-       # Convert the string to a formula object and store it
-       formulas[[label]] <- as.formula(formula)
-       
-     }
-     
-     # # Assuming 'formulas' is a list of formulas created previously
-     # formula_strings <- sapply(formulas, function(f) deparse(f))
+    # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
+    formulas <- list()
+    
+    for (factor in factors) {
+      vars <- factor[["vars"]]
+      label <- factor[["label"]]
       
-     # # Combine the formulas into a single string with commas
-     # combined_formulas <- paste(formula_strings, collapse = ", ")
-     
-     # Create a data frame or matrix with rbind
-     #lta.formula <- rbind(combined_formulas)
-     
-     #self$results$text2$setContent(formulas)
-     
-     
-     #connecting factors with '~'---
-     # Assuming 'factors' is a list of lists with each sublist containing 'label'
-     factor_labels <- sapply(factors, function(factor) factor[["label"]]) 
-     
-     create_sequential_formulas <- function(factor_labels) {
-     
-       formulas <- c()
-       
-       # Loop through the factor labels to create formulas l1~l2, l2~l3, ..., ln-1~ln
-       for (i in seq_along(factor_labels)[-length(factor_labels)]) {
-        
-         formula <- paste0(factor_labels[i], " ~ ", factor_labels[i + 1])
-        
-         formulas <- c(formulas, formula)
-       }
-       
-       return(formulas)  
-     }
-     
-     relation <- create_sequential_formulas(factor_labels)
-     #  Remove brackets from the formula
-     relation <- gsub("\\[.*?\\]", "", relation)
-     relation <- as.formula(relation)
-     
-     formula_list <- list(formulas[[1]], formulas[[2]], relation)
-       
-     #self$results$text3$setContent(formula_list)
-     
+      # y ~ a + b + c ---
+      vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+      ind <- paste0(vars, collapse = '+')
+      formula <- as.formula(paste0(label, ' ~ ', ind))
+      
+      # Convert the string to a formula object and store it
+      formulas[[label]] <- as.formula(formula)
+    }
+    
+    # Sequential relations을 만듭니다.
+    create_sequential_relations <- function(formulas) {
+      relations <- c()
+      
+      for (i in seq_along(formulas)[-length(formulas)]) {
+        # lc1[2], lc2[2], lc3[2]에서 변수명만 추출 (대괄호와 그 안의 숫자만 제거)
+        left <- sub("\\[.*?\\]", "", formulas[i])   # lc1[2]에서 lc1만 추출
+        left <- sub(" ~.*", "", left)               # lc1 뒤에 나오는 식 제거
+        right <- sub("\\[.*?\\]", "", formulas[i + 1]) # lc2[2]에서 lc2만 추출
+        right <- sub(" ~.*", "", right)             # lc2 뒤에 나오는 식 제거
+        relation <- paste0(left, " ~ ", right)
+        relations <- c(relations, as.formula(relation))  # 관계식을 formula로 변환 후 저장
+      }
+      
+      return(relations)
+    }
+    
+    # Sequential relations 생성
+    sequential_relations <- create_sequential_relations(formulas)
+    
+    # 모든 식을 리스트로 저장 (중복된 리스트 구조 없이)
+    form1 <- c(formulas, sequential_relations)
+    
+    #self$results$text3$setContent(form1)
+    
      # Defining constraints---
-     cons <- self$options$cons
-     cons1 <- strsplit(self$options$cons, ',')[[1]]
+      cons <- self$options$cons
+      cons1 <- strsplit(self$options$cons, ',')[[1]]
     
      
       library(magrittr)
       set.seed(1234)
-      obj<- slca::slca(formula = formula_list, constraints = cons1) %>%
+      obj<- slca::slca(formula = form1,
+                       constraint=cons1) %>%
         slca::estimate(data=data)
-      par<- slca::param(obj)
+      par1<- slca::param(obj)
 
-      #self$results$text2$setContent(par)
+      #LTA: Estimated parameters---
+      if(isTRUE(self$options$par1)){
+        self$results$text2$setContent(par1) 
+      }
+      
+     
      
          }   
       

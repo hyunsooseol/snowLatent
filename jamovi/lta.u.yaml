@@ -87,7 +87,7 @@ children:
                   - type: CheckBox
                     name: par
   - type: CollapseBox
-    label: Latent Transition Analysis
+    label: 'Latent Transition Analysis'
     collapsed: true
     stretchFactor: 1
     children:
@@ -99,6 +99,13 @@ children:
             name: cons
             format: string
             stretchFactor: 3
+      - type: LayoutBox
+        margin: large
+        children:
           - type: Label
-            label: Tables
-            children: []
+            label: 'Tables'
+            children:
+              - type: CheckBox
+                name: par1 
+ 
+ 

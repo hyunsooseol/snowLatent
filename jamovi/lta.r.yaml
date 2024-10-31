@@ -19,7 +19,7 @@ items:
         - nc
   
     - name: reg
-      title: 'Logistic regression using 3-step approach'
+      title: 'LCA: Logistic regression using 3-step approach'
       type: Table
       visible: (reg)
       refs: slca
@@ -68,7 +68,7 @@ items:
       type:  Preformatted
 
     - name:  text2
-      title: ''
+      title: 'LTA: Estimated parameters'
       type:  Preformatted
  
     - name:  text3

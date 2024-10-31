@@ -62,7 +62,7 @@ options:
     - name: cons
       title: 'Constraints'
       type: String
-      default: 'cl1,cl2'
+      default: 'lc1,lc2, lc3'
  
     - name: nc
       title: Class
@@ -85,6 +85,11 @@ options:
 
     - name: reg
       title: 'Coefficients'
+      type: Bool
+      default: FALSE
+
+    - name: par1
+      title: 'Estimated parameters'
       type: Bool
       default: FALSE
 ...
