@@ -6,69 +6,56 @@
 \usage{
 lta(
   data,
-  vars,
+  factors = list(list(label = "L1[2]", vars = list())),
   covs,
-  form1 =
-    "lc(6) ~ ESMK_98+FSMK_98+DSMK_98+HSMK_98+EDRK_98+CDRK_98+WDRK_98+BDRK_98+EMRJ_98+CMRJ_98+OMRJ_98+SMRJ_98",
-  form2 = "lc ~ SEX",
-  method = "naive",
-  fit = FALSE,
-  est = FALSE,
-  desc = TRUE,
-  cp = FALSE,
-  plot1 = FALSE,
-  plot = FALSE,
-  raw = "FALSE",
-  width = 500,
-  height = 500,
-  width1 = 500,
-  height1 = 500
+  form1 = "L1 ~ SEX+RACE",
+  method = "ML",
+  cons = "L1,L2, L3",
+  nc = 2,
+  par = FALSE,
+  reg = FALSE,
+  par1 = FALSE
 )
 }
 \arguments{
 \item{data}{.}
 
-\item{vars}{.}
+\item{factors}{a list containing named lists that define the \code{label}
+of the factor and the \code{vars} that belong to that factor}
 
 \item{covs}{.}
 
 \item{form1}{.}
 
-\item{form2}{.}
-
 \item{method}{.}
 
-\item{fit}{.}
+\item{cons}{.}
 
-\item{est}{.}
+\item{nc}{.}
 
-\item{desc}{.}
+\item{par}{.}
 
-\item{cp}{.}
+\item{reg}{.}
 
-\item{plot1}{.}
-
-\item{plot}{.}
-
-\item{raw}{.}
-
-\item{width}{.}
-
-\item{height}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
+\item{par1}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$post} \tab \tab \tab \tab \tab an output \cr
+  \code{results$reg} \tab \tab \tab \tab \tab a table \cr
+  \code{results$member} \tab \tab \tab \tab \tab an output \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 }
+
+Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+
+\code{results$reg$asDF}
+
+\code{as.data.frame(results$reg)}
 }
 \description{
 Latent Transition Analysis

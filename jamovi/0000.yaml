@@ -82,13 +82,13 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
-  - name: nyts
-    path: nlsy97(LCA).omv
+  - name: nlsy97_LCA
+    path: nlsy97_LCA.omv
     description: the National Longitudinal Survey of Youth 1997
     tags:
       - LCA Regression
-  - name: nyts
-    path: nlsy97(LTA).omv
+  - name: nlsy97_LTA
+    path: nlsy97_LTA.omv
     description: the National Longitudinal Survey of Youth 1997
     tags:
       - LTA Analysis

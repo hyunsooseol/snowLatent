@@ -13,7 +13,7 @@ options:
       title: Factors
       type: Array
       default:
-        - label: lc1[2]
+        - label: L1[2]
           vars: []
       template:
           type: Group
@@ -45,7 +45,7 @@ options:
     - name: form1
       title: 'Formula'
       type: String
-      default: 'lc1 ~ SEX+RACE'
+      default: 'L1 ~ SEX+RACE'
   
     - name: method
       title: 'Method'
@@ -62,7 +62,7 @@ options:
     - name: cons
       title: 'Constraints'
       type: String
-      default: 'lc1,lc2, lc3'
+      default: 'L1,L2, L3'
  
     - name: nc
       title: Class

@@ -7,11 +7,11 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             factors = list(
-                list(label="lc1[2]", vars=list())),
+                list(label="L1[2]", vars=list())),
             covs = NULL,
-            form1 = "lc1 ~ SEX+RACE",
+            form1 = "L1 ~ SEX+RACE",
             method = "ML",
-            cons = "lc1,lc2, lc3",
+            cons = "L1,L2, L3",
             nc = 2,
             par = FALSE,
             reg = FALSE,
@@ -27,7 +27,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "factors",
                 factors,
                 default=list(
-                    list(label="lc1[2]", vars=list())),
+                    list(label="L1[2]", vars=list())),
                 template=jmvcore::OptionGroup$new(
                     "factors",
                     NULL,
@@ -55,7 +55,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..form1 <- jmvcore::OptionString$new(
                 "form1",
                 form1,
-                default="lc1 ~ SEX+RACE")
+                default="L1 ~ SEX+RACE")
             private$..method <- jmvcore::OptionList$new(
                 "method",
                 method,
@@ -67,7 +67,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..cons <- jmvcore::OptionString$new(
                 "cons",
                 cons,
-                default="lc1,lc2, lc3")
+                default="L1,L2, L3")
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -283,11 +283,11 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 lta <- function(
     data,
     factors = list(
-                list(label="lc1[2]", vars=list())),
+                list(label="L1[2]", vars=list())),
     covs,
-    form1 = "lc1 ~ SEX+RACE",
+    form1 = "L1 ~ SEX+RACE",
     method = "ML",
-    cons = "lc1,lc2, lc3",
+    cons = "L1,L2, L3",
     nc = 2,
     par = FALSE,
     reg = FALSE,

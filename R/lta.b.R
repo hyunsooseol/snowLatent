@@ -35,7 +35,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>slca</b> R package is described in the <a href="https://CRAN.R-project.org/package=slca" target = "_blank">page</a>.</li>',
-              '<li>lc1[k]: <b>k</b> denotes the number of latent classes for the first latent class variable <b>lc1</b>.</li>',
+              '<li><b>L1[k]</b>: <b>k</b> denotes the number of latent classes for the first latent class variable <b>L1</b>.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
 
@@ -68,8 +68,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   if(nfactors==1){    
       
       vars <- factors[[1]][["vars"]]
-      factors <- factors[[1]]$label
-    
+      factors <- factors[[1]]$label  #L1[2]
+     
       # y~a+b+c---
       vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
       ind <- paste0(vars, collapse = '+')
@@ -89,9 +89,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         }
         
       # Posterior prob. and membership---
-      #obj[["posterior"]][["marginal"]][["lc1"]]
-      pos <- obj[["posterior"]][["marginal"]][["lc1"]]
-      #self$results$text1$setContent(pos)
+      #obj[["posterior"]][["marginal"]][["L1"]]
+      f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
+      pos <- obj[["posterior"]][["marginal"]][[f]]
+      #self$results$text3$setContent(pos)
       
       # class membership---
       mem <- as.numeric(factor(apply(pos, 1, which.max)))
