@@ -9,8 +9,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             factors = list(
                 list(label="lc1[2]", vars=list())),
             covs = NULL,
-            form1 = "lc1 ~ SEX",
-            method = "naive",
+            form1 = "lc1 ~ SEX+RACE",
+            method = "ML",
             cons = "cl1,cl2",
             nc = 2,
             par = FALSE,
@@ -54,7 +54,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..form1 <- jmvcore::OptionString$new(
                 "form1",
                 form1,
-                default="lc1 ~ SEX")
+                default="lc1 ~ SEX+RACE")
             private$..method <- jmvcore::OptionList$new(
                 "method",
                 method,
@@ -62,7 +62,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "naive",
                     "BCH",
                     "ML"),
-                default="naive")
+                default="ML")
             private$..cons <- jmvcore::OptionString$new(
                 "cons",
                 cons,
@@ -126,6 +126,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         post = function() private$.items[["post"]],
+        reg = function() private$.items[["reg"]],
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
         text2 = function() private$.items[["text2"]],
@@ -152,6 +153,47 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "factors",
                     "vars",
                     "nc")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="reg",
+                title="Logistic regression using 3-step approach",
+                visible="(reg)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "covs",
+                    "method"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="cla", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="va", 
+                        `title`="Variable", 
+                        `type`="text"),
+                    list(
+                        `name`="co", 
+                        `title`="Coefficient", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="Std.error", 
+                        `type`="number"),
+                    list(
+                        `name`="wald", 
+                        `title`="Wald", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="member",
@@ -165,15 +207,15 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Estimated parameters"))
+                title="LCA: Estimated parameters"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Regression using 3-step approach"))
+                title=""))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
-                title="Wald"))}))
+                title=""))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -213,11 +255,18 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$reg$asDF}
+#'
+#' \code{as.data.frame(results$reg)}
 #'
 #' @export
 lta <- function(
@@ -225,8 +274,8 @@ lta <- function(
     factors = list(
                 list(label="lc1[2]", vars=list())),
     covs,
-    form1 = "lc1 ~ SEX",
-    method = "naive",
+    form1 = "lc1 ~ SEX+RACE",
+    method = "ML",
     cons = "cl1,cl2",
     nc = 2,
     par = FALSE,

@@ -152,19 +152,13 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       } 
  
       # Regression---
-       if(self$options$covs>=1){
+       if(length(self$options$covs)>=1){
         #LCA regression---
         #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
-         #form1 <- lc1 ~ SEX + RACE
          form1 <- self$options$form1
          form1 <- as.formula(form1)
-         self$results$text2$setContent(form1)
-         # # y~a+b+c---
-         # vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-         # ind <- paste0(vars, collapse = '+')
-         # formula <- as.formula(paste0(label, ' ~ ', ind))
-         
-         
+         #self$results$text2$setContent(form1)
+        
          reg <- slca::regress(obj, 
                               form1,
                              method=self$options$method,
@@ -189,15 +183,32 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            p.value = pval
          )
          
-         self$results$text3$setContent(reg.df)
-         
-        }  
-  
+      #self$results$text3$setContent(reg.df)
+      # Logistic regression table---
+      
+      table <- self$results$reg
+      
+      df <- as.data.frame(reg.df)
+      names <- dimnames(df)[[1]]
+
+      for (name in names) {
+          row <- list()
         
+        row[["cla"]]   <-  df[name, 1]
+        row[["va"]]   <-  df[name, 2]
+        row[["co"]] <-  df[name, 3]
+        row[["se"]] <-  df[name, 4]
+        row[["wald"]] <- df[name, 5]
+        row[["p"]] <-   df[name, 6]
+        
+        table$addRow(rowKey=name, values=row)
+        
+      }
+      
         }    
-       
+  } 
    
-     if(nfactors>1){
+  if(nfactors>1){
      
      # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
      formulas <- list()
@@ -274,7 +285,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
          }   
       
-     
+  }  
     #---
     #res <- private$.computeRES()
     #---   
@@ -304,7 +315,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     #     }
    
     
-    }
+ 
 
   # .computeRES = function() {
   #   

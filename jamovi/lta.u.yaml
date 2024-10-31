@@ -51,53 +51,43 @@ children:
         margin: large
         stretchFactor: 1
         children:
-          - type: LayoutBox
-            cell:
-              column: 0
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: TextBox
-                name: form1
-                format: string
-                stretchFactor: 2
+          - type: TextBox
+            name: form1
+            format: string
+            stretchFactor: 2
       - type: LayoutBox
         margin: large
-        stretchFactor: 1
+        style: inline
         children:
+          - type: Label
+            label: Save
+            children:
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number
+              - type: Output
+                name: member
+              - type: Output
+                name: post
           - type: LayoutBox
             margin: large
             style: inline
             children:
               - type: Label
-                label: Save
+                label: 'Regression'
                 children:
-                  - name: nc
-                    type: TextBox
-                    label: Class
-                    format: number
-                  - type: Output
-                    name: member
-                  - type: Output
-                    name: post
-              - type: LayoutBox
-                margin: large
-                style: inline
-                children:
-                  - type: Label
-                    label: Regression
-                    children:
-                      - type: ComboBox
-                        name: method
-                      - type: CheckBox
-                        name: reg
+                  - type: ComboBox
+                    name: method
+                  - type: CheckBox
+                    name: reg
               - type: Label
                 label: Additional output
                 children:
                   - type: CheckBox
                     name: par
   - type: CollapseBox
-    label: 'Latent Transition Analysis'
+    label: Latent Transition Analysis
     collapsed: true
     stretchFactor: 1
     children:

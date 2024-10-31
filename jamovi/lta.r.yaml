@@ -18,6 +18,41 @@ items:
         - vars
         - nc
   
+    - name: reg
+      title: 'Logistic regression using 3-step approach'
+      type: Table
+      visible: (reg)
+      refs: slca
+      clearWith:
+        - factors
+        - covs
+        - method
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: cla
+          title: Class
+          type: 'text'
+        - name: va
+          title: Variable
+          type: 'text'
+        - name: co
+          title: Coefficient 
+          type: number
+        - name: se
+          title: Std.error 
+          type: number
+        - name: wald
+          title: Wald 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
     - name: member
       title: 'Class membership'
       type: Output
@@ -29,19 +64,16 @@ items:
         - nc
 
     - name:  text1
-      title: 'Estimated parameters'
+      title: 'LCA: Estimated parameters'
       type:  Preformatted
 
     - name:  text2
-      title: 'Regression using 3-step approach'
+      title: ''
       type:  Preformatted
  
     - name:  text3
-      title: 'Wald'
+      title: ''
       type:  Preformatted
 
-    # - name:  text4
-    #   title: 'p value'
-    #   type:  Preformatted
 
 ...

@@ -41,10 +41,11 @@ options:
       permitted:
         - factor
         - numeric
+
     - name: form1
-      title: 'Regression'
+      title: 'Formula'
       type: String
-      default: 'lc1 ~ SEX'
+      default: 'lc1 ~ SEX+RACE'
   
     - name: method
       title: 'Method'
@@ -56,7 +57,7 @@ options:
           name:  'BCH'
         - title: 'ML'
           name:  'ML'  
-      default: 'naive'
+      default: 'ML'
 
     - name: cons
       title: 'Constraints'
