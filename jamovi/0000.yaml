@@ -9,8 +9,8 @@ maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 date: '2024-10-27'
 type: R
 description: >-
-  This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA
-  based on glca R package and also provides various types of profile plots.
+  This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA,
+  Latent Transition Analysis and also provides various types of profile plots.
 analyses:
   - title: Latent Class Analysis
     name: lca
@@ -30,6 +30,12 @@ analyses:
     menuGroup: snowLatent
     menuTitle: Multilevel LCA
     menuSubgroup: LCA
+  - title: Latent Transition Analysis
+    name: lta
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Latent Transition Analysis
+    menuSubgroup: LTA
   - title: Profile plot
     name: profile
     ns: snowLatent
@@ -54,11 +60,6 @@ analyses:
     menuGroup: snowLatent
     menuSubgroup: Profile
     menuTitle: Wordcloud analysis
-  - title: Latent Transition Analysis
-    name: lta
-    ns: snowLatent
-    menuGroup: snowLatent
-    menuTitle: Latent Transition Analysis
 datasets:
   - name: health
     path: health.omv
@@ -81,6 +82,16 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
+  - name: nyts
+    path: nlsy97(LCA).omv
+    description: the National Longitudinal Survey of Youth 1997
+    tags:
+      - LCA Regression
+  - name: nyts
+    path: nlsy97(LTA).omv
+    description: the National Longitudinal Survey of Youth 1997
+    tags:
+      - LTA Analysis
   - name: iris
     path: iris.omv
     description: Profile plot

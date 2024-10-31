@@ -66,10 +66,12 @@ items:
     - name:  text1
       title: 'LCA: Estimated parameters'
       type:  Preformatted
+      refs: slca
 
     - name:  text2
       title: 'LTA: Estimated parameters'
       type:  Preformatted
+      refs: slca
  
     - name:  text3
       title: ''

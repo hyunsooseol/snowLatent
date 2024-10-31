@@ -19,66 +19,52 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       
       .init = function() {
         
-        # private$.htmlwidget <- HTMLWidget$new()
-        # 
-        # if (is.null(self$data) | is.null(self$options$factors)) {
-        # 
-        #   self$results$instructions$setVisible(visible = TRUE)
-        # 
-        # }
-        # 
-        # self$results$instructions$setContent(
-        #   private$.htmlwidget$generate_accordion(
-        #     title="Instructions",
-        #     content = paste(
-        #       '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
-        #       '<div style="text-align:justify;">',
-        #       '<ul>',
-        #       '<li><b>tidySEM</b> R package is described in the <a href="https://cjvanlissa.github.io/tidySEM/articles/LCGA.html" target = "_blank">page</a>.</li>',
-        #       '<li>Please set <b>Thresholds=TRUE</b> when analyzing ordinal data.</li>',
-        #       '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowRMM/issues" target="_blank">GitHub</a>.</li>',
-        #       '</ul></div></div>'
-        # 
-        #     )
-        # 
-        #   )
-        # )
+        private$.htmlwidget <- HTMLWidget$new()
 
-        # if(isTRUE(self$options$plot1)){
-        #   
-        #   width <- self$options$width1
-        #   height <- self$options$height1
-        #   self$results$plot1$setSize(width, height)
-        # }
-        # 
-        # if(isTRUE(self$options$plot)){
-        #   
-        #   width <- self$options$width
-        #   height <- self$options$height
-        #   self$results$plot$setSize(width, height)
-        # }      
- 
+        if (is.null(self$data) | length(self$options$factors[[1]]$vars) == 0) {
+
+          self$results$instructions$setVisible(visible = TRUE)
+
+        }
+
+        self$results$instructions$setContent(
+          private$.htmlwidget$generate_accordion(
+            title="Instructions",
+            content = paste(
+              '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
+              '<div style="text-align:justify;">',
+              '<ul>',
+              '<li><b>slca</b> R package is described in the <a href="https://CRAN.R-project.org/package=slca" target = "_blank">page</a>.</li>',
+              '<li>lc1[k]: <b>k</b> denotes the number of latent classes for the first latent class variable <b>lc1</b>.</li>',
+              '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
+              '</ul></div></div>'
+
+            )
+
+          )
+        )
+
       },
       
  
   .run = function() {
 
-    # if (is.null(self$options$factors) ||
-    #     length(self$options$factors) < 3) return()
-    
      data <- self$data
      data <- jmvcore::naOmit(data)
      
      factors <- self$options$factors
-    
-     # is.list?---
-     if (!is.list(factors)) {
-       stop("factors is not a list")
-     }
      
      # Calculate the number of factors before modifying
      nfactors <- length(factors)
- 
+     
+     # #Check if factors are non-empty before proceeding
+     # if (length(factors[[1]]$vars) == 0) {
+     #   stop("Error: No variables assigned to lc1[2]. Please assign variables.")
+     # }
+     
+     if (length(factors[[1]]$vars) < 2) return()
+    
+   
   if(nfactors==1){    
       
       vars <- factors[[1]][["vars"]]
@@ -226,27 +212,27 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       formulas[[label]] <- as.formula(formula)
     }
     
-    # Sequential relations을 만듭니다.
+    # Sequential relations---
     create_sequential_relations <- function(formulas) {
       relations <- c()
       
       for (i in seq_along(formulas)[-length(formulas)]) {
-        # lc1[2], lc2[2], lc3[2]에서 변수명만 추출 (대괄호와 그 안의 숫자만 제거)
-        left <- sub("\\[.*?\\]", "", formulas[i])   # lc1[2]에서 lc1만 추출
-        left <- sub(" ~.*", "", left)               # lc1 뒤에 나오는 식 제거
-        right <- sub("\\[.*?\\]", "", formulas[i + 1]) # lc2[2]에서 lc2만 추출
-        right <- sub(" ~.*", "", right)             # lc2 뒤에 나오는 식 제거
+       
+        left <- sub("\\[.*?\\]", "", formulas[i])   # lc1[2]-> lc1
+        left <- sub(" ~.*", "", left)               
+        right <- sub("\\[.*?\\]", "", formulas[i + 1]) 
+        right <- sub(" ~.*", "", right)             
         relation <- paste0(left, " ~ ", right)
-        relations <- c(relations, as.formula(relation))  # 관계식을 formula로 변환 후 저장
+        relations <- c(relations, as.formula(relation))  
       }
       
       return(relations)
     }
     
-    # Sequential relations 생성
+    # Sequential relations 
     sequential_relations <- create_sequential_relations(formulas)
     
-    # 모든 식을 리스트로 저장 (중복된 리스트 구조 없이)
+   
     form1 <- c(formulas, sequential_relations)
     
     #self$results$text3$setContent(form1)
@@ -267,10 +253,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       if(isTRUE(self$options$par1)){
         self$results$text2$setContent(par1) 
       }
-      
-     
-     
-         }   
+               }   
       
   }  
     #---
@@ -393,30 +376,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   #    return(retlist)
   # }, 
     
-  ## Helper functions =================================
-
-  # .cleanData = function() {
-  # 
-  #   data <- list()
-  # 
-  #   if( !is.null(self$options$covs) )
-  # 
-  #     for (cov in self$options$covs)
-  #       data[[cov]] <- jmvcore::toNumeric(self$data[[cov]])
-  # 
-  #   # for (var in self$options$vars)
-  #   # 
-  #   #   data[[var]] <- jmvcore::toNumeric(self$data[[var]])
-  #   # 
-  #   # attr(data, 'row.names') <- seq_len(length(data[[1]]))
-  #   # attr(data, 'class') <- 'data.frame'
-  # 
-  #   if( !is.null(self$options$covs))
-  #     for (cov in self$options$covs)
-  #       data <- data[!is.na(data[[cov]]), ]
-  # 
-  #   return(data)
-  # }
+ 
       )
 )
   

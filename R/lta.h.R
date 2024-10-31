@@ -215,11 +215,13 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="LCA: Estimated parameters"))
+                title="LCA: Estimated parameters",
+                refs="slca"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="LTA: Estimated parameters"))
+                title="LTA: Estimated parameters",
+                refs="slca"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
