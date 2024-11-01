@@ -11,7 +11,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             covs = NULL,
             form1 = "L1 ~ SEX+RACE",
             method = "ML",
-            cons = "L1,L2, L3",
+            cons = "L1,L2,L3",
             nc = 2,
             par = FALSE,
             reg = FALSE,
@@ -67,7 +67,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..cons <- jmvcore::OptionString$new(
                 "cons",
                 cons,
-                default="L1,L2, L3")
+                default="L1,L2,L3")
             private$..nc <- jmvcore::OptionInteger$new(
                 "nc",
                 nc,
@@ -287,7 +287,7 @@ lta <- function(
     covs,
     form1 = "L1 ~ SEX+RACE",
     method = "ML",
-    cons = "L1,L2, L3",
+    cons = "L1,L2,L3",
     nc = 2,
     par = FALSE,
     reg = FALSE,

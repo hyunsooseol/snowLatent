@@ -62,7 +62,7 @@ options:
     - name: cons
       title: 'Constraints'
       type: String
-      default: 'L1,L2, L3'
+      default: 'L1,L2,L3'
  
     - name: nc
       title: Class

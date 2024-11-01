@@ -239,14 +239,13 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     #self$results$text3$setContent(form1)
     
      # Defining constraints---
-      cons <- self$options$cons
-      cons1 <- strsplit(self$options$cons, ',')[[1]]
-    
-     
-      library(magrittr)
+    cons <- self$options$cons
+    cons1 <- unlist(strsplit(cons, ","))
+   
+    library(magrittr)
       set.seed(1234)
       obj<- slca::slca(formula = form1,
-                       constraint=cons1) %>%
+                       constraints=cons1) %>%
         slca::estimate(data=data)
       par1<- slca::param(obj)
 
