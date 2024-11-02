@@ -3,6 +3,7 @@
 #' @importFrom R6 R6Class
 #' @import jmvcore
 #' @import slca
+#' @import magrittr
 #' @importFrom slca slca
 #' @importFrom slca estimate
 #' @importFrom slca param
@@ -56,15 +57,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
      # Calculate the number of factors before modifying
      nfactors <- length(factors)
-     
-     # #Check if factors are non-empty before proceeding
-     # if (length(factors[[1]]$vars) == 0) {
-     #   stop("Error: No variables assigned to lc1[2]. Please assign variables.")
-     # }
-     
+
      if (length(factors[[1]]$vars) < 2) return()
-    
-   
+
   if(nfactors==1){    
       
       vars <- factors[[1]][["vars"]]
@@ -137,66 +132,12 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
         }
       } 
- 
-      # Regression---
-       if(length(self$options$covs)>=1){
-        #LCA regression---
-        #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
-         form1 <- self$options$form1
-         form1 <- as.formula(form1)
-         #self$results$text2$setContent(form1)
-        
-         reg <- slca::regress(obj, 
-                              form1,
-                             method=self$options$method,
-                             data=data)
-         
-         # coef, std.err, wald, p-value---
-         coef <- reg$coefficients
-         se <- as.vector(reg$std.err)  
-         wald <- as.vector(coef / se)  
-         pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)  
-         
-         variable_names <- colnames(reg$coefficients)  
-         class_info <- rep(rownames(reg$coefficients), each = length(variable_names))  
-         
-         
-         reg.df <- data.frame(
-           class = class_info[1:length(coef)],  
-           variable = variable_names,
-           coef = as.vector(coef),
-           std.err = se,
-           wald = wald,
-           p.value = pval
-         )
-         
-      #self$results$text3$setContent(reg.df)
-      # Logistic regression table---
-      
-      table <- self$results$reg
-      
-      df <- as.data.frame(reg.df)
-      names <- dimnames(df)[[1]]
-
-      for (name in names) {
-          row <- list()
-        
-        row[["cla"]]   <-  df[name, 1]
-        row[["va"]]   <-  df[name, 2]
-        row[["co"]] <-  df[name, 3]
-        row[["se"]] <-  df[name, 4]
-        row[["wald"]] <- df[name, 5]
-        row[["p"]] <-   df[name, 6]
-        
-        table$addRow(rowKey=name, values=row)
-        
-      }
-      
-        }    
   } 
    
   if(nfactors>1){
-     
+    
+    #### Formulas #################################
+    
     # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
     formulas <- list()
     
@@ -232,152 +173,186 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     # Sequential relations 
     sequential_relations <- create_sequential_relations(formulas)
-    
-   
     form1 <- c(formulas, sequential_relations)
-    
-    #self$results$text3$setContent(form1)
-    
-     # Defining constraints---
-    cons <- self$options$cons
-    cons1 <- unlist(strsplit(cons, ","))
    
-    library(magrittr)
+    # Estimated parameters---
+    # JLCPA---
+    if(isTRUE(self$options$par1)){
+ 
+      library(magrittr)
       set.seed(1234)
-      obj<- slca::slca(formula = form1,
+      obj1<- slca::slca(formula = formulas) %>%
+        slca::estimate(data=data)
+      par1<- slca::param(obj1)
+     
+      self$results$text2$setContent(par1) 
+         }
+    
+    #LTA---
+    if(isTRUE(self$options$par2)){
+ 
+      library(magrittr)
+      set.seed(1234)
+      obj2<- slca::slca(formula = form1) %>%
+        slca::estimate(data=data)
+      par2<- slca::param(obj2)
+     
+      self$results$text3$setContent(par2) 
+         }
+    
+    # LTA with Measurement invariance---
+    if(isTRUE(self$options$par3)){
+      
+      # Defining constraints(Measurement invariance)---
+      cons <- self$options$cons
+      cons1 <- unlist(strsplit(cons, ","))
+    
+      #Num.of classes Should be equal before proceeding!!!
+      
+      library(magrittr)
+      set.seed(1234)
+      obj3<- slca::slca(formula = form1,
                        constraints=cons1) %>%
         slca::estimate(data=data)
-      par1<- slca::param(obj)
+      par3<- slca::param(obj3)
 
-      #LTA: Estimated parameters---
-      if(isTRUE(self$options$par1)){
-        self$results$text2$setContent(par1) 
+     self$results$text4$setContent(par3) 
       }
                }   
+ 
+ # Regression---
+ if(length(self$options$covs)>=1){
+       
+      #LCA regression---
+       #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
+       regform <- self$options$regform
+       regform <- as.formula(regform)
       
-  }  
-    #---
-    #res <- private$.computeRES()
-    #---   
-    
-    # if(length(self$options$covs)>=1){
-    #   
-    #   factors <- self$options$factors
-    #   form2 <- self$options$form2
-    #   
-    #   if (!inherits(form2, "formula")) {
-    #     form2 <- as.formula(form2)
-    #   }
-    #   
-    #   set.seed(1234)
-    #   reg<- slca::regress(res$obj,
-    #                       form2,
-    #                       method=self$options$method,
-    #                       data=data)
-    #   
-    #   wald <- reg$coefficients / reg$std.err
-    #   pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
-    #  
-    #   self$results$text1$setContent(reg[["coefficients"]])
-    #   self$results$text2$setContent(reg[["std.err"]])
-    #   self$results$text3$setContent(wald)
-    #   self$results$text4$setContent(pval)
-    #     }
-   
-    
- 
+       if(length(self$options$factors)==1){
+         
+         library(magrittr)
+         set.seed(1234)
+         obj<- slca::slca(formula) %>%
+           slca::estimate(data=data)
+         
+       }
+       
+       if(length(self$options$factors)>1){
+         
+         library(magrittr)
+         set.seed(1234)
+         obj<- slca::slca(form1) %>%
+           slca::estimate(data=data)
+         
+       }
+       
+       reg <- slca::regress(obj, 
+                            regform,
+                            imputation = self$options$impu,
+                            method=self$options$method,
+                            data=data)
+       
+       # coef, std.err, wald, p-value---
+       coef <- reg$coefficients
+       se <- as.vector(reg$std.err)  
+       wald <- as.vector(coef / se)  
+       pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)  
+       
+       variable_names <- colnames(reg$coefficients)  
+       class_info <- rep(rownames(reg$coefficients), each = length(variable_names))  
+       
+       
+       reg.df <- data.frame(
+         class = class_info[1:length(coef)],  
+         variable = variable_names,
+         coef = as.vector(coef),
+         std.err = se,
+         wald = wald,
+         p.value = pval
+       )
+       
+       #self$results$text3$setContent(reg.df)
+       # Logistic regression table---
+       
+       table <- self$results$reg
+       
+       df <- as.data.frame(reg.df)
+       names <- dimnames(df)[[1]]
+       
+       for (name in names) {
+         row <- list()
+         
+         row[["cla"]]   <-  df[name, 1]
+         row[["va"]]   <-  df[name, 2]
+         row[["co"]] <-  df[name, 3]
+         row[["se"]] <-  df[name, 4]
+         row[["wald"]] <- df[name, 5]
+         row[["p"]] <-   df[name, 6]
+         
+         table$addRow(rowKey=name, values=row)
+         
+       }
+       
+     }       
 
-  # .computeRES = function() {
-  #   
-  #   # R example---
-  #   
-  #   # library(slca)
-  #   # library(magrittr)
-  #   # 
-  #   # data = nlsy97
-  #   # nlsy_smoke <- slca(smk98(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98) %>%
-  #   #   estimate(data = nlsy97)
-  #   # summary(nlsy_smoke)
-  #   # param(nlsy_smoke)
-  #   # 
-  #   # regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
-  #   # 
-  #   # ####################
-  #   # library(slca)
-  #   # library(magrittr)
-  #   # data <- gss7677[gss7677$RACE == "BLACK",]
-  #   # 
-  #   # model_stat <- slca(status(3) ~ PAPRES + PADEG + MADEG) %>%
-  #   #   estimate(data = data)
-  #   # summary(model_stat)
-  #   # param(model_stat)
-  #   # 
-  #   # model_tol <- slca(tol(4) ~ TOLRAC + TOLCOM + TOLHOMO + TOLATH + TOLMIL) %>%
-  #   #   estimate(data = data)
-  #   # summary(model_tol)
-  #   # param(model_tol)
-  #   # 
-  #   # model_lta <- slca(
-  #   #   status(3) ~ PAPRES + PADEG + MADEG,
-  #   #   tol(4) ~ TOLRAC + TOLCOM + TOLHOMO + TOLATH + TOLMIL,
-  #   #   status ~ tol
-  #   # ) %>% estimate(data = data)
-  #   # summary(model_lta)
-  #   # param(model_lta)
-  #   # 
-  #   # regress(model_lta, status ~ SEX, data)
-  #   # 
-  #   # ###################
-  #   # 
-  #   # # Standard LCA
-  #   # slca(lc[3] ~ y1 + y2 + y3)
-  #   # # Latent transition analysis (LTA)
-  #   # slca(l1[3] ~ y11 + y21 + y31,
-  #   #      l2[3] ~ y12 + y22 + y32,
-  #   #      l1 ~ l2)
-  #   # 
-  #   # # LTA with measurement invariance
-  #   # slca(l1[3] ~ y11 + y21 + y31,
-  #   #      l2[3] ~ y12 + y22 + y32,
-  #   #      l1 ~ l2, constraints = c("l1", "l2"))
-  #   # 
-  #   # ######################
-  #   data <- private$.cleanData()
-  #   
-  #   factors <- self$options$factors
-  #   vars <- factors$vars
-  #   
-  #   factors <- vapply(factors, function(x) jmvcore::composeTerm(x), '')
-  #   vars <- paste0(vars, collapse='+')
-  #   formula <- as.formula(paste0('(', factors, ') ~', vars))
-  #   
-  #   self$results$text$setContent(formula)
-  #   
-  #   
-  #   
-  #   
-  #   form1 <- self$options$form1
-  #   
-  #   if (!inherits(form1, "formula")) {
-  #     form1 <- as.formula(form1)
-  #   }
-  #   
-  #   #self$results$text$setContent(form1)
-  #   
-  #   library(magrittr)
-  #   set.seed(1234)
-  #   obj<- slca::slca(form1) %>% 
-  #         slca::estimate(data=data)
-  #   par<- slca::param(obj)
-  #   
-  #   #self$results$text$setContent(res[["rho"]])
-  #   
-  #    retlist <- list(obj=obj, par=par)
-  #    return(retlist)
-  # }, 
-    
- 
-      )
-)
+     # Example with R---
+
+     # library(slca)
+     # library(magrittr)
+     # 
+     # #LCA---
+     # data = nlsy97
+     # set.seed(1234)
+     # obj0 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98) %>% 
+     #   estimate(data = nlsy97)
+     # par0<- slca::param(obj0)
+     # par0
+     # 
+     # # Regression--
+     # set.seed(1234)
+     # obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
+     # 
+     # #JLCA---
+     # data = nlsy97
+     # set.seed(1234)
+     # obj <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
+     #             L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03) %>%
+     #   estimate(data = nlsy97)
+     # par<- slca::param(obj)
+     # par
+     # 
+     # # Regression--
+     # set.seed(1234)
+     # obj %>% slca::regress(L2 ~ SEX, nlsy97)
+     # #####################
+     # data = nlsy97
+     # set.seed(1234)
+     # obj1 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
+     #              L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03,
+     #              L1~L2) %>%
+     #   estimate(data = nlsy97)
+     # par1<- slca::param(obj1)
+     # par1
+     # 
+     # # Regression--
+     # set.seed(1234)
+     # obj1 %>% slca::regress(L1 ~ SEX, nlsy97)
+     # #########################
+     # data = nlsy97
+     # set.seed(1234)
+     # obj2 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
+     #              L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03,
+     #              L1~L2,constraints = c("L1", "L2")) %>%
+     #   estimate(data = nlsy97)
+     # par2<- slca::param(obj2)
+     # par2
+     # 
+     # # Regression--
+     # set.seed(1234)
+     # obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
+     
+     
+          
+ }))
   
  

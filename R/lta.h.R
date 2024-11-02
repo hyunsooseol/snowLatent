@@ -9,13 +9,16 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             factors = list(
                 list(label="L1[2]", vars=list())),
             covs = NULL,
-            form1 = "L1 ~ SEX+RACE",
-            method = "ML",
+            regform = "L1 ~ SEX+RACE",
+            impu = "modal",
+            method = "naive",
             cons = "L1,L2,L3",
             nc = 2,
             par = FALSE,
             reg = FALSE,
-            par1 = FALSE, ...) {
+            par1 = FALSE,
+            par2 = FALSE,
+            par3 = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -52,10 +55,17 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "factor",
                     "numeric"))
-            private$..form1 <- jmvcore::OptionString$new(
-                "form1",
-                form1,
+            private$..regform <- jmvcore::OptionString$new(
+                "regform",
+                regform,
                 default="L1 ~ SEX+RACE")
+            private$..impu <- jmvcore::OptionList$new(
+                "impu",
+                impu,
+                options=list(
+                    "modal",
+                    "prob"),
+                default="modal")
             private$..method <- jmvcore::OptionList$new(
                 "method",
                 method,
@@ -63,7 +73,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "naive",
                     "BCH",
                     "ML"),
-                default="ML")
+                default="naive")
             private$..cons <- jmvcore::OptionString$new(
                 "cons",
                 cons,
@@ -89,10 +99,19 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "par1",
                 par1,
                 default=FALSE)
+            private$..par2 <- jmvcore::OptionBool$new(
+                "par2",
+                par2,
+                default=FALSE)
+            private$..par3 <- jmvcore::OptionBool$new(
+                "par3",
+                par3,
+                default=FALSE)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
-            self$.addOption(private$..form1)
+            self$.addOption(private$..regform)
+            self$.addOption(private$..impu)
             self$.addOption(private$..method)
             self$.addOption(private$..cons)
             self$.addOption(private$..nc)
@@ -101,11 +120,14 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..par)
             self$.addOption(private$..reg)
             self$.addOption(private$..par1)
+            self$.addOption(private$..par2)
+            self$.addOption(private$..par3)
         }),
     active = list(
         factors = function() private$..factors$value,
         covs = function() private$..covs$value,
-        form1 = function() private$..form1$value,
+        regform = function() private$..regform$value,
+        impu = function() private$..impu$value,
         method = function() private$..method$value,
         cons = function() private$..cons$value,
         nc = function() private$..nc$value,
@@ -113,11 +135,14 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$..post$value,
         par = function() private$..par$value,
         reg = function() private$..reg$value,
-        par1 = function() private$..par1$value),
+        par1 = function() private$..par1$value,
+        par2 = function() private$..par2$value,
+        par3 = function() private$..par3$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
-        ..form1 = NA,
+        ..regform = NA,
+        ..impu = NA,
         ..method = NA,
         ..cons = NA,
         ..nc = NA,
@@ -125,7 +150,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..post = NA,
         ..par = NA,
         ..reg = NA,
-        ..par1 = NA)
+        ..par1 = NA,
+        ..par2 = NA,
+        ..par3 = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -138,7 +165,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
         text2 = function() private$.items[["text2"]],
-        text3 = function() private$.items[["text3"]]),
+        text3 = function() private$.items[["text3"]],
+        text4 = function() private$.items[["text4"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -164,13 +192,15 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="reg",
-                title="LCA: Logistic regression using 3-step approach",
+                title="Logistic regression using 3-step approach",
                 visible="(reg)",
                 refs="slca",
                 clearWith=list(
                     "factors",
                     "covs",
-                    "method"),
+                    "method",
+                    "impu",
+                    "regform"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -215,17 +245,21 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="LCA: Estimated parameters",
+                title="LCA: Estimated parameters(Only one latent class variable)",
                 refs="slca"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="LTA: Estimated parameters",
+                title="Joint Latent Class Analysis",
                 refs="slca"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
-                title=""))}))
+                title="Latent Transition Analysis"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text4",
+                title="Latent Transition Analysis with measurement invariance"))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -255,13 +289,16 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param factors a list containing named lists that define the \code{label}
 #'   of the factor and the \code{vars} that belong to that factor
 #' @param covs .
-#' @param form1 .
+#' @param regform .
+#' @param impu .
 #' @param method .
 #' @param cons .
 #' @param nc .
 #' @param par .
 #' @param reg .
 #' @param par1 .
+#' @param par2 .
+#' @param par3 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -271,6 +308,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -285,13 +323,16 @@ lta <- function(
     factors = list(
                 list(label="L1[2]", vars=list())),
     covs,
-    form1 = "L1 ~ SEX+RACE",
-    method = "ML",
+    regform = "L1 ~ SEX+RACE",
+    impu = "modal",
+    method = "naive",
     cons = "L1,L2,L3",
     nc = 2,
     par = FALSE,
     reg = FALSE,
-    par1 = FALSE) {
+    par1 = FALSE,
+    par2 = FALSE,
+    par3 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -306,13 +347,16 @@ lta <- function(
     options <- ltaOptions$new(
         factors = factors,
         covs = covs,
-        form1 = form1,
+        regform = regform,
+        impu = impu,
         method = method,
         cons = cons,
         nc = nc,
         par = par,
         reg = reg,
-        par1 = par1)
+        par1 = par1,
+        par2 = par2,
+        par3 = par3)
 
     analysis <- ltaClass$new(
         options = options,

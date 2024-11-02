@@ -43,21 +43,17 @@ children:
             height: small
             isTarget: true
   - type: CollapseBox
-    label: 'LCA regression using 3-step approach'
+    label: 'Latent Class Analysis(Only one latent class variable)'
     margin: normal
     collapsed: true
     children:
       - type: LayoutBox
-        margin: large
         stretchFactor: 1
-        children:
-          - type: TextBox
-            name: form1
-            format: string
-            stretchFactor: 2
-      - type: LayoutBox
         margin: large
-        style: inline
+        cell:
+          column: 0
+          row: 0
+        fitToGrid: true       
         children:
           - type: Label
             label: Save
@@ -70,22 +66,19 @@ children:
                 name: member
               - type: Output
                 name: post
-          - type: LayoutBox
-            margin: large
-            style: inline
+      - type: LayoutBox
+        stretchFactor: 1
+        margin: large
+        cell:
+          column: 1
+          row: 0
+        fitToGrid: true
+        children:      
+          - type: Label
+            label: Additional output
             children:
-              - type: Label
-                label: 'Regression'
-                children:
-                  - type: ComboBox
-                    name: method
-                  - type: CheckBox
-                    name: reg
-              - type: Label
-                label: Additional output
-                children:
-                  - type: CheckBox
-                    name: par
+              - type: CheckBox
+                name: par
   - type: CollapseBox
     label: 'Latent Transition Analysis'
     collapsed: true
@@ -103,9 +96,48 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Tables'
+            label: Estimated Parameters
             children:
               - type: CheckBox
-                name: par1 
- 
- 
+                name: par1
+              - type: CheckBox
+                name: par2
+              - type: CheckBox
+                name: par3
+  - type: CollapseBox
+    label: 'Regression analysis using 3-step approach'
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - name: regform
+            type: TextBox
+            format: string
+            stretchFactor: 2
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Options
+            children:
+              - type: ComboBox
+                name: impu
+              - type: ComboBox
+                name: method
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: Label
+                label: Regression
+                children:
+                  - type: CheckBox
+                    name: reg
+   

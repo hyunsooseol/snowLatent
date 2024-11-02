@@ -9,12 +9,15 @@ lta(
   factors = list(list(label = "L1[2]", vars = list())),
   covs,
   form1 = "L1 ~ SEX+RACE",
+  impu = "prob",
   method = "ML",
-  cons = "L1,L2, L3",
+  cons = "L1,L2,L3",
   nc = 2,
   par = FALSE,
   reg = FALSE,
-  par1 = FALSE
+  par1 = FALSE,
+  par2 = FALSE,
+  par3 = FALSE
 )
 }
 \arguments{
@@ -27,6 +30,8 @@ of the factor and the \code{vars} that belong to that factor}
 
 \item{form1}{.}
 
+\item{impu}{.}
+
 \item{method}{.}
 
 \item{cons}{.}
@@ -38,6 +43,10 @@ of the factor and the \code{vars} that belong to that factor}
 \item{reg}{.}
 
 \item{par1}{.}
+
+\item{par2}{.}
+
+\item{par3}{.}
 }
 \value{
 A results object containing:
@@ -49,6 +58,7 @@ A results object containing:
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

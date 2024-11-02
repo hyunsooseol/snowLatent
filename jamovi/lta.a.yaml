@@ -42,10 +42,20 @@ options:
         - factor
         - numeric
 
-    - name: form1
-      title: 'Formula'
+    - name: regform
+      title: 'Regression formula'
       type: String
       default: 'L1 ~ SEX+RACE'
+
+    - name: impu
+      title: 'Imputation'
+      type: List
+      options:
+        - title: 'modal'
+          name:  'modal'
+        - title: 'prob'
+          name:  'prob'
+      default: 'modal'    
   
     - name: method
       title: 'Method'
@@ -57,7 +67,7 @@ options:
           name:  'BCH'
         - title: 'ML'
           name:  'ML'  
-      default: 'ML'
+      default: 'naive'
 
     - name: cons
       title: 'Constraints'
@@ -89,7 +99,17 @@ options:
       default: FALSE
 
     - name: par1
-      title: 'Estimated parameters'
+      title: 'Joint Latent Class Analysis'
+      type: Bool
+      default: FALSE
+
+    - name: par2
+      title: 'Latent Transition Analysis'
+      type: Bool
+      default: FALSE
+
+    - name: par3
+      title: 'LTA with Measurement invariance'
       type: Bool
       default: FALSE
 ...

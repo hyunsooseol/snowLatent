@@ -19,7 +19,7 @@ items:
         - nc
   
     - name: reg
-      title: 'LCA: Logistic regression using 3-step approach'
+      title: 'Logistic regression using 3-step approach'
       type: Table
       visible: (reg)
       refs: slca
@@ -27,6 +27,8 @@ items:
         - factors
         - covs
         - method
+        - impu
+        - regform
 
       columns:
         - name: name
@@ -64,18 +66,20 @@ items:
         - nc
 
     - name:  text1
-      title: 'LCA: Estimated parameters'
+      title: 'LCA: Estimated parameters(Only one latent class variable)'
       type:  Preformatted
       refs: slca
 
     - name:  text2
-      title: 'LTA: Estimated parameters'
+      title: 'Joint Latent Class Analysis'
       type:  Preformatted
       refs: slca
  
     - name:  text3
-      title: ''
+      title: 'Latent Transition Analysis'
       type:  Preformatted
 
-
+    - name:  text4
+      title: 'Latent Transition Analysis with measurement invariance'
+      type:  Preformatted
 ...
