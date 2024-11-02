@@ -112,4 +112,5 @@ options:
       title: 'LTA with Measurement invariance'
       type: Bool
       default: FALSE
+
 ...

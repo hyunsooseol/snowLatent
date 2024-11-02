@@ -36,6 +36,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li><b>slca</b> R package is described in the <a href="https://CRAN.R-project.org/package=slca" target = "_blank">page</a>.</li>',
+              '<li>Model specifications are described in the <a href="https://kim0sun.github.io/slca/" target = "_blank">page</a>.</li>',
               '<li><b>L1[k]</b>: <b>k</b> denotes the number of latent classes for the first latent class variable <b>L1</b>.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
@@ -70,19 +71,20 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       ind <- paste0(vars, collapse = '+')
       formula <- as.formula(paste0(factors, ' ~ ', ind))
       
-      
+      #------------------------------------------
         library(magrittr)
         set.seed(1234)
         obj<- slca::slca(formula) %>%
               slca::estimate(data=data)
         par<- slca::param(obj)
-      
-        # Additional outputs: Estimated parameters---
+      #-----------------------------------------
+      # Additional outputs: Estimated parameters---
         
         if(isTRUE(self$options$par)){
-          self$results$text1$setContent(par) 
+          self$results$text1$setContent(par)
         }
-        
+  
+  
       # Posterior prob. and membership---
       #obj[["posterior"]][["marginal"]][["L1"]]
       f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
@@ -293,8 +295,13 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
        }
        
-     }       
+     }
+  
+     }
+######################     
 
+  
+  
      # Example with R---
 
      # library(slca)
@@ -307,7 +314,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      #   estimate(data = nlsy97)
      # par0<- slca::param(obj0)
      # par0
-     # 
+     # plot(obj0)
+     # summary(obj)
      # # Regression--
      # set.seed(1234)
      # obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
@@ -353,6 +361,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
      
           
- }))
+ ))
   
  

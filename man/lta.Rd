@@ -8,9 +8,9 @@ lta(
   data,
   factors = list(list(label = "L1[2]", vars = list())),
   covs,
-  form1 = "L1 ~ SEX+RACE",
-  impu = "prob",
-  method = "ML",
+  regform = "L1 ~ SEX+RACE",
+  impu = "modal",
+  method = "naive",
   cons = "L1,L2,L3",
   nc = 2,
   par = FALSE,
@@ -28,7 +28,7 @@ of the factor and the \code{vars} that belong to that factor}
 
 \item{covs}{.}
 
-\item{form1}{.}
+\item{regform}{.}
 
 \item{impu}{.}
 
