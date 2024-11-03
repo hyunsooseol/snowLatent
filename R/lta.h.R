@@ -351,16 +351,16 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Joint Latent Class Analysis",
+                title="Joint LCA",
                 refs="slca"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
-                title="Latent Transition Analysis"))
+                title="LTA with non-invariant model"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
-                title="Latent Transition Analysis with measurement invariance"))
+                title="LTA with measurement invariance"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text5",

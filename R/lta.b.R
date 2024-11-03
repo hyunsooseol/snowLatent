@@ -51,7 +51,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if(self$options$fit1)
           self$results$fit1$setNote(
             "Note",
-            "obj2: measure.inv=FALSE; obj3: measure.inv=TRUE."
+            "obj2: LTA with non-invariant model; obj3: LTA with measurement invariance."
           )
         
         

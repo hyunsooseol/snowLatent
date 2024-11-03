@@ -141,16 +141,16 @@ items:
       refs: slca
 
     - name:  text2
-      title: 'Joint Latent Class Analysis'
+      title: 'Joint LCA'
       type:  Preformatted
       refs: slca
  
     - name:  text3
-      title: 'Latent Transition Analysis'
+      title: 'LTA with non-invariant model'
       type:  Preformatted
 
     - name:  text4
-      title: 'Latent Transition Analysis with measurement invariance'
+      title: 'LTA with measurement invariance'
       type:  Preformatted
 
     - name:  text5
