@@ -13,7 +13,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             impu = "modal",
             method = "naive",
             cons = "L1,L2,L3",
-            nc = 2,
             par = FALSE,
             reg = FALSE,
             par1 = FALSE,
@@ -80,11 +79,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cons",
                 cons,
                 default="L1,L2,L3")
-            private$..nc <- jmvcore::OptionInteger$new(
-                "nc",
-                nc,
-                min=2,
-                default=2)
             private$..member <- jmvcore::OptionOutput$new(
                 "member")
             private$..post <- jmvcore::OptionOutput$new(
@@ -124,7 +118,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..impu)
             self$.addOption(private$..method)
             self$.addOption(private$..cons)
-            self$.addOption(private$..nc)
             self$.addOption(private$..member)
             self$.addOption(private$..post)
             self$.addOption(private$..par)
@@ -142,7 +135,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         impu = function() private$..impu$value,
         method = function() private$..method$value,
         cons = function() private$..cons$value,
-        nc = function() private$..nc$value,
         member = function() private$..member$value,
         post = function() private$..post$value,
         par = function() private$..par$value,
@@ -159,7 +151,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..impu = NA,
         ..method = NA,
         ..cons = NA,
-        ..nc = NA,
         ..member = NA,
         ..post = NA,
         ..par = NA,
@@ -223,7 +214,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="class", 
                         `title`="Class", 
-                        `type`="Integer"),
+                        `type`="integer"),
                     list(
                         `name`="df", 
                         `title`="df", 
@@ -398,7 +389,6 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param impu .
 #' @param method .
 #' @param cons .
-#' @param nc .
 #' @param par .
 #' @param reg .
 #' @param par1 .
@@ -437,7 +427,6 @@ lta <- function(
     impu = "modal",
     method = "naive",
     cons = "L1,L2,L3",
-    nc = 2,
     par = FALSE,
     reg = FALSE,
     par1 = FALSE,
@@ -463,7 +452,6 @@ lta <- function(
         impu = impu,
         method = method,
         cons = cons,
-        nc = nc,
         par = par,
         reg = reg,
         par1 = par1,

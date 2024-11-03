@@ -18,7 +18,8 @@ lta(
   par1 = FALSE,
   par2 = FALSE,
   par3 = FALSE,
-  fit = FALSE
+  fit = FALSE,
+  fit1 = FALSE
 )
 }
 \arguments{
@@ -50,12 +51,16 @@ of the factor and the \code{vars} that belong to that factor}
 \item{par3}{.}
 
 \item{fit}{.}
+
+\item{fit1}{.}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+  \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
   \code{results$member} \tab \tab \tab \tab \tab an output \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
@@ -67,9 +72,9 @@ A results object containing:
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$reg$asDF}
+\code{results$fit$asDF}
 
-\code{as.data.frame(results$reg)}
+\code{as.data.frame(results$fit)}
 }
 \description{
 Latent Transition Analysis

@@ -74,6 +74,14 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       vars <- factors[[1]][["vars"]]
       factors <- factors[[1]]$label  #L1[2]
      
+      # Extract the number inside the square brackets
+      number <- gsub(".*\\[(\\d+)\\].*", "\\1", factors)
+      # Convert to numeric if needed
+      # Number of class
+      nc <- as.integer(number)
+      #self$results$text5$setContent(nc)
+      
+      
       # y~a+b+c---
       vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
       ind <- paste0(vars, collapse = '+')
@@ -108,14 +116,14 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       }
       
       # Posterior prob.---
-      
+     
       if(isTRUE(self$options$post)){
     
         if (self$options$post
             && self$results$post$isNotFilled()) {
           
-          keys <- 1:self$options$nc
-          measureTypes <- rep("continuous", self$options$nc)
+          keys <- 1:nc
+          measureTypes <- rep("continuous", nc)
           
           titles <- paste("Class", keys)
           descriptions <- paste("Class", keys)
@@ -129,7 +137,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           self$results$post$setRowNums(rownames(data))
           
-          for (i in 1:self$options$nc) {
+          for (i in 1:nc) {
             scores <- as.numeric(pos[, i])
             self$results$post$setValues(index=i, scores)
           }
@@ -150,7 +158,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         row <- list()
        
-        row[['class']] <- self$options$nc
+        row[['class']] <- nc
         row[['df']] <- fit$Df
         row[['loglik']] <- fit$logLik
         row[['aic']] <- fit$AIC

@@ -32,7 +32,7 @@ items:
       columns:
         - name: class
           title: Class
-          type: Integer
+          type: integer
         - name: df
           title: df
           type: number

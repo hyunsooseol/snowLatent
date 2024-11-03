@@ -74,12 +74,6 @@ options:
       type: String
       default: 'L1,L2,L3'
  
-    - name: nc
-      title: Class
-      type: Integer
-      min: 2
-      default: 2
-
     - name: member
       title: Class membership
       type: Output   

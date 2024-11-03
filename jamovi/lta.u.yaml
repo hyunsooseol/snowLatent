@@ -58,10 +58,6 @@ children:
           - type: Label
             label: Save
             children:
-              - name: nc
-                type: TextBox
-                label: Class
-                format: number
               - type: Output
                 name: member
               - type: Output
