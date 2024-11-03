@@ -104,12 +104,12 @@ options:
       default: FALSE
 
     - name: par2
-      title: 'LTA with Non-invariant model'
+      title: 'LTA with non-invariant model'
       type: Bool
       default: FALSE
 
     - name: par3
-      title: 'LTA with Measurement invariance'
+      title: 'LTA with measurement invariance'
       type: Bool
       default: FALSE
 
