@@ -148,7 +148,7 @@ children:
             style: inline
             children:
               - type: Label
-                label: Regression
+                label: 'Logistic regression'
                 children:
                   - type: CheckBox
                     name: reg
