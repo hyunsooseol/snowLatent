@@ -75,8 +75,10 @@ children:
         fitToGrid: true
         children:      
           - type: Label
-            label: Additional output
+            label: 'Additional output'
             children:
+              - type: CheckBox
+                name: fit    
               - type: CheckBox
                 name: par
   - type: CollapseBox
@@ -104,6 +106,8 @@ children:
                 name: par2
               - type: CheckBox
                 name: par3
+              - type: CheckBox
+                name: fit1
   - type: CollapseBox
     label: 'Regression analysis using 3-step approach'
     collapsed: true

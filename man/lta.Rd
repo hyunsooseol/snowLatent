@@ -17,7 +17,8 @@ lta(
   reg = FALSE,
   par1 = FALSE,
   par2 = FALSE,
-  par3 = FALSE
+  par3 = FALSE,
+  fit = FALSE
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ of the factor and the \code{vars} that belong to that factor}
 \item{par2}{.}
 
 \item{par3}{.}
+
+\item{fit}{.}
 }
 \value{
 A results object containing:
@@ -59,6 +62,7 @@ A results object containing:
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

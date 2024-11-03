@@ -18,7 +18,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             reg = FALSE,
             par1 = FALSE,
             par2 = FALSE,
-            par3 = FALSE, ...) {
+            par3 = FALSE,
+            fit = FALSE,
+            fit1 = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -107,6 +109,14 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "par3",
                 par3,
                 default=FALSE)
+            private$..fit <- jmvcore::OptionBool$new(
+                "fit",
+                fit,
+                default=FALSE)
+            private$..fit1 <- jmvcore::OptionBool$new(
+                "fit1",
+                fit1,
+                default=FALSE)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -122,6 +132,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..par1)
             self$.addOption(private$..par2)
             self$.addOption(private$..par3)
+            self$.addOption(private$..fit)
+            self$.addOption(private$..fit1)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -137,7 +149,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         reg = function() private$..reg$value,
         par1 = function() private$..par1$value,
         par2 = function() private$..par2$value,
-        par3 = function() private$..par3$value),
+        par3 = function() private$..par3$value,
+        fit = function() private$..fit$value,
+        fit1 = function() private$..fit1$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -152,7 +166,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..reg = NA,
         ..par1 = NA,
         ..par2 = NA,
-        ..par3 = NA)
+        ..par3 = NA,
+        ..fit = NA,
+        ..fit1 = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -161,12 +177,14 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         post = function() private$.items[["post"]],
+        fit = function() private$.items[["fit"]],
         reg = function() private$.items[["reg"]],
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
         text2 = function() private$.items[["text2"]],
         text3 = function() private$.items[["text3"]],
-        text4 = function() private$.items[["text4"]]),
+        text4 = function() private$.items[["text4"]],
+        text5 = function() private$.items[["text5"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -191,6 +209,42 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc")))
             self$add(jmvcore::Table$new(
                 options=options,
+                name="fit",
+                title="Goodness of fit",
+                rows=1,
+                visible="(fit)",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc"),
+                refs="slca",
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="Integer"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="gsq", 
+                        `title`="G\u00B2", 
+                        `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
                 name="reg",
                 title="Logistic regression using 3-step approach",
                 visible="(reg)",
@@ -198,6 +252,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "factors",
                     "covs",
+                    "nc",
                     "method",
                     "impu",
                     "regform"),
@@ -259,7 +314,11 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
-                title="Latent Transition Analysis with measurement invariance"))}))
+                title="Latent Transition Analysis with measurement invariance"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text5",
+                title="Goodness of fit"))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -299,23 +358,27 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param par1 .
 #' @param par2 .
 #' @param par3 .
+#' @param fit .
+#' @param fit1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$reg$asDF}
+#' \code{results$fit$asDF}
 #'
-#' \code{as.data.frame(results$reg)}
+#' \code{as.data.frame(results$fit)}
 #'
 #' @export
 lta <- function(
@@ -332,7 +395,9 @@ lta <- function(
     reg = FALSE,
     par1 = FALSE,
     par2 = FALSE,
-    par3 = FALSE) {
+    par3 = FALSE,
+    fit = FALSE,
+    fit1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -356,7 +421,9 @@ lta <- function(
         reg = reg,
         par1 = par1,
         par2 = par2,
-        par3 = par3)
+        par3 = par3,
+        fit = fit,
+        fit1 = fit1)
 
     analysis <- ltaClass$new(
         options = options,

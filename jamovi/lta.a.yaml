@@ -99,12 +99,12 @@ options:
       default: FALSE
 
     - name: par1
-      title: 'Joint Latent Class Analysis'
+      title: 'Joint LCA'
       type: Bool
       default: FALSE
 
     - name: par2
-      title: 'Latent Transition Analysis'
+      title: 'LTA with Non-invariant model'
       type: Bool
       default: FALSE
 
@@ -113,4 +113,13 @@ options:
       type: Bool
       default: FALSE
 
+    - name: fit
+      title: 'Goodness of fit'
+      type: Bool
+      default: FALSE
+
+    - name: fit1
+      title: 'Test for measurement invariance'
+      type: Bool
+      default: FALSE
 ...

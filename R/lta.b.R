@@ -8,6 +8,8 @@
 #' @importFrom slca estimate
 #' @importFrom slca param
 #' @importFrom slca regress
+#' @importFrom slca compare
+#' @importFrom slca gof
 #' @import ggplot2
 #' @export
 
@@ -55,8 +57,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      data <- jmvcore::naOmit(data)
      
      factors <- self$options$factors
-     
-     # Calculate the number of factors before modifying
      nfactors <- length(factors)
 
      if (length(factors[[1]]$vars) < 2) return()
@@ -78,13 +78,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               slca::estimate(data=data)
         par<- slca::param(obj)
       #-----------------------------------------
-      # Additional outputs: Estimated parameters---
-        
-        if(isTRUE(self$options$par)){
-          self$results$text1$setContent(par)
-        }
-  
-  
       # Posterior prob. and membership---
       #obj[["posterior"]][["marginal"]][["L1"]]
       f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
@@ -134,7 +127,33 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           }
         }
       } 
-  } 
+  
+      # Additional outputs: Estimated parameters---
+      
+      if(isTRUE(self$options$par)){
+        self$results$text1$setContent(par)
+      }
+      
+      # Goodness of fit---
+      if(isTRUE(self$options$fit)){
+        fit<- slca::gof(obj)
+        #self$results$text5$setContent(fit)
+        table <- self$results$fit      
+        
+        row <- list()
+       
+        row[['class']] <- self$options$nc
+        row[['df']] <- fit$Df
+        row[['loglik']] <- fit$logLik
+        row[['aic']] <- fit$AIC
+        row[['bic']] <- fit$BIC
+        row[['gsq']] <- fit$Gsq
+        
+        table$setRow(rowNo = 1, values = row)
+        
+        }
+      
+      } 
    
   if(nfactors>1){
     
@@ -220,9 +239,23 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
      self$results$text4$setContent(par3) 
       }
-               }   
+               
+    }   
  
- # Regression---
+# Testing Measurement invariance--
+# LTA vs. LTA with mi
+# With same class !!!
+     
+     # if(isTRUE(self$options$fit)){
+     #  
+     #   fit1<- slca::compare(obj2, obj3, test='chisq')
+     #   
+     #   self$results$text5$setContent(fit1)
+     #   
+     # }
+  
+     
+# Regression---
  if(length(self$options$covs)>=1){
        
       #LCA regression---

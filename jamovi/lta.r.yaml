@@ -18,6 +18,37 @@ items:
         - vars
         - nc
   
+    - name: fit
+      title: 'Goodness of fit'
+      type: Table
+      rows: 1
+      visible: (fit)
+      clearWith:
+        - factors
+        - vars
+        - nc
+      refs: slca 
+
+      columns:
+        - name: class
+          title: Class
+          type: Integer
+        - name: df
+          title: df
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: bic
+          title: BIC 
+          type: number
+        - name: gsq
+          title: G² 
+          type: number
+
     - name: reg
       title: 'Logistic regression using 3-step approach'
       type: Table
@@ -26,6 +57,7 @@ items:
       clearWith:
         - factors
         - covs
+        - nc
         - method
         - impu
         - regform
@@ -83,4 +115,7 @@ items:
       title: 'Latent Transition Analysis with measurement invariance'
       type:  Preformatted
 
+    - name:  text5
+      title: 'Goodness of fit'
+      type:  Preformatted
 ...
