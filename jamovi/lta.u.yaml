@@ -71,7 +71,7 @@ children:
         fitToGrid: true
         children:      
           - type: Label
-            label: 'Additional output'
+            label: 'Overall tests'
             children:
               - type: CheckBox
                 name: fit    

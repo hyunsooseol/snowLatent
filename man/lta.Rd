@@ -12,7 +12,6 @@ lta(
   impu = "modal",
   method = "naive",
   cons = "L1,L2,L3",
-  nc = 2,
   par = FALSE,
   reg = FALSE,
   par1 = FALSE,
@@ -37,8 +36,6 @@ of the factor and the \code{vars} that belong to that factor}
 \item{method}{.}
 
 \item{cons}{.}
-
-\item{nc}{.}
 
 \item{par}{.}
 
