@@ -23,11 +23,11 @@ items:
       type: Table
       rows: 1
       visible: (fit)
+      refs: slca 
       clearWith:
         - factors
         - vars
         - nc
-      refs: slca 
 
       columns:
         - name: class
@@ -48,6 +48,44 @@ items:
         - name: gsq
           title: G² 
           type: number
+
+    - name: fit1
+      title: 'Testing measurement invariance '
+      type: Table
+      visible: (fit1)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: df
+          title: df
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC 
+          type: number 
+        - name: bic
+          title: BIC 
+          type: number
+        - name: gsq
+          title: G² 
+          type: number 
+        - name: res
+          title: Residual df 
+          type: number           
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
 
     - name: reg
       title: 'Logistic regression using 3-step approach'
@@ -116,6 +154,6 @@ items:
       type:  Preformatted
 
     - name:  text5
-      title: 'Goodness of fit'
+      title: ''
       type:  Preformatted
 ...

@@ -48,6 +48,14 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           )
         )
 
+        if(self$options$fit1)
+          self$results$fit1$setNote(
+            "Note",
+            "obj2: measure.inv=FALSE; obj3: measure.inv=TRUE."
+          )
+        
+        
+        
       },
       
  
@@ -246,13 +254,29 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 # LTA vs. LTA with mi
 # With same class !!!
      
-     # if(isTRUE(self$options$fit)){
-     #  
-     #   fit1<- slca::compare(obj2, obj3, test='chisq')
-     #   
-     #   self$results$text5$setContent(fit1)
-     #   
-     # }
+     if(isTRUE(self$options$fit1)){
+
+       fit1<- slca::compare(obj2, obj3, test='chisq')
+        
+       table <- self$results$fit1  
+       df <- as.data.frame(fit1)
+       names <- dimnames(df)[[1]]
+       
+       for (name in names) {
+         row <- list()
+         
+         row[["df"]]   <-  df[name, 1]
+         row[["loglik"]]   <- df[name, 2]
+         row[["aic"]] <-  df[name, 3]
+         row[["bic"]] <-  df[name, 4]
+         row[["gsq"]] <- df[name, 5]
+         row[["res"]] <-  df[name, 6]
+         row[["p"]] <-  df[name, 7]
+         
+         table$addRow(rowKey=name, values=row)
+         
+       }
+     }
   
      
 # Regression---

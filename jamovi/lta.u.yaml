@@ -96,9 +96,10 @@ children:
             stretchFactor: 3
       - type: LayoutBox
         margin: large
+        style: inline
         children:
           - type: Label
-            label: Estimated Parameters
+            label: 'Estimated Parameters'
             children:
               - type: CheckBox
                 name: par1
@@ -106,8 +107,15 @@ children:
                 name: par2
               - type: CheckBox
                 name: par3
-              - type: CheckBox
-                name: fit1
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: Label
+                label: 'Measurement Invariance'
+                children:
+                  - type: CheckBox
+                    name: fit1 
   - type: CollapseBox
     label: 'Regression analysis using 3-step approach'
     collapsed: true

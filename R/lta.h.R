@@ -178,6 +178,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         post = function() private$.items[["post"]],
         fit = function() private$.items[["fit"]],
+        fit1 = function() private$.items[["fit1"]],
         reg = function() private$.items[["reg"]],
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
@@ -213,11 +214,11 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Goodness of fit",
                 rows=1,
                 visible="(fit)",
+                refs="slca",
                 clearWith=list(
                     "factors",
                     "vars",
                     "nc"),
-                refs="slca",
                 columns=list(
                     list(
                         `name`="class", 
@@ -243,6 +244,51 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="gsq", 
                         `title`="G\u00B2", 
                         `type`="number"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="fit1",
+                title="Testing measurement invariance ",
+                visible="(fit1)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="df", 
+                        `title`="df", 
+                        `type`="number"),
+                    list(
+                        `name`="loglik", 
+                        `title`="Log-likelihood", 
+                        `type`="number"),
+                    list(
+                        `name`="aic", 
+                        `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="bic", 
+                        `title`="BIC", 
+                        `type`="number"),
+                    list(
+                        `name`="gsq", 
+                        `title`="G\u00B2", 
+                        `type`="number"),
+                    list(
+                        `name`="res", 
+                        `title`="Residual df", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="reg",
@@ -318,7 +364,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text5",
-                title="Goodness of fit"))}))
+                title=""))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -365,6 +411,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr

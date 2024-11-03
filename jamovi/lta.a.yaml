@@ -119,7 +119,7 @@ options:
       default: FALSE
 
     - name: fit1
-      title: 'Test for measurement invariance'
+      title: 'Test'
       type: Bool
       default: FALSE
 ...
