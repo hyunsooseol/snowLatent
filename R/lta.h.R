@@ -15,12 +15,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cons = "L1,L2,L3",
             par = FALSE,
             reg = FALSE,
-            par1 = FALSE,
             par2 = FALSE,
             par3 = FALSE,
             fit = FALSE,
-            fit1 = FALSE,
-            par4 = FALSE, ...) {
+            fit1 = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -92,10 +90,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "reg",
                 reg,
                 default=FALSE)
-            private$..par1 <- jmvcore::OptionBool$new(
-                "par1",
-                par1,
-                default=FALSE)
             private$..par2 <- jmvcore::OptionBool$new(
                 "par2",
                 par2,
@@ -112,10 +106,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit1",
                 fit1,
                 default=FALSE)
-            private$..par4 <- jmvcore::OptionBool$new(
-                "par4",
-                par4,
-                default=FALSE)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -127,12 +117,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..post)
             self$.addOption(private$..par)
             self$.addOption(private$..reg)
-            self$.addOption(private$..par1)
             self$.addOption(private$..par2)
             self$.addOption(private$..par3)
             self$.addOption(private$..fit)
             self$.addOption(private$..fit1)
-            self$.addOption(private$..par4)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -145,12 +133,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$..post$value,
         par = function() private$..par$value,
         reg = function() private$..reg$value,
-        par1 = function() private$..par1$value,
         par2 = function() private$..par2$value,
         par3 = function() private$..par3$value,
         fit = function() private$..fit$value,
-        fit1 = function() private$..fit1$value,
-        par4 = function() private$..par4$value),
+        fit1 = function() private$..fit1$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -162,12 +148,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..post = NA,
         ..par = NA,
         ..reg = NA,
-        ..par1 = NA,
         ..par2 = NA,
         ..par3 = NA,
         ..fit = NA,
-        ..fit1 = NA,
-        ..par4 = NA)
+        ..fit1 = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -182,9 +166,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
         text3 = function() private$.items[["text3"]],
-        text4 = function() private$.items[["text4"]],
-        text2 = function() private$.items[["text2"]],
-        text5 = function() private$.items[["text5"]]),
+        text4 = function() private$.items[["text4"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -246,7 +228,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit1",
-                title="Testing measurement invariance ",
+                title="Testing for measurement invariance ",
                 visible="(fit1)",
                 refs="slca",
                 clearWith=list(
@@ -354,16 +336,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
-                title="LTA with measurement invariance"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text2",
-                title="Joint LCA",
-                refs="slca"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text5",
-                title="Latent class profile analysis with measurement invariance"))}))
+                title="LTA with measurement invariance"))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -399,12 +372,10 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cons .
 #' @param par .
 #' @param reg .
-#' @param par1 .
 #' @param par2 .
 #' @param par3 .
 #' @param fit .
 #' @param fit1 .
-#' @param par4 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -416,8 +387,6 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -438,12 +407,10 @@ lta <- function(
     cons = "L1,L2,L3",
     par = FALSE,
     reg = FALSE,
-    par1 = FALSE,
     par2 = FALSE,
     par3 = FALSE,
     fit = FALSE,
-    fit1 = FALSE,
-    par4 = FALSE) {
+    fit1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -464,12 +431,10 @@ lta <- function(
         cons = cons,
         par = par,
         reg = reg,
-        par1 = par1,
         par2 = par2,
         par3 = par3,
         fit = fit,
-        fit1 = fit1,
-        par4 = par4)
+        fit1 = fit1)
 
     analysis <- ltaClass$new(
         options = options,

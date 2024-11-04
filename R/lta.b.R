@@ -10,7 +10,6 @@
 #' @importFrom slca regress
 #' @importFrom slca compare
 #' @importFrom slca gof
-#' @import ggplot2
 #' @export
 
 
@@ -87,7 +86,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       # Number of class
       nc <- as.integer(number)
       #self$results$text5$setContent(nc)
-      
       
       # y~a+b+c---
       vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
@@ -180,8 +178,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    
   if(nfactors>1){
     
-    #### Formulas #################################
-    
+    # LTA Formula---
     # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
     formulas <- list()
     
@@ -220,7 +217,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     form1 <- c(formulas, sequential_relations)
    
     
-    #LTA---
+    # LTA analysis---
     if(isTRUE(self$options$par2)){
  
       library(magrittr)
@@ -250,10 +247,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       par3<- slca::param(obj3)
 
      self$results$text4$setContent(par3) 
-      }
      
-    
-    # Testing for measurment invariance--
+     }
+     
+    # Testing for measurement invariance---
     # LTA vs. LTA with mi
     # With same class !!!
     if(isTRUE(self$options$fit1)){
@@ -280,39 +277,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       }
     }
     
-    # JLCPA---
-    if(isTRUE(self$options$par1)){
-      
-      library(magrittr)
-      set.seed(1234)
-      obj1<- slca::slca(formula = formulas) %>%
-        slca::estimate(data=data)
-      par1<- slca::param(obj1)
-      
-      self$results$text2$setContent(par1) 
-    }
-    
-    # Latent class profile analysis with measurement invariance---
-    if(isTRUE(self$options$par4)){
-      
-      # Defining constraints(Measurement invariance)---
-      cons <- self$options$cons
-      cons1 <- unlist(strsplit(cons, ","))
-      
-      library(magrittr)
-      set.seed(1234)
-      obj4<- slca::slca(formula = formulas,
-                        constraints=cons1) %>%
-        slca::estimate(data=data)
-      par4<- slca::param(obj4)
-      
-      self$results$text5$setContent(par4) 
-    }
-    
-              
+ 
     }   
  
-
 # Regression---
  if(length(self$options$covs)>=1){
        
@@ -389,10 +356,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      }
   
      }
-######################     
 
-  
-  
+
      # Example with R---
 
      # library(slca)
@@ -401,28 +366,17 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      # #LCA---
      # data = nlsy97
      # set.seed(1234)
-     # obj0 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98) %>% 
+     # obj <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98) %>% 
      #   estimate(data = nlsy97)
-     # par0<- slca::param(obj0)
-     # par0
-     # plot(obj0)
+     # par<- slca::param(obj)
+     # par
+     # plot(obj)
      # summary(obj)
      # # Regression--
      # set.seed(1234)
      # obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
      # 
-     # #JLCA---
-     # data = nlsy97
-     # set.seed(1234)
-     # obj <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
-     #             L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03) %>%
-     #   estimate(data = nlsy97)
-     # par<- slca::param(obj)
-     # par
-     # 
-     # # Regression--
-     # set.seed(1234)
-     # obj %>% slca::regress(L2 ~ SEX, nlsy97)
+     
      # #####################
      # data = nlsy97
      # set.seed(1234)
@@ -436,6 +390,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      # # Regression--
      # set.seed(1234)
      # obj1 %>% slca::regress(L1 ~ SEX, nlsy97)
+
      # #########################
      # data = nlsy97
      # set.seed(1234)
@@ -445,13 +400,11 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      #   estimate(data = nlsy97)
      # par2<- slca::param(obj2)
      # par2
-     # 
+     # plot(obj2)
      # # Regression--
      # set.seed(1234)
-     # obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
-     
-     
-          
+     # obj2 %>% slca::regress(L1 ~ SEX, nlsy97)
+ 
  ))
   
  
