@@ -95,23 +95,25 @@ children:
         style: inline
         children:
           - type: Label
-            label: 'Estimated Parameters'
+            label: 'LTA'
             children:
-              - type: CheckBox
-                name: par1
               - type: CheckBox
                 name: par2
               - type: CheckBox
                 name: par3
+              - type: CheckBox
+                name: fit1                 
           - type: LayoutBox
             margin: large
             style: inline
             children:
               - type: Label
-                label: 'Measurement Invariance'
+                label: 'LCA'
                 children:
                   - type: CheckBox
-                    name: fit1 
+                    name: par1
+                  - type: CheckBox
+                    name: par4                    
   - type: CollapseBox
     label: 'Regression analysis using 3-step approach'
     collapsed: true

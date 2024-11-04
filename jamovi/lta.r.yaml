@@ -140,11 +140,6 @@ items:
       type:  Preformatted
       refs: slca
 
-    - name:  text2
-      title: 'Joint LCA'
-      type:  Preformatted
-      refs: slca
- 
     - name:  text3
       title: 'LTA with non-invariant model'
       type:  Preformatted
@@ -153,7 +148,12 @@ items:
       title: 'LTA with measurement invariance'
       type:  Preformatted
 
+    - name:  text2
+      title: 'Joint LCA'
+      type:  Preformatted
+      refs: slca
+
     - name:  text5
-      title: ''
+      title: 'Latent class profile analysis with measurement invariance'
       type:  Preformatted
 ...

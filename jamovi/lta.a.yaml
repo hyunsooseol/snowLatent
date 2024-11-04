@@ -98,12 +98,12 @@ options:
       default: FALSE
 
     - name: par2
-      title: 'LTA with non-invariant model'
+      title: 'LTA(with non-invariant model)'
       type: Bool
       default: FALSE
 
     - name: par3
-      title: 'LTA with measurement invariance'
+      title: 'LTA(with measurement invariance)'
       type: Bool
       default: FALSE
 
@@ -113,7 +113,12 @@ options:
       default: FALSE
 
     - name: fit1
-      title: 'Test'
+      title: 'Testing for measurement invariance'
+      type: Bool
+      default: FALSE
+
+    - name: par4
+      title: 'LCPA(with measurement invariance)'
       type: Bool
       default: FALSE
 ...

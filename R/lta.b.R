@@ -37,7 +37,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
               '<div style="text-align:justify;">',
               '<ul>',
-              '<li><b>slca</b> R package is described in the <a href="https://CRAN.R-project.org/package=slca" target = "_blank">page</a>.</li>',
+              '<li>Latent transition analysis based on <b>slca</b> R package.</li>',
               '<li>Model specifications are described in the <a href="https://kim0sun.github.io/slca/" target = "_blank">page</a>.</li>',
               '<li><b>L1[k]</b>: <b>k</b> denotes the number of latent classes for the first latent class variable <b>L1</b>.</li>',
               '<li><b>PI</b>: Class prevalences.</li>',
@@ -219,18 +219,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     sequential_relations <- create_sequential_relations(formulas)
     form1 <- c(formulas, sequential_relations)
    
-    # Estimated parameters---
-    # JLCPA---
-    if(isTRUE(self$options$par1)){
- 
-      library(magrittr)
-      set.seed(1234)
-      obj1<- slca::slca(formula = formulas) %>%
-        slca::estimate(data=data)
-      par1<- slca::param(obj1)
-     
-      self$results$text2$setContent(par1) 
-         }
     
     #LTA---
     if(isTRUE(self$options$par2)){
@@ -243,6 +231,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
      
       self$results$text3$setContent(par2) 
          }
+    
     
     # LTA with Measurement invariance---
     if(isTRUE(self$options$par3)){
@@ -262,38 +251,68 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
      self$results$text4$setContent(par3) 
       }
-               
+     
+    
+    # Testing for measurment invariance--
+    # LTA vs. LTA with mi
+    # With same class !!!
+    if(isTRUE(self$options$fit1)){
+      
+      fit1<- slca::compare(obj2, obj3, test='chisq')
+      
+      table <- self$results$fit1  
+      df <- as.data.frame(fit1)
+      names <- dimnames(df)[[1]]
+      
+      for (name in names) {
+        row <- list()
+        
+        row[["df"]]   <-  df[name, 1]
+        row[["loglik"]]   <- df[name, 2]
+        row[["aic"]] <-  df[name, 3]
+        row[["bic"]] <-  df[name, 4]
+        row[["gsq"]] <- df[name, 5]
+        row[["res"]] <-  df[name, 6]
+        row[["p"]] <-  df[name, 7]
+        
+        table$addRow(rowKey=name, values=row)
+        
+      }
+    }
+    
+    # JLCPA---
+    if(isTRUE(self$options$par1)){
+      
+      library(magrittr)
+      set.seed(1234)
+      obj1<- slca::slca(formula = formulas) %>%
+        slca::estimate(data=data)
+      par1<- slca::param(obj1)
+      
+      self$results$text2$setContent(par1) 
+    }
+    
+    # Latent class profile analysis with measurement invariance---
+    if(isTRUE(self$options$par4)){
+      
+      # Defining constraints(Measurement invariance)---
+      cons <- self$options$cons
+      cons1 <- unlist(strsplit(cons, ","))
+      
+      library(magrittr)
+      set.seed(1234)
+      obj4<- slca::slca(formula = formulas,
+                        constraints=cons1) %>%
+        slca::estimate(data=data)
+      par4<- slca::param(obj4)
+      
+      self$results$text5$setContent(par4) 
+    }
+    
+              
     }   
  
-# Testing Measurement invariance--
-# LTA vs. LTA with mi
-# With same class !!!
-     
-     if(isTRUE(self$options$fit1)){
 
-       fit1<- slca::compare(obj2, obj3, test='chisq')
-        
-       table <- self$results$fit1  
-       df <- as.data.frame(fit1)
-       names <- dimnames(df)[[1]]
-       
-       for (name in names) {
-         row <- list()
-         
-         row[["df"]]   <-  df[name, 1]
-         row[["loglik"]]   <- df[name, 2]
-         row[["aic"]] <-  df[name, 3]
-         row[["bic"]] <-  df[name, 4]
-         row[["gsq"]] <- df[name, 5]
-         row[["res"]] <-  df[name, 6]
-         row[["p"]] <-  df[name, 7]
-         
-         table$addRow(rowKey=name, values=row)
-         
-       }
-     }
-  
-     
 # Regression---
  if(length(self$options$covs)>=1){
        
