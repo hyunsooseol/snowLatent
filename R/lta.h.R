@@ -283,7 +283,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="reg",
-                title="Logistic regression using 3-step approach",
+                title="Logistic regression",
                 visible="(reg)",
                 refs="slca",
                 clearWith=list(

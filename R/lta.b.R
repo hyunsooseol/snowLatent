@@ -40,6 +40,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<li><b>slca</b> R package is described in the <a href="https://CRAN.R-project.org/package=slca" target = "_blank">page</a>.</li>',
               '<li>Model specifications are described in the <a href="https://kim0sun.github.io/slca/" target = "_blank">page</a>.</li>',
               '<li><b>L1[k]</b>: <b>k</b> denotes the number of latent classes for the first latent class variable <b>L1</b>.</li>',
+              '<li><b>PI</b>: Class prevalences.</li>',
+              '<li><b>TAU</b>: Transition probabilities.</li>',
+              '<li><b>RHO</b>: Item response probabilities.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
 
@@ -54,7 +57,11 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "obj2: LTA with non-invariant model; obj3: LTA with measurement invariance."
           )
         
-        
+        if(self$options$reg)
+          self$results$reg$setNote(
+            "Note",
+            "It utilizes logistic regression and employs a three-step approach."
+          )
         
       },
       
