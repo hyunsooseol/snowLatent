@@ -108,7 +108,7 @@ options:
       default: FALSE
 
     - name: fit1
-      title: 'Test'
+      title: 'Chi-squared test'
       type: Bool
       default: FALSE
 

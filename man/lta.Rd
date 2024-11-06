@@ -14,7 +14,6 @@ lta(
   cons = "L1,L2,L3",
   par = FALSE,
   reg = FALSE,
-  par1 = FALSE,
   par2 = FALSE,
   par3 = FALSE,
   fit = FALSE,
@@ -41,8 +40,6 @@ of the factor and the \code{vars} that belong to that factor}
 
 \item{reg}{.}
 
-\item{par1}{.}
-
 \item{par2}{.}
 
 \item{par3}{.}
@@ -61,10 +58,8 @@ A results object containing:
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
   \code{results$member} \tab \tab \tab \tab \tab an output \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
