@@ -45,10 +45,6 @@ children:
             type: TextBox
             label: Cluster
             format: number
-          - name: nb
-            type: TextBox
-            label: Bootstrap
-            format: number
   - type: CollapseBox
     label: Analysis
     margin: normal

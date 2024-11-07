@@ -63,16 +63,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           )
         )        
         
-        if (self$options$comp1)
-          self$results$comp1$setNote(
-            "Note",
-            "p: Bootstrap p value; H\u2090: Model fit data adequately."
-          )
+        # if (self$options$comp1)
+        #   self$results$comp1$setNote(
+        #     "Note",
+        #     "p: Bootstrap p value; H\u2090: Model fit data adequately."
+        #   )
         
         if (self$options$rel1)
           self$results$rel1$setNote(
             "Note",
-            "p: Bootstrap p value."
+            "p: Chi-Square p value."
           )
        
         if (self$options$gof)
@@ -140,7 +140,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           group <- self$options$group
           covs <- self$options$covs
           nc <- self$options$nc  
-          nb <- self$options$nb
           nclust <- self$options$nclust
           
 ##############################
@@ -225,7 +224,7 @@ if(isTRUE(self$options$comp1)){
             for (name in names) {
                row <- list()
               
-              row[["cluster"]]   <-  g[name, 9]
+              row[["cluster"]]   <-  g[name, 8]
               row[["loglik"]]   <-  g[name, 1]
               row[["aic"]] <-  g[name, 2]
               row[["caic"]] <-  g[name, 3]
@@ -233,8 +232,7 @@ if(isTRUE(self$options$comp1)){
               row[["entropy"]] <-  g[name, 5]
               row[["df"]] <-  g[name, 6]
               row[["gsq"]] <-  g[name, 7]
-              row[["p"]] <-  g[name, 8]
- 
+              
               table$addRow(rowKey=name, values=row)
             }
         }
@@ -633,7 +631,6 @@ image2$setState(ic)
         group <- self$options$group
         covs <- self$options$covs
         nc <- self$options$nc  
-        nb <- self$options$nb
         nclust <- self$options$nclust
         
         lca <- private$.computeLCA()
@@ -729,7 +726,6 @@ image2$setState(ic)
   group <- self$options$group
   covs <- self$options$covs
   nc <- self$options$nc  
-  nb <- self$options$nb
   nclust <- self$options$nclust
   
   # Constructing formula----------------        
@@ -781,7 +777,6 @@ image2$setState(ic)
   group <- self$options$group
   covs <- self$options$covs
   nc <- self$options$nc  
-  nb <- self$options$nb
   nclust <- self$options$nclust
   
   # Constructing formula----------------        
@@ -812,11 +807,11 @@ image2$setState(ic)
   
   # CLUSTER: Absolute and relative model fit-------
   
-  args <- list(test = "boot", nboot=nb)
+  args <- list(test = "chisq")
   
   for(n in 2:self$options$nclust)
     
-    args[[n+1]] <- glca::glca(formula = formula,
+    args[[n]] <- glca::glca(formula = formula,
                               group=group,
                               data = data,
                               nclass = nc,
@@ -853,7 +848,6 @@ image2$setState(ic)
   group <- self$options$group
   covs <- self$options$covs
   nc <- self$options$nc  
-  nb <- self$options$nb
   nclust <- self$options$nclust
   
   # Constructing formula----------------        
@@ -920,7 +914,7 @@ image2$setState(ic)
     
     if (! jmvcore::isError(lca2) ){
       
-      cf <- glca::gofglca(lca0, lca, lca2, test = "chisq", nboot = nb)
+      cf <- glca::gofglca(lca0, lca, lca2, test = "chisq")
       
       # self$results$text$setContent(cf)
       

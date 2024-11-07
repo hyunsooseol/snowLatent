@@ -11,7 +11,6 @@ mlca(
   group,
   nc = 2,
   nclust = 2,
-  nb = 10,
   fit = TRUE,
   comp1 = FALSE,
   rel1 = FALSE,
@@ -48,8 +47,6 @@ mlca(
 \item{nc}{.}
 
 \item{nclust}{.}
-
-\item{nb}{.}
 
 \item{fit}{.}
 

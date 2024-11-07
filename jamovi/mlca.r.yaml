@@ -22,7 +22,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -62,7 +61,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -92,11 +90,7 @@ items:
         - name: gsq
           title: G² 
           type: number
-        - name: p
-          title: p 
-          type: number
-          format: zto,pvalue
-
+ 
     - name: rel1
       title: 'Relative model fit for cluster'
       type: Table
@@ -105,7 +99,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -139,7 +132,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -158,7 +150,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -179,7 +170,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -198,7 +188,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -219,7 +208,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -238,7 +226,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -278,7 +265,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -315,7 +301,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -331,7 +316,6 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
@@ -348,16 +332,11 @@ items:
       clearWith:
         - vars
         - nc
-        - nb
         - group
         - covs
         - nclust
         - width2
         - height2
-
-    # - name: text5
-    #   title: Item probability(rho)
-    #   type:  Preformatted
 
     - name: item
       title: 'Item response probability(Rho)'
@@ -368,7 +347,6 @@ items:
             - vars
             - covs
             - nc
-            - nb
             - group
             - nclust
       template:
@@ -378,7 +356,6 @@ items:
             - vars
             - covs
             - nc
-            - nb
             - group
             - nclust
        

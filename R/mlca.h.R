@@ -11,7 +11,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             nclust = 2,
-            nb = 10,
             fit = TRUE,
             comp1 = FALSE,
             rel1 = FALSE,
@@ -71,11 +70,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nclust,
                 min=2,
                 default=2)
-            private$..nb <- jmvcore::OptionInteger$new(
-                "nb",
-                nb,
-                min=10,
-                default=10)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -172,7 +166,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..nclust)
-            self$.addOption(private$..nb)
             self$.addOption(private$..fit)
             self$.addOption(private$..comp1)
             self$.addOption(private$..rel1)
@@ -202,7 +195,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         group = function() private$..group$value,
         nc = function() private$..nc$value,
         nclust = function() private$..nclust$value,
-        nb = function() private$..nb$value,
         fit = function() private$..fit$value,
         comp1 = function() private$..comp1$value,
         rel1 = function() private$..rel1$value,
@@ -231,7 +223,6 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..group = NA,
         ..nc = NA,
         ..nclust = NA,
-        ..nb = NA,
         ..fit = NA,
         ..comp1 = NA,
         ..rel1 = NA,
@@ -303,7 +294,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -350,7 +340,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -386,12 +375,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rel1",
@@ -401,7 +385,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -440,7 +423,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -459,7 +441,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -481,7 +462,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -500,7 +480,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -522,7 +501,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -541,7 +519,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -588,7 +565,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust"),
@@ -630,7 +606,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust",
@@ -646,7 +621,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust",
@@ -663,7 +637,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "nb",
                     "group",
                     "covs",
                     "nclust",
@@ -679,7 +652,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb",
                     "group",
                     "nclust"),
                 template=jmvcore::Table$new(
@@ -689,7 +661,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         "vars",
                         "covs",
                         "nc",
-                        "nb",
                         "group",
                         "nclust"),
                     columns=list(
@@ -733,7 +704,6 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param nc .
 #' @param nclust .
-#' @param nb .
 #' @param fit .
 #' @param comp1 .
 #' @param rel1 .
@@ -792,7 +762,6 @@ mlca <- function(
     group,
     nc = 2,
     nclust = 2,
-    nb = 10,
     fit = TRUE,
     comp1 = FALSE,
     rel1 = FALSE,
@@ -837,7 +806,6 @@ mlca <- function(
         group = group,
         nc = nc,
         nclust = nclust,
-        nb = nb,
         fit = fit,
         comp1 = comp1,
         rel1 = rel1,
