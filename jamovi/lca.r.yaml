@@ -23,7 +23,6 @@ items:
         - vars
         - nc
         - covs
-        - nb
       refs: glca 
 
       columns:
@@ -61,8 +60,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
-
       columns:
         - name: class
           title: Class
@@ -88,10 +85,6 @@ items:
         - name: gsq
           title: G² 
           type: number
-        - name: p
-          title: p 
-          type: number
-          format: zto,pvalue
 
     - name: rel
       title: 'Relative model fit(Class>2)'
@@ -102,8 +95,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
-
       columns:
         - name: class
           title: Class
@@ -134,8 +125,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
-      
       columns:
         - name: name
           title: ''
@@ -153,8 +142,7 @@ items:
         - vars
         - covs
         - nc
-        - nb
-
+ 
       columns:
         - name: name
           title: ''
@@ -186,8 +174,7 @@ items:
             - vars
             - covs
             - nc
-            - nb
-      
+ 
       template:
           title: Probability of $key
           type: Table
@@ -210,7 +197,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
 
     - name: member
       title: Class membership
@@ -221,8 +207,7 @@ items:
         - vars
         - covs
         - nc
-        - nb
-
+ 
     - name:  plot1
       title: 'Profile plot'
       type:  Image
@@ -234,7 +219,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
         - width
         - height 
         
@@ -248,7 +232,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
         - angle
         - width1
         - height1
@@ -263,7 +246,6 @@ items:
         - vars
         - covs
         - nc
-        - nb
         - width2
         - height2
 

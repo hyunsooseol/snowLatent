@@ -26,17 +26,13 @@ children:
     style: inline
     children:
       - type: Label
-        label: Analysis options
+        label: ''
         margin: large
         style: list-inline
         children:
           - name: nc
             type: TextBox
             label: Class
-            format: number
-          - name: nb
-            type: TextBox
-            label: Bootstrap
             format: number
   - type: CollapseBox
     label: Analysis

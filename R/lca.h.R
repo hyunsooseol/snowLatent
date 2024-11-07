@@ -9,7 +9,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             covs = NULL,
             nc = 2,
-            nb = 50,
             fit = TRUE,
             comp = FALSE,
             rel = FALSE,
@@ -51,11 +50,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
-            private$..nb <- jmvcore::OptionInteger$new(
-                "nb",
-                nb,
-                min=10,
-                default=50)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -134,7 +128,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
             self$.addOption(private$..nc)
-            self$.addOption(private$..nb)
             self$.addOption(private$..fit)
             self$.addOption(private$..comp)
             self$.addOption(private$..rel)
@@ -159,7 +152,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         covs = function() private$..covs$value,
         nc = function() private$..nc$value,
-        nb = function() private$..nb$value,
         fit = function() private$..fit$value,
         comp = function() private$..comp$value,
         rel = function() private$..rel$value,
@@ -183,7 +175,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..vars = NA,
         ..covs = NA,
         ..nc = NA,
-        ..nb = NA,
         ..fit = NA,
         ..comp = NA,
         ..rel = NA,
@@ -249,8 +240,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "nc",
-                    "covs",
-                    "nb"),
+                    "covs"),
                 refs="glca",
                 columns=list(
                     list(
@@ -294,8 +284,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb"),
+                    "nc"),
                 columns=list(
                     list(
                         `name`="class", 
@@ -328,12 +317,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="gsq", 
                         `title`="G\u00B2", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rel",
@@ -343,8 +327,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb"),
+                    "nc"),
                 columns=list(
                     list(
                         `name`="class", 
@@ -380,8 +363,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb"),
+                    "nc"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -400,8 +382,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb"),
+                    "nc"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -438,8 +419,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb"),
+                    "nc"),
                 template=jmvcore::Table$new(
                     options=options,
                     title="Probability of $key",
@@ -462,8 +442,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb")))
+                    "nc")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="member",
@@ -473,8 +452,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc",
-                    "nb")))
+                    "nc")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -487,7 +465,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb",
                     "width",
                     "height")))
             self$add(jmvcore::Image$new(
@@ -501,7 +478,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb",
                     "angle",
                     "width1",
                     "height1")))
@@ -516,7 +492,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "covs",
                     "nc",
-                    "nb",
                     "width2",
                     "height2")))
             self$add(jmvcore::Preformatted$new(
@@ -552,7 +527,6 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param covs .
 #' @param nc .
-#' @param nb .
 #' @param fit .
 #' @param comp .
 #' @param rel .
@@ -601,7 +575,6 @@ lca <- function(
     vars,
     covs,
     nc = 2,
-    nb = 50,
     fit = TRUE,
     comp = FALSE,
     rel = FALSE,
@@ -636,7 +609,6 @@ lca <- function(
         vars = vars,
         covs = covs,
         nc = nc,
-        nb = nb,
         fit = fit,
         comp = comp,
         rel = rel,
