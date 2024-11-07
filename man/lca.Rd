@@ -9,7 +9,6 @@ lca(
   vars,
   covs,
   nc = 2,
-  nb = 50,
   fit = TRUE,
   comp = FALSE,
   rel = FALSE,
@@ -37,8 +36,6 @@ lca(
 \item{covs}{.}
 
 \item{nc}{.}
-
-\item{nb}{.}
 
 \item{fit}{.}
 

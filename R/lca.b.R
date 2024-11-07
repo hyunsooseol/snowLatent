@@ -13,8 +13,6 @@
 #' @export
 
 
-
-
 lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaClass",
     inherit = lcaBase,
@@ -29,24 +27,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #    
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
-        #     <p>2. The result table does not printed if the results from glca R package are not available.</p>
-        #     <p>3. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -64,11 +44,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           )
         )         
                 
-         if (self$options$comp)
-             self$results$comp$setNote(
-                 "Note",
-                 "p: Bootstrap p value; H\u2090: Model fit data adequately."
-             )
+         # if (self$options$comp)
+         #     self$results$comp$setNote(
+         #         "Note",
+         #         "p: Bootstrap p value; H\u2090: Model fit data adequately."
+         #     )
         
         
         if(isTRUE(self$options$plot1)){
@@ -87,8 +67,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           self$results$plot2$setSize(width, height)
         }  
-        
-        
+ 
         if(isTRUE(self$options$plot3)){
           
           width <- self$options$width2
@@ -96,8 +75,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           self$results$plot3$setSize(width, height)
         }  
-        
-        
+ 
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
  
@@ -109,7 +87,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             length(self$options$vars) < 2) return()
  
         nc <- self$options$nc
-        nb <- self$options$nb
         covs <- self$options$covs
         vars <- self$options$vars         
          
@@ -174,7 +151,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
    #      self$results$text$setContent(lca)
 
         nc <- self$options$nc
-        nb <- self$options$nb
         covs <- self$options$covs
         vars <- self$options$vars
         ##############################
@@ -278,10 +254,10 @@ if (length(covs) >= 1) {
         
         #Good codes for model fit####################################
         
-        args <- list(test = "boot", nboot=self$options$nb)
+        args <- list(test = "chisq")
       
         for(n in 2:self$options$nc)
-          args[[n+1]] <- glca::glca(formula = formula, 
+          args[[n]] <- glca::glca(formula = formula, 
                                      data = data, 
                                      nclass = n, 
                                      seed = 1)
@@ -301,7 +277,6 @@ if (length(covs) >= 1) {
          
           }
         
-       
         if(self$options$nc>2){
         
         # Elbow plot-------------
@@ -458,7 +433,7 @@ if (length(covs) >= 1) {
            
            row <- list()
            
-           row[["class"]]   <-  g[name, 9]
+           row[["class"]]   <-  g[name, 8]
            row[["loglik"]]   <-  g[name, 1]
            row[["aic"]] <-  g[name, 2]
            row[["caic"]] <-  g[name, 3]
@@ -466,7 +441,6 @@ if (length(covs) >= 1) {
            row[["entropy"]] <-  g[name, 5]
            row[["df"]] <-  g[name, 6]
            row[["gsq"]] <-  g[name, 7]
-           row[["p"]] <-  g[name, 8]
            
            table$addRow(rowKey=name, values=row)
          }     
@@ -624,7 +598,6 @@ if (length(covs) >= 1) {
      data <- private$.cleanData()
      
      nc <- self$options$nc
-     nb <- self$options$nb
      covs <- self$options$covs
      vars <- self$options$vars
      
