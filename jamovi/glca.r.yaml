@@ -53,7 +53,7 @@ items:
           type: number
 
     - name: mia
-      title: '`Absolute model fit for measurement invariance - ${test}`'
+      title: 'Absolute model fit for measurement invariance'
       type: Table
       visible: (mia)
       refs: glca
@@ -62,8 +62,7 @@ items:
         - covs
         - nc
         - group
-        - test
-
+  
       columns:
         - name: name
           title: 'Model'
@@ -90,13 +89,9 @@ items:
         - name: gsq
           title: G² 
           type: number
-        - name: boot
-          title: Bootstrap p-value 
-          type: number
-          visible: (test)
-
+  
     - name: mir
-      title:  '`Relative model fit for measurement invariance - ${test}`'
+      title:  'Relative model fit for measurement invariance'
       type: Table
       visible: (mir)
       refs: glca
@@ -105,8 +100,7 @@ items:
         - covs
         - nc
         - group
-        - test
-
+ 
       columns:
         - name: name
           title: 'Model'
@@ -130,7 +124,7 @@ items:
           format: zto,pvalue
 
     - name: cia
-      title: '`Absolute model fit for the equality of coefficients - ${test1}`'
+      title: 'Absolute model fit for the equality of coefficients'
       type: Table
       visible: (cia)
       refs: glca
@@ -139,8 +133,7 @@ items:
         - covs
         - nc
         - group
-        - test1
-
+ 
       columns:
         - name: name
           title: 'Model'
@@ -167,13 +160,9 @@ items:
         - name: gsq
           title: G² 
           type: number
-        - name: boot
-          title: Bootstrap p-value 
-          type: number
-          visible: (test1)  
  
     - name: cir
-      title: '`Relative model fit for the equality of coefficients - ${test1}`'
+      title: 'Relative model fit for the equality of coefficients'
       type: Table
       visible: (cir)
       refs: glca
@@ -182,8 +171,7 @@ items:
         - covs
         - nc
         - group
-        - test1
-
+ 
       columns:
         - name: name
           title: 'Model'

@@ -149,8 +149,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         group <- self$options$group
         covs <- self$options$covs
         nc <- self$options$nc  
-        test <- self$options$test
-        test1 <- self$options$test1
         
         lca <- private$.computeLCA()
         self$results$text$setContent(lca) 
@@ -209,9 +207,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             df <- g[,6]
             gsq <- g[,7]
 
-            if(self$options$test=='boot'){
-              boot <- g[,8]
-            }
+            # if(self$options$test=='boot'){
+            #   boot <- g[,8]
+            # }
 
             names <- dimnames(g)[[1]]
 
@@ -227,9 +225,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               row[["df"]] <-  g[name, 6]
               row[["gsq"]] <-  g[name, 7]
 
-              if(self$options$test=='boot'){
-                row[["boot"]] <-  g[name, 8]
-              }
+              # if(self$options$test=='boot'){
+              #   row[["boot"]] <-  g[name, 8]
+              # }
 
               table$addRow(rowKey=name, values=row)
 
@@ -297,9 +295,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           df <- g[,6]
           gsq <- g[,7]
 
-          if(self$options$test1=='boot'){
-            boot <- g[,8]
-          }
+          # if(self$options$test1=='boot'){
+          #   boot <- g[,8]
+          # }
 
            names <- dimnames(g)[[1]]
 
@@ -315,10 +313,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             row[["df"]] <-  g[name, 6]
             row[["gsq"]] <-  g[name, 7]
 
-            if(self$options$test1=='boot'){
-
-              row[["boot"]] <-  g[name, 8]
-            }
+            # if(self$options$test1=='boot'){
+            # 
+            #   row[["boot"]] <-  g[name, 8]
+            # }
 
             table$addRow(rowKey=name, values=row)
 
@@ -682,10 +680,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        }
 
        if (! jmvcore::isError(mglca3) ){
-         
-         test <- self$options$test
-         
-         mi <- glca::gofglca(mglca2, mglca3, test = test)
+        
+         mi <- glca::gofglca(mglca2, mglca3, test = 'chisq')
          
          mi.g <- mi[["gtable"]] #Absolute model fit
          
@@ -762,9 +758,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
       if (! jmvcore::isError(mglca4) ){
 
-        test1 <- self$options$test1
-
-        ci <- glca::gofglca(lca, mglca4, mglca5, test = test1)
+        ci <- glca::gofglca(lca, mglca4, mglca5, test = 'chisq')
 
         ci.g <- ci[["gtable"]] #Absolute model fit
 

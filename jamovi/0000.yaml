@@ -72,11 +72,6 @@ datasets:
     tags:
       - LCA
       - Multiple group LCA
-  - name: election
-    path: election.omv
-    description: Election data
-    tags:
-      - Multiple group LCA
   - name: nyts
     path: nyts18.omv
     description: Tobacco smoking behavior

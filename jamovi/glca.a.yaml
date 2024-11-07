@@ -45,16 +45,6 @@ options:
       type: Bool
       default: True
  
-    - name: test
-      title: 'p-value option'
-      type: List
-      options:
-        - name: boot
-          title: Bootstrap 
-        - name: chisq
-          title: Chi-square
-      default: boot 
-    
     - name: mia
       title: Absolute model fit
       type: Bool
@@ -64,16 +54,6 @@ options:
       title: Relative model fit
       type: Bool
       default: FALSE
-
-    - name: test1
-      title: 'p-value option'
-      type: List
-      options:
-        - name: boot
-          title: Bootstrap 
-        - name: chisq
-          title: Chi-square
-      default: boot
 
     - name: cia
       title: Absolute model fit

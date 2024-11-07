@@ -49,8 +49,6 @@ children:
           - type: Label
             label: 'Model comparison'
             children:
-              - type: ComboBox
-                name: test
               - type: CheckBox
                 name: mia
               - type: CheckBox
@@ -58,8 +56,6 @@ children:
           - type: Label
             label: 'Equality of coefficients'
             children:
-              - type: ComboBox
-                name: test1
               - type: CheckBox
                 name: cia
               - type: CheckBox
