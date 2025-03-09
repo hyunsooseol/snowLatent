@@ -685,9 +685,11 @@ if (length(covs) >= 1) {
        attr(data, 'row.names') <- seq_len(length(data[[1]]))
        attr(data, 'class') <- 'data.frame'
        
-       if( !is.null(self$options$covs))
-         for (cov in self$options$covs)
-           data <- data[!is.na(data[[cov]]), ]
+       # MAR to handle missing values---
+       
+       # if( !is.null(self$options$covs))
+       #   for (cov in self$options$covs)
+       #     data <- data[!is.na(data[[cov]]), ]
        
        return(data)
      },

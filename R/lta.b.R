@@ -68,7 +68,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
   .run = function() {
 
      data <- self$data
-     data <- jmvcore::naOmit(data)
+     
+     #apply MAR to handle missing values---
+     #data <- jmvcore::naOmit(data)
      
      factors <- self$options$factors
      nfactors <- length(factors)

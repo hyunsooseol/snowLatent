@@ -581,7 +581,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         
-        data <- data[!is.na(data[[groupVarName]]), ]
+        #apply MAR for missing values---
+        #data <- data[!is.na(data[[groupVarName]]), ]
         
         return(data)
       },

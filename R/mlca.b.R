@@ -713,7 +713,7 @@ image2$setState(ic)
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         
-        data <- data[!is.na(data[[groupVarName]]), ]
+        #data <- data[!is.na(data[[groupVarName]]), ]
         
         return(data)
       },
