@@ -37,6 +37,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<div style="text-align:justify;">',
               '<ul>',
               '<li>Latent transition analysis based on <b>slca</b> R package.</li>',
+              '<li>The MAR(Missing at Random) method is applied to handle missing values.</li>',
               '<li>Model specifications are described in the <a href="https://kim0sun.github.io/slca/" target = "_blank">page</a>.</li>',
               '<li><b>L1[k]</b>: <b>k</b> denotes the number of latent classes for the first latent class variable <b>L1</b>.</li>',
               '<li><b>PI</b>: Class prevalences.</li>',
