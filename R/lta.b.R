@@ -1,15 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
 #' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import slca
-#' @import magrittr
-#' @importFrom slca slca
-#' @importFrom slca estimate
-#' @importFrom slca param
-#' @importFrom slca regress
-#' @importFrom slca compare
-#' @importFrom slca gof
 #' @export
 
 

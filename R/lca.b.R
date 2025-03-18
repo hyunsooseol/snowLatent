@@ -1,15 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
 #' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import stats
-#' @import glca
-#' @import ggplot2
-#' @importFrom glca glca
-#' @importFrom reshape2 melt
-#' @importFrom glca item
-#' @importFrom ggplot2 ggplot
-#' @importFrom glca gofglca
 #' @export
 
 

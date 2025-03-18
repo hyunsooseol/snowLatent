@@ -1,9 +1,5 @@
 
 # This file is a generated template, your changes will not be overwritten
-#' @importFrom  fmsb radarchart
-#' @importFrom scales rescale
-#' @import ggplot2
-#' @import scales
 #' @export
 
 

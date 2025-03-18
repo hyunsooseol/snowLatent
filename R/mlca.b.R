@@ -1,14 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
 #' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import stats
-#' @import glca
-#' @importFrom ggplot2 ggplot
-#' @importFrom glca glca
-#' @importFrom glca item
-#' @importFrom glca gofglca
-#' @importFrom stringr str_interp
 #' @export
 #' 
 

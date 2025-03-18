@@ -2,10 +2,6 @@
 # This file is a generated template, your changes will not be overwritten
 
 #' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import ggplot2
-#' @importFrom ggplot2 ggplot
-#' @importFrom reshape2 melt
 #' @export
 
 profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(

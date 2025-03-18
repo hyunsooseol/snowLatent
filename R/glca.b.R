@@ -1,15 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
 #' @importFrom R6 R6Class
-#' @import jmvcore
-#' @import stats
-#' @import glca
-#' @import ggplot2
-#' @importFrom glca glca
-#' @importFrom glca item
-#' @importFrom glca gofglca
-#' @importFrom stringr str_interp
-#' @importFrom ggplot2 ggplot
 #' @export
 #' 
 glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(

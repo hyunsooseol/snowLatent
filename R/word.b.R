@@ -1,11 +1,6 @@
 
 # This file is a generated template, your changes will not be overwritten
-#' @importFrom  wordcloud wordcloud
-#' @importFrom RColorBrewer brewer.pal
-#' @import ggplot2
-#' @import wordcloud
-#' @import RColorBrewer
-#' @import dplyr
+#' @importFrom R6 R6Class
 #' @export
 
 wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
