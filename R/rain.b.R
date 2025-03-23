@@ -1,9 +1,4 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @export
-
-
 rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "rainClass",
     inherit = rainBase,
@@ -17,22 +12,6 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #    
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p> Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
         
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
@@ -76,16 +55,12 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         data <- self$data
         data <- jmvcore::naOmit(data)
         data <- data.frame(data)
-        
-
         # reshape to long for ggplot
         
         plotData <-  reshape2::melt(data, id.vars=self$options$group)
         colnames(plotData) <- c("Group","Variable","Value")
         #self$results$text$setContent(plotData1)
-        
         # plot data function---------
-        
         image   <-  self$results$plot
         image$setState(plotData)
       },        
@@ -96,12 +71,10 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           return(FALSE)
         
         plotData <- image$state
-        
-        #####################################
+        #---
         library(ggplot2)
         library(dplyr)
-        
-        
+
         "%||%" <- function(a, b) {
           if (!is.null(a))
             a
@@ -216,8 +189,5 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         print(plot)
         TRUE
       }
-
-      
-      
-        )
+    )
 )

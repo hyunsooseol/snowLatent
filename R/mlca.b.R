@@ -1,13 +1,10 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @export
-#' 
 
 mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "mlcaClass",
     inherit = mlcaBase,
     private = list(
+      .cache = list(), 
       .htmlwidget = NULL,
       
       .init = function() {
@@ -18,26 +15,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #    
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
-        #     <p>2. The result table does not printed if the results from glca R package are not available.</p>
-        #     <p>3. The Raltive model fit option requires the number of clusters to be greater than 2. Check box should be unchecked.</p> 
-        #     <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-        
+
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -73,45 +51,32 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "Note",
             "Model 2: Coeff.inv=TRUE; Model 3: Coeff.inv=FALSE."
           )
-        
-        
         if (self$options$ci)
           self$results$ci$setNote(
             "Note",
             "p: Chi-Square p value; Model 2:Coeff.inv=TRUE; Model 3: Coeff.inv=FALSE."
           )
-        
-        
         if(isTRUE(self$options$plot1)){
-          
           width <- self$options$width
           height <- self$options$height
-         
           self$results$plot1$setSize(width, height)
         }
         
         if(isTRUE(self$options$plot2)){
-          
           width <- self$options$width1
           height <- self$options$height1
-          
           self$results$plot2$setSize(width, height)
         }
-        
           if(isTRUE(self$options$plot3)){
-          
           width <- self$options$width2
           height <- self$options$height2
-          
           self$results$plot3$setSize(width, height)
         }
-  
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
-  
       },
       
-      .run = function() {
+  .run = function() {
       
         ########  Multilevel glca R package ################
         
@@ -126,18 +91,26 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         if (is.null(self$options$group) || is.null(self$options$vars) || 
             length(self$options$vars) < 2) return()
  
-          
-          data <- private$.cleanData()
-  
           vars <- self$options$vars
           group <- self$options$group
           covs <- self$options$covs
           nc <- self$options$nc  
           nclust <- self$options$nclust
           
-##############################
-lca <- private$.computeLCA()
-self$results$text$setContent(lca) 
+          #---
+          data <- private$.cleanData()          
+          
+          # checking cache and computing---
+          if (is.null(private$.cache$lca)) private$.cache$lca <- private$.computeLCA()
+          if (is.null(private$.cache$clu)) private$.cache$clu <- private$.computeCLUST()
+          if (is.null(private$.cache$inv)) private$.cache$inv <- private$.computeINV()
+          
+          # results---
+          lca <- private$.cache$lca
+          clu <- private$.cache$clu
+          inv <- private$.cache$inv
+          
+          self$results$text$setContent(lca) 
 
 # Item probability(rho)---                    
 
@@ -154,16 +127,12 @@ self$results$text$setContent(lca)
 # }  
 
 if(isTRUE(self$options$co)){
-  
    #co<- lca$param$beta
   co <- lca$coefficient
   self$results$text3$setContent(co)
           }
-          
-
 # Model fit
 if(isTRUE(self$options$fit)){
-            
             table <- self$results$fit
             class <- self$options$nc 
             
@@ -179,7 +148,6 @@ if(isTRUE(self$options$fit)){
             fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq)
            
             row <- list()
-            
             row[['class']] <- class
             row[['loglik']] <- fit[,1]
             row[['aic']] <- fit[,2]
@@ -188,14 +156,10 @@ if(isTRUE(self$options$fit)){
             row[['entropy']] <- fit[,5]
             row[['df']] <- fit[,6]
             row[['gsq']] <- fit[,7]
-            
             table$setRow(rowNo = 1, values = row)
-          
           }
-
-
 ##############################          
-clu <- private$.computeCLUST()
+#clu <- private$.computeCLUST()
 
 # Absolute model fit for cluster
         
@@ -249,9 +213,7 @@ if(isTRUE(self$options$rel1)){
             names <- dimnames(d)[[1]]
 
             for (name in names) {
-              
               row <- list()
-              
               row[["cluster"]] <-  d[name, 6]
               row[["para"]] <-  d[name, 1]
               row[["loglik"]] <-  d[name, 2]
@@ -261,7 +223,6 @@ if(isTRUE(self$options$rel1)){
               
               table$addRow(rowKey=name, values=row)
              }
- 
             }
 
 # Marginal prevalences for latent classes----------
@@ -284,13 +245,11 @@ if(isTRUE(self$options$cla)){
             
             cla <- as.data.frame(cla)
             names<- dimnames(cla)[[1]]
-            
             for (name in names) {
               row <- list()
               row[['value']] <- cla[name,1]
               table$addRow(rowKey=name, values=row)
             }
-            
           }
 
 # Class prevalences by group
@@ -323,8 +282,6 @@ if(isTRUE(self$options$cross)){
               table$addRow(rowKey=name, values=row)
             }
           }
-
-
 # Marginal prevalences for latent clusters
 
 if(isTRUE(self$options$mpc)){
@@ -344,7 +301,6 @@ if(isTRUE(self$options$mpc)){
     row <- list()
     row[['value']] <- mpc[name,1]
     table$addRow(rowKey=name, values=row)
- 
 }
 }
 
@@ -412,7 +368,7 @@ if(isTRUE(self$options$cpc)){
 
 ########################
 
-inv <- private$.computeINV()        
+#inv <- private$.computeINV()        
      
 # Goodness of fit table----------  
 
@@ -450,9 +406,7 @@ if(isTRUE(self$options$gof)){
               
               table$addRow(rowKey=name, values=row)
             }
-            
           }
-
         }
                  
 #Testing equality of coefficients-------------
@@ -460,35 +414,26 @@ if(isTRUE(self$options$gof)){
 if(!is.null(self$options$covs)&&isTRUE(self$options$ci)){
   
             table <- self$results$ci
-            
             if(is.null(inv$ci.d))
               return()
-           
           d<- as.data.frame(inv$ci.d)
-          
           para <- d[,1]
           loglik<- d[,2]
           df<- d[,3]
           dev<- d[,4]
           p<- d[,5]
-          
           names <- dimnames(d)[[1]]
-
           for (name in names) {
             row <- list()
-            
             row[["para"]] <-  d[name, 1]
             row[["loglik"]] <-  d[name, 2]
             row[["df"]] <-  d[name, 3]
             row[["dev"]] <-  d[name, 4]
             row[["p"]] <-d[name, 5]
-            
             table$addRow(rowKey=name, values=row)
            }
         
           }
-        
-
 # Class prevalences for latent clusters
 # lca$posterior$wclass
 
@@ -516,7 +461,6 @@ if(isTRUE(self$options$cpc)){
     }
     table$addRow(rowKey=name, values=row)
   }
-  
 }
 
 # Cluster number---
@@ -558,7 +502,6 @@ if(isTRUE(self$options$cn)){
   
   }
 
-
 # Item by class plot---------
 
 if(isTRUE(self$options$plot2)){
@@ -569,7 +512,6 @@ ic <- reshape2::melt(ic)
 colnames(ic) <-c("Class", "Level", "value", "L1") 
 image2$setState(ic)
 }
-
 
 # item probabilities----------
 
@@ -606,7 +548,6 @@ image2$setState(ic)
    }
   
 }
-
  } 
 },
 
@@ -626,7 +567,8 @@ image2$setState(ic)
         nc <- self$options$nc  
         nclust <- self$options$nclust
         
-        lca <- private$.computeLCA()
+        #lca <- private$.computeLCA()
+        lca <- private$.cache$lca
         
         par(mfcol = c(3, 1))
         plot1 <- plot(lca, ask=FALSE)
@@ -647,8 +589,6 @@ image2$setState(ic)
     ggplot2::scale_x_discrete("Class", expand = c(0, 0)) +
     ggplot2::scale_y_continuous("Probability", expand = c(0, 0)) +
     ggplot2::theme_bw()
-  
-  
     plot2 <- plot2+ggtheme
   
   if (self$options$angle > 0) {
@@ -658,10 +598,8 @@ image2$setState(ic)
       )
     )
   }
-  
   print(plot2)
   TRUE
-  
 },
 
 .plot3 = function(image2, ggtheme, theme,...) {
@@ -683,7 +621,6 @@ image2$setState(ic)
   plot3 <- plot3+ggtheme
   print(plot3)
   TRUE
-  
 },
 
 #Private function##########################################################

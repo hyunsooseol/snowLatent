@@ -1,8 +1,4 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @export
-
 
 ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "ltaClass",
@@ -36,34 +32,26 @@ ltaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<li><b>RHO</b>: Item response probabilities.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
-
             )
-
           )
         )
-
         if(self$options$fit1)
           self$results$fit1$setNote(
             "Note",
             "obj2: LTA with non-invariant model(H1); obj3: LTA with measurement invariance(Ho)."
           )
-        
         if(self$options$reg)
           self$results$reg$setNote(
             "Note",
             "It utilizes logistic regression and employs a three-step approach."
           )
-        
       },
-      
- 
+
   .run = function() {
 
      data <- self$data
-     
      #apply MAR to handle missing values---
      #data <- jmvcore::naOmit(data)
-     
      factors <- self$options$factors
      nfactors <- length(factors)
 

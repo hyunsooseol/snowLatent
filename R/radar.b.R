@@ -1,8 +1,4 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @export
-
-
 radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "radarClass",
     inherit = radarBase,
@@ -17,22 +13,6 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
         }
         
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #     <p>____________________________________________________________________________________</p>
-        #     <p>1. You must enter row number(s) of <b>4</b> or more.</p>
-        #     <p>2. Feature requests and bug reports can be made on the <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub.</a></p>
-        #     <p>____________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-        
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -43,9 +23,7 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               '<li>You must enter row number(s) of <b>4</b> or more.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
-              
             )
-            
           )
         )      
         
@@ -60,16 +38,11 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           height <- self$options$height1
           self$results$plot1$setSize(width, height)
         }
-        
-        
-        
       },
       
-      #-----------------------------------------------------
+#-----------------------------------------------------
       
   .run = function() {
-
-    
     if (is.null(self$options$labels)) return()
     
         if (!is.null(self$options$vars)) {
@@ -83,8 +56,6 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           #  Assuming your data frame is named 'data'
           # row.names(data) <- data$City
           # data <- data[, -1]
-          
-          
           if ( ! is.null(self$options$labels)) {
             
             rownames(data) <- data[[self$options$labels]]
@@ -94,8 +65,6 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           for (i in seq_along(vars))
             data[[i]] <- jmvcore::toNumeric(data[[i]])
-          
-        
      # Data Handling------------
     
     df_scaled <- round(apply(data, 2, scales::rescale), 2)
@@ -123,8 +92,7 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     image <- self$results$plot
     image$setState(df_scaled2) 
-    
-   
+
     # plot1(Compare individual)------------- 
    
     if(isTRUE(self$options$plot1)){
@@ -171,8 +139,6 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
   print(plot)
   TRUE
-   
-    
   },
   
   .plot1 = function(image1, ...) {
@@ -206,8 +172,5 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
     
   }
- 
-  
-  
         )
 )

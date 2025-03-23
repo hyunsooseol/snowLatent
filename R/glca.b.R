@@ -1,13 +1,10 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @export
-#' 
+
 glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "glcaClass",
     inherit = glcaBase,
     private = list(
-      
+      .allCache = NULL,      
       .htmlwidget = NULL,
       
       .init = function() {
@@ -18,26 +15,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           self$results$instructions$setVisible(visible = TRUE)
           
         }
-        
-        # self$results$instructions$setContent(
-        #   "<html>
-        #     <head>
-        #     </head>
-        #     <body>
-        #     <div class='instructions'>
-        #    
-        #     <p>_____________________________________________________________________________________________</p>
-        #     <p>1. Latent Class Analysis(LCA) based on <b>glca</b> R package.</p>
-        #     <p>2. If you select the Equality of coefficients option, the logistic regression result does not appear in the screen.</p> 
-        #     <p>3. The result table does not printed if the results from glca R package are not available.</p>
-        #     <p>4. Feature requests and bug reports can be made on my <a href='https://github.com/hyunsooseol/snowLatent/issues'  target = '_blank'>GitHub</a>.</p>
-        #     <p>_____________________________________________________________________________________________</p>
-        #     
-        #     </div>
-        #     </body>
-        #     </html>"
-        # )
-        
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
             title="Instructions",
@@ -62,28 +39,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             "Note",
             "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
           )
-        
-      
         if (self$options$mir)
           self$results$mir$setNote(
             "Note",
             "Model1: measure.inv=TRUE; Model2: measure.inv=FALSE."
           )
-
         if (self$options$cia)
           self$results$cia$setNote(
             "Note",
             "Model2: measure.inv=TRUE; Model3: measure.inv=FALSE."
           )
-        
-        
         if (self$options$cir)
           self$results$cir$setNote(
             "Note",
             "Model2: coeff.inv=TRUE; Model3: coeff.inv=FALSE."
           )
-        
-        
         if(isTRUE(self$options$plot1)){
           
           width <- self$options$width
@@ -91,8 +61,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
          
           self$results$plot1$setSize(width, height)
         }
-        
-       
         if(isTRUE(self$options$plot2)){
           
           width <- self$options$width1
@@ -100,7 +68,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           self$results$plot2$setSize(width, height)
         }
-        
         if(isTRUE(self$options$plot3)){
           
           width <- self$options$width1
@@ -108,17 +75,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           
           self$results$plot3$setSize(width, height)
         }
-        
-        
-         
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
-        
-        
-        
       },
       
-      .run = function() {
+  .run = function() {
         
         if (is.null(self$options$group) || is.null(self$options$vars) || 
             length(self$options$vars) < 2) return()
@@ -135,15 +96,20 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # summary(lca)
         
         ################################
-        data <- private$.cleanData()
-        
-        vars <- self$options$vars
-        group <- self$options$group
-        covs <- self$options$covs
-        nc <- self$options$nc  
-        
-        lca <- private$.computeLCA()
-        self$results$text$setContent(lca) 
+    vars <- self$options$vars
+    group <- self$options$group
+    covs <- self$options$covs
+    nc <- self$options$nc      
+    
+    #---
+    data <- private$.cleanData()
+
+    #lca <- private$.computeLCA()
+    if (is.null(private$.allCache)) {
+      private$.allCache <- private$.computeLCA()
+    }
+    lca<- private$.allCache     
+    self$results$text$setContent(lca) 
         
         # Model fit
         if(isTRUE(self$options$fit)){
@@ -162,7 +128,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         fit <- data.frame(loglik,aic,caic,bic,entropy,df,gsq)
         
         row <- list()
-        
         row[['class']] <- class
         row[['loglik']] <- fit[,1]
         row[['aic']] <- fit[,2]
@@ -173,24 +138,17 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         row[['gsq']] <- fit[,7]
         
         table$setRow(rowNo = 1, values = row)
-        
         }
         
         #Model Comparison----
         mc <- private$.computeMEAI()
       
           if(isTRUE(self$options$mia)){
-
             table <- self$results$mia
-
             gtable <- mc$mi.g
-
             if(is.null(gtable))
               return()
-
             g<- as.data.frame(gtable)
-
-
             loglik <- g[,1]
             aic <- g[,2]
             caic <- g[,3]
@@ -204,11 +162,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # }
 
             names <- dimnames(g)[[1]]
-
             for (name in names) {
-
               row <- list()
-
               row[["loglik"]]   <-  g[name, 1]
               row[["aic"]] <-  g[name, 2]
               row[["caic"]] <-  g[name, 3]
@@ -222,9 +177,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               # }
 
               table$addRow(rowKey=name, values=row)
-
             }
-
           }
           
           if(isTRUE(self$options$mir)){
@@ -244,11 +197,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             p<- d[,5]
             
             names <- dimnames(d)[[1]]
- 
             for (name in names) {
-              
               row <- list()
-              
               row[["para"]] <-  d[name, 1]
               row[["loglik"]] <-  d[name, 2]
               row[["df"]] <-  d[name, 3]
@@ -256,13 +206,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               row[["p"]] <-d[name, 5]
               
               table$addRow(rowKey=name, values=row)
-              
             }
-            
-             
           }
-          
- 
        # Equality of coefficients----
         eq <- private$.computeEQ()
 
@@ -276,9 +221,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
           if(is.null(ctable))
             return()
-
           g<- as.data.frame(ctable)
-
           loglik <- g[,1]
           aic <- g[,2]
           caic <- g[,3]
@@ -292,11 +235,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           # }
 
            names <- dimnames(g)[[1]]
-
           for (name in names) {
-
             row <- list()
-
             row[["loglik"]]   <-  g[name, 1]
             row[["aic"]] <-  g[name, 2]
             row[["caic"]] <-  g[name, 3]
@@ -311,9 +251,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # }
 
             table$addRow(rowKey=name, values=row)
-
           }
-
         }
 
         if(isTRUE(self$options$cir)){
@@ -328,19 +266,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return()
 
           d<- as.data.frame(cdtable)
-
           para <- d[,1]
           loglik<- d[,2]
           df<- d[,3]
           dev<- d[,4]
           p<- d[,5]
-
           names <- dimnames(d)[[1]]
-
           for (name in names) {
-
             row <- list()
-
             row[["para"]] <-  d[name, 1]
             row[["loglik"]] <-  d[name, 2]
             row[["df"]] <-  d[name, 3]
@@ -348,9 +281,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             row[["p"]] <-d[name, 5]
 
             table$addRow(rowKey=name, values=row)
-
           }
-
         }
 
   #################################################
@@ -364,9 +295,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        } else {
          co<- lca$coefficient
        }
-      
        self$results$text3$setContent(co)
-       
      }
         
         if(isTRUE(self$options$marginal)){
@@ -378,16 +307,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         names<- dimnames(mar)[[1]]
         
         for (name in names) {
-          
           row <- list()
-          
           row[['value']] <- mar[name,1]
-          
           table$addRow(rowKey=name, values=row)
-          
         }
-        
-        
       }  
         
         if(isTRUE(self$options$preval)){  
@@ -402,11 +325,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           dims <- dimnames(cg)[[2]]
           
           for (dim in dims) {
-            
             table$addColumn(name = paste0(dim),
                             type = 'number')
           }
-          
         for (name in names) {
             row <- list()
             for(j in seq_along(dims)){
@@ -414,7 +335,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             table$addRow(rowKey=name, values=row)
           }
-          
         }
         
         if(isTRUE(self$options$item)){
@@ -447,8 +367,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         image2 <- self$results$plot2
         image2$setState(ic )
-       
-
         },
       
       .plot1 = function(image, ...) {
@@ -463,7 +381,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         covs <- self$options$covs
         nc <- self$options$nc  
         
-        lca <- private$.computeLCA()
+        #lca <- private$.computeLCA()
+        lca<- private$.allCache
         
         par(mfcol = c(3, 1))
         plot1 <- plot(lca, ask=FALSE)
@@ -499,11 +418,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
            )
          )
        }
-       
        print(plot2)
        TRUE
-     
-     
      },
      
      
@@ -528,8 +444,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        colnames(icf) <-c("Class", "Level", "value", "Variable", "Group") 
        
        ic <- icf
-       
-      
        plot3 <- ggplot2::ggplot(ic, ggplot2::aes(x = Variable, y = value, fill = Level)) + 
          ggplot2::geom_bar(stat = "identity", position = "stack")+ 
          ggplot2::facet_wrap(ggplot2::vars(Group,Class) )+
@@ -549,8 +463,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        
        print(plot3)
        TRUE
-       
-       
      },
      
       ### Helper functions =================================     
@@ -810,9 +722,5 @@ glcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
        return(mglca3)
        
      }
-     
-     
-     
-          
-    )
+     )
 )

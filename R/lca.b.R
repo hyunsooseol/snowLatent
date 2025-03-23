@@ -1,13 +1,10 @@
 
-# This file is a generated template, your changes will not be overwritten
-#' @importFrom R6 R6Class
-#' @export
-
 
 lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lcaClass",
     inherit = lcaBase,
     private = list(
+      .allCache = NULL,  
       .htmlwidget = NULL,
       
       .init = function() {
@@ -35,14 +32,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
           )
         )         
-                
          # if (self$options$comp)
          #     self$results$comp$setNote(
          #         "Note",
          #         "p: Bootstrap p value; H\u2090: Model fit data adequately."
          #     )
-        
-        
         if(isTRUE(self$options$plot1)){
           
           width <- self$options$width
@@ -50,8 +44,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
           self$results$plot1$setSize(width, height)
         }
-        
-        
         if(isTRUE(self$options$plot2)){
           
           width <- self$options$width1
@@ -70,7 +62,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
  
         if (length(self$options$vars) <= 1)
           self$setStatus('complete')
- 
       },
       
       .run = function() {
@@ -83,8 +74,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         vars <- self$options$vars         
          
         data <- private$.cleanData()
-        results <- private$.compute(data)               
-          
+        
+        #results <- private$.compute(data)               
+
+        if (is.null(private$.allCache)) {
+          private$.allCache <- private$.compute(data)
+        }
+        results<- private$.allCache     
+        
+                  
          # populate fit table------------
          private$.populateFitTable(results)
          # populate Model comparison(Absolute model fit)-----------
