@@ -293,7 +293,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="df", 
                         `type`="integer"),
                     list(
-                        `name`="gsq", 
+                        `name`="Gsq", 
                         `title`="G\u00B2", 
                         `type`="number"))))
             self$add(jmvcore::Table$new(

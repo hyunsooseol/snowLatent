@@ -48,7 +48,7 @@ items:
         - name: df
           title: df 
           type: integer
-        - name: gsq
+        - name: Gsq
           title: G² 
           type: number
 

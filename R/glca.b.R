@@ -1,5 +1,4 @@
 
-
 glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "glcaClass",
@@ -97,35 +96,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         lca <- private$.allCache
         self$results$text$setContent(lca)
         
-        # Model fit
+        # Model fit---
         if (isTRUE(self$options$fit)) {
-          table <- self$results$fit
-          class <- self$options$nc
-          
-          loglik <- lca$gof$loglik
-          aic <- lca$gof$aic
-          caic <- lca$gof$caic
-          bic <- lca$gof$bic
-          entropy <- lca$gof$entropy
-          df <- lca$gof$df
-          gsq <- lca$gof$Gsq
-          
-          fit <- data.frame(loglik, aic, caic, bic, entropy, df, gsq)
-          
-          row <- list()
-          row[['class']] <- class
-          row[['loglik']] <- fit[, 1]
-          row[['aic']] <- fit[, 2]
-          row[['caic']] <- fit[, 3]
-          row[['bic']] <- fit[, 4]
-          row[['entropy']] <- fit[, 5]
-          row[['df']] <- fit[, 6]
-          row[['gsq']] <- fit[, 7]
-          
-          table$setRow(rowNo = 1, values = row)
+          self$results$fit$setRow(rowNo = 1, values = c(list(class = self$options$nc), as.list(lca$gof[c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")])))
         }
         
-        #Model Comparison----
+        # Model Comparison----
         mc <- private$.computeMEAI()
         
         if (isTRUE(self$options$mia)) {
@@ -133,65 +109,47 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           gtable <- mc$mi.g
           if (is.null(gtable))
             return()
+          
           g <- as.data.frame(gtable)
-          loglik <- g[, 1]
-          aic <- g[, 2]
-          caic <- g[, 3]
-          bic <- g[, 4]
-          entropy <- g[, 5]
-          df <- g[, 6]
-          gsq <- g[, 7]
+          row_names <- rownames(g)
           
-          # if(self$options$test=='boot'){
-          #   boot <- g[,8]
-          # }
-          
-          names <- dimnames(g)[[1]]
-          for (name in names) {
-            row <- list()
-            row[["loglik"]]   <-  g[name, 1]
-            row[["aic"]] <-  g[name, 2]
-            row[["caic"]] <-  g[name, 3]
-            row[["bic"]] <-  g[name, 4]
-            row[["entropy"]] <-  g[name, 5]
-            row[["df"]] <-  g[name, 6]
-            row[["gsq"]] <-  g[name, 7]
-            
-            # if(self$options$test=='boot'){
-            #   row[["boot"]] <-  g[name, 8]
-            # }
-            
-            table$addRow(rowKey = name, values = row)
+          for (name in row_names) {
+            table$addRow(
+              rowKey = name,
+              values = list(
+                loglik  = g[name, 1],
+                aic     = g[name, 2],
+                caic    = g[name, 3],
+                bic     = g[name, 4],
+                entropy = g[name, 5],
+                df      = g[name, 6],
+                gsq     = g[name, 7]
+              )
+            )
           }
         }
         
         if (isTRUE(self$options$mir)) {
           table <- self$results$mir
           dtable <- mc$mi.d
-          
           if (is.null(dtable))
             return()
           
           d <- as.data.frame(dtable)
+          row_names <- rownames(d)
           
-          para <- d[, 1]
-          loglik <- d[, 2]
-          df <- d[, 3]
-          dev <- d[, 4]
-          p <- d[, 5]
-          
-          names <- dimnames(d)[[1]]
-          for (name in names) {
-            row <- list()
-            row[["para"]] <-  d[name, 1]
-            row[["loglik"]] <-  d[name, 2]
-            row[["df"]] <-  d[name, 3]
-            row[["dev"]] <-  d[name, 4]
-            row[["p"]] <- d[name, 5]
-            
-            table$addRow(rowKey = name, values = row)
+          for (name in row_names) {
+            table$addRow(rowKey = name,
+                         values = list(
+                           para   = d[name, 1],
+                           loglik = d[name, 2],
+                           df     = d[name, 3],
+                           dev    = d[name, 4],
+                           p      = d[name, 5]
+                         ))
           }
         }
+        
         # Equality of coefficients----
         eq <- private$.computeEQ()
         
@@ -201,39 +159,25 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           table <- self$results$cia
           ctable <- eq$ci.g
-          
           if (is.null(ctable))
             return()
+          
           g <- as.data.frame(ctable)
-          loglik <- g[, 1]
-          aic <- g[, 2]
-          caic <- g[, 3]
-          bic <- g[, 4]
-          entropy <- g[, 5]
-          df <- g[, 6]
-          gsq <- g[, 7]
+          row_names <- rownames(g)
           
-          # if(self$options$test1=='boot'){
-          #   boot <- g[,8]
-          # }
-          
-          names <- dimnames(g)[[1]]
-          for (name in names) {
-            row <- list()
-            row[["loglik"]]   <-  g[name, 1]
-            row[["aic"]] <-  g[name, 2]
-            row[["caic"]] <-  g[name, 3]
-            row[["bic"]] <-  g[name, 4]
-            row[["entropy"]] <-  g[name, 5]
-            row[["df"]] <-  g[name, 6]
-            row[["gsq"]] <-  g[name, 7]
-            
-            # if(self$options$test1=='boot'){
-            #
-            #   row[["boot"]] <-  g[name, 8]
-            # }
-            
-            table$addRow(rowKey = name, values = row)
+          for (name in row_names) {
+            table$addRow(
+              rowKey = name,
+              values = list(
+                loglik  = g[name, 1],
+                aic     = g[name, 2],
+                caic    = g[name, 3],
+                bic     = g[name, 4],
+                entropy = g[name, 5],
+                df      = g[name, 6],
+                gsq     = g[name, 7]
+              )
+            )
           }
         }
         
@@ -243,26 +187,21 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           table <- self$results$cir
           cdtable <- eq$ci.d
-          
           if (is.null(cdtable))
             return()
           
           d <- as.data.frame(cdtable)
-          para <- d[, 1]
-          loglik <- d[, 2]
-          df <- d[, 3]
-          dev <- d[, 4]
-          p <- d[, 5]
-          names <- dimnames(d)[[1]]
-          for (name in names) {
-            row <- list()
-            row[["para"]] <-  d[name, 1]
-            row[["loglik"]] <-  d[name, 2]
-            row[["df"]] <-  d[name, 3]
-            row[["dev"]] <-  d[name, 4]
-            row[["p"]] <- d[name, 5]
-            
-            table$addRow(rowKey = name, values = row)
+          row_names <- rownames(d)
+          
+          for (name in row_names) {
+            table$addRow(rowKey = name,
+                         values = list(
+                           para   = d[name, 1],
+                           loglik = d[name, 2],
+                           df     = d[name, 3],
+                           dev    = d[name, 4],
+                           p      = d[name, 5]
+                         ))
           }
         }
         
@@ -338,8 +277,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$text2$setContent(post)
         }
         
-        ##########################################################
-        
         # Item probabilities by group plot(default:Measure.inv=TRUE)--------
         ic <- lca[["param"]][["rho"]]
         ic <- reshape2::melt(ic)
@@ -348,38 +285,35 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         image2 <- self$results$plot2
         image2$setState(ic)
       },
+      #plot----------
       
       .plot1 = function(image, ...) {
-        if (is.null(self$options$group) || is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
-          return()
+        if (!self$options$plot1)
+          return(FALSE)
         
         data <- private$.cleanData()
         
-        vars <- self$options$vars
-        group <- self$options$group
-        covs <- self$options$covs
-        nc <- self$options$nc
-        
-        #lca <- private$.computeLCA()
+        # vars <- self$options$vars
+        # group <- self$options$group
+        # covs <- self$options$covs
+        # nc <- self$options$nc
+        # #lca <- private$.computeLCA()
         lca <- private$.allCache
         
         par(mfcol = c(3, 1))
         plot1 <- plot(lca, ask = FALSE)
         
         print(plot1)
-        
         TRUE
-        
       },
       
       # item probailities by group plot-----------
       
       .plot2 = function(image2, ggtheme, theme, ...) {
-        ic <- image2$state
+        if (!self$options$plot2)
+          return(FALSE)
         
-        if (is.null(ic))
-          return()
+        ic <- image2$state
         
         plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Variable, y = value, fill = Level)) +
           ggplot2::geom_bar(stat = "identity", position = "stack") +
@@ -401,17 +335,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       # item probailities by group plot(Measure.inv=FALSE)-----------
       
       .plot3 = function(image3, ggtheme, theme, ...) {
-        if (is.null(self$options$group) || is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
-          return()
-        
+        if (!self$options$plot3)
+          return(FALSE)
         data <- private$.cleanData()
-        
-        vars <- self$options$vars
-        group <- self$options$group
-        covs <- self$options$covs
-        nc <- self$options$nc
-        
         mglca3 <- private$.computeIP()
         
         icf <- mglca3[["param"]][["rho"]]
