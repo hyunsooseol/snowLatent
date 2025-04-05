@@ -1,5 +1,4 @@
 
-
 ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "ltaClass",
@@ -131,23 +130,18 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           # Goodness of fit---
           if (isTRUE(self$options$fit)) {
-            fit <- slca::gof(obj)
-            #self$results$text5$setContent(fit)
-            table <- self$results$fit
-            
-            row <- list()
-            
-            row[['class']] <- nc
-            row[['df']] <- fit$Df
-            row[['loglik']] <- fit$logLik
-            row[['aic']] <- fit$AIC
-            row[['bic']] <- fit$BIC
-            row[['gsq']] <- fit$Gsq
-            
-            table$setRow(rowNo = 1, values = row)
-            
+            self$results$fit$setRow(
+              rowNo = 1,
+              values = list(
+                class   = nc,
+                df      = slca::gof(obj)$Df,
+                loglik  = slca::gof(obj)$logLik,
+                aic     = slca::gof(obj)$AIC,
+                bic     = slca::gof(obj)$BIC,
+                gsq     = slca::gof(obj)$Gsq
+              )
+            )
           }
-          
         }
         
         if (nfactors > 1) {
@@ -217,36 +211,30 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             par3 <- slca::param(obj3)
             
             self$results$text4$setContent(par3)
-            
           }
           
           # Testing for measurement invariance---
           # LTA vs. LTA with mi
           # With same class !!!
           if (isTRUE(self$options$fit1)) {
-            fit1 <- slca::compare(obj2, obj3, test = 'chisq')
-            
             table <- self$results$fit1
-            df <- as.data.frame(fit1)
-            names <- dimnames(df)[[1]]
+            df <- as.data.frame(slca::compare(obj2, obj3, test = 'chisq'))
             
-            for (name in names) {
-              row <- list()
-              
-              row[["df"]]   <-  df[name, 1]
-              row[["loglik"]]   <- df[name, 2]
-              row[["aic"]] <-  df[name, 3]
-              row[["bic"]] <-  df[name, 4]
-              row[["gsq"]] <- df[name, 5]
-              row[["res"]] <-  df[name, 6]
-              row[["p"]] <-  df[name, 7]
-              
-              table$addRow(rowKey = name, values = row)
-              
+            for (name in rownames(df)) {
+              table$addRow(
+                rowKey = name,
+                values = list(
+                  df      = df[name, 1],
+                  loglik  = df[name, 2],
+                  aic     = df[name, 3],
+                  bic     = df[name, 4],
+                  gsq     = df[name, 5],
+                  res     = df[name, 6],
+                  p       = df[name, 7]
+                )
+              )
             }
           }
-          
-          
         }
         
         # Regression---
@@ -261,7 +249,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             set.seed(1234)
             obj <- slca::slca(formula) %>%
               slca::estimate(data = data)
-            
           }
           
           if (length(self$options$factors) > 1) {
@@ -269,7 +256,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             set.seed(1234)
             obj <- slca::slca(form1) %>%
               slca::estimate(data = data)
-            
           }
           
           reg <- slca::regress(
@@ -289,7 +275,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           variable_names <- colnames(reg$coefficients)
           class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
           
-          
           reg.df <- data.frame(
             class = class_info[1:length(coef)],
             variable = variable_names,
@@ -301,78 +286,69 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           #self$results$text3$setContent(reg.df)
           # Logistic regression table---
-          
           table <- self$results$reg
-          
           df <- as.data.frame(reg.df)
-          names <- dimnames(df)[[1]]
-          
-          for (name in names) {
-            row <- list()
-            
-            row[["cla"]]   <-  df[name, 1]
-            row[["va"]]   <-  df[name, 2]
-            row[["co"]] <-  df[name, 3]
-            row[["se"]] <-  df[name, 4]
-            row[["wald"]] <- df[name, 5]
-            row[["p"]] <-   df[name, 6]
-            
-            table$addRow(rowKey = name, values = row)
-            
+          for (name in rownames(df)) {
+            table$addRow(
+              rowKey = name,
+              values = list(
+                cla   = df[name, 1],
+                va    = df[name, 2],
+                co    = df[name, 3],
+                se    = df[name, 4],
+                wald  = df[name, 5],
+                p     = df[name, 6]
+              )
+            )
           }
-          
         }
-        
       }
-      
-      
-      # Example with R---
-      
-      # library(slca)
-      # library(magrittr)
-      #
-      # #LCA---
-      # data = nlsy97
-      # set.seed(1234)
-      # obj <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98) %>%
-      #   estimate(data = nlsy97)
-      # par<- slca::param(obj)
-      # par
-      # plot(obj)
-      # summary(obj)
-      # # Regression--
-      # set.seed(1234)
-      # obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
-      #
-      
-      # #####################
-      # data = nlsy97
-      # set.seed(1234)
-      # obj1 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
-      #              L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03,
-      #              L1~L2) %>%
-      #   estimate(data = nlsy97)
-      # par1<- slca::param(obj1)
-      # par1
-      #
-      # # Regression--
-      # set.seed(1234)
-      # obj1 %>% slca::regress(L1 ~ SEX, nlsy97)
-      
-      # #########################
-      # data = nlsy97
-      # set.seed(1234)
-      # obj2 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
-      #              L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03,
-      #              L1~L2,constraints = c("L1", "L2")) %>%
-      #   estimate(data = nlsy97)
-      # par2<- slca::param(obj2)
-      # par2
-      # plot(obj2)
-      # # Regression--
-      # set.seed(1234)
-      # obj2 %>% slca::regress(L1 ~ SEX, nlsy97)
-      
     )
   )
 
+# Example with R---
+
+# library(slca)
+# library(magrittr)
+#
+# #LCA---
+# data = nlsy97
+# set.seed(1234)
+# obj <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98) %>%
+#   estimate(data = nlsy97)
+# par<- slca::param(obj)
+# par
+# plot(obj)
+# summary(obj)
+# # Regression--
+# set.seed(1234)
+# obj0 %>% slca::regress(L1 ~ SEX, nlsy97)
+#
+
+# #####################
+# data = nlsy97
+# set.seed(1234)
+# obj1 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
+#              L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03,
+#              L1~L2) %>%
+#   estimate(data = nlsy97)
+# par1<- slca::param(obj1)
+# par1
+#
+# # Regression--
+# set.seed(1234)
+# obj1 %>% slca::regress(L1 ~ SEX, nlsy97)
+
+# #########################
+# data = nlsy97
+# set.seed(1234)
+# obj2 <- slca(L1(2) ~ ESMK_98 + FSMK_98 + DSMK_98 + HSMK_98,
+#              L2(2) ~ ESMK_03 + FSMK_03 + DSMK_03 + HSMK_03,
+#              L1~L2,constraints = c("L1", "L2")) %>%
+#   estimate(data = nlsy97)
+# par2<- slca::param(obj2)
+# par2
+# plot(obj2)
+# # Regression--
+# set.seed(1234)
+# obj2 %>% slca::regress(L1 ~ SEX, nlsy97)
