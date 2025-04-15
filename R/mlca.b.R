@@ -61,8 +61,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           height <- self$options$height2
           self$results$plot3$setSize(width, height)
         }
-        if (length(self$options$vars) <= 1)
-          self$setStatus('complete')
+        # if (length(self$options$vars) <= 1)
+        #   self$setStatus('complete')
       },
       
       .run = function() {
@@ -75,11 +75,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         #
         # summary(mlca)
         #
-        
-        if (is.null(self$options$group) ||
-            is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
-          return()
+        if (is.null(self$options$group) || is.null(self$options$vars) ||
+            length(self$options$vars) < 3) return()
         
         vars <- self$options$vars
         group <- self$options$group
@@ -101,7 +98,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         lca <- private$.cache$lca
         clu <- private$.cache$clu
         inv <- private$.cache$inv
-        
         self$results$text$setContent(lca)
         
         if (isTRUE(self$options$co)) {
@@ -133,9 +129,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # Absolute model fit for cluster
         if (isTRUE(self$options$comp1)) {
           table <- self$results$comp1
-          if (is.null(gtable1 <- clu$gtable1))
-            return()
-          
+          if (is.null(gtable1 <- clu$gtable1)) return()
           g <- as.data.frame(gtable1)
           clusters <- 2:self$options$nclust
           
@@ -162,12 +156,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$rel1)) {
           table <- self$results$rel1
-          if (is.null(dtable1 <- clu$dtable1))
-            return()
-          
+          if (is.null(dtable1 <- clu$dtable1)) return()
           d <- as.data.frame(dtable1)
           clusters <- 2:self$options$nclust
-          
           for (i in seq_along(clusters)) {
             table$addRow(
               rowKey = rownames(d)[i],
@@ -199,7 +190,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }, error = function(e) {
             NULL
           })
-          
           cla <- as.data.frame(cla)
           names <- dimnames(cla)[[1]]
           for (name in names) {
@@ -289,9 +279,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           out1 <- clu$gtable1[, c(2:4)]
           cla <- c(2:self$options$nclust)
           out1 <- data.frame(out1, cla)
-          
           colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Cluster')
-          
           elbow <- reshape2::melt(
             out1,
             id.vars = 'Cluster',
@@ -306,11 +294,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (isTRUE(self$options$gof) &&
             !is.null(self$options$covs)) {
           table <- self$results$gof
-          if (is.null(inv$ci.g))
-            return()
-          
+          if (is.null(inv$ci.g)) return()
           g <- as.data.frame(inv$ci.g)
-          
           for (name in rownames(g)) {
             table$addRow(
               rowKey = name,
@@ -331,11 +316,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!is.null(self$options$covs) &&
             isTRUE(self$options$ci)) {
           table <- self$results$ci
-          if (is.null(inv$ci.d))
-            return()
-          
+          if (is.null(inv$ci.d)) return()
           d <- as.data.frame(inv$ci.d)
-          
           for (name in rownames(d)) {
             table$addRow(rowKey = name,
                          values = list(

@@ -60,13 +60,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           self$results$plot3$setSize(width, height)
         }
-        if (length(self$options$vars) <= 1)
-          self$setStatus('complete')
+        # if (length(self$options$vars) <= 1)
+        #   self$setStatus('complete')
       },
       
       .run = function() {
         if (is.null(self$options$group) || is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
+            length(self$options$vars) < 3)
           return()
         
         ######## Example: glca R package ################
@@ -106,13 +106,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$mia)) {
           table <- self$results$mia
-          gtable <- mc$mi.g
-          if (is.null(gtable))
+          g <- as.data.frame(mc$mi.g)
+          if (is.null(g))
             return()
-          
-          g <- as.data.frame(gtable)
+          #g <- as.data.frame(gtable)
           row_names <- rownames(g)
-          
           for (name in row_names) {
             table$addRow(
               rowKey = name,
@@ -131,13 +129,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$mir)) {
           table <- self$results$mir
-          dtable <- mc$mi.d
-          if (is.null(dtable))
+          d <- as.data.frame(mc$mi.d)
+          if (is.null(d))
             return()
-          
-          d <- as.data.frame(dtable)
+          #d <- as.data.frame(dtable)
           row_names <- rownames(d)
-          
           for (name in row_names) {
             table$addRow(rowKey = name,
                          values = list(
@@ -156,13 +152,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (isTRUE(self$options$cia)) {
           if (is.null(self$options$covs))
             return()
-          
           table <- self$results$cia
-          ctable <- eq$ci.g
-          if (is.null(ctable))
+          g <- as.data.frame(eq$ci.g)
+          if (is.null(g))
             return()
           
-          g <- as.data.frame(ctable)
+          #g <- as.data.frame(ctable)
           row_names <- rownames(g)
           
           for (name in row_names) {
@@ -186,11 +181,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             return()
           
           table <- self$results$cir
-          cdtable <- eq$ci.d
-          if (is.null(cdtable))
+          d <- as.data.frame(eq$ci.d)
+          if (is.null(d))
             return()
-          
-          d <- as.data.frame(cdtable)
+          # d <- as.data.frame(cdtable)
           row_names <- rownames(d)
           
           for (name in row_names) {
@@ -239,9 +233,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
           
           table <- self$results$preval
-          cg <- prev
-          cg <- as.data.frame(cg)
-          
+          #cg <- prev
+          cg <- as.data.frame(prev)
           names <- dimnames(cg)[[1]]
           dims <- dimnames(cg)[[2]]
           
@@ -282,8 +275,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         ic <- reshape2::melt(ic)
         colnames(ic) <- c("Class", "Level", "value", "Variable", "Group")
         
-        image2 <- self$results$plot2
-        image2$setState(ic)
+        if (isTRUE(self$options$plot2)) {
+          image2 <- self$results$plot2
+          image2$setState(ic)
+        }
       },
       #plot----------
       
@@ -310,7 +305,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       # item probailities by group plot-----------
       
       .plot2 = function(image2, ggtheme, theme, ...) {
-        if (!self$options$plot2)
+        # if (!self$options$plot2)
+        #   return(FALSE)
+        if (is.null(image2$state))
           return(FALSE)
         
         ic <- image2$state
@@ -577,8 +574,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         retlist <- list(ci.g = ci.g, ci.d = ci.d)
         return(retlist)
-        
-        
       },
       
       #Item probabilities by group plot(Measure.inv=FALSE)--------
@@ -620,9 +615,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           measure.inv = FALSE,
           seed = 1
         )
-        
         return(mglca3)
-        
       }
     )
   )

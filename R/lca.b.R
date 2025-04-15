@@ -55,13 +55,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$plot3$setSize(width, height)
         }
         
-        if (length(self$options$vars) <= 1)
-          self$setStatus('complete')
+        # if (length(self$options$vars) <= 1)
+        #   self$setStatus('complete')
       },
       
       .run = function() {
-        if (is.null(self$options$vars) ||
-            length(self$options$vars) < 2)
+        if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
         nc <- self$options$nc
@@ -69,9 +68,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars <- self$options$vars
         
         data <- private$.cleanData()
-        
         #results <- private$.compute(data)
-        
         if (is.null(private$.allCache)) {
           private$.allCache <- private$.compute(data)
         }
@@ -151,15 +148,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
         }
         #fit measure----------
-        loglik <- lca$gof$loglik
-        aic <- lca$gof$aic
-        caic <- lca$gof$caic
-        bic <- lca$gof$bic
-        entropy <- lca$gof$entropy
-        df <- lca$gof$df
-        gsq <- lca$gof$Gsq
+        # loglik <- lca$gof$loglik
+        # aic <- lca$gof$aic
+        # caic <- lca$gof$caic
+        # bic <- lca$gof$bic
+        # entropy <- lca$gof$entropy
+        # df <- lca$gof$df
+        # gsq <- lca$gof$Gsq
+        #
+        # fit <- data.frame(loglik, aic, caic, bic, entropy, df, gsq)
         
-        fit <- data.frame(loglik, aic, caic, bic, entropy, df, gsq)
+        v <- c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")
+        fit <- as.data.frame(as.list(lca$gof[v]))
         
         ######## Marginal prvalences for latent class##############
         
@@ -178,8 +178,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         #   gam <- NaN
         
         gam <- lapply(lca$posterior, colMeans)
-        gam <- gam$ALL
-        gam <- as.data.frame(gam)
+        gam <- as.data.frame(gam$ALL)
+        #gam <- as.data.frame(gam)
         
         # item probabilities------
         item <- lca[["param"]][["rho"]][["ALL"]]
@@ -216,8 +216,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         ic <- reshape2::melt(lca$param$rho)
         colnames(ic) <- c("Class", "Level", "value", "L1")
         
-        image1 <- self$results$plot2
-        image1$setState(ic)
+        if (isTRUE(self$options$plot2)) {
+          image1 <- self$results$plot2
+          image1$setState(ic)
+        }
+        
         #Good codes for model fit####################################
         
         args <- list(test = "chisq")
@@ -255,8 +258,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             variable.name = "Fit",
             value.name = 'Value'
           )
-          image2 <- self$results$plot3
-          image2$setState(elbow)
+          if (isTRUE(self$options$plot3)) {
+            image2 <- self$results$plot3
+            image2$setState(elbow)
+          }
         }
         # adding class--------
         gtable <- as.data.frame(gtable)
@@ -320,6 +325,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           options(max.print = 1000000)
           self$results$text2$setContent(gamma)
         }
+        
         results <-
           list(
             'fit' = fit,
@@ -436,6 +442,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot1 = function(image, ...) {
         if (!self$options$plot1)
           return(FALSE)
+        # if (is.null(image$state))
+        #   return(FALSE)
         
         data <- private$.cleanData()
         
@@ -454,11 +462,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       # item by class plot-----------
       
       .plot2 = function(image1, ggtheme, theme, ...) {
+        if (is.null(image1$state))
+          return(FALSE)
+        
         ic <- image1$state
         
         plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Class, y = value, fill = Level)) +
           ggplot2::geom_bar(stat = "identity", position = "stack") +
-          ggplot2::facet_wrap( ~ L1) +
+          ggplot2::facet_wrap(~ L1) +
           ggplot2::scale_x_discrete("Class", expand = c(0, 0)) +
           ggplot2::scale_y_continuous("Probability", expand = c(0, 0)) +
           ggplot2::theme_bw()
@@ -474,6 +485,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot3 = function(image2, ggtheme, theme, ...) {
         if (self$options$nc < 3)
           return()
+        if (is.null(image2$state))
+          return(FALSE)
+        
         elbow <- image2$state
         # plot3 <- ggplot2::ggplot(elbow,ggplot2::aes(x = Class, y = Value, group = Fit))+
         #   ggplot2::geom_line(size=1.1,ggplot2::aes(color=Fit))+
