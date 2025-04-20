@@ -4,7 +4,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     "lcaClass",
     inherit = lcaBase,
     private = list(
-      .allCache = NULL,
+      .modelCache = NULL,       
+      .fitCache = NULL,         
+      .compCache = NULL,        
       .htmlwidget = NULL,
       
       .init = function() {
@@ -12,7 +14,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
-          
         }
         
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
@@ -26,270 +27,198 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<li>The result table does not printed if the results from glca R package are not available.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
-            
           )
-          
         ))
-        # if (self$options$comp)
-        #     self$results$comp$setNote(
-        #         "Note",
-        #         "p: Bootstrap p value; H\u2090: Model fit data adequately."
-        #     )
+        
         if (isTRUE(self$options$plot1)) {
           width <- self$options$width
           height <- self$options$height
-          
           self$results$plot1$setSize(width, height)
         }
         if (isTRUE(self$options$plot2)) {
           width <- self$options$width1
           height <- self$options$height1
-          
           self$results$plot2$setSize(width, height)
         }
-        
         if (isTRUE(self$options$plot3)) {
           width <- self$options$width2
           height <- self$options$height2
-          
           self$results$plot3$setSize(width, height)
         }
-        
-        # if (length(self$options$vars) <= 1)
-        #   self$setStatus('complete')
       },
       
       .run = function() {
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
-        nc <- self$options$nc
-        covs <- self$options$covs
-        vars <- self$options$vars
-        
         data <- private$.cleanData()
-        #results <- private$.compute(data)
-        if (is.null(private$.allCache)) {
-          private$.allCache <- private$.compute(data)
+        
+        if (is.null(private$.modelCache)) {
+          private$.modelCache <- private$.computeLCA()
         }
-        results <- private$.allCache
         
-        # populate fit table------------
-        private$.populateFitTable(results)
-        # populate Model comparison(Absolute model fit)-----------
-        private$.populateModelTable(results)
-        # populate Relative model fit---------------
-        private$.populateRelTable(results)
-        # populate class probability table-----
-        private$.populateClassTable(results)
-        # populate item probabilities---------
-        private$.populateItemTable(results)
-      },
-      
-      .compute = function(data) {
-        #      ######## glca R package ################
-        #
-        #      # library(glca)
-        #      # data("gss08")
-        #      #
-        #      # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ AGE,
-        #      #            data = gss08, nclass = 3, n.init = 1)
-        #      # summary(lca)
-        #
-        #      ################################
-        #
-        #      nc <- self$options$nc
-        #      nb <- self$options$nb
-        #
-        #    ############ Construct formula###################
-        #
-        #      vars <- self$options$vars
-        #      vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
-        #      vars <- paste0(vars, collapse=',')
-        #      formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
-        #
-        #      #if( !is.null(self$options$covs) ) {
-        #      if(length(self$options$covs)>=1){
-        #
-        #        covs <- self$options$covs
-        #        covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
-        #        covs <- paste0(covs, collapse='+')
-        #
-        #        formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
-        #      }
-        #
-        # ################### LCA model estimates############################
-        #
-        #        lca = glca::glca(formula=formula,data=data,
-        #                         nclass=nc, seed = 1)
-        #
-        #  #################################################################
-        #
-        #      self$results$text$setContent(lca)
+        self$results$text$setContent(private$.modelCache)
         
-        nc <- self$options$nc
-        covs <- self$options$covs
-        vars <- self$options$vars
-        ##############################
-        lca <- private$.computeLCA()
-        self$results$text$setContent(lca)
-        ################################
-        
-        # Formula is needed again-----------
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
-        vars <- paste0(vars, collapse = ',')
-        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
-        
-        if (length(covs) >= 1) {
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
-          covs <- paste0(covs, collapse = '+')
-          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
-        }
-        #fit measure----------
-        # loglik <- lca$gof$loglik
-        # aic <- lca$gof$aic
-        # caic <- lca$gof$caic
-        # bic <- lca$gof$bic
-        # entropy <- lca$gof$entropy
-        # df <- lca$gof$df
-        # gsq <- lca$gof$Gsq
-        #
-        # fit <- data.frame(loglik, aic, caic, bic, entropy, df, gsq)
-        
-        v <- c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")
-        fit <- as.data.frame(as.list(lca$gof[v]))
-        
-        ######## Marginal prvalences for latent class##############
-        
-        # # Attention:
-        # # Capture if 1 or more covariates have
-        # # not been selected to avoid 0 length error.
-        #
-        # if( is.null(self$options$covs) ) {
-        #
-        #   gam <- lca[["param"]][["gamma"]]
-        #   row.names(gam) <- 1:nrow(gam)
-        #   gam <- as.data.frame(gam)
-        #   gam <- t(gam)
-        #   gam <- as.data.frame(gam)
-        # } else
-        #   gam <- NaN
-        
-        gam <- lapply(lca$posterior, colMeans)
-        gam <- as.data.frame(gam$ALL)
-        #gam <- as.data.frame(gam)
-        
-        # item probabilities------
-        item <- lca[["param"]][["rho"]][["ALL"]]
-        # item<- do.call("rbind", lapply(item, as.data.frame))
-        
-        # logistic regression coefficients-------------
+        private$.populateFitTable()
+        private$.populateModelTable()
+        private$.populateRelTable()
+        private$.populateClassTable()
+        private$.populateItemTable()
         
         if (length(self$options$covs) >= 1) {
-          #if( !is.null(self$options$covs) ) {
-          #coef<- coef(lca)
+          private$.populateCoefTable()
+        }
+        
+        private$.handlePosterior()
+        
+        if (isTRUE(self$options$gamma)) {
+          gamma <- private$.modelCache[["param"]][["gamma"]]
+          options(max.print = 1000000)
+          self$results$text2$setContent(gamma)
+        }
+      },
+      
+      .populateFitTable = function() {
+        if (is.null(private$.fitCache)) {
+          v <- c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")
+          private$.fitCache <- as.data.frame(as.list(private$.modelCache$gof[v]))
+        }
+        
+        table <- self$results$fit
+        table$setRow(
+          rowNo = 1,
+          values = list(
+            class = self$options$nc,
+            loglik = private$.fitCache[1, 1],
+            aic = private$.fitCache[1, 2],
+            caic = private$.fitCache[1, 3],
+            bic = private$.fitCache[1, 4],
+            entropy = private$.fitCache[1, 5],
+            df = private$.fitCache[1, 6],
+            gsq = private$.fitCache[1, 7]
+          )
+        )
+      },
+      
+      .populateModelTable = function() {
+        if (is.null(private$.compCache)) {
+          private$.compCache <- private$.computeModelComparison()
+        }
+        
+        if (is.null(private$.compCache$gtable))
+          return()
+        
+        table <- self$results$comp
+        g <- as.data.frame(private$.compCache$gtable)
+        
+        for (i in seq_len(nrow(g))) {
+          table$addRow(
+            rowKey = rownames(g)[i],
+            values = list(
+              class = g[i, 8],
+              loglik = g[i, 1],
+              aic = g[i, 2],
+              caic = g[i, 3],
+              bic = g[i, 4],
+              entropy = g[i, 5],
+              df = g[i, 6],
+              gsq = g[i, 7]
+            )
+          )
+        }
+      },
+      
+      .populateRelTable = function() {
+        if (self$options$nc < 3 || is.null(private$.compCache) || is.null(private$.compCache$dtable))
+          return()
+        
+        table <- self$results$rel
+        d <- as.data.frame(private$.compCache$dtable)
+        
+        for (i in seq_len(nrow(d))) {
+          table$addRow(
+            rowKey = rownames(d)[i],
+            values = list(
+              class = d[i, 6],
+              para = d[i, 1],
+              loglik = d[i, 2],
+              df = d[i, 3],
+              dev = d[i, 4],
+              p = d[i, 5]
+            )
+          )
+        }
+      },
+      
+      .populateClassTable = function() {
+        gam <- lapply(private$.modelCache$posterior, colMeans)
+        gam <- as.data.frame(gam$ALL)
+        
+        table <- self$results$cp
+        for (i in seq_len(nrow(gam))) {
+          table$addRow(rowKey = rownames(gam)[i], values = list(value = gam[i, 1]))
+        }
+      },
+      
+      .populateItemTable = function() {
+        tables <- self$results$item
+        vars <- self$options$vars
+        item <- private$.modelCache[["param"]][["rho"]][["ALL"]]
+        
+        for (i in seq_along(vars)) {
+          table <- tables[[i]]
+          names <- row.names(item[[vars[i]]])
+          dims <- colnames(item[[vars[i]]])
           
-          table <- self$results$coef
-          
-          #coef <- results$coef
-          coef <- coef(lca)
-          coef <- coef[[1]]
-          codf <- do.call("rbind", lapply(coef, as.data.frame))
-          names <- dimnames(codf)[[1]]
+          for (dim in dims) {
+            table$addColumn(name = paste0(dim),
+                            type = 'text',
+                            combineBelow = TRUE)
+          }
           for (name in names) {
             row <- list()
-            row[["odds"]]   <-  codf[name, 1]
-            row[["co"]] <-  codf[name, 2]
-            row[["error"]] <-  codf[name, 3]
-            row[["t"]] <-  codf[name, 4]
-            row[["p"]] <-  codf[name, 5]
+            for (j in seq_along(dims)) {
+              row[[dims[j]]] <- item[[vars[i]]][name, j]
+            }
             table$addRow(rowKey = name, values = row)
           }
         }
+      },
+      
+      .populateCoefTable = function() {
+        table <- self$results$coef
+        coef <- coef(private$.modelCache)
+        coef <- coef[[1]]
+        codf <- do.call("rbind", lapply(coef, as.data.frame))
+        names <- dimnames(codf)[[1]]
         
-        # Class Prevalences plot----------
-        # image <- self$results$plot1
-        # image$setState(lca)
-        # Item by class plot---------
-        ic <- reshape2::melt(lca$param$rho)
-        colnames(ic) <- c("Class", "Level", "value", "L1")
-        
-        if (isTRUE(self$options$plot2)) {
-          image1 <- self$results$plot2
-          image1$setState(ic)
+        for (name in names) {
+          row <- list()
+          row[["odds"]] <- codf[name, 1]
+          row[["co"]] <- codf[name, 2]
+          row[["error"]] <- codf[name, 3]
+          row[["t"]] <- codf[name, 4]
+          row[["p"]] <- codf[name, 5]
+          table$addRow(rowKey = name, values = row)
         }
+      },
+      
+      .handlePosterior = function() {
+        data <- private$.cleanData()
+        pos <- private$.modelCache$posterior$ALL
         
-        #Good codes for model fit####################################
-        
-        args <- list(test = "chisq")
-        
-        for (n in 2:self$options$nc)
-          args[[n]] <- glca::glca(
-            formula = formula,
-            data = data,
-            nclass = n,
-            seed = 1
-          )
-        res <- do.call(glca::gofglca, args)
-        
-        gtable <- res[["gtable"]] #Absolute model fit
-        
-        if (is.null(res$dtable)) {
-          dtable <- NULL
-        } else {
-          dtable <- res[["dtable"]] # Relative model fit
+        if (isTRUE(self$options$member)) {
+          mem <- as.numeric(factor(apply(pos, 1, which.max)))
+          mem <- as.factor(mem)
           
-          # new <- c(2:self$options$nc)
-          #add column called new
-          #dtable <- cbind(dtable, new)
-        }
-        
-        if (self$options$nc > 2) {
-          # Elbow plot-------------
-          out1 <- gtable[, c(2:4)]
-          cla <- c(2:self$options$nc)
-          out1 <- data.frame(out1, cla)
-          colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Class')
-          elbow <- reshape2::melt(
-            out1,
-            id.vars = 'Class',
-            variable.name = "Fit",
-            value.name = 'Value'
-          )
-          if (isTRUE(self$options$plot3)) {
-            image2 <- self$results$plot3
-            image2$setState(elbow)
+          if (self$options$member && self$results$member$isNotFilled()) {
+            self$results$member$setValues(mem)
+            self$results$member$setRowNums(rownames(data))
           }
         }
-        # adding class--------
-        gtable <- as.data.frame(gtable)
-        dtable <- as.data.frame(dtable)
-        #define new column to add
-        new <- c(2:self$options$nc)
-        
-        #add column called new
-        gtable <- cbind(gtable, new)
-        #  dtable <- cbind(dtable, new1)
-        
-        if (!is.null(res$dtable)) {
-          new <- c(2:self$options$nc)
-          #add column called new
-          dtable <- cbind(dtable, new)
-        }
-        # populate output results-------------
-        pos <- lca$posterior$ALL
-        
-        # class membership-------------
-        mem <- as.numeric(factor(apply(pos, 1, which.max)))
-        mem <- as.factor(mem)
         
         if (isTRUE(self$options$post)) {
-          # pos <- self$results$post
-          
-          if (self$options$post
-              && self$results$post$isNotFilled()) {
+          if (self$options$post && self$results$post$isNotFilled()) {
             keys <- 1:self$options$nc
             measureTypes <- rep("continuous", self$options$nc)
             
@@ -310,156 +239,94 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             }
           }
         }
-        
-        if (isTRUE(self$options$member)) {
-          if (self$options$member
-              && self$results$member$isNotFilled()) {
-            self$results$member$setValues(mem)
-            self$results$member$setRowNums(rownames(data))
-          }
-        }
-        
-        if (isTRUE(self$options$gamma)) {
-          # gamma probability----------
-          gamma <- lca[["param"]][["gamma"]]
-          options(max.print = 1000000)
-          self$results$text2$setContent(gamma)
-        }
-        
-        results <-
-          list(
-            'fit' = fit,
-            'gam' = gam,
-            'item' = item,
-            'gtable' = gtable,
-            'dtable' = dtable
-          )
-      },
-      ################ populating Tables################################
-      
-      # fit table-------------
-      .populateFitTable = function(results) {
-        table <- self$results$fit
-        fit <- results$fit
-        
-        table$setRow(
-          rowNo = 1,
-          values = list(
-            class = self$options$nc,
-            loglik = fit[1, 1],
-            aic = fit[1, 2],
-            caic = fit[1, 3],
-            bic = fit[1, 4],
-            entropy = fit[1, 5],
-            df = fit[1, 6],
-            gsq = fit[1, 7]
-          )
-        )
       },
       
-      # Model comparison(Absolute model fit)----------------
-      .populateModelTable = function(results) {
-        table <- self$results$comp
-        g <- as.data.frame(results$gtable)
-        
-        for (i in seq_len(nrow(g))) {
-          table$addRow(
-            rowKey = rownames(g)[i],
-            values = list(
-              class = g[i, 8],
-              loglik = g[i, 1],
-              aic = g[i, 2],
-              caic = g[i, 3],
-              bic = g[i, 4],
-              entropy = g[i, 5],
-              df = g[i, 6],
-              gsq = g[i, 7]
-            )
-          )
-        }
-      },
-      
-      # Populate relative model fit---------------
-      .populateRelTable = function(results) {
-        if (self$options$nc < 3 || is.null(results$dtable))
-          return()
-        
-        table <- self$results$rel
-        d <- as.data.frame(results$dtable)
-        
-        for (i in seq_len(nrow(d))) {
-          table$addRow(
-            rowKey = rownames(d)[i],
-            values = list(
-              class = d[i, 6],
-              para = d[i, 1],
-              loglik = d[i, 2],
-              df = d[i, 3],
-              dev = d[i, 4],
-              p = d[i, 5]
-            )
-          )
-        }
-      },
-      # Marginal prevalences for latent classes--------------------------------------
-      .populateClassTable = function(results) {
-        table <- self$results$cp
-        gam <- as.data.frame(results$gam)
-        
-        for (i in seq_len(nrow(gam))) {
-          table$addRow(rowKey = rownames(gam)[i], values = list(value = gam[i, 1]))
-        }
-      },
-      
-      # item probabilities----------
-      
-      .populateItemTable = function(results) {
-        tables <- self$results$item
-        vars <- self$options$vars
-        for (i in seq_along(vars)) {
-          item <- results$item[[vars[i]]]
-          table <- tables[[i]]
-          names <- row.names(item)
-          dims <- colnames(item)
-          
-          for (dim in dims) {
-            table$addColumn(name = paste0(dim),
-                            type = 'text',
-                            combineBelow = TRUE)
-          }
-          for (name in names) {
-            row <- list()
-            for (j in seq_along(dims)) {
-              row[[dims[j]]] <- item[name, j]
-            }
-            table$addRow(rowKey = name, values = row)
-          }
-        }
-      },
-      
-      # plot-------------------------------------
-      
-      .plot1 = function(image, ...) {
-        if (!self$options$plot1)
-          return(FALSE)
-        # if (is.null(image$state))
-        #   return(FALSE)
-        
+      .computeModelComparison = function() {
         data <- private$.cleanData()
-        
         nc <- self$options$nc
         covs <- self$options$covs
         vars <- self$options$vars
         
-        lca <- private$.computeLCA()
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        vars <- paste0(vars, collapse = ',')
+        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+        
+        if (length(covs) >= 1) {
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+          covs <- paste0(covs, collapse = '+')
+          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+        }
+        
+        args <- list(test = "chisq")
+        
+        for (n in 2:self$options$nc)
+          args[[n]] <- glca::glca(
+            formula = formula,
+            data = data,
+            nclass = n,
+            seed = 1
+          )
+        
+        res <- do.call(glca::gofglca, args)
+        
+        gtable <- res[["gtable"]] # Absolute model fit
+        
+        if (is.null(res$dtable)) {
+          dtable <- NULL
+        } else {
+          dtable <- res[["dtable"]] # Relative model fit
+        }
+        
+        if (!is.null(gtable)) {
+          gtable <- as.data.frame(gtable)
+          new <- c(2:self$options$nc)
+          gtable <- cbind(gtable, new)
+        }
+        
+        if (!is.null(dtable)) {
+          dtable <- as.data.frame(dtable)
+          new <- c(2:self$options$nc)
+          dtable <- cbind(dtable, new)
+        }
+        
+        elbow <- NULL
+        if (self$options$nc > 2 && !is.null(gtable)) {
+          out1 <- gtable[, c(2:4)]
+          cla <- c(2:self$options$nc)
+          out1 <- data.frame(out1, cla)
+          colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Class')
+          elbow <- reshape2::melt(
+            out1,
+            id.vars = 'Class',
+            variable.name = "Fit",
+            value.name = 'Value'
+          )
+          
+          if (isTRUE(self$options$plot3)) {
+            image2 <- self$results$plot3
+            image2$setState(elbow)
+          }
+        }
+        
+        return(list(
+          'gtable' = gtable,
+          'dtable' = dtable,
+          'elbow' = elbow
+        ))
+      },
+      
+      .plot1 = function(image, ...) {
+        if (!self$options$plot1)
+          return(FALSE)
+        
+        if (is.null(private$.modelCache))
+          private$.modelCache <- private$.computeLCA()
         
         par(mfcol = c(2, 1))
-        plot1 <- plot(lca, ask = FALSE)
+        plot1 <- plot(private$.modelCache, ask = FALSE)
         print(plot1)
         TRUE
       },
-      
-      # item by class plot-----------
       
       .plot2 = function(image1, ggtheme, theme, ...) {
         if (is.null(image1$state))
@@ -489,10 +356,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return(FALSE)
         
         elbow <- image2$state
-        # plot3 <- ggplot2::ggplot(elbow,ggplot2::aes(x = Class, y = Value, group = Fit))+
-        #   ggplot2::geom_line(size=1.1,ggplot2::aes(color=Fit))+
-        #   ggplot2::geom_point(size=3,ggplot2::aes(color=Fit))
-        #   ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
         plot3 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
           ggplot2::geom_line(size = 1.1) +
           ggplot2::geom_point(size = 3) +
@@ -502,28 +365,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(plot3)
         TRUE
       },
-      ### Helper functions =================================
       
       .cleanData = function() {
         data <- list()
         
         if (!is.null(self$options$covs))
-          
           for (cov in self$options$covs)
             data[[cov]] <- jmvcore::toNumeric(self$data[[cov]])
         
         for (var in self$options$vars)
-          
           data[[var]] <- jmvcore::toNumeric(self$data[[var]])
         
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
-        
-        # MAR to handle missing values---
-        
-        # if( !is.null(self$options$covs))
-        #   for (cov in self$options$covs)
-        #     data <- data[!is.na(data[[cov]]), ]
         
         return(data)
       },
@@ -534,14 +388,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         covs <- self$options$covs
         vars <- self$options$vars
         
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
         
         if (length(covs) >= 1) {
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
         }
@@ -552,6 +404,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           nclass = nc,
           seed = 1
         )
+        
+        if (isTRUE(self$options$plot2)) {
+          ic <- reshape2::melt(lca$param$rho)
+          colnames(ic) <- c("Class", "Level", "value", "L1")
+          image1 <- self$results$plot2
+          image1$setState(ic)
+        }
+        
         return(lca)
       }
     )

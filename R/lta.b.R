@@ -5,6 +5,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     inherit = ltaBase,
     private = list(
       .htmlwidget = NULL,
+      .dataCache = NULL,  
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -12,7 +13,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (is.null(self$data) |
             length(self$options$factors[[1]]$vars) == 0) {
           self$results$instructions$setVisible(visible = TRUE)
-          
         }
         
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
@@ -32,6 +32,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
           )
         ))
+        
         if (self$options$fit1)
           self$results$fit1$setNote(
             "Note",
@@ -43,9 +44,11 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
-        data <- self$data
-        #apply MAR to handle missing values---
-        #data <- jmvcore::naOmit(data)
+        if (is.null(private$.dataCache)) {
+          private$.dataCache <- self$data
+        }
+        data <- private$.dataCache
+        
         factors <- self$options$factors
         nfactors <- length(factors)
         
@@ -54,39 +57,29 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (nfactors == 1) {
           vars <- factors[[1]][["vars"]]
-          factors <- factors[[1]]$label  #L1[2]
+          factors <- factors[[1]]$label  # L1[2]
           
-          # Extract the number inside the square brackets
           number <- gsub(".*\\[(\\d+)\\].*", "\\1", factors)
-          # Convert to numeric if needed
-          # Number of class
           nc <- as.integer(number)
-          #self$results$text5$setContent(nc)
           
-          # y~a+b+c---
           vars <- vapply(vars, function(x)
             jmvcore::composeTerm(x), '')
           ind <- paste0(vars, collapse = '+')
           formula <- as.formula(paste0(factors, ' ~ ', ind))
           
-          #------------------------------------------
           library(magrittr)
           set.seed(1234)
           obj <- slca::slca(formula) %>%
             slca::estimate(data = data)
+          
           par <- slca::param(obj)
-          #-----------------------------------------
-          # Posterior prob. and membership---
-          #obj[["posterior"]][["marginal"]][["L1"]]
+          
           f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
           pos <- obj[["posterior"]][["marginal"]][[f]]
-          #self$results$text3$setContent(pos)
           
-          # class membership---
           mem <- as.numeric(factor(apply(pos, 1, which.max)))
           mem <- as.factor(mem)
           
-          # Class membership---
           if (isTRUE(self$options$member)) {
             if (self$options$member
                 && self$results$member$isNotFilled()) {
@@ -94,8 +87,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               self$results$member$setRowNums(rownames(data))
             }
           }
-          
-          # Posterior prob.---
           
           if (isTRUE(self$options$post)) {
             if (self$options$post
@@ -122,69 +113,59 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             }
           }
           
-          # Additional outputs: Estimated parameters---
-          
           if (isTRUE(self$options$par)) {
             self$results$text1$setContent(par)
           }
           
-          # Goodness of fit---
           if (isTRUE(self$options$fit)) {
+            gof <- slca::gof(obj)
             self$results$fit$setRow(
               rowNo = 1,
               values = list(
                 class   = nc,
-                df      = slca::gof(obj)$Df,
-                loglik  = slca::gof(obj)$logLik,
-                aic     = slca::gof(obj)$AIC,
-                bic     = slca::gof(obj)$BIC,
-                gsq     = slca::gof(obj)$Gsq
+                df      = gof$Df,
+                loglik  = gof$logLik,
+                aic     = gof$AIC,
+                bic     = gof$BIC,
+                gsq     = gof$Gsq
               )
             )
           }
         }
         
         if (nfactors > 1) {
-          # LTA Formula---
-          # Assuming 'factors' is a list of lists with each sublist containing 'vars' and 'label'
           formulas <- list()
           
           for (factor in factors) {
             vars <- factor[["vars"]]
             label <- factor[["label"]]
             
-            # y ~ a + b + c ---
+            # y ~ a + b + c 
             vars <- vapply(vars, function(x)
               jmvcore::composeTerm(x), '')
             ind <- paste0(vars, collapse = '+')
             formula <- as.formula(paste0(label, ' ~ ', ind))
             
-            # Convert the string to a formula object and store it
             formulas[[label]] <- as.formula(formula)
           }
           
-          # Sequential relations---
           create_sequential_relations <- function(formulas) {
             relations <- c()
             
             for (i in seq_along(formulas)[-length(formulas)]) {
-              left <- sub("\\[.*?\\]", "", formulas[i])   # lc1[2]-> lc1
+              left <- sub("\\[.*?\\]", "", names(formulas)[i])   # lc1[2]-> lc1
               left <- sub(" ~.*", "", left)
-              right <- sub("\\[.*?\\]", "", formulas[i + 1])
+              right <- sub("\\[.*?\\]", "", names(formulas)[i + 1])
               right <- sub(" ~.*", "", right)
               relation <- paste0(left, " ~ ", right)
               relations <- c(relations, as.formula(relation))
             }
-            
             return(relations)
           }
           
-          # Sequential relations
           sequential_relations <- create_sequential_relations(formulas)
           form1 <- c(formulas, sequential_relations)
           
-          
-          # LTA analysis---
           if (isTRUE(self$options$par2)) {
             library(magrittr)
             set.seed(1234)
@@ -195,14 +176,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             self$results$text3$setContent(par2)
           }
           
-          
-          # LTA with Measurement invariance---
           if (isTRUE(self$options$par3)) {
-            # Defining constraints(Measurement invariance)---
             cons <- self$options$cons
             cons1 <- unlist(strsplit(cons, ","))
-            
-            #Num.of classes Should be equal before proceeding!!!
             
             library(magrittr)
             set.seed(1234)
@@ -213,13 +189,28 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             self$results$text4$setContent(par3)
           }
           
-          # Testing for measurement invariance---
-          # LTA vs. LTA with mi
-          # With same class !!!
           if (isTRUE(self$options$fit1)) {
-            table <- self$results$fit1
-            df <- as.data.frame(slca::compare(obj2, obj3, test = 'chisq'))
+            if (!exists("obj2")) {
+              library(magrittr)
+              set.seed(1234)
+              obj2 <- slca::slca(formula = form1) %>%
+                slca::estimate(data = data)
+            }
             
+            if (!exists("obj3")) {
+              cons <- self$options$cons
+              cons1 <- unlist(strsplit(cons, ","))
+              
+              library(magrittr)
+              set.seed(1234)
+              obj3 <- slca::slca(formula = form1, constraints = cons1) %>%
+                slca::estimate(data = data)
+            }
+            
+            comp <- slca::compare(obj2, obj3, test = 'chisq')
+            df <- as.data.frame(comp)
+            
+            table <- self$results$fit1
             for (name in rownames(df)) {
               table$addRow(
                 rowKey = name,
@@ -237,25 +228,32 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
         }
         
-        # Regression---
         if (length(self$options$covs) >= 1) {
-          #LCA regression---
-          #reg<- slca::regress(nlsy_smoke,smk98 ~ SEX, nlsy97)
           regform <- self$options$regform
           regform <- as.formula(regform)
           
-          if (length(self$options$factors) == 1) {
-            library(magrittr)
-            set.seed(1234)
-            obj <- slca::slca(formula) %>%
-              slca::estimate(data = data)
-          }
-          
-          if (length(self$options$factors) > 1) {
-            library(magrittr)
-            set.seed(1234)
-            obj <- slca::slca(form1) %>%
-              slca::estimate(data = data)
+          if (!exists("obj")) {
+            if (length(self$options$factors) == 1) {
+              vars <- factors[[1]][["vars"]]
+              factorLabel <- factors[[1]]$label
+              number <- gsub(".*\\[(\\d+)\\].*", "\\1", factorLabel)
+              nc <- as.integer(number)
+              
+              vars <- vapply(vars, function(x)
+                jmvcore::composeTerm(x), '')
+              ind <- paste0(vars, collapse = '+')
+              formula <- as.formula(paste0(factorLabel, ' ~ ', ind))
+              
+              library(magrittr)
+              set.seed(1234)
+              obj <- slca::slca(formula) %>%
+                slca::estimate(data = data)
+            } else {
+              library(magrittr)
+              set.seed(1234)
+              obj <- slca::slca(form1) %>%
+                slca::estimate(data = data)
+            }
           }
           
           reg <- slca::regress(
@@ -266,7 +264,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             data = data
           )
           
-          # coef, std.err, wald, p-value---
           coef <- reg$coefficients
           se <- as.vector(reg$std.err)
           wald <- as.vector(coef / se)
@@ -284,8 +281,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             p.value = pval
           )
           
-          #self$results$text3$setContent(reg.df)
-          # Logistic regression table---
           table <- self$results$reg
           df <- as.data.frame(reg.df)
           for (name in rownames(df)) {
@@ -302,6 +297,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             )
           }
         }
+        gc()
       }
     )
   )

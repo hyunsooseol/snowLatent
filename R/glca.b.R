@@ -4,7 +4,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     "glcaClass",
     inherit = glcaBase,
     private = list(
-      .allCache = NULL,
+      .modelCache = list(),  
+      .dataCache = NULL,     
       .htmlwidget = NULL,
       
       .init = function() {
@@ -12,8 +13,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
-          
         }
+        
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
           title = "Instructions",
           content = paste(
@@ -26,9 +27,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<li>The result table does not printed if the results from glca R package are not available.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
-            
           )
-          
         ))
         
         if (self$options$mia)
@@ -42,26 +41,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                                    "Model2: measure.inv=TRUE; Model3: measure.inv=FALSE.")
         if (self$options$cir)
           self$results$cir$setNote("Note", "Model2: coeff.inv=TRUE; Model3: coeff.inv=FALSE.")
+        
         if (isTRUE(self$options$plot1)) {
-          width <- self$options$width
-          height <- self$options$height
-          
-          self$results$plot1$setSize(width, height)
+          self$results$plot1$setSize(self$options$width, self$options$height)
         }
         if (isTRUE(self$options$plot2)) {
-          width <- self$options$width1
-          height <- self$options$height1
-          
-          self$results$plot2$setSize(width, height)
+          self$results$plot2$setSize(self$options$width1, self$options$height1)
         }
         if (isTRUE(self$options$plot3)) {
-          width <- self$options$width1
-          height <- self$options$height1
-          
-          self$results$plot3$setSize(width, height)
+          self$results$plot3$setSize(self$options$width1, self$options$height1)
         }
-        # if (length(self$options$vars) <= 1)
-        #   self$setStatus('complete')
       },
       
       .run = function() {
@@ -69,153 +58,142 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             length(self$options$vars) < 3)
           return()
         
-        ######## Example: glca R package ################
+        if (is.null(private$.dataCache)) {
+          private$.dataCache <- private$.cleanData()
+        }
+        data <- private$.dataCache
         
-        # library(glca)
-        # data("gss08")
-        #
-        # lca = glca(item(DEFECT, HLTH, RAPE, POOR, SINGLE, NOMORE) ~ 1,
-        #       group= DEGREE,
-        #       data = gss08,
-        #       nclass = 3)
-        # summary(lca)
-        
-        ################################
         vars <- self$options$vars
         group <- self$options$group
         covs <- self$options$covs
         nc <- self$options$nc
         
-        #---
-        data <- private$.cleanData()
+        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
         
-        #lca <- private$.computeLCA()
-        if (is.null(private$.allCache)) {
-          private$.allCache <- private$.computeLCA()
+        if (is.null(private$.modelCache[[modelKey]])) {
+          private$.modelCache[[modelKey]] <- private$.computeLCA()
         }
-        lca <- private$.allCache
+        lca <- private$.modelCache[[modelKey]]
         self$results$text$setContent(lca)
         
-        # Model fit---
         if (isTRUE(self$options$fit)) {
-          self$results$fit$setRow(rowNo = 1, values = c(list(class = self$options$nc), as.list(lca$gof[c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")])))
+          self$results$fit$setRow(rowNo = 1, values = c(list(class = nc), 
+                                                        as.list(lca$gof[c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")])))
         }
         
-        # Model Comparison----
-        mc <- private$.computeMEAI()
-        
-        if (isTRUE(self$options$mia)) {
-          table <- self$results$mia
-          g <- as.data.frame(mc$mi.g)
-          if (is.null(g))
-            return()
-          #g <- as.data.frame(gtable)
-          row_names <- rownames(g)
-          for (name in row_names) {
-            table$addRow(
-              rowKey = name,
-              values = list(
-                loglik  = g[name, 1],
-                aic     = g[name, 2],
-                caic    = g[name, 3],
-                bic     = g[name, 4],
-                entropy = g[name, 5],
-                df      = g[name, 6],
-                gsq     = g[name, 7]
-              )
-            )
+        if (isTRUE(self$options$mia) || isTRUE(self$options$mir)) {
+          mcKey <- paste(modelKey, "mc", sep="|")
+          if (is.null(private$.modelCache[[mcKey]])) {
+            private$.modelCache[[mcKey]] <- private$.computeMEAI()
           }
-        }
-        
-        if (isTRUE(self$options$mir)) {
-          table <- self$results$mir
-          d <- as.data.frame(mc$mi.d)
-          if (is.null(d))
-            return()
-          #d <- as.data.frame(dtable)
-          row_names <- rownames(d)
-          for (name in row_names) {
-            table$addRow(rowKey = name,
-                         values = list(
-                           para   = d[name, 1],
-                           loglik = d[name, 2],
-                           df     = d[name, 3],
-                           dev    = d[name, 4],
-                           p      = d[name, 5]
-                         ))
-          }
-        }
-        
-        # Equality of coefficients----
-        eq <- private$.computeEQ()
-        
-        if (isTRUE(self$options$cia)) {
-          if (is.null(self$options$covs))
-            return()
-          table <- self$results$cia
-          g <- as.data.frame(eq$ci.g)
-          if (is.null(g))
-            return()
+          mc <- private$.modelCache[[mcKey]]
           
-          #g <- as.data.frame(ctable)
-          row_names <- rownames(g)
+          if (isTRUE(self$options$mia)) {
+            table <- self$results$mia
+            g <- as.data.frame(mc$mi.g)
+            if (!is.null(g)) {
+              row_names <- rownames(g)
+              for (name in row_names) {
+                table$addRow(
+                  rowKey = name,
+                  values = list(
+                    loglik  = g[name, 1],
+                    aic     = g[name, 2],
+                    caic    = g[name, 3],
+                    bic     = g[name, 4],
+                    entropy = g[name, 5],
+                    df      = g[name, 6],
+                    gsq     = g[name, 7]
+                  )
+                )
+              }
+            }
+          }
           
-          for (name in row_names) {
-            table$addRow(
-              rowKey = name,
-              values = list(
-                loglik  = g[name, 1],
-                aic     = g[name, 2],
-                caic    = g[name, 3],
-                bic     = g[name, 4],
-                entropy = g[name, 5],
-                df      = g[name, 6],
-                gsq     = g[name, 7]
-              )
-            )
+          if (isTRUE(self$options$mir)) {
+            table <- self$results$mir
+            d <- as.data.frame(mc$mi.d)
+            if (!is.null(d)) {
+              row_names <- rownames(d)
+              for (name in row_names) {
+                table$addRow(rowKey = name,
+                             values = list(
+                               para   = d[name, 1],
+                               loglik = d[name, 2],
+                               df     = d[name, 3],
+                               dev    = d[name, 4],
+                               p      = d[name, 5]
+                             ))
+              }
+            }
           }
         }
         
-        if (isTRUE(self$options$cir)) {
+        if (isTRUE(self$options$cia) || isTRUE(self$options$cir)) {
           if (is.null(self$options$covs))
             return()
           
-          table <- self$results$cir
-          d <- as.data.frame(eq$ci.d)
-          if (is.null(d))
-            return()
-          # d <- as.data.frame(cdtable)
-          row_names <- rownames(d)
+          eqKey <- paste(modelKey, "eq", sep="|")
+          if (is.null(private$.modelCache[[eqKey]])) {
+            private$.modelCache[[eqKey]] <- private$.computeEQ()
+          }
+          eq <- private$.modelCache[[eqKey]]
           
-          for (name in row_names) {
-            table$addRow(rowKey = name,
-                         values = list(
-                           para   = d[name, 1],
-                           loglik = d[name, 2],
-                           df     = d[name, 3],
-                           dev    = d[name, 4],
-                           p      = d[name, 5]
-                         ))
+          if (isTRUE(self$options$cia)) {
+            table <- self$results$cia
+            g <- as.data.frame(eq$ci.g)
+            if (!is.null(g)) {
+              row_names <- rownames(g)
+              for (name in row_names) {
+                table$addRow(
+                  rowKey = name,
+                  values = list(
+                    loglik  = g[name, 1],
+                    aic     = g[name, 2],
+                    caic    = g[name, 3],
+                    bic     = g[name, 4],
+                    entropy = g[name, 5],
+                    df      = g[name, 6],
+                    gsq     = g[name, 7]
+                  )
+                )
+              }
+            }
+          }
+          
+          if (isTRUE(self$options$cir)) {
+            table <- self$results$cir
+            d <- as.data.frame(eq$ci.d)
+            if (!is.null(d)) {
+              row_names <- rownames(d)
+              for (name in row_names) {
+                table$addRow(rowKey = name,
+                             values = list(
+                               para   = d[name, 1],
+                               loglik = d[name, 2],
+                               df     = d[name, 3],
+                               dev    = d[name, 4],
+                               p      = d[name, 5]
+                             ))
+              }
+            }
           }
         }
-        
-        #################################################
         
         if (isTRUE(self$options$co)) {
-          # logistic regression -------------
           co <- lca$coefficient
-          
-          if (is.null(co)) {
-            co <- NULL
-          } else {
-            co <- lca$coefficient
+          if (!is.null(co)) {
+            self$results$text3$setContent(co)
           }
-          self$results$text3$setContent(co)
         }
         
         if (isTRUE(self$options$marginal)) {
-          # Marginal prvalences for latent class-----
-          margin <- colMeans(do.call(rbind, lca[["posterior"]]))
+          marginalKey <- paste(modelKey, "marginal", sep="|")
+          
+          if (is.null(private$.modelCache[[marginalKey]])) {
+            private$.modelCache[[marginalKey]] <- colMeans(do.call(rbind, lca[["posterior"]]))
+          }
+          margin <- private$.modelCache[[marginalKey]]
           
           table <- self$results$marginal
           mar <- as.data.frame(margin)
@@ -229,11 +207,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (isTRUE(self$options$preval)) {
-          # Class prevalences by group----------
-          prev <-  as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
+          prevalKey <- paste(modelKey, "preval", sep="|")
+          
+          if (is.null(private$.modelCache[[prevalKey]])) {
+            private$.modelCache[[prevalKey]] <- as.matrix(do.call(rbind, lapply(lca[["posterior"]], colMeans)))
+          }
+          prev <- private$.modelCache[[prevalKey]]
           
           table <- self$results$preval
-          #cg <- prev
           cg <- as.data.frame(prev)
           names <- dimnames(cg)[[1]]
           dims <- dimnames(cg)[[2]]
@@ -251,49 +232,68 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (isTRUE(self$options$item)) {
-          # item probability---------
-          item <- lca[["param"]][["rho"]]
+          itemKey <- paste(modelKey, "item", sep="|")
+          
+          if (is.null(private$.modelCache[[itemKey]])) {
+            private$.modelCache[[itemKey]] <- lca[["param"]][["rho"]]
+          }
+          item <- private$.modelCache[[itemKey]]
           self$results$text1$setContent(item)
         }
         
         if (isTRUE(self$options$gamma)) {
-          # gamma probability----------
-          gamma <- lca[["param"]][["gamma"]]
+          gammaKey <- paste(modelKey, "gamma", sep="|")
+          
+          if (is.null(private$.modelCache[[gammaKey]])) {
+            private$.modelCache[[gammaKey]] <- lca[["param"]][["gamma"]]
+          }
+          gamma <- private$.modelCache[[gammaKey]]
           options(max.print = 1000000)
           self$results$text4$setContent(gamma)
         }
         
         if (isTRUE(self$options$post)) {
-          # posterior probability---------
-          post <- lca[["posterior"]]
+          postKey <- paste(modelKey, "post", sep="|")
+          
+          if (is.null(private$.modelCache[[postKey]])) {
+            private$.modelCache[[postKey]] <- lca[["posterior"]]
+          }
+          post <- private$.modelCache[[postKey]]
           options(max.print = 1000000)
           self$results$text2$setContent(post)
         }
         
-        # Item probabilities by group plot(default:Measure.inv=TRUE)--------
-        ic <- lca[["param"]][["rho"]]
-        ic <- reshape2::melt(ic)
-        colnames(ic) <- c("Class", "Level", "value", "Variable", "Group")
-        
+        # Item probabilities by group plot(default:Measure.inv=TRUE)
         if (isTRUE(self$options$plot2)) {
+          icKey <- paste(modelKey, "ic", sep="|")
+          
+          if (is.null(private$.modelCache[[icKey]])) {
+            ic <- lca[["param"]][["rho"]]
+            ic <- reshape2::melt(ic)
+            colnames(ic) <- c("Class", "Level", "value", "Variable", "Group")
+            private$.modelCache[[icKey]] <- ic
+          }
+          ic <- private$.modelCache[[icKey]]
+          
           image2 <- self$results$plot2
           image2$setState(ic)
         }
+        private$.clearMemory()
       },
-      #plot----------
       
       .plot1 = function(image, ...) {
         if (!self$options$plot1)
           return(FALSE)
         
-        data <- private$.cleanData()
+        vars <- self$options$vars
+        group <- self$options$group
+        nc <- self$options$nc
+        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
         
-        # vars <- self$options$vars
-        # group <- self$options$group
-        # covs <- self$options$covs
-        # nc <- self$options$nc
-        # #lca <- private$.computeLCA()
-        lca <- private$.allCache
+        if (is.null(private$.modelCache[[modelKey]])) {
+          private$.modelCache[[modelKey]] <- private$.computeLCA()
+        }
+        lca <- private$.modelCache[[modelKey]]
         
         par(mfcol = c(3, 1))
         plot1 <- plot(lca, ask = FALSE)
@@ -302,11 +302,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         TRUE
       },
       
-      # item probailities by group plot-----------
-      
       .plot2 = function(image2, ggtheme, theme, ...) {
-        # if (!self$options$plot2)
-        #   return(FALSE)
         if (is.null(image2$state))
           return(FALSE)
         
@@ -328,20 +324,30 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         TRUE
       },
       
-      
-      # item probailities by group plot(Measure.inv=FALSE)-----------
-      
       .plot3 = function(image3, ggtheme, theme, ...) {
         if (!self$options$plot3)
           return(FALSE)
-        data <- private$.cleanData()
-        mglca3 <- private$.computeIP()
         
-        icf <- mglca3[["param"]][["rho"]]
-        icf <- reshape2::melt(icf)
-        colnames(icf) <- c("Class", "Level", "value", "Variable", "Group")
+        vars <- self$options$vars
+        group <- self$options$group
+        nc <- self$options$nc
+        modelKey <- paste(paste(vars, collapse=","), nc, group, "ip", sep="|")
         
-        ic <- icf
+        if (is.null(private$.modelCache[[modelKey]])) {
+          private$.modelCache[[modelKey]] <- private$.computeIP()
+        }
+        mglca3 <- private$.modelCache[[modelKey]]
+        
+        icfKey <- paste(modelKey, "icf", sep="|")
+        
+        if (is.null(private$.modelCache[[icfKey]])) {
+          icf <- mglca3[["param"]][["rho"]]
+          icf <- reshape2::melt(icf)
+          colnames(icf) <- c("Class", "Level", "value", "Variable", "Group")
+          private$.modelCache[[icfKey]] <- icf
+        }
+        ic <- private$.modelCache[[icfKey]]
+        
         plot3 <- ggplot2::ggplot(ic, ggplot2::aes(x = Variable, y = value, fill = Level)) +
           ggplot2::geom_bar(stat = "identity", position = "stack") +
           ggplot2::facet_wrap(ggplot2::vars(Group, Class)) +
@@ -359,53 +365,51 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         TRUE
       },
       
-      ### Helper functions =================================
-      
       .cleanData = function() {
         vars <- self$options$vars
         covs <- self$options$covs
         
         groupVarName <- self$options$group
+        
+        n <- nrow(self$data)
         data <- list()
         
         data[[groupVarName]] <- jmvcore::toNumeric(self$data[[groupVarName]])
         
         for (item in vars)
           data[[item]] <- jmvcore::toNumeric(self$data[[item]])
-        for (item in covs)
-          data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+        
+        if (!is.null(covs)) {
+          for (item in covs)
+            data[[item]] <- jmvcore::toNumeric(self$data[[item]])
+        }
         
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
-        
-        #apply MAR for missing values---
-        #data <- data[!is.na(data[[groupVarName]]), ]
         
         return(data)
       },
       
       .computeLCA = function() {
-        data <- private$.cleanData()
+        data <- private$.dataCache
+        if (is.null(data)) {
+          data <- private$.cleanData()
+          private$.dataCache <- data
+        }
         
         vars <- self$options$vars
         group <- self$options$group
         covs <- self$options$covs
         nc <- self$options$nc
         
-        # vars <- colnames(data[, -1] )
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         
-        # formula with no covariates ----------
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
         
-        # With covariates-------------
-        #if( !is.null(self$options$covs) ) {
         if (length(self$options$covs) >= 1) {
           covs <- self$options$covs
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
@@ -413,9 +417,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         group <- data[, 1]
         
-        ################### LCA model estimates############################
-        
-        lca = glca::glca(
+        lca <- glca::glca(
           formula = formula,
           group = group,
           data = data,
@@ -426,29 +428,34 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         return(lca)
       },
       
-      #Model Comparison---
       .computeMEAI = function() {
-        data <- private$.cleanData()
-        
         vars <- self$options$vars
         group <- self$options$group
-        covs <- self$options$covs
         nc <- self$options$nc
+        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
         
-        # vars <- colnames(data[, -1] )
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
+        if (is.null(private$.modelCache[[modelKey]])) {
+          private$.modelCache[[modelKey]] <- private$.computeLCA()
+        }
+        mglca2 <- private$.modelCache[[modelKey]]
+        
+        data <- private$.dataCache
+        if (is.null(data)) {
+          data <- private$.cleanData()
+          private$.dataCache <- data
+        }
+        
+        vars <- self$options$vars
+        covs <- self$options$covs
+        
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         
-        # formula with no covariates ----------
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
         
-        # With covariates-------------
-        #if( !is.null(self$options$covs) ) {
         if (length(self$options$covs) >= 1) {
           covs <- self$options$covs
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
@@ -456,150 +463,146 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         group <- data[, 1]
         
-        # Measurement invariance----------------
-        mglca2 <- glca::glca(
-          formula = formula,
-          group = group,
-          data = data,
-          nclass = nc,
-          seed = 1
-        )
-        
-        mglca3 <- try(glca::glca(
-          formula = formula,
-          group = group,
-          data = data,
-          nclass = nc,
-          measure.inv = FALSE,
-          seed = 1
-        ))
-        
-        if (jmvcore::isError(mglca3)) {
-          err_string <- stringr::str_interp(" Error in if (maxdiff < eps) break : Covariates can not be computed.")
-          stop(err_string)
+        # measure.inv=FALSE 
+        miFalseKey <- paste(modelKey, "mi_false", sep="|")
+        if (is.null(private$.modelCache[[miFalseKey]])) {
+          mglca3 <- try(glca::glca(
+            formula = formula,
+            group = group,
+            data = data,
+            nclass = nc,
+            measure.inv = FALSE,
+            seed = 1
+          ))
           
-        }
-        
-        if (!jmvcore::isError(mglca3)) {
-          mi <- glca::gofglca(mglca2, mglca3, test = 'chisq')
-          
-          mi.g <- mi[["gtable"]] #Absolute model fit
-          
-          
-          if (is.null(mi$dtable)) {
-            mi.d <- NULL
-          } else {
-            mi.d <- mi[["dtable"]] # Relative model fit
+          if (jmvcore::isError(mglca3)) {
+            err_string <- stringr::str_interp(" Error in if (maxdiff < eps) break : Covariates can not be computed.")
+            stop(err_string)
           }
           
+          private$.modelCache[[miFalseKey]] <- mglca3
+        } else {
+          mglca3 <- private$.modelCache[[miFalseKey]]
         }
+        
+        mi <- glca::gofglca(mglca2, mglca3, test = 'chisq')
+        
+        mi.g <- mi[["gtable"]] 
+        
+        if (is.null(mi$dtable)) {
+          mi.d <- NULL
+        } else {
+          mi.d <- mi[["dtable"]] 
+        }
+        
         retlist <- list(mi.g = mi.g, mi.d = mi.d)
         return(retlist)
       },
       
-      #Equality of coefficients---
       .computeEQ = function() {
-        data <- private$.cleanData()
-        
         vars <- self$options$vars
         group <- self$options$group
-        covs <- self$options$covs
         nc <- self$options$nc
+        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
         
-        # vars <- colnames(data[, -1] )
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
+        if (is.null(private$.modelCache[[modelKey]])) {
+          private$.modelCache[[modelKey]] <- private$.computeLCA()
+        }
+        lca <- private$.modelCache[[modelKey]]
+        
+        data <- private$.dataCache
+        if (is.null(data)) {
+          data <- private$.cleanData()
+          private$.dataCache <- data
+        }
+        
+        vars <- self$options$vars
+        covs <- self$options$covs
+        
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         
-        # formula with no covariates ----------
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
         
-        # With covariates-------------
-        #if( !is.null(self$options$covs) ) {
         if (length(self$options$covs) >= 1) {
           covs <- self$options$covs
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
         }
         
         group <- data[, 1]
-        #-----------------------
         
-        lca = glca::glca(
-          formula = as.formula(paste0('glca::item(', vars, ')~1')),
-          group = group,
-          data = data,
-          nclass = nc,
-          seed = 1
-        )
-        
-        mglca4 <- glca::glca(
-          formula = formula,
-          group = group,
-          data = data,
-          nclass = nc,
-          seed = 1
-        )
-        
-        mglca5 <- try(glca::glca(
-          formula = formula,
-          group = group,
-          data = data,
-          nclass = nc,
-          coeff.inv = FALSE,
-          seed = 1
-        ))
-        
-        if (jmvcore::isError(mglca4)) {
-          err_string <- stringr::str_interp(" Error in if (maxdiff < eps) break : Covariates can not be computed.")
-          stop(err_string)
-          
+        model4Key <- paste(modelKey, "model4", sep="|")
+        if (is.null(private$.modelCache[[model4Key]])) {
+          mglca4 <- glca::glca(
+            formula = formula,
+            group = group,
+            data = data,
+            nclass = nc,
+            seed = 1
+          )
+          private$.modelCache[[model4Key]] <- mglca4
+        } else {
+          mglca4 <- private$.modelCache[[model4Key]]
         }
         
-        if (!jmvcore::isError(mglca4)) {
-          ci <- glca::gofglca(lca, mglca4, mglca5, test = 'chisq')
+        model5Key <- paste(modelKey, "model5", sep="|")
+        if (is.null(private$.modelCache[[model5Key]])) {
+          mglca5 <- try(glca::glca(
+            formula = formula,
+            group = group,
+            data = data,
+            nclass = nc,
+            coeff.inv = FALSE,
+            seed = 1
+          ))
           
-          ci.g <- ci[["gtable"]] #Absolute model fit
-          
-          if (is.null(ci$dtable)) {
-            ci.d <- NULL
-          } else {
-            ci.d <- ci[["dtable"]] # Relative model fit
+          if (jmvcore::isError(mglca5)) {
+            err_string <- stringr::str_interp(" Error in if (maxdiff < eps) break : Covariates can not be computed.")
+            stop(err_string)
           }
           
+          private$.modelCache[[model5Key]] <- mglca5
+        } else {
+          mglca5 <- private$.modelCache[[model5Key]]
+        }
+        
+        ci <- glca::gofglca(lca, mglca4, mglca5, test = 'chisq')
+        
+        ci.g <- ci[["gtable"]] 
+        
+        if (is.null(ci$dtable)) {
+          ci.d <- NULL
+        } else {
+          ci.d <- ci[["dtable"]] 
         }
         
         retlist <- list(ci.g = ci.g, ci.d = ci.d)
         return(retlist)
       },
       
-      #Item probabilities by group plot(Measure.inv=FALSE)--------
-      
       .computeIP = function() {
-        data <- private$.cleanData()
+        data <- private$.dataCache
+        if (is.null(data)) {
+          data <- private$.cleanData()
+          private$.dataCache <- data
+        }
         
         vars <- self$options$vars
         group <- self$options$group
         covs <- self$options$covs
         nc <- self$options$nc
         
-        # vars <- colnames(data[, -1] )
-        vars <- vapply(vars, function(x)
-          jmvcore::composeTerm(x), '')
+        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
         vars <- paste0(vars, collapse = ',')
         
-        # formula with no covariates ----------
         formula <- as.formula(paste0('glca::item(', vars, ')~1'))
         
-        # With covariates-------------
-        #if( !is.null(self$options$covs) ) {
         if (length(self$options$covs) >= 1) {
           covs <- self$options$covs
-          covs <- vapply(covs, function(x)
-            jmvcore::composeTerm(x), '')
+          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
@@ -607,6 +610,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         group <- data[, 1]
         
+        # measure.inv=FALSE 
         mglca3 <- glca::glca(
           formula = formula,
           group = group,
@@ -616,6 +620,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           seed = 1
         )
         return(mglca3)
+      },
+      
+      .clearMemory = function() {
+        gc()
       }
     )
   )
