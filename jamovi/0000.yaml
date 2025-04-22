@@ -1,12 +1,12 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.5.4
+version: 2.5.5
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2025-04-15'
+date: '2025-04-22'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA,
@@ -30,6 +30,11 @@ analyses:
     menuGroup: snowLatent
     menuTitle: Multilevel LCA
     menuSubgroup: LCA
+  - title: LCA/LPA 3-Step Analysis
+    name: step
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: LCA/LPA 3-Step Analysis
   - title: Latent Transition Analysis
     name: lta
     ns: snowLatent
@@ -77,6 +82,16 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
+  - name: stepLCA
+    path: stepLCA.omv
+    description: 3-step LCA
+    tags:
+      - 3-step LCA
+  - name: stepLPA
+    path: stepLPA.omv
+    description: 3-step LPA
+    tags:
+      - 3-step LPA
   - name: nlsy97_LCA
     path: nlsy97_LCA.omv
     description: the National Longitudinal Survey of Youth 1997

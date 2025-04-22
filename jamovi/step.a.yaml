@@ -1,6 +1,6 @@
 ---
-name:  lta
-title: Latent Transition Analysis
+name:  step
+title: LCA/LPA 3-Step Analysis
 menuGroup: snowLatent
 version: '1.0.0'
 jas: '1.2'
@@ -13,7 +13,7 @@ options:
       title: Factors
       type: Array
       default:
-        - label: L1[2]
+        - label: L[2]
           vars: []
       template:
           type: Group
@@ -24,9 +24,10 @@ options:
               type: Variables
               suggested:
                 - nominal
-                - ordinal
+                - continuous
               permitted:
                 - factor
+                - numeric
 
       description:
           R: >
@@ -34,7 +35,7 @@ options:
             the factor and the `vars` that belong to that factor
 
     - name: covs
-      title: Covariates(Optional)
+      title: Covariates
       type: Variables
       suggested:
          - nominal
@@ -46,7 +47,7 @@ options:
     - name: regform
       title: 'Regression formula'
       type: String
-      default: 'L1 ~ SEX+RACE'
+      default: 'L ~ Species'
 
     - name: impu
       title: 'Imputation'
@@ -70,11 +71,11 @@ options:
           name:  'ML'  
       default: 'BCH'
 
-    - name: cons
-      title: 'Constraints'
-      type: String
-      default: 'L1,L2,L3'
- 
+    - name: reg
+      title: 'Coefficients'
+      type: Bool
+      default: FALSE
+
     - name: member
       title: Class membership
       type: Output   
@@ -82,35 +83,47 @@ options:
     - name: post
       title: Posterior probability 
       type: Output  
-      
-    - name: par
-      title: 'Estimated parameters'
-      type: Bool
-      default: FALSE
-
-    - name: reg
-      title: 'Coefficients'
-      type: Bool
-      default: FALSE
-
-    - name: par2
-      title: 'LTA(with non-invariant model)'
-      type: Bool
-      default: FALSE
-
-    - name: par3
-      title: 'LTA(with measurement invariance)'
-      type: Bool
-      default: FALSE
 
     - name: fit
       title: 'Goodness of fit'
       type: Bool
       default: FALSE
 
-    - name: fit1
-      title: 'Chi-squared test'
+    - name: par
+      title: 'Estimated parameters'
       type: Bool
       default: FALSE
 
+    - name: regform1
+      title: 'Regression formula'
+      type: String
+      default: 'L ~ Species'
+
+    - name: impu1
+      title: 'Imputation'
+      type: List
+      options:
+        - title: 'modal'
+          name:  'modal'
+        - title: 'prob'
+          name:  'prob'
+      default: 'modal'    
+  
+    - name: method1
+      title: 'Method'
+      type: List
+      options:
+        - title: 'naive'
+          name:  'naive'
+        - title: 'BCH'
+          name:  'BCH'
+        - title: 'ML'
+          name:  'ML'  
+      default: 'BCH'
+
+    - name: reg1
+      title: 'Coefficients'
+      type: Bool
+      default: FALSE
+      
 ...

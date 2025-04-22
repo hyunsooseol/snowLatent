@@ -1,0 +1,138 @@
+title: LCA/LPA 3-Step Analysis
+name: step
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Model
+        children:
+          - type: ListBox
+            name: factors
+            height: large
+            #addButton: Add New Factor
+            templateName: linreg-block-template
+            template:
+              type: LayoutBox
+              margin: normal
+              children:
+                - type: TextBox
+                  valueKey:
+                    - label
+                  borderless: true
+                  name: blockName
+                  stretchFactor: 1
+                  margin: normal
+                - type: VariablesListBox
+                  valueFilter: unique
+                  valueKey:
+                    - vars
+                  name: blockList
+                  isTarget: true
+                  height: auto
+                  ghostText: drag variables here
+      - type: TargetLayoutBox
+        label: Covariates
+        children:
+          - type: VariablesListBox
+            name: covs
+            height: small
+            isTarget: true
+  - type: CollapseBox
+    label: 'LCA Analysis'
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - name: regform
+            type: TextBox
+            format: string
+            stretchFactor: 2
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: 'Options'
+            children:
+              - type: ComboBox
+                name: impu
+              - type: ComboBox
+                name: method
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: Label
+                label: 'Logistic regression'
+                children:
+                  - type: CheckBox
+                    name: reg
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: 'Model'
+            children:
+              - type: CheckBox
+                name: fit
+              - type: CheckBox
+                name: par
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: Label
+                label: 'Save'
+                children:
+                  - type: Output
+                    name: member
+                  - type: Output
+                    name: post
+  - type: CollapseBox
+    label: 'LPA Analysis'
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - name: regform1
+            type: TextBox
+            format: string
+            stretchFactor: 2
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: 'Options'
+            children:
+              - type: ComboBox
+                name: impu1
+              - type: ComboBox
+                name: method1
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: Label
+                label: 'Logistic regression'
+                children:
+                  - type: CheckBox
+                    name: reg1

@@ -1,0 +1,142 @@
+---
+name:  step
+title: LCA/LPA 3-Step Analysis
+jrs:   '1.1'
+
+items:
+    - name: instructions
+      title: 'Instructions'
+      type: Html
+      visible: True
+
+    - name: fit
+      title: 'Goodness of fit'
+      type: Table
+      rows: 1
+      visible: (fit)
+      refs: slca 
+      clearWith:
+        - factors
+        - vars
+        - nc
+
+      columns:
+        - name: class
+          title: Class
+          type: integer
+        - name: df
+          title: df
+          type: number
+        - name: loglik
+          title: Log-likelihood
+          type: number
+        - name: aic
+          title: AIC
+          type: number
+        - name: bic
+          title: BIC 
+          type: number
+        - name: gsq
+          title: G² 
+          type: number
+
+    - name: post
+      title: 'Posterior probabilities'
+      type: Output
+      measureType: continuous
+      clearWith:
+        - factors
+        - vars
+        - nc
+
+    - name: reg
+      title: 'Logistic regression'
+      type: Table
+      visible: (reg)
+      refs: slca
+      clearWith:
+        - factors
+        - covs
+        - nc
+        - method
+        - impu
+        - regform        
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: cla
+          title: Class
+          type: 'text'
+        - name: va
+          title: Variable
+          type: 'text'
+        - name: co
+          title: Coefficient 
+          type: number
+        - name: se
+          title: Std.error 
+          type: number
+        - name: wald
+          title: Wald 
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    - name: member
+      title: 'Class membership'
+      type: Output
+      measureType: nominal
+      varTitle: Membership
+      clearWith:
+        - factors
+        - vars
+        - nc
+
+    - name:  text1
+      title: ''
+      type:  Preformatted
+
+    - name: reg1
+      title: 'Logistic regression'
+      type: Table
+      visible: (reg1)
+      refs: slca
+      clearWith:
+        - factors
+        - covs
+        - nc
+        - method1
+        - impu1
+        - regform1
+
+      columns:
+        - name: name
+          title: ''
+          type: 'text'
+          content: ($key)
+        - name: cla
+          title: Class
+          type: 'text'
+        - name: va
+          title: Variable
+          type: 'text'
+        - name: co
+          title: Coefficient
+          type: number
+        - name: se
+          title: Std.error
+          type: number
+        - name: wald
+          title: Wald
+          type: number
+        - name: p
+          title: p
+          type: number
+          format: zto,pvalue
+
+...
