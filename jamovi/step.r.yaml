@@ -2,6 +2,7 @@
 name:  step
 title: LCA/LPA 3-Step Analysis
 jrs:   '1.1'
+refs: snowLatent
 
 items:
     - name: instructions
