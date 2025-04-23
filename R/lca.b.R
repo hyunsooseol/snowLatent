@@ -212,8 +212,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           mem <- as.factor(mem)
           
           if (self$options$member && self$results$member$isNotFilled()) {
+            
+            self$results$member$setRowNums(rownames(self$data))
             self$results$member$setValues(mem)
-            self$results$member$setRowNums(rownames(data))
+            
           }
         }
         
@@ -231,7 +233,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               descriptions = descriptions,
               measureTypes = measureTypes
             )
-            self$results$post$setRowNums(rownames(data))
+            self$results$post$setRowNums(rownames(self$data))
             
             for (i in 1:self$options$nc) {
               scores <- as.numeric(pos[, i])

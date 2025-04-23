@@ -83,8 +83,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (isTRUE(self$options$member)) {
             if (self$options$member
                 && self$results$member$isNotFilled()) {
+              
+              self$results$member$setRowNums(rownames(self$data))
               self$results$member$setValues(mem)
-              self$results$member$setRowNums(rownames(data))
+              
             }
           }
           
@@ -104,7 +106,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 measureTypes = measureTypes
               )
               
-              self$results$post$setRowNums(rownames(data))
+              self$results$post$setRowNums(rownames(self$data))
               
               for (i in 1:nc) {
                 scores <- as.numeric(pos[, i])
