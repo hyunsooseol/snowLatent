@@ -8,7 +8,7 @@ lta(
   data,
   factors = list(list(label = "L1[2]", vars = list())),
   covs,
-  regform = "pf ~ ",
+  regform = "pf ~ SEX+RACE",
   impu = "modal",
   method = "BCH",
   cons = "L1,L2,L3",
