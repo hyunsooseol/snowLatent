@@ -42,41 +42,41 @@ children:
             name: covs
             height: small
             isTarget: true
-  - type: CollapseBox
-    label: 'Latent Class Analysis(Only one latent class variable)'
-    margin: normal
-    collapsed: true
-    children:
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 0
-          row: 0
-        fitToGrid: true       
-        children:
-          - type: Label
-            label: Save
-            children:
-              - type: Output
-                name: member
-              - type: Output
-                name: post
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        cell:
-          column: 1
-          row: 0
-        fitToGrid: true
-        children:      
-          - type: Label
-            label: 'Overall tests'
-            children:
-              - type: CheckBox
-                name: fit    
-              - type: CheckBox
-                name: par
+  # - type: CollapseBox
+  #   label: 'LCA/LPA Analysis(Single time point only)'
+  #   margin: normal
+  #   collapsed: true
+  #   children:
+  #     - type: LayoutBox
+  #       stretchFactor: 1
+  #       margin: large
+  #       cell:
+  #         column: 0
+  #         row: 0
+  #       fitToGrid: true       
+  #       children:
+  #         - type: Label
+  #           label: Save
+  #           children:
+  #             - type: Output
+  #               name: member
+  #             - type: Output
+  #               name: post
+  #     - type: LayoutBox
+  #       stretchFactor: 1
+  #       margin: large
+  #       cell:
+  #         column: 1
+  #         row: 0
+  #       fitToGrid: true
+  #       children:      
+  #         - type: Label
+  #           label: 'Overall tests'
+  #           children:
+  #             - type: CheckBox
+  #               name: fit    
+  #             - type: CheckBox
+  #               name: par
   - type: CollapseBox
     label: 'Latent Transition Analysis'
     collapsed: true
@@ -111,7 +111,7 @@ children:
                   - type: CheckBox
                     name: fit1                   
   - type: CollapseBox
-    label: 'Regression analysis using 3-step approach'
+    label: 'Logistic Regression using 3-step approach'
     collapsed: true
     stretchFactor: 1
     children:
@@ -142,7 +142,7 @@ children:
             style: inline
             children:
               - type: Label
-                label: 'Logistic regression'
+                label: 'Test'
                 children:
                   - type: CheckBox
                     name: reg

@@ -8,15 +8,13 @@ lta(
   data,
   factors = list(list(label = "L1[2]", vars = list())),
   covs,
-  regform = "L1 ~ SEX+RACE",
+  regform = "pf ~ ",
   impu = "modal",
   method = "BCH",
   cons = "L1,L2,L3",
-  par = FALSE,
   reg = FALSE,
   par2 = FALSE,
   par3 = FALSE,
-  fit = FALSE,
   fit1 = FALSE
 )
 }
@@ -36,15 +34,11 @@ of the factor and the \code{vars} that belong to that factor}
 
 \item{cons}{.}
 
-\item{par}{.}
-
 \item{reg}{.}
 
 \item{par2}{.}
 
 \item{par3}{.}
-
-\item{fit}{.}
 
 \item{fit1}{.}
 }
@@ -52,21 +46,17 @@ of the factor and the \code{vars} that belong to that factor}
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
-  \code{results$post} \tab \tab \tab \tab \tab an output \cr
-  \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
-  \code{results$member} \tab \tab \tab \tab \tab an output \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 
-\code{results$fit$asDF}
+\code{results$fit1$asDF}
 
-\code{as.data.frame(results$fit)}
+\code{as.data.frame(results$fit1)}
 }
 \description{
 Latent Transition Analysis

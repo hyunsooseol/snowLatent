@@ -92,11 +92,6 @@ datasets:
     description: 3-step LPA
     tags:
       - 3-step LPA
-  - name: nlsy97_LCA
-    path: nlsy97_LCA.omv
-    description: the National Longitudinal Survey of Youth 1997
-    tags:
-      - LCA Regression
   - name: nlsy97_LTA
     path: nlsy97_LTA.omv
     description: the National Longitudinal Survey of Youth 1997

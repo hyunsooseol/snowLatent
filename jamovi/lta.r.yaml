@@ -9,45 +9,45 @@ items:
       type: Html
       visible: True
 
-    - name: post
-      title: 'Posterior probabilities'
-      type: Output
-      measureType: continuous
-      clearWith:
-        - factors
-        - vars
-        - nc
-  
-    - name: fit
-      title: 'Goodness of fit'
-      type: Table
-      rows: 1
-      visible: (fit)
-      refs: slca 
-      clearWith:
-        - factors
-        - vars
-        - nc
-
-      columns:
-        - name: class
-          title: Class
-          type: integer
-        - name: df
-          title: df
-          type: number
-        - name: loglik
-          title: Log-likelihood
-          type: number
-        - name: aic
-          title: AIC
-          type: number
-        - name: bic
-          title: BIC 
-          type: number
-        - name: gsq
-          title: G² 
-          type: number
+    # - name: post
+    #   title: 'Posterior probabilities'
+    #   type: Output
+    #   measureType: continuous
+    #   clearWith:
+    #     - factors
+    #     - vars
+    #     - nc
+    # 
+    # - name: fit
+    #   title: 'Goodness of fit'
+    #   type: Table
+    #   rows: 1
+    #   visible: (fit)
+    #   refs: slca 
+    #   clearWith:
+    #     - factors
+    #     - vars
+    #     - nc
+    # 
+    #   columns:
+    #     - name: class
+    #       title: Class
+    #       type: integer
+    #     - name: df
+    #       title: df
+    #       type: number
+    #     - name: loglik
+    #       title: Log-likelihood
+    #       type: number
+    #     - name: aic
+    #       title: AIC
+    #       type: number
+    #     - name: bic
+    #       title: BIC 
+    #       type: number
+    #     - name: gsq
+    #       title: G² 
+    #       type: number
 
     - name: fit1
       title: 'Testing for measurement invariance '
@@ -125,20 +125,20 @@ items:
           type: number
           format: zto,pvalue
 
-    - name: member
-      title: 'Class membership'
-      type: Output
-      measureType: nominal
-      varTitle: Membership
-      clearWith:
-        - factors
-        - vars
-        - nc
-
-    - name:  text1
-      title: 'LCA: Estimated parameters(Only one latent class variable)'
-      type:  Preformatted
-      refs: slca
+    # - name: member
+    #   title: 'Class membership'
+    #   type: Output
+    #   measureType: nominal
+    #   varTitle: Membership
+    #   clearWith:
+    #     - factors
+    #     - vars
+    #     - nc
+    # 
+    # - name:  text1
+    #   title: 'LCA: Estimated parameters(Only one latent class variable)'
+    #   type:  Preformatted
+    #   refs: slca
 
     - name:  text3
       title: 'LTA with non-invariant model'

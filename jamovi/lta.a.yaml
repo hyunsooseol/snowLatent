@@ -24,9 +24,10 @@ options:
               type: Variables
               suggested:
                 - nominal
-                - ordinal
+                - continuous
               permitted:
                 - factor
+                - numeric
 
       description:
           R: >
@@ -46,7 +47,7 @@ options:
     - name: regform
       title: 'Regression formula'
       type: String
-      default: 'L1 ~ SEX+RACE'
+      default: 'pf ~ '
 
     - name: impu
       title: 'Imputation'
@@ -75,18 +76,18 @@ options:
       type: String
       default: 'L1,L2,L3'
  
-    - name: member
-      title: Class membership
-      type: Output   
-
-    - name: post
-      title: Posterior probability 
-      type: Output  
-      
-    - name: par
-      title: 'Estimated parameters'
-      type: Bool
-      default: FALSE
+    # - name: member
+    #   title: Class membership
+    #   type: Output   
+    # 
+    # - name: post
+    #   title: Posterior probability 
+    #   type: Output  
+    #   
+    # - name: par
+    #   title: 'Estimated parameters'
+    #   type: Bool
+    #   default: FALSE
 
     - name: reg
       title: 'Coefficients'
@@ -103,10 +104,10 @@ options:
       type: Bool
       default: FALSE
 
-    - name: fit
-      title: 'Goodness of fit'
-      type: Bool
-      default: FALSE
+    # - name: fit
+    #   title: 'Goodness of fit'
+    #   type: Bool
+    #   default: FALSE
 
     - name: fit1
       title: 'Chi-squared test'

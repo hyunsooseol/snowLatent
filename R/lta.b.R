@@ -44,6 +44,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data
         }
@@ -52,88 +53,87 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         factors <- self$options$factors
         nfactors <- length(factors)
         
-        if (length(factors[[1]]$vars) < 2)
-          return()
+        if (length(factors[[1]]$vars) < 2) return()
         
-        if (nfactors == 1) {
-          vars <- factors[[1]][["vars"]]
-          factors <- factors[[1]]$label  # L1[2]
-          
-          number <- gsub(".*\\[(\\d+)\\].*", "\\1", factors)
-          nc <- as.integer(number)
-          
-          vars <- vapply(vars, function(x)
-            jmvcore::composeTerm(x), '')
-          ind <- paste0(vars, collapse = '+')
-          formula <- as.formula(paste0(factors, ' ~ ', ind))
-          
-          library(magrittr)
-          set.seed(1234)
-          obj <- slca::slca(formula) %>%
-            slca::estimate(data = data)
-          
-          par <- slca::param(obj)
-          
-          f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
-          pos <- obj[["posterior"]][["marginal"]][[f]]
-          
-          mem <- as.numeric(factor(apply(pos, 1, which.max)))
-          mem <- as.factor(mem)
-          
-          if (isTRUE(self$options$member)) {
-            if (self$options$member
-                && self$results$member$isNotFilled()) {
-              
-              self$results$member$setRowNums(rownames(self$data))
-              self$results$member$setValues(mem)
-              
-            }
-          }
-          
-          if (isTRUE(self$options$post)) {
-            if (self$options$post
-                && self$results$post$isNotFilled()) {
-              keys <- 1:nc
-              measureTypes <- rep("continuous", nc)
-              
-              titles <- paste("Class", keys)
-              descriptions <- paste("Class", keys)
-              
-              self$results$post$set(
-                keys = keys,
-                titles = titles,
-                descriptions = descriptions,
-                measureTypes = measureTypes
-              )
-              
-              self$results$post$setRowNums(rownames(self$data))
-              
-              for (i in 1:nc) {
-                scores <- as.numeric(pos[, i])
-                self$results$post$setValues(index = i, scores)
-              }
-            }
-          }
-          
-          if (isTRUE(self$options$par)) {
-            self$results$text1$setContent(par)
-          }
-          
-          if (isTRUE(self$options$fit)) {
-            gof <- slca::gof(obj)
-            self$results$fit$setRow(
-              rowNo = 1,
-              values = list(
-                class   = nc,
-                df      = gof$Df,
-                loglik  = gof$logLik,
-                aic     = gof$AIC,
-                bic     = gof$BIC,
-                gsq     = gof$Gsq
-              )
-            )
-          }
-        }
+        # if (nfactors == 1) {
+        #   vars <- factors[[1]][["vars"]]
+        #   factors <- factors[[1]]$label  # L1[2]
+        #   
+        #   number <- gsub(".*\\[(\\d+)\\].*", "\\1", factors)
+        #   nc <- as.integer(number)
+        #   
+        #   vars <- vapply(vars, function(x)
+        #     jmvcore::composeTerm(x), '')
+        #   ind <- paste0(vars, collapse = '+')
+        #   formula <- as.formula(paste0(factors, ' ~ ', ind))
+        #   
+        #   library(magrittr)
+        #   set.seed(1234)
+        #   obj <- slca::slca(formula) %>%
+        #     slca::estimate(data = data)
+        #   
+        #   par <- slca::param(obj)
+        #   
+        #   f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
+        #   pos <- obj[["posterior"]][["marginal"]][[f]]
+        #   
+        #   mem <- as.numeric(factor(apply(pos, 1, which.max)))
+        #   mem <- as.factor(mem)
+        #   
+        #   if (isTRUE(self$options$member)) {
+        #     if (self$options$member
+        #         && self$results$member$isNotFilled()) {
+        #       
+        #       self$results$member$setRowNums(rownames(self$data))
+        #       self$results$member$setValues(mem)
+        #       
+        #     }
+        #   }
+        #   
+        #   if (isTRUE(self$options$post)) {
+        #     if (self$options$post
+        #         && self$results$post$isNotFilled()) {
+        #       keys <- 1:nc
+        #       measureTypes <- rep("continuous", nc)
+        #       
+        #       titles <- paste("Class", keys)
+        #       descriptions <- paste("Class", keys)
+        #       
+        #       self$results$post$set(
+        #         keys = keys,
+        #         titles = titles,
+        #         descriptions = descriptions,
+        #         measureTypes = measureTypes
+        #       )
+        #       
+        #       self$results$post$setRowNums(rownames(self$data))
+        #       
+        #       for (i in 1:nc) {
+        #         scores <- as.numeric(pos[, i])
+        #         self$results$post$setValues(index = i, scores)
+        #       }
+        #     }
+        #   }
+        #   
+        #   if (isTRUE(self$options$par)) {
+        #     self$results$text1$setContent(par)
+        #   }
+        #   
+        #   if (isTRUE(self$options$fit)) {
+        #     gof <- slca::gof(obj)
+        #     self$results$fit$setRow(
+        #       rowNo = 1,
+        #       values = list(
+        #         class   = nc,
+        #         df      = gof$Df,
+        #         loglik  = gof$logLik,
+        #         aic     = gof$AIC,
+        #         bic     = gof$BIC,
+        #         gsq     = gof$Gsq
+        #       )
+        #     )
+        #   }
+        # }
         
         if (nfactors > 1) {
           formulas <- list()
@@ -234,76 +234,108 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           regform <- self$options$regform
           regform <- as.formula(regform)
           
-          if (!exists("obj")) {
-            if (length(self$options$factors) == 1) {
-              vars <- factors[[1]][["vars"]]
-              factorLabel <- factors[[1]]$label
-              number <- gsub(".*\\[(\\d+)\\].*", "\\1", factorLabel)
-              nc <- as.integer(number)
-              
-              vars <- vapply(vars, function(x)
-                jmvcore::composeTerm(x), '')
-              ind <- paste0(vars, collapse = '+')
-              formula <- as.formula(paste0(factorLabel, ' ~ ', ind))
-              
-              library(magrittr)
-              set.seed(1234)
-              obj <- slca::slca(formula) %>%
-                slca::estimate(data = data)
-            } else {
-              library(magrittr)
-              set.seed(1234)
-              obj <- slca::slca(form1) %>%
-                slca::estimate(data = data)
+          if (nfactors > 1) {
+            lc_vars <- character()
+            lc_counts <- integer()
+            
+            for (factor in factors) {
+              label <- factor[["label"]]
+              class_count <- as.integer(gsub(".*\\[(\\d+)\\].*", "\\1", label))
+              lc_name <- sub("\\[.*?\\]", "", label)
+              lc_vars <- c(lc_vars, lc_name)
+              lc_counts <- c(lc_counts, class_count)
             }
-          }
-          
-          reg <- slca::regress(
-            obj,
-            regform,
-            imputation = self$options$impu,
-            method = self$options$method,
-            data = data
-          )
-          
-          coef <- reg$coefficients
-          se <- as.vector(reg$std.err)
-          wald <- as.vector(coef / se)
-          pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
-          
-          variable_names <- colnames(reg$coefficients)
-          class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
-          
-          reg.df <- data.frame(
-            class = class_info[1:length(coef)],
-            variable = variable_names,
-            coef = as.vector(coef),
-            std.err = se,
-            wald = wald,
-            p.value = pval
-          )
-          
-          table <- self$results$reg
-          df <- as.data.frame(reg.df)
-          for (name in rownames(df)) {
-            table$addRow(
-              rowKey = name,
-              values = list(
-                cla   = df[name, 1],
-                va    = df[name, 2],
-                co    = df[name, 3],
-                se    = df[name, 4],
-                wald  = df[name, 5],
-                p     = df[name, 6]
+            
+            formulas <- list()
+            
+            for (factor in factors) {
+              vars <- factor[["vars"]]
+              label <- factor[["label"]]
+              
+              vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+              ind <- paste0(vars, collapse = '+')
+              formula <- as.formula(paste0(label, ' ~ ', ind))
+              
+              formulas[[label]] <- formula
+            }
+            
+            pf_class_count <- lc_counts[1]
+            pf_formula <- as.formula(paste0("pf[", pf_class_count, "] ~ ", paste0(lc_vars, collapse = " + ")))
+            
+            new_form <- c(formulas, list(pf = pf_formula))
+            
+            cons <- self$options$cons
+            if (cons == "") {
+              cons1 <- lc_vars
+            } else {
+              cons1 <- unlist(strsplit(cons, ","))
+            }
+            
+            library(magrittr)
+            set.seed(1234)
+            
+            lcpa_model <- tryCatch({
+              slca::slca(formula = new_form, constraints = cons1) %>%
+                slca::estimate(data = data)
+            }, error = function(e) {
+              message("error: ", e$message)
+              return(NULL)
+            })
+            
+            # regression using 3-step---
+            
+            if (!is.null(lcpa_model) && length(self$options$covs) >= 1) {
+              regform <- self$options$regform
+              regform <- as.formula(regform)
+              
+              reg <- slca::regress(
+                lcpa_model,
+                regform,
+                imputation = self$options$impu,
+                method = self$options$method,
+                data = data
               )
-            )
+              
+              # result---              
+              coef <- reg$coefficients
+              se <- as.vector(reg$std.err)
+              wald <- as.vector(coef / se)
+              pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
+              
+              variable_names <- colnames(reg$coefficients)
+              class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
+              
+              reg.df <- data.frame(
+                class = class_info[1:length(coef)],
+                variable = variable_names,
+                coef = as.vector(coef),
+                std.err = se,
+                wald = wald,
+                p.value = pval
+              )
+              
+              table <- self$results$reg
+              df <- as.data.frame(reg.df)
+              for (name in rownames(df)) {
+                table$addRow(
+                  rowKey = name,
+                  values = list(
+                    cla   = df[name, 1],
+                    va    = df[name, 2],
+                    co    = df[name, 3],
+                    se    = df[name, 4],
+                    wald  = df[name, 5],
+                    p     = df[name, 6]
+                  )
+                )
+              }
+            }
           }
         }
         gc()
       }
     )
   )
-
 # Example with R---
 
 # library(slca)
