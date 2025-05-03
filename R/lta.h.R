@@ -9,7 +9,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             factors = list(
                 list(label="L1[2]", vars=list())),
             covs = NULL,
-            regform = "pf ~ ",
+            regform = "pf ~ SEX+RACE",
             impu = "modal",
             method = "BCH",
             cons = "L1,L2,L3",
@@ -57,7 +57,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..regform <- jmvcore::OptionString$new(
                 "regform",
                 regform,
-                default="pf ~ ")
+                default="pf ~ SEX+RACE")
             private$..impu <- jmvcore::OptionList$new(
                 "impu",
                 impu,
@@ -306,7 +306,7 @@ lta <- function(
     factors = list(
                 list(label="L1[2]", vars=list())),
     covs,
-    regform = "pf ~ ",
+    regform = "pf ~ SEX+RACE",
     impu = "modal",
     method = "BCH",
     cons = "L1,L2,L3",

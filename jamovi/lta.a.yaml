@@ -47,7 +47,7 @@ options:
     - name: regform
       title: 'Regression formula'
       type: String
-      default: 'pf ~ '
+      default: 'pf ~ SEX+RACE'
 
     - name: impu
       title: 'Imputation'
