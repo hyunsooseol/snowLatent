@@ -30,11 +30,11 @@ analyses:
     menuGroup: snowLatent
     menuTitle: Multilevel LCA
     menuSubgroup: LCA
-  - title: LCA/LPA 3-Step Analysis
+  - title: LCA/LPA 3-step approach
     name: step
     ns: snowLatent
     menuGroup: snowLatent
-    menuTitle: LCA/LPA 3-Step Analysis
+    menuTitle: LCA/LPA 3-step approach
   - title: Latent Transition Analysis
     name: lta
     ns: snowLatent

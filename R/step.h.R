@@ -179,7 +179,7 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="LCA/LPA 3-Step Analysis",
+                title="LCA/LPA 3-step approach",
                 refs="snowLatent")
             self$add(jmvcore::Html$new(
                 options=options,
@@ -355,7 +355,7 @@ stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'none')
         }))
 
-#' LCA/LPA 3-Step Analysis
+#' LCA/LPA 3-step approach
 #'
 #' 
 #' @param data .
