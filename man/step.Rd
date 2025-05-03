@@ -2,7 +2,7 @@
 % Please edit documentation in R/step.h.R
 \name{step}
 \alias{step}
-\title{LCA/LPA 3-Step Analysis}
+\title{LCA/LPA 3-step approach}
 \usage{
 step(
   data,
@@ -67,5 +67,5 @@ Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.f
 \code{as.data.frame(results$fit)}
 }
 \description{
-LCA/LPA 3-Step Analysis
+LCA/LPA 3-step approach
 }
