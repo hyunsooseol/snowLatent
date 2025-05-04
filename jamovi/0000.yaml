@@ -10,7 +10,8 @@ date: '2025-05-06'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA,
-  Latent Transition Analysis and also provides various types of profile plots.
+  Latent Transition Analysis, LCA/LPA 3-step approach, and also provides various
+  types of profile plots.
 analyses:
   - title: Latent Class Analysis
     name: lca

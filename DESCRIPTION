@@ -4,7 +4,7 @@ Title: Latent Class Analysis for jamovi
 Version: 2.5.6
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-Description: This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA, Latent transition analysis and also provides various types of profile plots.
+Description: This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA, Latent transition analysis, LCA/LPA 3-step approach, and also provides various types of profile plots.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
