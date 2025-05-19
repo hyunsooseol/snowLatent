@@ -21,7 +21,7 @@ glca(
   item = FALSE,
   gamma = FALSE,
   co = FALSE,
-  plot1 = TRUE,
+  plot1 = FALSE,
   plot2 = FALSE,
   plot3 = FALSE,
   angle = 0,

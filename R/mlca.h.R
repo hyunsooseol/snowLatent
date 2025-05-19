@@ -23,7 +23,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             gof = FALSE,
             ci = FALSE,
             item = FALSE,
-            plot1 = TRUE,
+            plot1 = FALSE,
             plot2 = FALSE,
             angle = 0,
             plot3 = FALSE,
@@ -121,7 +121,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
-                default=TRUE)
+                default=FALSE)
             private$..plot2 <- jmvcore::OptionBool$new(
                 "plot2",
                 plot2,
@@ -774,7 +774,7 @@ mlca <- function(
     gof = FALSE,
     ci = FALSE,
     item = FALSE,
-    plot1 = TRUE,
+    plot1 = FALSE,
     plot2 = FALSE,
     angle = 0,
     plot3 = FALSE,

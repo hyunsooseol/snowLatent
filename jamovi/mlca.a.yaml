@@ -109,7 +109,7 @@ options:
     - name: plot1 
       title: Profile plot
       type: Bool 
-      default: TRUE   
+      default: FALSE   
 
     - name: plot2
       title: Item by class

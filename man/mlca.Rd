@@ -23,7 +23,7 @@ mlca(
   gof = FALSE,
   ci = FALSE,
   item = FALSE,
-  plot1 = TRUE,
+  plot1 = FALSE,
   plot2 = FALSE,
   angle = 0,
   plot3 = FALSE,

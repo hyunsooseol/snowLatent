@@ -55,8 +55,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .run = function() {
         if (is.null(self$options$group) || is.null(self$options$vars) ||
-            length(self$options$vars) < 3)
-          return()
+            length(self$options$vars) < 3) return()
         
         if (is.null(private$.dataCache)) {
           private$.dataCache <- private$.cleanData()
