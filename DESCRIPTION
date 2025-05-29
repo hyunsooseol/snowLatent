@@ -22,6 +22,7 @@ Imports: jmvcore (>= 0.8.5),
          RColorBrewer,
          dplyr,
          slca,
-         magrittr
+         magrittr,
+         MASS
         
       
