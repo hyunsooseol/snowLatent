@@ -252,15 +252,11 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Log-likelihood", 
                         `type`="number"),
                     list(
-                        `name`="aic", 
+                        `name`="AIC", 
                         `title`="AIC", 
                         `type`="number"),
                     list(
-                        `name`="caic", 
-                        `title`="CAIC", 
-                        `type`="number"),
-                    list(
-                        `name`="bic", 
+                        `name`="BIC", 
                         `title`="BIC", 
                         `type`="number"),
                     list(
@@ -297,10 +293,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="aic", 
                         `title`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="caic", 
-                        `title`="CAIC", 
                         `type`="number"),
                     list(
                         `name`="bic", 

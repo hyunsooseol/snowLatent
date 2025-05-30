@@ -80,8 +80,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .populateFitTable = function() {
         if (is.null(private$.fitCache)) {
-          v <- c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")
-          private$.fitCache <- as.data.frame(as.list(private$.modelCache$gof[v]))
+          v <- c("loglik", "AIC", "BIC", "entropy", "df", "Gsq")
+          gof_data <- private$.modelCache$gof
+          private$.fitCache <- as.data.frame(replace(gof_data[v], sapply(gof_data[v], is.null), list(NA_real_)))
         }
         
         table <- self$results$fit
@@ -89,13 +90,12 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           rowNo = 1,
           values = list(
             class = self$options$nc,
-            loglik = private$.fitCache[1, 1],
-            aic = private$.fitCache[1, 2],
-            caic = private$.fitCache[1, 3],
-            bic = private$.fitCache[1, 4],
-            entropy = private$.fitCache[1, 5],
-            df = private$.fitCache[1, 6],
-            gsq = private$.fitCache[1, 7]
+            loglik = private$.fitCache[1, "loglik"],
+            AIC = private$.fitCache[1, "AIC"],
+            BIC = private$.fitCache[1, "BIC"],
+            entropy = private$.fitCache[1, "entropy"],
+            df = private$.fitCache[1, "df"],
+            gsq = private$.fitCache[1, "Gsq"]
           )
         )
       },
@@ -111,18 +111,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$comp
         g <- as.data.frame(private$.compCache$gtable)
         
+        #self$results$text$setContent(g)
+        
         for (i in seq_len(nrow(g))) {
           table$addRow(
             rowKey = rownames(g)[i],
             values = list(
-              class = g[i, 8],
+              class = g[i, 7],
               loglik = g[i, 1],
               aic = g[i, 2],
-              caic = g[i, 3],
-              bic = g[i, 4],
-              entropy = g[i, 5],
-              df = g[i, 6],
-              gsq = g[i, 7]
+              bic = g[i, 3],
+              entropy = g[i, 4],
+              df = g[i, 5],
+              gsq = g[i, 6]
             )
           )
         }
@@ -293,10 +294,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         elbow <- NULL
         if (self$options$nc > 2 && !is.null(gtable)) {
-          out1 <- gtable[, c(2:4)]
+          out1 <- gtable[, c(2:3)]
           cla <- c(2:self$options$nc)
           out1 <- data.frame(out1, cla)
-          colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Class')
+          #self$results$text$setContent(out1)
+          colnames(out1) <- c('AIC', 'BIC', 'Class')
           elbow <- reshape2::melt(
             out1,
             id.vars = 'Class',
