@@ -37,9 +37,6 @@ items:
         - name: aic
           title: AIC
           type: number
-        - name: caic
-          title: CAIC 
-          type: number 
         - name: bic
           title: BIC 
           type: number
@@ -75,9 +72,6 @@ items:
         - name: aic
           title: AIC
           type: number
-        - name: caic
-          title: CAIC 
-          type: number 
         - name: bic
           title: BIC 
           type: number
@@ -241,9 +235,6 @@ items:
         - name: aic
           title: AIC
           type: number
-        - name: caic
-          title: CAIC 
-          type: number 
         - name: bic
           title: BIC 
           type: number

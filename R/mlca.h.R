@@ -312,10 +312,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="AIC", 
                         `type`="number"),
                     list(
-                        `name`="caic", 
-                        `title`="CAIC", 
-                        `type`="number"),
-                    list(
                         `name`="bic", 
                         `title`="BIC", 
                         `type`="number"),
@@ -355,10 +351,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="aic", 
                         `title`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="caic", 
-                        `title`="CAIC", 
                         `type`="number"),
                     list(
                         `name`="bic", 
@@ -535,10 +527,6 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="aic", 
                         `title`="AIC", 
-                        `type`="number"),
-                    list(
-                        `name`="caic", 
-                        `title`="CAIC", 
                         `type`="number"),
                     list(
                         `name`="bic", 

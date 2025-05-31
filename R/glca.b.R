@@ -72,12 +72,14 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (is.null(private$.modelCache[[modelKey]])) {
           private$.modelCache[[modelKey]] <- private$.computeLCA()
         }
+        
         lca <- private$.modelCache[[modelKey]]
+        
         self$results$text$setContent(lca)
         
         if (isTRUE(self$options$fit)) {
           self$results$fit$setRow(rowNo = 1, values = c(list(class = nc), 
-                                                        as.list(lca$gof[c("loglik", "aic", "caic", "bic", "entropy", "df", "Gsq")])))
+                                                        as.list(lca$gof[c("loglik", "AIC", "BIC", "entropy", "df", "Gsq")])))
         }
         
         if (isTRUE(self$options$mia) || isTRUE(self$options$mir)) {
@@ -98,11 +100,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   values = list(
                     loglik  = g[name, 1],
                     aic     = g[name, 2],
-                    caic    = g[name, 3],
-                    bic     = g[name, 4],
-                    entropy = g[name, 5],
-                    df      = g[name, 6],
-                    gsq     = g[name, 7]
+                    #caic    = g[name, 3],
+                    bic     = g[name, 3],
+                    entropy = g[name, 4],
+                    df      = g[name, 5],
+                    gsq     = g[name, 6]
                   )
                 )
               }
@@ -141,19 +143,22 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (isTRUE(self$options$cia)) {
             table <- self$results$cia
             g <- as.data.frame(eq$ci.g)
+            #self$results$text$setContent(g)
+            
             if (!is.null(g)) {
               row_names <- rownames(g)
+              row_names <- row_names[row_names != "1"]
+              
               for (name in row_names) {
                 table$addRow(
                   rowKey = name,
                   values = list(
                     loglik  = g[name, 1],
                     aic     = g[name, 2],
-                    caic    = g[name, 3],
-                    bic     = g[name, 4],
-                    entropy = g[name, 5],
-                    df      = g[name, 6],
-                    gsq     = g[name, 7]
+                    bic     = g[name, 3],
+                    entropy = g[name, 4],
+                    df      = g[name, 5],
+                    gsq     = g[name, 6]
                   )
                 )
               }
@@ -163,8 +168,12 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (isTRUE(self$options$cir)) {
             table <- self$results$cir
             d <- as.data.frame(eq$ci.d)
+            #self$results$text$setContent(d)
+            
             if (!is.null(d)) {
               row_names <- rownames(d)
+              row_names <- row_names[row_names != "1"]
+              
               for (name in row_names) {
                 table$addRow(rowKey = name,
                              values = list(
@@ -180,7 +189,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (isTRUE(self$options$co)) {
-          co <- lca$coefficient
+          #co <- lca$coefficient
+          co<- coef(lca)
           if (!is.null(co)) {
             self$results$text3$setContent(co)
           }

@@ -33,13 +33,10 @@ items:
         - name: loglik
           title: Log-likelihood
           type: number
-        - name: aic
+        - name: AIC
           title: AIC
           type: number
-        - name: caic
-          title: CAIC 
-          type: number 
-        - name: bic
+        - name: BIC
           title: BIC 
           type: number
         - name: entropy
@@ -73,9 +70,6 @@ items:
           type: number
         - name: aic
           title: AIC
-          type: number
-        - name: caic
-          title: CAIC 
           type: number
         - name: bic
           title: BIC 
@@ -145,9 +139,6 @@ items:
         - name: aic
           title: AIC
           type: number
-        - name: caic
-          title: CAIC 
-          type: number 
         - name: bic
           title: BIC 
           type: number
@@ -278,7 +269,7 @@ items:
         - height1        
     
     - name: text3
-      title: Logistic regression
+      title: 'Logistic regression'
       type:  Preformatted  
       
     - name: text1

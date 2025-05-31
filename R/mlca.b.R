@@ -79,7 +79,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         self$results$text$setContent(lca)
         
         if (isTRUE(self$options$co)) {
-          co <- lca$coefficient
+          co <- coef(lca)
           self$results$text3$setContent(co)
         }
         
@@ -91,9 +91,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             values = list(
               class   = self$options$nc,
               loglik  = lca$gof$loglik,
-              aic     = lca$gof$aic,
-              caic    = lca$gof$caic,
-              bic     = lca$gof$bic,
+              aic     = lca$gof$AIC,
+              bic     = lca$gof$BIC,
               entropy = lca$gof$entropy,
               df      = lca$gof$df,
               gsq     = lca$gof$Gsq
@@ -114,11 +113,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   cluster = clusters[i],
                   loglik  = g[i, 1],
                   aic     = g[i, 2],
-                  caic    = g[i, 3],
-                  bic     = g[i, 4],
-                  entropy = g[i, 5],
-                  df      = g[i, 6],
-                  gsq     = g[i, 7]
+                  bic     = g[i, 3],
+                  entropy = g[i, 4],
+                  df      = g[i, 5],
+                  gsq     = g[i, 6]
                 )
               )
             }
@@ -245,10 +243,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Elbow 
         if (self$options$nclust > 2 && isTRUE(self$options$plot3)) {
-          out1 <- clu$gtable1[, c(2:4)]
+          out1 <- clu$gtable1[, c(2:3)]
           cla <- c(2:self$options$nclust)
           out1 <- data.frame(out1, cla)
-          colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Cluster')
+          colnames(out1) <- c('AIC', 'BIC', 'Cluster')
           elbow <- reshape2::melt(
             out1,
             id.vars = 'Cluster',
@@ -260,20 +258,24 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (isTRUE(self$options$gof) && !is.null(self$options$covs)) {
+          
           table <- self$results$gof
+          
           if (!is.null(inv$ci.g)) {
             g <- as.data.frame(inv$ci.g)
-            for (name in rownames(g)) {
+            ro <- rownames(g)
+            ro <- ro[ro != "1"] 
+            
+            for (name in ro) {
               table$addRow(
                 rowKey = name,
                 values = list(
                   loglik  = g[name, 1],
                   aic     = g[name, 2],
-                  caic    = g[name, 3],
-                  bic     = g[name, 4],
-                  entropy = g[name, 5],
-                  df      = g[name, 6],
-                  gsq     = g[name, 7]
+                  bic     = g[name, 3],
+                  entropy = g[name, 4],
+                  df      = g[name, 5],
+                  gsq     = g[name, 6]
                 )
               )
             }
@@ -284,7 +286,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           table <- self$results$ci
           if (!is.null(inv$ci.d)) {
             d <- as.data.frame(inv$ci.d)
-            for (name in rownames(d)) {
+            ro <- rownames(d)
+            ro <- ro[ro != "1"] 
+            
+            for (name in ro) {
               table$addRow(rowKey = name,
                            values = list(
                              para   = d[name, 1],
