@@ -21,19 +21,6 @@ children:
             name: covs
             height: small
             isTarget: true
-  - type: LayoutBox
-    margin: large
-    style: inline
-    children:
-      - type: Label
-        label: ''
-        margin: large
-        style: list-inline
-        children:
-          - name: nc
-            type: TextBox
-            label: Class
-            format: number
   - type: CollapseBox
     label: Analysis
     margin: normal
@@ -44,7 +31,14 @@ children:
         margin: large
         children:
           - type: Label
-            label: Model fit
+            label: ''
+            children:
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number
+          - type: Label
+            label: 'Model fit'
             children:
               - type: CheckBox
                 name: fit

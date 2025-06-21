@@ -20,6 +20,7 @@ analyses:
     menuTitle: Latent Class Analysis
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: Multiple Group LCA
     name: glca
     ns: snowLatent
@@ -27,6 +28,7 @@ analyses:
     menuTitle: Multiple Group LCA
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: Multilevel LCA
     name: mlca
     ns: snowLatent
@@ -34,12 +36,14 @@ analyses:
     menuTitle: Multilevel LCA
     menuSubgroup: LCA
     ribbon: analyses
+    category: analyses
   - title: LCA/LPA 3-step approach
     name: step
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: LCA/LPA 3-step approach
     ribbon: analyses
+    category: analyses
   - title: Latent Transition Analysis
     name: lta
     ns: snowLatent
@@ -47,6 +51,7 @@ analyses:
     menuTitle: Latent Transition Analysis
     menuSubgroup: LTA
     ribbon: analyses
+    category: analyses
   - title: Profile plot
     name: profile
     ns: snowLatent
@@ -54,6 +59,7 @@ analyses:
     menuSubgroup: Profile
     menuTitle: Profile plot
     ribbon: analyses
+    category: analyses
   - title: Radar chart
     name: radar
     ns: snowLatent
@@ -61,6 +67,7 @@ analyses:
     menuSubgroup: Profile
     menuTitle: Radar chart
     ribbon: analyses
+    category: analyses
   - title: Raincloud plot
     name: rain
     ns: snowLatent
@@ -68,6 +75,7 @@ analyses:
     menuSubgroup: Profile
     menuTitle: Raincloud plot
     ribbon: analyses
+    category: analyses
   - title: Wordcloud analysis
     name: word
     ns: snowLatent
@@ -75,6 +83,7 @@ analyses:
     menuSubgroup: Profile
     menuTitle: Wordcloud analysis
     ribbon: analyses
+    category: analyses
 datasets:
   - name: health
     path: health.omv

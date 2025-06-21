@@ -33,7 +33,7 @@ children:
     style: inline
     children:
       - type: Label
-        label: Analysis options
+        label: ''
         margin: large
         style: list-inline
         children:

@@ -81,7 +81,7 @@ options:
       default: FALSE
      
     - name: item 
-      title: Item response probabilities(rho)
+      title: Item response(rho)
       type: Bool 
       default: FALSE
 
