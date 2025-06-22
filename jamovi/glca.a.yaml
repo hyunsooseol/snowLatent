@@ -101,12 +101,12 @@ options:
       default: FALSE  
      
     - name: plot2 
-      title: Item probabilities(Invariance=T)
+      title: Item probability(Invariance=T)
       type: Bool 
       default: FALSE       
       
     - name: plot3 
-      title: Item probabilities(Invariance=F)
+      title: Item probability(Invariance=F)
       type: Bool 
       default: FALSE       
 

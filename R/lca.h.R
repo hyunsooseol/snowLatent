@@ -368,7 +368,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="coef",
-                title="Logistic regression coefficients",
+                title="Logistic regression",
                 visible="(coef)",
                 refs="glca",
                 clearWith=list(
@@ -405,7 +405,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Array$new(
                 options=options,
                 name="item",
-                title="Item response probabilities",
+                title="Item response probability",
                 visible="(item)",
                 items="(vars)",
                 clearWith=list(

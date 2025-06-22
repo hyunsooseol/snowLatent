@@ -128,7 +128,7 @@ items:
           title: 'Probability'    
  
     - name: coef
-      title: 'Logistic regression coefficients'
+      title: 'Logistic regression'
       type: Table
       visible: (coef)
       refs: glca
@@ -160,7 +160,7 @@ items:
           format: zto,pvalue
           
     - name: item
-      title: 'Item response probabilities'
+      title: 'Item response probability'
       type: Array
       visible: (item)
       items: (vars)

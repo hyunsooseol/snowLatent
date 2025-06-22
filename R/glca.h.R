@@ -506,7 +506,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
-                title="Item response probabilities by group(Measurement invariance=TRUE)",
+                title="Item response probability by group(Measurement invariance=TRUE)",
                 renderFun=".plot2",
                 visible="(plot2)",
                 refs="snowLatent",
@@ -521,7 +521,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
-                title="Item response probabilities by group(Measurement invariance=FALSE)",
+                title="Item response probability by group(Measurement invariance=FALSE)",
                 renderFun=".plot3",
                 visible="(plot3)",
                 refs="snowLatent",
@@ -541,7 +541,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text1",
-                title="Item response probabilities"))
+                title="Item response probability"))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
@@ -549,7 +549,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text2",
-                title="Posterior probabilities"))}))
+                title="Posterior probability"))}))
 
 glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "glcaBase",

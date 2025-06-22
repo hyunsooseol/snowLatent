@@ -238,7 +238,7 @@ items:
         - height
 
     - name:  plot2
-      title: Item response probabilities by group(Measurement invariance=TRUE)
+      title: Item response probability by group(Measurement invariance=TRUE)
       type:  Image
       renderFun: .plot2
       visible: (plot2)
@@ -253,7 +253,7 @@ items:
         - height1    
 
     - name:  plot3
-      title: 'Item response probabilities by group(Measurement invariance=FALSE)'
+      title: 'Item response probability by group(Measurement invariance=FALSE)'
       type:  Image
       renderFun: .plot3
       visible: (plot3)
@@ -273,7 +273,7 @@ items:
       type:  Preformatted  
       
     - name: text1
-      title: Item response probabilities
+      title: Item response probability
       type:  Preformatted 
 
     - name:  text4
@@ -281,7 +281,7 @@ items:
       type:  Preformatted
 
     - name: text2
-      title: Posterior probabilities
+      title: Posterior probability
       type:  Preformatted      
 
     
