@@ -18,7 +18,13 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             regform1 = "L ~ Species",
             impu1 = "modal",
             method1 = "BCH",
-            reg1 = FALSE, ...) {
+            reg1 = FALSE,
+            plot = FALSE,
+            width = 500,
+            height = 500,
+            plot1 = FALSE,
+            width1 = 500,
+            height1 = 500, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -114,6 +120,30 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "reg1",
                 reg1,
                 default=FALSE)
+            private$..plot <- jmvcore::OptionBool$new(
+                "plot",
+                plot,
+                default=FALSE)
+            private$..width <- jmvcore::OptionInteger$new(
+                "width",
+                width,
+                default=500)
+            private$..height <- jmvcore::OptionInteger$new(
+                "height",
+                height,
+                default=500)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -129,6 +159,12 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..impu1)
             self$.addOption(private$..method1)
             self$.addOption(private$..reg1)
+            self$.addOption(private$..plot)
+            self$.addOption(private$..width)
+            self$.addOption(private$..height)
+            self$.addOption(private$..plot1)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -144,7 +180,13 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         regform1 = function() private$..regform1$value,
         impu1 = function() private$..impu1$value,
         method1 = function() private$..method1$value,
-        reg1 = function() private$..reg1$value),
+        reg1 = function() private$..reg1$value,
+        plot = function() private$..plot$value,
+        width = function() private$..width$value,
+        height = function() private$..height$value,
+        plot1 = function() private$..plot1$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -159,7 +201,13 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..regform1 = NA,
         ..impu1 = NA,
         ..method1 = NA,
-        ..reg1 = NA)
+        ..reg1 = NA,
+        ..plot = NA,
+        ..width = NA,
+        ..height = NA,
+        ..plot1 = NA,
+        ..width1 = NA,
+        ..height1 = NA)
 )
 
 stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -172,7 +220,9 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         reg = function() private$.items[["reg"]],
         member = function() private$.items[["member"]],
         text1 = function() private$.items[["text1"]],
-        reg1 = function() private$.items[["reg1"]]),
+        reg1 = function() private$.items[["reg1"]],
+        plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -332,7 +382,39 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="p", 
                         `title`="p", 
                         `type`="number", 
-                        `format`="zto,pvalue"))))}))
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Covariate Effects Plot",
+                renderFun=".plot",
+                visible="(plot)",
+                requiresData=TRUE,
+                clearWith=list(
+                    "factors",
+                    "covs",
+                    "nc",
+                    "method",
+                    "impu",
+                    "regform",
+                    "width",
+                    "height")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Covariate Effects Plot",
+                renderFun=".plot1",
+                visible="(plot1)",
+                requiresData=TRUE,
+                clearWith=list(
+                    "factors",
+                    "covs",
+                    "nc",
+                    "method1",
+                    "impu1",
+                    "regform1",
+                    "width1",
+                    "height1")))}))
 
 stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "stepBase",
@@ -372,6 +454,12 @@ stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param impu1 .
 #' @param method1 .
 #' @param reg1 .
+#' @param plot .
+#' @param width .
+#' @param height .
+#' @param plot1 .
+#' @param width1 .
+#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -381,6 +469,8 @@ stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$reg1} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -404,7 +494,13 @@ step <- function(
     regform1 = "L ~ Species",
     impu1 = "modal",
     method1 = "BCH",
-    reg1 = FALSE) {
+    reg1 = FALSE,
+    plot = FALSE,
+    width = 500,
+    height = 500,
+    plot1 = FALSE,
+    width1 = 500,
+    height1 = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("step requires jmvcore to be installed (restart may be required)")
@@ -428,7 +524,13 @@ step <- function(
         regform1 = regform1,
         impu1 = impu1,
         method1 = method1,
-        reg1 = reg1)
+        reg1 = reg1,
+        plot = plot,
+        width = width,
+        height = height,
+        plot1 = plot1,
+        width1 = width1,
+        height1 = height1)
 
     analysis <- stepClass$new(
         options = options,

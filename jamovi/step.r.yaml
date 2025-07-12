@@ -140,4 +140,36 @@ items:
           type: number
           format: zto,pvalue
 
+    - name:  plot
+      title: 'Covariate Effects Plot'
+      type:  Image
+      renderFun: .plot
+      visible: (plot)
+      requiresData: true
+      clearWith:
+        - factors
+        - covs
+        - nc
+        - method
+        - impu
+        - regform
+        - width
+        - height
+
+    - name:  plot1
+      title: 'Covariate Effects Plot'
+      type:  Image
+      renderFun: .plot1
+      visible: (plot1)
+      requiresData: true
+      clearWith:
+        - factors
+        - covs
+        - nc
+        - method1
+        - impu1
+        - regform1
+        - width1
+        - height1
+
 ...

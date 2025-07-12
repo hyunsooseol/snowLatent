@@ -17,7 +17,13 @@ step(
   regform1 = "L ~ Species",
   impu1 = "modal",
   method1 = "BCH",
-  reg1 = FALSE
+  reg1 = FALSE,
+  plot = FALSE,
+  width = 500,
+  height = 500,
+  plot1 = FALSE,
+  width1 = 500,
+  height1 = 500
 )
 }
 \arguments{
@@ -47,6 +53,18 @@ of the factor and the \code{vars} that belong to that factor}
 \item{method1}{.}
 
 \item{reg1}{.}
+
+\item{plot}{.}
+
+\item{width}{.}
+
+\item{height}{.}
+
+\item{plot1}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
 }
 \value{
 A results object containing:
@@ -58,6 +76,8 @@ A results object containing:
   \code{results$member} \tab \tab \tab \tab \tab an output \cr
   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$reg1} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

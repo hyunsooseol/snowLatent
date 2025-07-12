@@ -46,7 +46,20 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$reg)
           self$results$reg$setNote("Note",
                                    "It utilizes logistic regression and employs a three-step approach.")
-      },
+      
+        if(isTRUE(self$options$plot)){
+          width <- self$options$width
+          height <- self$options$height
+          self$results$plot$setSize(width, height)
+        }
+        
+        if(isTRUE(self$options$plot1)){
+          width <- self$options$width1
+          height <- self$options$height1
+          self$results$plot1$setSize(width, height)
+        }
+
+        },
       
       # Helper function to create and estimate model (for reuse)
       .getModel = function(data, formula) {
@@ -230,6 +243,14 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 )
               )
             }
+            
+            # Covariate Effects Plot
+            if (isTRUE(self$options$plot)) {
+              plot_data <- reg.df
+              image <- self$results$plot
+              image$setState(plot_data)
+            }
+            
           }
           
           if (isTRUE(self$options$reg1)) {
@@ -277,6 +298,14 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 )
               )
             }
+            
+            # Covariate Effects Plot
+            if (isTRUE(self$options$plot1)) {
+              plot_data <- reg.df
+              image <- self$results$plot1
+              image$setState(plot_data)
+            }
+            
           }
           
           # Free memory
@@ -286,7 +315,58 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         # Manual garbage collection
         gc(verbose = FALSE)
+      },
+      
+      .plot = function(image,ggtheme, theme,...) {
+        
+        if (is.null(image$state))
+          return(FALSE)
+        
+        plot_data <- image$state
+        
+        plot_data$lower <- plot_data$coef - 1.96 * plot_data$std.err
+        plot_data$upper <- plot_data$coef + 1.96 * plot_data$std.err
+        
+        plot <- ggplot2::ggplot(plot_data, ggplot2::aes(x=variable, y=coef, color=class)) +
+          ggplot2::geom_point(size=3, position=ggplot2::position_dodge(width=0.7)) +
+          ggplot2::geom_errorbar(ggplot2::aes(ymin=lower, ymax=upper),
+                                 width=0.2, position=ggplot2::position_dodge(width=0.7)) +
+          ggplot2::geom_hline(yintercept=0, linetype="dashed", color="gray50") +
+          ggplot2::labs(title="",
+                        x="Covariate", y="Coefficient (log-odds)") +
+          ggplot2::coord_flip() +
+          ggplot2::theme_minimal(base_size=13)
+        
+        
+        print(plot)
+        TRUE
+      },
+      
+      .plot1 = function(image,ggtheme, theme,...) {
+        
+        if (is.null(image$state))
+          return(FALSE)
+        
+        plot_data <- image$state
+        
+        plot_data$lower <- plot_data$coef - 1.96 * plot_data$std.err
+        plot_data$upper <- plot_data$coef + 1.96 * plot_data$std.err
+        
+        plot1 <- ggplot2::ggplot(plot_data, ggplot2::aes(x=variable, y=coef, color=class)) +
+          ggplot2::geom_point(size=3, position=ggplot2::position_dodge(width=0.7)) +
+          ggplot2::geom_errorbar(ggplot2::aes(ymin=lower, ymax=upper),
+                                 width=0.2, position=ggplot2::position_dodge(width=0.7)) +
+          ggplot2::geom_hline(yintercept=0, linetype="dashed", color="gray50") +
+          ggplot2::labs(title="",
+                        x="Covariate", y="Coefficient (log-odds)") +
+          ggplot2::coord_flip() +
+          ggplot2::theme_minimal(base_size=13)
+        
+        
+        print(plot1)
+        TRUE
       }
+      
     )
   )
 
