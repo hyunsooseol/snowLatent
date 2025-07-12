@@ -41,10 +41,16 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$reg)
           self$results$reg$setNote("Note",
                                    "It utilizes logistic regression and employs a three-step approach.")
-      },
+      
+        if(isTRUE(self$options$plot)){
+          width <- self$options$width
+          height <- self$options$height
+          self$results$plot$setSize(width, height)
+        }
+        },
       
       .run = function() {
-
+        
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data
         }
@@ -313,7 +319,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 wald = wald,
                 p.value = pval
               )
-              
+
               table <- self$results$reg
               df <- as.data.frame(reg.df)
               for (name in rownames(df)) {
@@ -329,13 +335,49 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   )
                 )
               }
+              
+              # Covariate Effects Plot
+              if (isTRUE(self$options$plot)) {
+                plot_data <- reg.df
+                image <- self$results$plot
+                image$setState(plot_data)
+              }
             }
           }
         }
         gc()
+      },
+      
+      .plot = function(image,ggtheme, theme,...) {
+        
+        if (is.null(image$state))
+          return(FALSE)
+        
+        plot_data <- image$state
+        
+        plot_data$lower <- plot_data$coef - 1.96 * plot_data$std.err
+        plot_data$upper <- plot_data$coef + 1.96 * plot_data$std.err
+
+        plot <- ggplot2::ggplot(plot_data, ggplot2::aes(x=variable, y=coef, color=class)) +
+          ggplot2::geom_point(size=3, position=ggplot2::position_dodge(width=0.7)) +
+          ggplot2::geom_errorbar(ggplot2::aes(ymin=lower, ymax=upper),
+                                 width=0.2, position=ggplot2::position_dodge(width=0.7)) +
+          ggplot2::geom_hline(yintercept=0, linetype="dashed", color="gray50") +
+          ggplot2::labs(title="",
+                        x="Covariate", y="Coefficient (log-odds)") +
+          ggplot2::coord_flip() +
+          ggplot2::theme_minimal(base_size=13)
+        
+        
+        print(plot)
+        TRUE
       }
     )
   )
+
+
+
+
 # Example with R---
 
 # library(slca)

@@ -16,7 +16,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             reg = FALSE,
             par2 = FALSE,
             par3 = FALSE,
-            fit1 = FALSE, ...) {
+            fit1 = FALSE,
+            plot = FALSE,
+            width = 500,
+            height = 500, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -93,6 +96,18 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "fit1",
                 fit1,
                 default=FALSE)
+            private$..plot <- jmvcore::OptionBool$new(
+                "plot",
+                plot,
+                default=FALSE)
+            private$..width <- jmvcore::OptionInteger$new(
+                "width",
+                width,
+                default=500)
+            private$..height <- jmvcore::OptionInteger$new(
+                "height",
+                height,
+                default=500)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -104,6 +119,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..par2)
             self$.addOption(private$..par3)
             self$.addOption(private$..fit1)
+            self$.addOption(private$..plot)
+            self$.addOption(private$..width)
+            self$.addOption(private$..height)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -115,7 +133,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         reg = function() private$..reg$value,
         par2 = function() private$..par2$value,
         par3 = function() private$..par3$value,
-        fit1 = function() private$..fit1$value),
+        fit1 = function() private$..fit1$value,
+        plot = function() private$..plot$value,
+        width = function() private$..width$value,
+        height = function() private$..height$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -126,7 +147,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..reg = NA,
         ..par2 = NA,
         ..par3 = NA,
-        ..fit1 = NA)
+        ..fit1 = NA,
+        ..plot = NA,
+        ..width = NA,
+        ..height = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -136,6 +160,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         fit1 = function() private$.items[["fit1"]],
         reg = function() private$.items[["reg"]],
+        plot = function() private$.items[["plot"]],
         text3 = function() private$.items[["text3"]],
         text4 = function() private$.items[["text4"]]),
     private = list(),
@@ -240,6 +265,22 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Covariate Effects Plot",
+                renderFun=".plot",
+                visible="(plot)",
+                requiresData=TRUE,
+                clearWith=list(
+                    "factors",
+                    "covs",
+                    "nc",
+                    "method",
+                    "impu",
+                    "regform",
+                    "width",
+                    "height")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
@@ -285,11 +326,15 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param par2 .
 #' @param par3 .
 #' @param fit1 .
+#' @param plot .
+#' @param width .
+#' @param height .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
@@ -313,7 +358,10 @@ lta <- function(
     reg = FALSE,
     par2 = FALSE,
     par3 = FALSE,
-    fit1 = FALSE) {
+    fit1 = FALSE,
+    plot = FALSE,
+    width = 500,
+    height = 500) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -335,7 +383,10 @@ lta <- function(
         reg = reg,
         par2 = par2,
         par3 = par3,
-        fit1 = fit1)
+        fit1 = fit1,
+        plot = plot,
+        width = width,
+        height = height)
 
     analysis <- ltaClass$new(
         options = options,

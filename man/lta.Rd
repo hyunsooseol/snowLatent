@@ -15,7 +15,10 @@ lta(
   reg = FALSE,
   par2 = FALSE,
   par3 = FALSE,
-  fit1 = FALSE
+  fit1 = FALSE,
+  plot = FALSE,
+  width = 500,
+  height = 500
 )
 }
 \arguments{
@@ -41,6 +44,12 @@ of the factor and the \code{vars} that belong to that factor}
 \item{par3}{.}
 
 \item{fit1}{.}
+
+\item{plot}{.}
+
+\item{width}{.}
+
+\item{height}{.}
 }
 \value{
 A results object containing:
@@ -48,6 +57,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 }

@@ -125,6 +125,22 @@ items:
           type: number
           format: zto,pvalue
 
+    - name:  plot
+      title: 'Covariate Effects Plot'
+      type:  Image
+      renderFun: .plot
+      visible: (plot)
+      requiresData: true
+      clearWith:
+        - factors
+        - covs
+        - nc
+        - method
+        - impu
+        - regform
+        - width
+        - height
+
     # - name: member
     #   title: 'Class membership'
     #   type: Output
