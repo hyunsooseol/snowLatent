@@ -28,6 +28,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<li><b>PI</b>: Class prevalences.</li>',
             '<li><b>TAU</b>: Transition probabilities.</li>',
             '<li><b>RHO</b>: Item response probabilities.</li>',
+            '<li>Minor discrepancies between p-values and 95% CIs may occur due to Wald approximation errors.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
           )

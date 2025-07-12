@@ -36,6 +36,7 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<li>The <b>slca::regress()</b> function is used to explore the influence of external variables on the latent class variable within an estimated <b>slca</b> model.</li>',
             '<li>Model specifications are described in the <a href="https://kim0sun.github.io/slca/" target = "_blank">page</a>.</li>',
             '<li><b>L[k]</b>: <b>k</b> denotes the number of latent classes for the latent variable <b>L</b>.</li>',
+            '<li>Minor discrepancies between p-values and 95% CIs may occur due to Wald approximation errors.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
           )
@@ -46,7 +47,7 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$reg)
           self$results$reg$setNote("Note",
                                    "It utilizes logistic regression and employs a three-step approach.")
-      
+
         if(isTRUE(self$options$plot)){
           width <- self$options$width
           height <- self$options$height
