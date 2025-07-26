@@ -37,6 +37,7 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<li>Model specifications are described in the <a href="https://kim0sun.github.io/slca/" target = "_blank">page</a>.</li>',
             '<li><b>L[k]</b>: <b>k</b> denotes the number of latent classes for the latent variable <b>L</b>.</li>',
             '<li>Minor discrepancies between p-values and 95% CIs may occur due to Wald approximation errors.</li>',
+            '<li>If a respondent leaves all items unanswered (all missing values), the membership and posterior results for that case may not be meaningful. Please check your data and remove or handle such cases if necessary.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
           )
@@ -103,6 +104,7 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+
         # Use cached data if available
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data

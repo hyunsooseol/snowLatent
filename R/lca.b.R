@@ -209,25 +209,26 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         pos <- private$.modelCache$posterior$ALL
         
         if (isTRUE(self$options$member)) {
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
           mem <- as.numeric(factor(apply(pos, 1, which.max)))
-          mem <- as.factor(mem)
+          mem_vec <- rep(NA, n_row)
+          mem_vec[not_na_idx] <- as.factor(mem)
           
           if (self$options$member && self$results$member$isNotFilled()) {
-            
             self$results$member$setRowNums(rownames(self$data))
-            self$results$member$setValues(mem)
-            
+            self$results$member$setValues(mem_vec)
           }
         }
         
         if (isTRUE(self$options$post)) {
+          n_row <- nrow(self$data)
+          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
           if (self$options$post && self$results$post$isNotFilled()) {
             keys <- 1:self$options$nc
             measureTypes <- rep("continuous", self$options$nc)
-            
             titles <- paste("Class", keys)
             descriptions <- paste("Class", keys)
-            
             self$results$post$set(
               keys = keys,
               titles = titles,
@@ -235,13 +236,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               measureTypes = measureTypes
             )
             self$results$post$setRowNums(rownames(self$data))
-            
             for (i in 1:self$options$nc) {
-              scores <- as.numeric(pos[, i])
+              scores <- rep(NA, n_row)
+              scores[not_na_idx] <- as.numeric(pos[, i])
               self$results$post$setValues(index = i, scores)
             }
           }
         }
+        
       },
       
       .computeModelComparison = function() {
