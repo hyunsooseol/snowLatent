@@ -252,6 +252,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         instructions = function() private$.items[["instructions"]],
+        progressBarHTML = function() private$.items[["progressBarHTML"]],
         text = function() private$.items[["text"]],
         fit = function() private$.items[["fit"]],
         comp1 = function() private$.items[["comp1"]],
@@ -281,6 +282,11 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="instructions",
                 title="Instructions",
                 visible=TRUE))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="progressBarHTML",
+                title=" ",
+                visible=FALSE))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -718,6 +724,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$progressBarHTML} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr

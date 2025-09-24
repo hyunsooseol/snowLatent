@@ -11,9 +11,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
         
+        # --- Progress bar: show & init
+        self$results$progressBarHTML$setVisible(TRUE)
+        self$results$progressBarHTML$setContent(progressBarH(0, 100, 'Initializing analysis...'))
+        
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
         }
+        
+        # 5%
+        self$results$progressBarHTML$setContent(progressBarH(5, 100, 'Setting up UI...'))
         
         self$results$instructions$setContent(private$.htmlwidget$generate_accordion(
           title = "Instructions",
@@ -55,27 +62,56 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           height <- self$options$height2
           self$results$plot3$setSize(width, height)
         }
+        
+        # 10%
+        self$results$progressBarHTML$setContent(progressBarH(10, 100, 'Ready to start analysis...'))
       },
       
       .run = function() {
-        if (is.null(self$options$group) || is.null(self$options$vars) ||
-            length(self$options$vars) < 3) return()
+        # 15%
+        self$results$progressBarHTML$setContent(progressBarH(15, 100, 'Starting analysis...'))
         
+        # 입력 확인(조기 종료 시에도 바 숨김)
+        if (is.null(self$options$group) || is.null(self$options$vars) ||
+            length(self$options$vars) < 3) {
+          self$results$progressBarHTML$setVisible(FALSE)
+          return()
+        }
+        
+        # 데이터 캐시 준비
         if (is.null(private$.dataCache)) {
+          # 20%
+          self$results$progressBarHTML$setContent(progressBarH(20, 100, 'Preparing data...'))
           private$.dataCache <- private$.cleanData()
         }
         data <- private$.dataCache
         
-        if (is.null(private$.cache$lca))
+        # LCA 적합
+        if (is.null(private$.cache$lca)) {
+          # 35%
+          self$results$progressBarHTML$setContent(progressBarH(35, 100, 'Fitting base LCA model...'))
           private$.cache$lca <- private$.computeLCA()
-        if (is.null(private$.cache$clu))
+        }
+        # 클러스터 비교
+        if (is.null(private$.cache$clu)) {
+          # 50%
+          self$results$progressBarHTML$setContent(progressBarH(50, 100, 'Evaluating cluster solutions...'))
           private$.cache$clu <- private$.computeCLUST()
-        if (is.null(private$.cache$inv))
+        }
+        # 공변량/불변성(있을 때만)
+        if (is.null(private$.cache$inv)) {
+          # 60%
+          self$results$progressBarHTML$setContent(progressBarH(60, 100, 'Computing covariate/invariance (if requested)...'))
           private$.cache$inv <- private$.computeINV()
+        }
         
         lca <- private$.cache$lca
         clu <- private$.cache$clu
         inv <- private$.cache$inv
+        
+        # 70%
+        self$results$progressBarHTML$setContent(progressBarH(70, 100, 'Populating outputs...'))
+        
         self$results$text$setContent(lca)
         
         if (isTRUE(self$options$co)) {
@@ -146,12 +182,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$cla)) {
           table <- self$results$cla
-          
           cla <- tryCatch({
             colMeans(do.call(rbind, lca[["posterior"]][["class"]]))
-          }, error = function(e) {
-            NULL
-          })
+          }, error = function(e) NULL)
           
           if (!is.null(cla)) {
             cla <- as.data.frame(cla)
@@ -166,25 +199,19 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$cross)) {
           table <- self$results$cross
-          
           cross <- tryCatch({
             as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
-          }, error = function(e) {
-            NULL
-          })
+          }, error = function(e) NULL)
           
           if (!is.null(cross)) {
             names <- dimnames(cross)[[1]]
             dims <- dimnames(cross)[[2]]
-            
             for (dim in dims) {
               table$addColumn(name = paste0(dim), type = 'character')
             }
             for (name in names) {
               row <- list()
-              for (j in seq_along(dims)) {
-                row[[dims[j]]] <- cross[name, j]
-              }
+              for (j in seq_along(dims)) row[[dims[j]]] <- cross[name, j]
               table$addRow(rowKey = name, values = row)
             }
           }
@@ -192,17 +219,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$mpc)) {
           table <- self$results$mpc
-          
-          mpc <- tryCatch({
-            colMeans(lca$posterior$cluster)
-          }, error = function(e) {
-            NULL
-          })
-          
+          mpc <- tryCatch({ colMeans(lca$posterior$cluster) }, error = function(e) NULL)
           if (!is.null(mpc)) {
             mpc <- as.data.frame(mpc)
             names <- dimnames(mpc)[[1]]
-            
             for (name in names) {
               row <- list()
               row[['value']] <- mpc[name, 1]
@@ -213,33 +233,30 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$cpc)) {
           table <- self$results$cpc
-          
           cpc <- tryCatch({
             lca$posterior$wclass
           }, error = function(e) {
             tryCatch({
               as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
-            }, error = function(e) {
-              NULL
-            })
+            }, error = function(e) NULL)
           })
           
           if (!is.null(cpc)) {
             names <- dimnames(cpc)[[1]]
             dims <- dimnames(cpc)[[2]]
-            
             for (dim in dims) {
               table$addColumn(name = paste0(dim), type = 'character')
             }
             for (name in names) {
               row <- list()
-              for (j in seq_along(dims)) {
-                row[[dims[j]]] <- cpc[name, j]
-              }
+              for (j in seq_along(dims)) row[[dims[j]]] <- cpc[name, j]
               table$addRow(rowKey = name, values = row)
             }
           }
         }
+        
+        # 80%
+        self$results$progressBarHTML$setContent(progressBarH(80, 100, 'Preparing plots...'))
         
         # Elbow 
         if (self$options$nclust > 2 && isTRUE(self$options$plot3)) {
@@ -247,25 +264,16 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           cla <- c(2:self$options$nclust)
           out1 <- data.frame(out1, cla)
           colnames(out1) <- c('AIC', 'BIC', 'Cluster')
-          elbow <- reshape2::melt(
-            out1,
-            id.vars = 'Cluster',
-            variable.name = "Fit",
-            value.name = 'Value'
-          )
+          elbow <- reshape2::melt(out1, id.vars = 'Cluster', variable.name = "Fit", value.name = 'Value')
           image2 <- self$results$plot3
           image2$setState(elbow)
         }
         
         if (isTRUE(self$options$gof) && !is.null(self$options$covs)) {
-          
           table <- self$results$gof
-          
           if (!is.null(inv$ci.g)) {
             g <- as.data.frame(inv$ci.g)
-            ro <- rownames(g)
-            ro <- ro[ro != "1"] 
-            
+            ro <- rownames(g); ro <- ro[ro != "1"]
             for (name in ro) {
               table$addRow(
                 rowKey = name,
@@ -286,9 +294,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           table <- self$results$ci
           if (!is.null(inv$ci.d)) {
             d <- as.data.frame(inv$ci.d)
-            ro <- rownames(d)
-            ro <- ro[ro != "1"] 
-            
+            ro <- rownames(d); ro <- ro[ro != "1"]
             for (name in ro) {
               table$addRow(rowKey = name,
                            values = list(
@@ -310,15 +316,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           table <- self$results$cn
           names <- dimnames(m)[[1]]
           dims <- dimnames(m)[[2]]
-          
-          for (dim in dims) {
-            table$addColumn(name = paste0(dim), type = 'number')
-          }
+          for (dim in dims) table$addColumn(name = paste0(dim), type = 'number')
           for (name in names) {
             row <- list()
-            for (j in seq_along(dims)) {
-              row[[dims[j]]] <- m[name, j]
-            }
+            for (j in seq_along(dims)) row[[dims[j]]] <- m[name, j]
             table$addRow(rowKey = name, values = row)
           }
         }
@@ -333,17 +334,14 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$item)) {
           tables <- self$results$item
-          
           itemprob <- lca$param$rho
           vars <- self$options$vars
           
           for (i in seq_along(vars)) {
             item <- itemprob[[vars[i]]]
-            
             table <- tables[[i]]
             names <- row.names(item)
             dims <- colnames(item)
-            
             for (dim in dims) {
               table$addColumn(name = paste0(dim),
                               type = 'text',
@@ -351,15 +349,20 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             }
             for (name in names) {
               row <- list()
-              for (j in seq_along(dims)) {
-                row[[dims[j]]] <- item[name, j]
-              }
+              for (j in seq_along(dims)) row[[dims[j]]] <- item[name, j]
               table$addRow(rowKey = name, values = row)
             }
           }
         }
         
+        # 95%
+        self$results$progressBarHTML$setContent(progressBarH(95, 100, 'Finalizing...'))
+        
         gc()
+        
+        # 100% & hide
+        self$results$progressBarHTML$setContent(progressBarH(100, 100, 'Done'))
+        self$results$progressBarHTML$setVisible(FALSE)
       },
       
       .plot1 = function(image, ...) {
@@ -605,3 +608,26 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       }
     )
   )
+
+# --- Progress Bar HTML helper (global) ---
+progressBarH <- function(progress = 0, total = 100, message = '') {
+  progress <- max(0, min(progress, total))  # clamp
+  percentage <- round(progress / total * 100)
+  width <- 400 * percentage / 100
+  
+  html <- paste0(
+    '<div style="text-align: center; padding: 20px;">',
+    '<div style="width: 400px; height: 20px; border: 1px solid #ccc; ',
+    'background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
+    '<div style="width: ', width, 'px; height: 18px; ',
+    'background-color: #999999; border-radius: 3px; ',
+    'transition: width 0.3s ease;"></div>',
+    '</div>',
+    '<div style="margin-top: 8px; font-size: 12px; color: #666;">',
+    message, ' (', percentage, '%)</div>',
+    '</div>'
+  )
+  
+  return(html)
+}
+

@@ -10,6 +10,11 @@ items:
       type: Html
       visible: True
       
+    - name: progressBarHTML
+      title: ' '
+      type: Html
+      visible: false
+
     - name:  text
       title: 'Model information'
       type:  Preformatted
