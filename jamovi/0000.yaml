@@ -12,6 +12,10 @@ description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA,
   Latent Transition Analysis, LCA/LPA 3-step approach, and also provides various
   types of profile plots.
+  
+  Please submit feedback, bug reports, and feature requests via the links
+  provided <a href = "https://github.com/hyunsooseol/snowLatent/issues" target="_blank">
+  here</a>.
 analyses:
   - title: Latent Class Analysis
     name: lca
