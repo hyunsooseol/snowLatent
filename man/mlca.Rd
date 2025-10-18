@@ -97,6 +97,7 @@ where 0 degrees represents completely horizontal labels.}
 A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
+  \code{results$progressBarHTML} \tab \tab \tab \tab \tab a html \cr
   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$fit} \tab \tab \tab \tab \tab a table \cr
   \code{results$comp1} \tab \tab \tab \tab \tab a table \cr
