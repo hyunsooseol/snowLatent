@@ -35,6 +35,11 @@ options:
       type: Bool 
       default: TRUE
 
+    - name: me
+      title: Mean
+      type: Bool 
+      default: TRUE
+
     - name: angle
       title: Angle of x-axis labels
       type: Number

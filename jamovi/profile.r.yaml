@@ -46,6 +46,7 @@ items:
             - vars
             - group
             - angle
+            - me
             - width1
             - height1
 ...

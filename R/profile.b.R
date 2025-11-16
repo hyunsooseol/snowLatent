@@ -136,37 +136,44 @@ profileClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             print(plot1)
             TRUE
         },
-        
-    .plot2 = function(image2,ggtheme, theme,...) {
-          
-          if (is.null(image2$state))
-            return(FALSE)
-          
-          # pre <- image2$state[[1]]
-          # tar <- image2$state[[2]]
-          # pre <- image2$state[[1]]
-          # tar <- as.factor(image2$state[[2]])
-          # plot2<- caret::featurePlot(pre, tar, "box")
-          
-          d <- image2$state
-          
-          plot2 <- ggplot2::ggplot(d, 
-                                   ggplot2::aes(x=Group, 
-                                                y=Value, 
-                                                color=Group))+  
-            ggplot2::geom_boxplot()+ 
-            ggplot2::facet_wrap(~Variable)+
-            ggtheme
-          
-          if (self$options$angle > 0) {
-            plot2 <- plot2 + ggplot2::theme(
-              axis.text.x = ggplot2::element_text(
-                angle = self$options$angle, hjust = 1
-              )
-            )
-          }
-          print(plot2)
-          TRUE
-        }
+
+    .plot2 = function(image2, ggtheme, theme, ...) {
+      
+      if (is.null(image2$state))
+        return(FALSE)
+      
+      d <- image2$state
+      
+      plot2 <- ggplot2::ggplot(d, 
+                               ggplot2::aes(x = Group, 
+                                            y = Value, 
+                                            color = Group)) +  
+        ggplot2::geom_boxplot() + 
+        ggplot2::facet_wrap(~Variable) +
+        ggtheme
+      
+      # me 옵션이 TRUE일 때만 평균값 표시
+      if (isTRUE(self$options$me)) {
+        plot2 <- plot2 + 
+          ggplot2::stat_summary(fun = mean, 
+                                geom = "point", 
+                                shape = 23,  # 다이아몬드 모양
+                                size = 3, 
+                                fill = "red",
+                                color = "red")
+      }
+      
+      if (self$options$angle > 0) {
+        plot2 <- plot2 + ggplot2::theme(
+          axis.text.x = ggplot2::element_text(
+            angle = self$options$angle, hjust = 1
+          )
         )
+      }
+      
+      print(plot2)
+      TRUE
+    } 
+            
+  )
 )

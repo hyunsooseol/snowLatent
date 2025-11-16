@@ -9,6 +9,7 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             group = NULL,
             mc = TRUE,
+            me = TRUE,
             angle = 0,
             plot1 = FALSE,
             plot2 = FALSE,
@@ -44,6 +45,10 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "mc",
                 mc,
                 default=TRUE)
+            private$..me <- jmvcore::OptionBool$new(
+                "me",
+                me,
+                default=TRUE)
             private$..angle <- jmvcore::OptionNumber$new(
                 "angle",
                 angle,
@@ -78,6 +83,7 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..group)
             self$.addOption(private$..mc)
+            self$.addOption(private$..me)
             self$.addOption(private$..angle)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
@@ -90,6 +96,7 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         group = function() private$..group$value,
         mc = function() private$..mc$value,
+        me = function() private$..me$value,
         angle = function() private$..angle$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
@@ -101,6 +108,7 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..vars = NA,
         ..group = NA,
         ..mc = NA,
+        ..me = NA,
         ..angle = NA,
         ..plot1 = NA,
         ..plot2 = NA,
@@ -168,6 +176,7 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "group",
                     "angle",
+                    "me",
                     "width1",
                     "height1")))}))
 
@@ -199,6 +208,7 @@ profileBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param group .
 #' @param mc .
+#' @param me .
 #' @param angle a number from 0 to 90 defining the angle of the x-axis labels,
 #'   where 0 degrees represents completely horizontal labels.
 #' @param plot1 .
@@ -227,6 +237,7 @@ profile <- function(
     vars,
     group,
     mc = TRUE,
+    me = TRUE,
     angle = 0,
     plot1 = FALSE,
     plot2 = FALSE,
@@ -252,6 +263,7 @@ profile <- function(
         vars = vars,
         group = group,
         mc = mc,
+        me = me,
         angle = angle,
         plot1 = plot1,
         plot2 = plot2,

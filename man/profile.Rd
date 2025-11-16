@@ -9,6 +9,7 @@ profile(
   vars,
   group,
   mc = TRUE,
+  me = TRUE,
   angle = 0,
   plot1 = FALSE,
   plot2 = FALSE,
@@ -26,6 +27,8 @@ profile(
 \item{group}{.}
 
 \item{mc}{.}
+
+\item{me}{.}
 
 \item{angle}{a number from 0 to 90 defining the angle of the x-axis labels,
 where 0 degrees represents completely horizontal labels.}
