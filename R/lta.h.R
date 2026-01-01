@@ -19,7 +19,15 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fit1 = FALSE,
             plot = FALSE,
             width = 500,
-            height = 500, ...) {
+            height = 500,
+            plot1 = FALSE,
+            plot2 = FALSE,
+            width1 = 500,
+            height1 = 500,
+            width2 = 500,
+            height2 = 500,
+            tau = FALSE,
+            stayer = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -108,6 +116,38 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "height",
                 height,
                 default=500)
+            private$..plot1 <- jmvcore::OptionBool$new(
+                "plot1",
+                plot1,
+                default=FALSE)
+            private$..plot2 <- jmvcore::OptionBool$new(
+                "plot2",
+                plot2,
+                default=FALSE)
+            private$..width1 <- jmvcore::OptionInteger$new(
+                "width1",
+                width1,
+                default=500)
+            private$..height1 <- jmvcore::OptionInteger$new(
+                "height1",
+                height1,
+                default=500)
+            private$..width2 <- jmvcore::OptionInteger$new(
+                "width2",
+                width2,
+                default=500)
+            private$..height2 <- jmvcore::OptionInteger$new(
+                "height2",
+                height2,
+                default=500)
+            private$..tau <- jmvcore::OptionBool$new(
+                "tau",
+                tau,
+                default=FALSE)
+            private$..stayer <- jmvcore::OptionBool$new(
+                "stayer",
+                stayer,
+                default=FALSE)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -122,6 +162,14 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot)
             self$.addOption(private$..width)
             self$.addOption(private$..height)
+            self$.addOption(private$..plot1)
+            self$.addOption(private$..plot2)
+            self$.addOption(private$..width1)
+            self$.addOption(private$..height1)
+            self$.addOption(private$..width2)
+            self$.addOption(private$..height2)
+            self$.addOption(private$..tau)
+            self$.addOption(private$..stayer)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -136,7 +184,15 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit1 = function() private$..fit1$value,
         plot = function() private$..plot$value,
         width = function() private$..width$value,
-        height = function() private$..height$value),
+        height = function() private$..height$value,
+        plot1 = function() private$..plot1$value,
+        plot2 = function() private$..plot2$value,
+        width1 = function() private$..width1$value,
+        height1 = function() private$..height1$value,
+        width2 = function() private$..width2$value,
+        height2 = function() private$..height2$value,
+        tau = function() private$..tau$value,
+        stayer = function() private$..stayer$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -150,7 +206,15 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fit1 = NA,
         ..plot = NA,
         ..width = NA,
-        ..height = NA)
+        ..height = NA,
+        ..plot1 = NA,
+        ..plot2 = NA,
+        ..width1 = NA,
+        ..height1 = NA,
+        ..width2 = NA,
+        ..height2 = NA,
+        ..tau = NA,
+        ..stayer = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -161,8 +225,12 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit1 = function() private$.items[["fit1"]],
         reg = function() private$.items[["reg"]],
         plot = function() private$.items[["plot"]],
+        plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]],
         text3 = function() private$.items[["text3"]],
-        text4 = function() private$.items[["text4"]]),
+        text4 = function() private$.items[["text4"]],
+        tau = function() private$.items[["tau"]],
+        stay = function() private$.items[["stay"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -268,7 +336,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="Covariate Effects Plot",
+                title="Covariate effects plot",
                 renderFun=".plot",
                 visible="(plot)",
                 requiresData=TRUE,
@@ -281,6 +349,32 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "regform",
                     "width",
                     "height")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot1",
+                title="Transition plot(Non-invariant)",
+                renderFun=".plot1",
+                visible="(plot1)",
+                requiresData=TRUE,
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "width1",
+                    "height1")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot2",
+                title="Transition plot(Invariant)",
+                renderFun=".plot2",
+                visible="(plot2)",
+                requiresData=TRUE,
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "width2",
+                    "height2")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
@@ -288,7 +382,66 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
-                title="LTA with measurement invariance"))}))
+                title="LTA with measurement invariance"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="tau",
+                title="Transition probabilities",
+                visible="(tau)",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="model", 
+                        `title`="Model", 
+                        `type`="text"),
+                    list(
+                        `name`="transition", 
+                        `title`="Transition", 
+                        `type`="text"),
+                    list(
+                        `name`="from", 
+                        `title`="From", 
+                        `type`="text"),
+                    list(
+                        `name`="to", 
+                        `title`="To", 
+                        `type`="text"),
+                    list(
+                        `name`="prob", 
+                        `title`="Prob", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="stay",
+                title="Classification stability (Mean diagonal of transition matrix)",
+                visible="(stayer)",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="model", 
+                        `title`="Model", 
+                        `type`="text"),
+                    list(
+                        `name`="transition", 
+                        `title`="Transition", 
+                        `type`="text"),
+                    list(
+                        `name`="stayer", 
+                        `title`="Average stay probability", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="mover", 
+                        `title`="Average switching probability", 
+                        `type`="number", 
+                        `format`="zto"))))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -329,14 +482,26 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot .
 #' @param width .
 #' @param height .
+#' @param plot1 .
+#' @param plot2 .
+#' @param width1 .
+#' @param height1 .
+#' @param width2 .
+#' @param height2 .
+#' @param tau .
+#' @param stayer .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$tau} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$stay} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -361,7 +526,15 @@ lta <- function(
     fit1 = FALSE,
     plot = FALSE,
     width = 500,
-    height = 500) {
+    height = 500,
+    plot1 = FALSE,
+    plot2 = FALSE,
+    width1 = 500,
+    height1 = 500,
+    width2 = 500,
+    height2 = 500,
+    tau = FALSE,
+    stayer = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -386,7 +559,15 @@ lta <- function(
         fit1 = fit1,
         plot = plot,
         width = width,
-        height = height)
+        height = height,
+        plot1 = plot1,
+        plot2 = plot2,
+        width1 = width1,
+        height1 = height1,
+        width2 = width2,
+        height2 = height2,
+        tau = tau,
+        stayer = stayer)
 
     analysis <- ltaClass$new(
         options = options,

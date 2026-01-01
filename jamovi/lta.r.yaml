@@ -9,46 +9,6 @@ items:
       type: Html
       visible: True
 
-    # - name: post
-    #   title: 'Posterior probabilities'
-    #   type: Output
-    #   measureType: continuous
-    #   clearWith:
-    #     - factors
-    #     - vars
-    #     - nc
-    # 
-    # - name: fit
-    #   title: 'Goodness of fit'
-    #   type: Table
-    #   rows: 1
-    #   visible: (fit)
-    #   refs: slca 
-    #   clearWith:
-    #     - factors
-    #     - vars
-    #     - nc
-    # 
-    #   columns:
-    #     - name: class
-    #       title: Class
-    #       type: integer
-    #     - name: df
-    #       title: df
-    #       type: number
-    #     - name: loglik
-    #       title: Log-likelihood
-    #       type: number
-    #     - name: aic
-    #       title: AIC
-    #       type: number
-    #     - name: bic
-    #       title: BIC 
-    #       type: number
-    #     - name: gsq
-    #       title: G² 
-    #       type: number
-
     - name: fit1
       title: 'Testing for measurement invariance '
       type: Table
@@ -126,7 +86,7 @@ items:
           format: zto,pvalue
 
     - name:  plot
-      title: 'Covariate Effects Plot'
+      title: 'Covariate effects plot'
       type:  Image
       renderFun: .plot
       visible: (plot)
@@ -141,20 +101,31 @@ items:
         - width
         - height
 
-    # - name: member
-    #   title: 'Class membership'
-    #   type: Output
-    #   measureType: nominal
-    #   varTitle: Membership
-    #   clearWith:
-    #     - factors
-    #     - vars
-    #     - nc
-    # 
-    # - name:  text1
-    #   title: 'LCA: Estimated parameters(Only one latent class variable)'
-    #   type:  Preformatted
-    #   refs: slca
+    - name:  plot1
+      title: 'Transition plot(Non-invariant)'
+      type:  Image
+      renderFun: .plot1
+      visible: (plot1)
+      requiresData: true
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - width1
+        - height1
+
+    - name:  plot2
+      title: 'Transition plot(Invariant)'
+      type:  Image
+      renderFun: .plot2
+      visible: (plot2)
+      requiresData: true
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - width2
+        - height2
 
     - name:  text3
       title: 'LTA with non-invariant model'
@@ -163,5 +134,55 @@ items:
     - name:  text4
       title: 'LTA with measurement invariance'
       type:  Preformatted
+
+    - name: tau
+      title: 'Transition probabilities'
+      type: Table
+      visible: (tau)
+      clearWith:
+        - factors
+        - vars
+        - nc
+      columns:
+        - name: model
+          title: Model
+          type: text
+        - name: transition
+          title: Transition
+          type: text
+        - name: from
+          title: From
+          type: text
+        - name: to
+          title: To
+          type: text
+        - name: prob
+          title: Prob
+          type: number
+          format: zto
+
+    - name: stay
+      title: 'Classification stability (Mean diagonal of transition matrix)'
+      type: Table
+      visible: (stayer)
+      clearWith:
+        - factors
+        - vars
+        - nc
+      columns:
+        - name: model
+          title: Model
+          type: text
+        - name: transition
+          title: Transition
+          type: text
+        - name: stayer
+          title: Average stay probability
+          type: number
+          format: zto
+        - name: mover
+          title: Average switching probability
+          type: number
+          format: zto
 
 ...

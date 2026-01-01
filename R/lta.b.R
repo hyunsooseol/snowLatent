@@ -42,13 +42,23 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$reg)
           self$results$reg$setNote("Note",
                                    "It utilizes logistic regression and employs a three-step approach.")
-      
+        
         if(isTRUE(self$options$plot)){
           width <- self$options$width
           height <- self$options$height
           self$results$plot$setSize(width, height)
         }
-        },
+        if(isTRUE(self$options$plot1)){
+          width <- self$options$width1
+          height <- self$options$height1
+          self$results$plot1$setSize(width, height)
+        }
+        if(isTRUE(self$options$plot2)){
+          width <- self$options$width2
+          height <- self$options$height2
+          self$results$plot2$setSize(width, height)
+        }
+      },
       
       .run = function() {
         
@@ -61,86 +71,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         nfactors <- length(factors)
         
         if (length(factors[[1]]$vars) < 2) return()
-        
-        # if (nfactors == 1) {
-        #   vars <- factors[[1]][["vars"]]
-        #   factors <- factors[[1]]$label  # L1[2]
-        #   
-        #   number <- gsub(".*\\[(\\d+)\\].*", "\\1", factors)
-        #   nc <- as.integer(number)
-        #   
-        #   vars <- vapply(vars, function(x)
-        #     jmvcore::composeTerm(x), '')
-        #   ind <- paste0(vars, collapse = '+')
-        #   formula <- as.formula(paste0(factors, ' ~ ', ind))
-        #   
-        #   library(magrittr)
-        #   set.seed(1234)
-        #   obj <- slca::slca(formula) %>%
-        #     slca::estimate(data = data)
-        #   
-        #   par <- slca::param(obj)
-        #   
-        #   f <- sub("\\[.*?\\]", "", factors)   # L1[2]-> L1
-        #   pos <- obj[["posterior"]][["marginal"]][[f]]
-        #   
-        #   mem <- as.numeric(factor(apply(pos, 1, which.max)))
-        #   mem <- as.factor(mem)
-        #   
-        #   if (isTRUE(self$options$member)) {
-        #     if (self$options$member
-        #         && self$results$member$isNotFilled()) {
-        #       
-        #       self$results$member$setRowNums(rownames(self$data))
-        #       self$results$member$setValues(mem)
-        #       
-        #     }
-        #   }
-        #   
-        #   if (isTRUE(self$options$post)) {
-        #     if (self$options$post
-        #         && self$results$post$isNotFilled()) {
-        #       keys <- 1:nc
-        #       measureTypes <- rep("continuous", nc)
-        #       
-        #       titles <- paste("Class", keys)
-        #       descriptions <- paste("Class", keys)
-        #       
-        #       self$results$post$set(
-        #         keys = keys,
-        #         titles = titles,
-        #         descriptions = descriptions,
-        #         measureTypes = measureTypes
-        #       )
-        #       
-        #       self$results$post$setRowNums(rownames(self$data))
-        #       
-        #       for (i in 1:nc) {
-        #         scores <- as.numeric(pos[, i])
-        #         self$results$post$setValues(index = i, scores)
-        #       }
-        #     }
-        #   }
-        #   
-        #   if (isTRUE(self$options$par)) {
-        #     self$results$text1$setContent(par)
-        #   }
-        #   
-        #   if (isTRUE(self$options$fit)) {
-        #     gof <- slca::gof(obj)
-        #     self$results$fit$setRow(
-        #       rowNo = 1,
-        #       values = list(
-        #         class   = nc,
-        #         df      = gof$Df,
-        #         loglik  = gof$logLik,
-        #         aic     = gof$AIC,
-        #         bic     = gof$BIC,
-        #         gsq     = gof$Gsq
-        #       )
-        #     )
-        #   }
-        # }
         
         if (nfactors > 1) {
           formulas <- list()
@@ -174,6 +104,70 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           sequential_relations <- create_sequential_relations(formulas)
           form1 <- c(formulas, sequential_relations)
+          
+          # ---- helper: latent labels + step labels (L1→L2, ...)
+          .get_latent_names <- function(factors) {
+            labs <- vapply(factors, function(f) f[["label"]], "")
+            # "L1[2]" -> "L1"
+            labs <- sub("\\[.*?\\]", "", labs)
+            labs
+          }
+          .make_step_labels <- function(latent_names) {
+            if (length(latent_names) < 2)
+              return(character())
+            paste0(latent_names[-length(latent_names)], "\u2192", latent_names[-1])  # →
+          }
+          
+          latent_names <- .get_latent_names(factors)
+          step_labels <- .make_step_labels(latent_names)
+          
+          # ---- helper: tau(list of matrices) -> stayer/mover summary
+          # NOTE: stayer is a "rate" computed as mean(diag(tau)) = sum(diag)/K
+          # so that mover = 1 - stayer is always valid (0~1)
+          .tau_diag_summary <- function(lta_obj, step_labels, model_label) {
+            par <- slca::param(lta_obj)
+            tau <- par$tau
+            if (is.null(tau) || length(tau) == 0)
+              return(NULL)
+            
+            nstep <- length(tau)
+            if (length(step_labels) != nstep)
+              step_labels <- paste0("T", seq_len(nstep), "\u2192T", seq_len(nstep) + 1)
+            
+            out <- vector("list", nstep)
+            
+            for (i in seq_len(nstep)) {
+              m <- tau[[i]]
+              k <- min(nrow(m), ncol(m))
+              diag_sum <- sum(diag(m[seq_len(k), seq_len(k)]), na.rm = TRUE)
+              stayer_rate <- diag_sum / k
+              mover_rate <- 1 - stayer_rate
+              
+              out[[i]] <- data.frame(
+                model = model_label,
+                transition = step_labels[i],
+                stayer = stayer_rate,
+                mover = mover_rate,
+                stringsAsFactors = FALSE
+              )
+            }
+            
+            do.call(rbind, out)
+          }
+          
+          # ---- helper: fit obj2 (non-invariant) / obj3 (invariant) cleanly
+          .fit_obj2 <- function() {
+            library(magrittr)
+            set.seed(1234)
+            slca::slca(formula = form1) %>% slca::estimate(data = data)
+          }
+          .fit_obj3 <- function() {
+            cons <- self$options$cons
+            cons1 <- unlist(strsplit(cons, ","))
+            library(magrittr)
+            set.seed(1234)
+            slca::slca(formula = form1, constraints = cons1) %>% slca::estimate(data = data)
+          }
           
           if (isTRUE(self$options$par2)) {
             library(magrittr)
@@ -235,6 +229,143 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               )
             }
           }
+          
+          # -------------------------------------------------
+          # Transition Plot(s) (tau)
+          # plot1 = non-invariant (obj2)  [forced]
+          # plot2 = invariant (obj3)      [forced]
+          # facet: L1→L2, L2→L3 ... auto from latent labels
+          # -------------------------------------------------
+          .tau_to_long <- function(lta_obj, step_labels) {
+            par <- slca::param(lta_obj)
+            tau <- par$tau
+            if (is.null(tau) || length(tau) == 0)
+              return(NULL)
+            
+            nstep <- length(tau)
+            if (length(step_labels) != nstep) {
+              # fallback if mismatch
+              step_labels <- paste0("T", seq_len(nstep), "\u2192T", seq_len(nstep) + 1)
+            }
+            
+            out <- vector("list", nstep)
+            for (i in seq_len(nstep)) {
+              tau_mat <- tau[[i]]
+              # tau matrix: rows = child (next), cols = parent (prev)
+              tmp <- as.data.frame(as.table(tau_mat))
+              colnames(tmp) <- c("child", "parent", "prob")
+              
+              tmp$from <- factor(tmp$parent)
+              tmp$to   <- factor(tmp$child)
+              tmp$step <- factor(step_labels[i], levels = step_labels)
+              
+              tmp <- tmp[, c("step", "from", "to", "prob")]
+              out[[i]] <- tmp
+            }
+            do.call(rbind, out)
+          }
+          
+          if (isTRUE(self$options$plot1)) {
+            # 강제: obj2 (non-invariant)
+            obj2_for_plot <- NULL
+            if (exists("obj2")) {
+              obj2_for_plot <- obj2
+            } else {
+              obj2_for_plot <- .fit_obj2()
+            }
+            
+            tau_long <- .tau_to_long(obj2_for_plot, step_labels)
+            if (!is.null(tau_long)) {
+              image <- self$results$plot1
+              image$setState(tau_long)
+            }
+          }
+          
+          if (isTRUE(self$options$plot2)) {
+            # 강제: obj3 (invariant)
+            obj3_for_plot <- NULL
+            if (exists("obj3")) {
+              obj3_for_plot <- obj3
+            } else {
+              obj3_for_plot <- .fit_obj3()
+            }
+            
+            tau_long <- .tau_to_long(obj3_for_plot, step_labels)
+            if (!is.null(tau_long)) {
+              image <- self$results$plot2
+              image$setState(tau_long)
+            }
+          }
+          
+          # -------------------------------------------------
+          # ---- TAU table (new): obj2 + obj3 into one table
+          # columns: model, transition, from, to, prob
+          # -------------------------------------------------
+          if (isTRUE(self$options$tau)) {
+            
+            .fill_tau_table <- function(lta_obj, model_label, step_labels) {
+              tau_long <- .tau_to_long(lta_obj, step_labels)
+              if (is.null(tau_long) || nrow(tau_long) == 0)
+                return()
+              
+              table <- self$results$tau
+              
+              for (i in seq_len(nrow(tau_long))) {
+                row <- tau_long[i, ]
+                rowKey <- paste0(model_label, "_", as.character(row$step), "_", row$from, "_", row$to)
+                
+                table$addRow(
+                  rowKey = rowKey,
+                  values = list(
+                    model      = model_label,
+                    transition = as.character(row$step),
+                    from       = as.character(row$from),
+                    to         = as.character(row$to),
+                    prob       = as.numeric(row$prob)
+                  )
+                )
+              }
+            }
+            
+            # 강제 추정/재사용 (필요할 때만)
+            obj2_for_tau <- if (exists("obj2")) obj2 else .fit_obj2()
+            obj3_for_tau <- if (exists("obj3")) obj3 else .fit_obj3()
+            
+            .fill_tau_table(obj2_for_tau, "Non-invariant (H1)", step_labels)
+            .fill_tau_table(obj3_for_tau, "Invariant (H0)", step_labels)
+          }
+          
+          # -------------------------------------------------
+          # Stayer / Mover summary (diag of TAU)
+          # -------------------------------------------------
+          if (isTRUE(self$options$stayer)) {
+            
+            # obj2 (H1)
+            obj2_for_stay <- if (exists("obj2")) obj2 else .fit_obj2()
+            # obj3 (H0)
+            obj3_for_stay <- if (exists("obj3")) obj3 else .fit_obj3()
+            
+            df_stay <- rbind(
+              .tau_diag_summary(obj2_for_stay, step_labels, "Non-invariant (H1)"),
+              .tau_diag_summary(obj3_for_stay, step_labels, "Invariant (H0)")
+            )
+            
+            if (!is.null(df_stay) && nrow(df_stay) > 0) {
+              tab <- self$results$stay
+              for (i in seq_len(nrow(df_stay))) {
+                tab$addRow(
+                  rowKey = paste0(df_stay$model[i], "_", df_stay$transition[i]),
+                  values = list(
+                    model = df_stay$model[i],
+                    transition = df_stay$transition[i],
+                    stayer = df_stay$stayer[i],
+                    mover = df_stay$mover[i]
+                  )
+                )
+              }
+            }
+          }
+          
         }
         
         if (length(self$options$covs) >= 1) {
@@ -320,7 +451,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 wald = wald,
                 p.value = pval
               )
-
+              
               table <- self$results$reg
               df <- as.data.frame(reg.df)
               for (name in rownames(df)) {
@@ -358,7 +489,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         plot_data$lower <- plot_data$coef - 1.96 * plot_data$std.err
         plot_data$upper <- plot_data$coef + 1.96 * plot_data$std.err
-
+        
         plot <- ggplot2::ggplot(plot_data, ggplot2::aes(x=variable, y=coef, color=class)) +
           ggplot2::geom_point(size=3, position=ggplot2::position_dodge(width=0.7)) +
           ggplot2::geom_errorbar(ggplot2::aes(ymin=lower, ymax=upper),
@@ -372,9 +503,102 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         print(plot)
         TRUE
+      },
+      
+      .plot1 = function(image, ggtheme, theme, ...) {
+        
+        if (is.null(image$state))
+          return(FALSE)
+        
+        tau_long <- image$state
+        tau_long$is_diag <- tau_long$from == tau_long$to
+        
+        p <- ggplot2::ggplot(
+          tau_long,
+          ggplot2::aes(x = to, y = from, fill = prob)
+        ) +
+          ggplot2::geom_tile(color = "grey85", linewidth = 0.4) +
+          ggplot2::geom_text(
+            ggplot2::aes(
+              label = sprintf("%.3f", prob),
+              fontface = ifelse(is_diag, "bold", "plain")
+            ),
+            size = 4
+          ) +
+          ggplot2::scale_fill_viridis_c(
+            option = "C",
+            limits = c(0, 1),
+            name = expression(tau)
+          ) +
+          ggplot2::facet_wrap(~ step, nrow = 1) +
+          ggplot2::labs(
+            title = "Transition Probabilities (Non-invariant)",
+            x = "Latent Class at Next Time",
+            y = "Latent Class at Previous Time"
+          ) +
+          ggplot2::coord_fixed() +
+          ggplot2::theme_minimal(base_size = 13) +
+          ggplot2::theme(
+            plot.title = ggplot2::element_text(face = "bold"),
+            strip.text = ggplot2::element_text(face = "bold"),
+            axis.title = ggplot2::element_text(face = "bold"),
+            panel.grid = ggplot2::element_blank(),
+            legend.position = "right"
+          )
+        
+        print(p)
+        TRUE
+      },
+      
+      .plot2 = function(image, ggtheme, theme, ...) {
+        
+        if (is.null(image$state))
+          return(FALSE)
+        
+        tau_long <- image$state
+        tau_long$is_diag <- tau_long$from == tau_long$to
+        
+        p <- ggplot2::ggplot(
+          tau_long,
+          ggplot2::aes(x = to, y = from, fill = prob)
+        ) +
+          ggplot2::geom_tile(color = "grey85", linewidth = 0.4) +
+          ggplot2::geom_text(
+            ggplot2::aes(
+              label = sprintf("%.3f", prob),
+              fontface = ifelse(is_diag, "bold", "plain")
+            ),
+            size = 4
+          ) +
+          ggplot2::scale_fill_viridis_c(
+            option = "C",
+            limits = c(0, 1),
+            name = expression(tau)
+          ) +
+          ggplot2::facet_wrap(~ step, nrow = 1) +
+          ggplot2::labs(
+            title = "Transition Probabilities (Invariant)",
+            x = "Latent Class at Next Time",
+            y = "Latent Class at Previous Time"
+          ) +
+          ggplot2::coord_fixed() +
+          ggplot2::theme_minimal(base_size = 13) +
+          ggplot2::theme(
+            plot.title = ggplot2::element_text(face = "bold"),
+            strip.text = ggplot2::element_text(face = "bold"),
+            axis.title = ggplot2::element_text(face = "bold"),
+            panel.grid = ggplot2::element_blank(),
+            legend.position = "right"
+          )
+        
+        print(p)
+        TRUE
       }
+      
+      
     )
   )
+
 
 
 

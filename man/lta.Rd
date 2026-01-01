@@ -18,7 +18,15 @@ lta(
   fit1 = FALSE,
   plot = FALSE,
   width = 500,
-  height = 500
+  height = 500,
+  plot1 = FALSE,
+  plot2 = FALSE,
+  width1 = 500,
+  height1 = 500,
+  width2 = 500,
+  height2 = 500,
+  tau = FALSE,
+  stayer = FALSE
 )
 }
 \arguments{
@@ -50,6 +58,22 @@ of the factor and the \code{vars} that belong to that factor}
 \item{width}{.}
 
 \item{height}{.}
+
+\item{plot1}{.}
+
+\item{plot2}{.}
+
+\item{width1}{.}
+
+\item{height1}{.}
+
+\item{width2}{.}
+
+\item{height2}{.}
+
+\item{tau}{.}
+
+\item{stayer}{.}
 }
 \value{
 A results object containing:
@@ -58,8 +82,12 @@ A results object containing:
   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$tau} \tab \tab \tab \tab \tab a table \cr
+  \code{results$stay} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
