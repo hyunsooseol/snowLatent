@@ -75,7 +75,7 @@ children:
         margin: large
         children:
           - type: Label
-            label: 'Transition plot'
+            label: 'Transition plots'
             style: list-inline
             children:
               - type: CheckBox
