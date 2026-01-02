@@ -18,6 +18,7 @@ items:
         - factors
         - vars
         - nc
+        - cons
 
       columns:
         - name: name
@@ -59,6 +60,7 @@ items:
         - method
         - impu
         - regform
+        - cons
 
       columns:
         - name: name
@@ -100,6 +102,7 @@ items:
         - regform
         - width
         - height
+        - cons
 
     - name:  plot1
       title: 'Transition plot(Non-invariant)'
@@ -114,6 +117,7 @@ items:
         - nc
         - width1
         - height1
+        - cons
 
     - name:  plot2
       title: 'Transition plot(Invariant)'
@@ -128,6 +132,7 @@ items:
         - nc
         - width2
         - height2
+        - cons
 
     - name:  text3
       title: 'LTA with non-invariant model'
@@ -146,6 +151,7 @@ items:
         - factors
         - vars
         - nc
+        - cons
       columns:
         - name: model
           title: Model
@@ -173,6 +179,7 @@ items:
         - factors
         - vars
         - nc
+        - cons
       columns:
         - name: model
           title: Model

@@ -253,7 +253,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "factors",
                     "vars",
-                    "nc"),
+                    "nc",
+                    "cons"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -301,7 +302,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "method",
                     "impu",
-                    "regform"),
+                    "regform",
+                    "cons"),
                 columns=list(
                     list(
                         `name`="name", 
@@ -348,7 +350,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "impu",
                     "regform",
                     "width",
-                    "height")))
+                    "height",
+                    "cons")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -362,7 +365,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "width1",
-                    "height1")))
+                    "height1",
+                    "cons")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -376,7 +380,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "width2",
-                    "height2")))
+                    "height2",
+                    "cons")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
@@ -394,7 +399,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "factors",
                     "vars",
-                    "nc"),
+                    "nc",
+                    "cons"),
                 columns=list(
                     list(
                         `name`="model", 
@@ -426,7 +432,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "factors",
                     "vars",
-                    "nc"),
+                    "nc",
+                    "cons"),
                 columns=list(
                     list(
                         `name`="model", 
