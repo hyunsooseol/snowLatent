@@ -243,27 +243,31 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               return(NULL)
             
             nstep <- length(tau)
-            if (length(step_labels) != nstep) {
-              # fallback if mismatch
+            if (length(step_labels) != nstep)
               step_labels <- paste0("T", seq_len(nstep), "\u2192T", seq_len(nstep) + 1)
-            }
             
             out <- vector("list", nstep)
+            
             for (i in seq_len(nstep)) {
               tau_mat <- tau[[i]]
-              # tau matrix: rows = child (next), cols = parent (prev)
               tmp <- as.data.frame(as.table(tau_mat))
               colnames(tmp) <- c("child", "parent", "prob")
               
-              tmp$from <- factor(tmp$parent)
-              tmp$to   <- factor(tmp$child)
-              tmp$step <- factor(step_labels[i], levels = step_labels)
+              # ✅ 핵심: 클래스 순서를 숫자 기준으로 강제
+              k_from <- ncol(tau_mat)
+              k_to   <- nrow(tau_mat)
               
+              tmp$from <- factor(tmp$parent, levels = as.character(seq_len(k_from)))
+              tmp$to   <- factor(tmp$child,  levels = as.character(seq_len(k_to)))
+              
+              tmp$step <- factor(step_labels[i], levels = step_labels)
               tmp <- tmp[, c("step", "from", "to", "prob")]
               out[[i]] <- tmp
             }
+            
             do.call(rbind, out)
           }
+          
           
           if (isTRUE(self$options$plot1)) {
             # 강제: obj2 (non-invariant)
@@ -515,15 +519,15 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         p <- ggplot2::ggplot(
           tau_long,
-          ggplot2::aes(x = to, y = from, fill = prob)
+          ggplot2::aes(x = from, y = to, fill = prob)
         ) +
-          ggplot2::geom_tile(color = "grey85", linewidth = 0.4) +
+          ggplot2::geom_tile(color = "grey85", linewidth = 0.5) +
           ggplot2::geom_text(
             ggplot2::aes(
               label = sprintf("%.3f", prob),
               fontface = ifelse(is_diag, "bold", "plain")
             ),
-            size = 4
+            size = 4.6
           ) +
           ggplot2::scale_fill_viridis_c(
             option = "C",
@@ -533,15 +537,17 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           ggplot2::facet_wrap(~ step, nrow = 1) +
           ggplot2::labs(
             title = "Transition Probabilities (Non-invariant)",
-            x = "Latent Class at Next Time",
-            y = "Latent Class at Previous Time"
+            x = "Latent Class at Previous Time (Parent)",
+            y = "Latent Class at Next Time (Child)"
+            # ❌ Reading guide 문장 제거
           ) +
           ggplot2::coord_fixed() +
-          ggplot2::theme_minimal(base_size = 13) +
+          ggplot2::theme_minimal(base_size = 14) +
           ggplot2::theme(
             plot.title = ggplot2::element_text(face = "bold"),
             strip.text = ggplot2::element_text(face = "bold"),
             axis.title = ggplot2::element_text(face = "bold"),
+            axis.text  = ggplot2::element_text(size = 12),
             panel.grid = ggplot2::element_blank(),
             legend.position = "right"
           )
@@ -549,6 +555,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p)
         TRUE
       },
+      
       
       .plot2 = function(image, ggtheme, theme, ...) {
         
@@ -560,15 +567,15 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         p <- ggplot2::ggplot(
           tau_long,
-          ggplot2::aes(x = to, y = from, fill = prob)
+          ggplot2::aes(x = from, y = to, fill = prob)
         ) +
-          ggplot2::geom_tile(color = "grey85", linewidth = 0.4) +
+          ggplot2::geom_tile(color = "grey85", linewidth = 0.5) +
           ggplot2::geom_text(
             ggplot2::aes(
               label = sprintf("%.3f", prob),
               fontface = ifelse(is_diag, "bold", "plain")
             ),
-            size = 4
+            size = 4.6
           ) +
           ggplot2::scale_fill_viridis_c(
             option = "C",
@@ -578,15 +585,17 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           ggplot2::facet_wrap(~ step, nrow = 1) +
           ggplot2::labs(
             title = "Transition Probabilities (Invariant)",
-            x = "Latent Class at Next Time",
-            y = "Latent Class at Previous Time"
+            x = "Latent Class at Previous Time (Parent)",
+            y = "Latent Class at Next Time (Child)"
+            # ❌ Reading guide 문장 제거
           ) +
           ggplot2::coord_fixed() +
-          ggplot2::theme_minimal(base_size = 13) +
+          ggplot2::theme_minimal(base_size = 14) +
           ggplot2::theme(
             plot.title = ggplot2::element_text(face = "bold"),
             strip.text = ggplot2::element_text(face = "bold"),
             axis.title = ggplot2::element_text(face = "bold"),
+            axis.text  = ggplot2::element_text(size = 12),
             panel.grid = ggplot2::element_blank(),
             legend.position = "right"
           )
@@ -594,6 +603,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p)
         TRUE
       }
+      
+      
       
       
     )

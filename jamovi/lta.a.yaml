@@ -76,38 +76,20 @@ options:
       type: String
       default: 'L1,L2,L3'
  
-    # - name: member
-    #   title: Class membership
-    #   type: Output   
-    # 
-    # - name: post
-    #   title: Posterior probability 
-    #   type: Output  
-    #   
-    # - name: par
-    #   title: 'Estimated parameters'
-    #   type: Bool
-    #   default: FALSE
-
     - name: reg
       title: 'Coefficients'
       type: Bool
       default: FALSE
 
     - name: par2
-      title: 'LTA(with non-invariant model)'
+      title: 'Non-invariant'
       type: Bool
       default: FALSE
 
     - name: par3
-      title: 'LTA(with measurement invariance)'
+      title: 'Invariant'
       type: Bool
       default: FALSE
-
-    # - name: fit
-    #   title: 'Goodness of fit'
-    #   type: Bool
-    #   default: FALSE
 
     - name: fit1
       title: 'Chi-squared test'

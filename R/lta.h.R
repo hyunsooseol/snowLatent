@@ -356,6 +356,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 visible="(plot1)",
                 requiresData=TRUE,
+                refs="slca",
                 clearWith=list(
                     "factors",
                     "vars",
@@ -369,6 +370,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot2",
                 visible="(plot2)",
                 requiresData=TRUE,
+                refs="slca",
                 clearWith=list(
                     "factors",
                     "vars",
@@ -388,6 +390,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="tau",
                 title="Transition probabilities",
                 visible="(tau)",
+                refs="slca",
                 clearWith=list(
                     "factors",
                     "vars",
@@ -419,6 +422,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="stay",
                 title="Classification stability (Mean diagonal of transition matrix)",
                 visible="(stayer)",
+                refs="slca",
                 clearWith=list(
                     "factors",
                     "vars",

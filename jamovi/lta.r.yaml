@@ -107,6 +107,7 @@ items:
       renderFun: .plot1
       visible: (plot1)
       requiresData: true
+      refs: slca
       clearWith:
         - factors
         - vars
@@ -120,6 +121,7 @@ items:
       renderFun: .plot2
       visible: (plot2)
       requiresData: true
+      refs: slca
       clearWith:
         - factors
         - vars
@@ -139,6 +141,7 @@ items:
       title: 'Transition probabilities'
       type: Table
       visible: (tau)
+      refs: slca
       clearWith:
         - factors
         - vars
@@ -165,6 +168,7 @@ items:
       title: 'Classification stability (Mean diagonal of transition matrix)'
       type: Table
       visible: (stayer)
+      refs: slca
       clearWith:
         - factors
         - vars
