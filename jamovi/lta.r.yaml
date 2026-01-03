@@ -48,6 +48,98 @@ items:
           type: number
           format: zto,pvalue
 
+    - name:  text3
+      title: 'LTA with non-invariant model'
+      type:  Preformatted
+
+    - name:  text4
+      title: 'LTA with measurement invariance'
+      type:  Preformatted
+
+    - name:  plot1
+      title: 'Transition plot(Non-invariant)'
+      type:  Image
+      renderFun: .plot1
+      visible: (plot1)
+      requiresData: true
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - width1
+        - height1
+        - cons
+
+    - name:  plot2
+      title: 'Transition plot(Invariant)'
+      type:  Image
+      renderFun: .plot2
+      visible: (plot2)
+      requiresData: true
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - width2
+        - height2
+        - cons
+
+    - name: tau
+      title: 'Transition probabilities'
+      type: Table
+      visible: (tau)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: model
+          title: Model
+          type: text
+        - name: transition
+          title: Transition
+          type: text
+        - name: from
+          title: From
+          type: text
+        - name: to
+          title: To
+          type: text
+        - name: prob
+          title: Prob
+          type: number
+          format: zto
+
+    - name: stay
+      title: 'Classification stability (Mean diagonal of transition matrix)'
+      type: Table
+      visible: (stayer)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: model
+          title: Model
+          type: text
+        - name: transition
+          title: Transition
+          type: text
+        - name: stayer
+          title: Average stay probability
+          type: number
+          format: zto
+        - name: mover
+          title: Average switching probability
+          type: number
+          format: zto
+
     - name: reg
       title: 'Logistic regression'
       type: Table
@@ -104,96 +196,6 @@ items:
         - height
         - cons
 
-    - name:  plot1
-      title: 'Transition plot(Non-invariant)'
-      type:  Image
-      renderFun: .plot1
-      visible: (plot1)
-      requiresData: true
-      refs: slca
-      clearWith:
-        - factors
-        - vars
-        - nc
-        - width1
-        - height1
-        - cons
 
-    - name:  plot2
-      title: 'Transition plot(Invariant)'
-      type:  Image
-      renderFun: .plot2
-      visible: (plot2)
-      requiresData: true
-      refs: slca
-      clearWith:
-        - factors
-        - vars
-        - nc
-        - width2
-        - height2
-        - cons
-
-    - name:  text3
-      title: 'LTA with non-invariant model'
-      type:  Preformatted
-
-    - name:  text4
-      title: 'LTA with measurement invariance'
-      type:  Preformatted
-
-    - name: tau
-      title: 'Transition probabilities'
-      type: Table
-      visible: (tau)
-      refs: slca
-      clearWith:
-        - factors
-        - vars
-        - nc
-        - cons
-      columns:
-        - name: model
-          title: Model
-          type: text
-        - name: transition
-          title: Transition
-          type: text
-        - name: from
-          title: From
-          type: text
-        - name: to
-          title: To
-          type: text
-        - name: prob
-          title: Prob
-          type: number
-          format: zto
-
-    - name: stay
-      title: 'Classification stability (Mean diagonal of transition matrix)'
-      type: Table
-      visible: (stayer)
-      refs: slca
-      clearWith:
-        - factors
-        - vars
-        - nc
-        - cons
-      columns:
-        - name: model
-          title: Model
-          type: text
-        - name: transition
-          title: Transition
-          type: text
-        - name: stayer
-          title: Average stay probability
-          type: number
-          format: zto
-        - name: mover
-          title: Average switching probability
-          type: number
-          format: zto
 
 ...

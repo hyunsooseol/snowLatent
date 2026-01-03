@@ -80,14 +80,14 @@ A results object containing:
 \tabular{llllll}{
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
-  \code{results$reg} \tab \tab \tab \tab \tab a table \cr
-  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-  \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$tau} \tab \tab \tab \tab \tab a table \cr
   \code{results$stay} \tab \tab \tab \tab \tab a table \cr
+  \code{results$reg} \tab \tab \tab \tab \tab a table \cr
+  \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

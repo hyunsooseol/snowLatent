@@ -223,14 +223,14 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         instructions = function() private$.items[["instructions"]],
         fit1 = function() private$.items[["fit1"]],
-        reg = function() private$.items[["reg"]],
-        plot = function() private$.items[["plot"]],
-        plot1 = function() private$.items[["plot1"]],
-        plot2 = function() private$.items[["plot2"]],
         text3 = function() private$.items[["text3"]],
         text4 = function() private$.items[["text4"]],
+        plot1 = function() private$.items[["plot1"]],
+        plot2 = function() private$.items[["plot2"]],
         tau = function() private$.items[["tau"]],
-        stay = function() private$.items[["stay"]]),
+        stay = function() private$.items[["stay"]],
+        reg = function() private$.items[["reg"]],
+        plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -290,68 +290,14 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
-            self$add(jmvcore::Table$new(
+            self$add(jmvcore::Preformatted$new(
                 options=options,
-                name="reg",
-                title="Logistic regression",
-                visible="(reg)",
-                refs="slca",
-                clearWith=list(
-                    "factors",
-                    "covs",
-                    "nc",
-                    "method",
-                    "impu",
-                    "regform",
-                    "cons"),
-                columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
-                        `name`="cla", 
-                        `title`="Class", 
-                        `type`="text"),
-                    list(
-                        `name`="va", 
-                        `title`="Variable", 
-                        `type`="text"),
-                    list(
-                        `name`="co", 
-                        `title`="Coefficient", 
-                        `type`="number"),
-                    list(
-                        `name`="se", 
-                        `title`="Std.error", 
-                        `type`="number"),
-                    list(
-                        `name`="wald", 
-                        `title`="Wald", 
-                        `type`="number"),
-                    list(
-                        `name`="p", 
-                        `title`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))
-            self$add(jmvcore::Image$new(
+                name="text3",
+                title="LTA with non-invariant model"))
+            self$add(jmvcore::Preformatted$new(
                 options=options,
-                name="plot",
-                title="Covariate effects plot",
-                renderFun=".plot",
-                visible="(plot)",
-                requiresData=TRUE,
-                clearWith=list(
-                    "factors",
-                    "covs",
-                    "nc",
-                    "method",
-                    "impu",
-                    "regform",
-                    "width",
-                    "height",
-                    "cons")))
+                name="text4",
+                title="LTA with measurement invariance"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -382,14 +328,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "width2",
                     "height2",
                     "cons")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text3",
-                title="LTA with non-invariant model"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text4",
-                title="LTA with measurement invariance"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="tau",
@@ -452,7 +390,69 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="mover", 
                         `title`="Average switching probability", 
                         `type`="number", 
-                        `format`="zto"))))}))
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="reg",
+                title="Logistic regression",
+                visible="(reg)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "covs",
+                    "nc",
+                    "method",
+                    "impu",
+                    "regform",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="name", 
+                        `title`="", 
+                        `type`="text", 
+                        `content`="($key)"),
+                    list(
+                        `name`="cla", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="va", 
+                        `title`="Variable", 
+                        `type`="text"),
+                    list(
+                        `name`="co", 
+                        `title`="Coefficient", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="Std.error", 
+                        `type`="number"),
+                    list(
+                        `name`="wald", 
+                        `title`="Wald", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Covariate effects plot",
+                renderFun=".plot",
+                visible="(plot)",
+                requiresData=TRUE,
+                clearWith=list(
+                    "factors",
+                    "covs",
+                    "nc",
+                    "method",
+                    "impu",
+                    "regform",
+                    "width",
+                    "height",
+                    "cons")))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",
@@ -505,14 +505,14 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$tau} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$stay} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
