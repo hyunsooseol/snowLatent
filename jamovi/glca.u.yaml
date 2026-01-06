@@ -78,16 +78,6 @@ children:
             children:
               - type: CheckBox
                 name: plot1
-                style: list-inline
-                children:
-                  - type: TextBox
-                    name: width
-                    format: number
-                    enable: (plot1)
-                  - type: TextBox
-                    name: height
-                    format: number
-                    enable: (plot1)
               - type: CheckBox
                 name: plot2
               - type: CheckBox
@@ -99,12 +89,6 @@ children:
                   - value: 0
                   - value: 45
                   - value: 90 
-              - type: TextBox
-                name: width1
-                format: number
-              - type: TextBox
-                name: height1
-                format: number
           - type: Label
             label: Prevalences
             children:

@@ -213,9 +213,7 @@ items:
         - vars
         - covs
         - nc
-        - width
-        - height 
-        
+
     - name:  plot2
       title: 'Item by class'
       type:  Image
@@ -227,8 +225,6 @@ items:
         - covs
         - nc
         - angle
-        - width1
-        - height1
 
     - name: plot3
       title: 'Elbow plot'
@@ -240,8 +236,6 @@ items:
         - vars
         - covs
         - nc
-        - width2
-        - height2
 
     - name:  text2
       title: Prevalence for level-1 class(Gamma)

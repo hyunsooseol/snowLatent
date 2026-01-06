@@ -300,8 +300,6 @@ items:
         - group
         - covs
         - nclust
-        - width
-        - height
 
     - name:  plot2
       title: 'Item by class'
@@ -316,8 +314,6 @@ items:
         - covs
         - nclust
         - angle
-        - width1
-        - height1
 
     - name: plot3
       title: 'Elbow plot'
@@ -331,8 +327,6 @@ items:
         - group
         - covs
         - nclust
-        - width2
-        - height2
 
     - name: item
       title: 'Item response probability(Rho)'

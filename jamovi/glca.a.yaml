@@ -117,25 +117,5 @@ options:
       max: 90
       default: 0
 
-    - name: width
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height
-      type: Integer
-      title: "X"
-      default: 500
-
-    - name: width1
-      type: Integer
-      title: "Width "
-      default: 500
-      
-    - name: height1
-      type: Integer
-      title: "Height"
-      default: 500
-
 
 ...

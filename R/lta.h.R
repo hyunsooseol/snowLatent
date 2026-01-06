@@ -18,14 +18,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             par3 = FALSE,
             fit1 = FALSE,
             plot = FALSE,
-            width = 500,
-            height = 500,
             plot1 = FALSE,
             plot2 = FALSE,
-            width1 = 500,
-            height1 = 500,
-            width2 = 500,
-            height2 = 500,
             tau = FALSE,
             stayer = FALSE, ...) {
 
@@ -108,14 +102,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -124,22 +110,6 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
-            private$..width2 <- jmvcore::OptionInteger$new(
-                "width2",
-                width2,
-                default=500)
-            private$..height2 <- jmvcore::OptionInteger$new(
-                "height2",
-                height2,
-                default=500)
             private$..tau <- jmvcore::OptionBool$new(
                 "tau",
                 tau,
@@ -160,14 +130,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..par3)
             self$.addOption(private$..fit1)
             self$.addOption(private$..plot)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
-            self$.addOption(private$..width2)
-            self$.addOption(private$..height2)
             self$.addOption(private$..tau)
             self$.addOption(private$..stayer)
         }),
@@ -183,14 +147,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         par3 = function() private$..par3$value,
         fit1 = function() private$..fit1$value,
         plot = function() private$..plot$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
-        width2 = function() private$..width2$value,
-        height2 = function() private$..height2$value,
         tau = function() private$..tau$value,
         stayer = function() private$..stayer$value),
     private = list(
@@ -205,14 +163,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..par3 = NA,
         ..fit1 = NA,
         ..plot = NA,
-        ..width = NA,
-        ..height = NA,
         ..plot1 = NA,
         ..plot2 = NA,
-        ..width1 = NA,
-        ..height1 = NA,
-        ..width2 = NA,
-        ..height2 = NA,
         ..tau = NA,
         ..stayer = NA)
 )
@@ -310,8 +262,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "factors",
                     "vars",
                     "nc",
-                    "width1",
-                    "height1",
                     "cons")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -325,8 +275,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "factors",
                     "vars",
                     "nc",
-                    "width2",
-                    "height2",
                     "cons")))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -450,8 +398,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "method",
                     "impu",
                     "regform",
-                    "width",
-                    "height",
                     "cons")))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -491,14 +437,8 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param par3 .
 #' @param fit1 .
 #' @param plot .
-#' @param width .
-#' @param height .
 #' @param plot1 .
 #' @param plot2 .
-#' @param width1 .
-#' @param height1 .
-#' @param width2 .
-#' @param height2 .
 #' @param tau .
 #' @param stayer .
 #' @return A results object containing:
@@ -536,14 +476,8 @@ lta <- function(
     par3 = FALSE,
     fit1 = FALSE,
     plot = FALSE,
-    width = 500,
-    height = 500,
     plot1 = FALSE,
     plot2 = FALSE,
-    width1 = 500,
-    height1 = 500,
-    width2 = 500,
-    height2 = 500,
     tau = FALSE,
     stayer = FALSE) {
 
@@ -569,14 +503,8 @@ lta <- function(
         par3 = par3,
         fit1 = fit1,
         plot = plot,
-        width = width,
-        height = height,
         plot1 = plot1,
         plot2 = plot2,
-        width1 = width1,
-        height1 = height1,
-        width2 = width2,
-        height2 = height2,
         tau = tau,
         stayer = stayer)
 

@@ -67,8 +67,6 @@ items:
         - factors
         - vars
         - nc
-        - width1
-        - height1
         - cons
 
     - name:  plot2
@@ -82,8 +80,6 @@ items:
         - factors
         - vars
         - nc
-        - width2
-        - height2
         - cons
 
     - name: tau
@@ -192,8 +188,6 @@ items:
         - method
         - impu
         - regform
-        - width
-        - height
         - cons
 
 

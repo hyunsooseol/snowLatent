@@ -28,19 +28,6 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           )
         )         
         
-        if(isTRUE(self$options$plot)){
-
-          width <- self$options$width
-          height <- self$options$height
-          self$results$plot$setSize(width, height)
-        }
-        # 
-        # if(isTRUE(self$options$plot2)){
-        #   
-        #   width <- self$options$width1
-        #   height <- self$options$height1
-        #   self$results$plot2$setSize(width, height)
-        #}
 
       },
       

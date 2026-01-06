@@ -24,11 +24,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             plot2 = FALSE,
             plot3 = FALSE,
-            angle = 0,
-            width = 500,
-            height = 500,
-            width1 = 500,
-            height1 = 500, ...) {
+            angle = 0, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -123,22 +119,6 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=0,
                 max=90,
                 default=0)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..covs)
@@ -159,10 +139,6 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot2)
             self$.addOption(private$..plot3)
             self$.addOption(private$..angle)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -183,11 +159,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
         plot3 = function() private$..plot3$value,
-        angle = function() private$..angle$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value),
+        angle = function() private$..angle$value),
     private = list(
         ..vars = NA,
         ..covs = NA,
@@ -207,11 +179,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..plot2 = NA,
         ..plot3 = NA,
-        ..angle = NA,
-        ..width = NA,
-        ..height = NA,
-        ..width1 = NA,
-        ..height1 = NA)
+        ..angle = NA)
 )
 
 glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -500,9 +468,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "nc",
                     "group",
-                    "covs",
-                    "width",
-                    "height")))
+                    "covs")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -515,9 +481,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "group",
                     "covs",
-                    "angle",
-                    "width1",
-                    "height1")))
+                    "angle")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot3",
@@ -531,9 +495,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "group",
                     "covs",
-                    "angle",
-                    "width1",
-                    "height1")))
+                    "angle")))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text3",
@@ -595,10 +557,6 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot2 .
 #' @param plot3 .
 #' @param angle .
-#' @param width .
-#' @param height .
-#' @param width1 .
-#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -646,11 +604,7 @@ glca <- function(
     plot1 = FALSE,
     plot2 = FALSE,
     plot3 = FALSE,
-    angle = 0,
-    width = 500,
-    height = 500,
-    width1 = 500,
-    height1 = 500) {
+    angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("glca requires jmvcore to be installed (restart may be required)")
@@ -686,11 +640,7 @@ glca <- function(
         plot1 = plot1,
         plot2 = plot2,
         plot3 = plot3,
-        angle = angle,
-        width = width,
-        height = height,
-        width1 = width1,
-        height1 = height1)
+        angle = angle)
 
     analysis <- glcaClass$new(
         options = options,

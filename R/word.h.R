@@ -14,12 +14,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             max = 5,
             rot = 0.35,
             plot = TRUE,
-            width = 500,
-            height = 500,
             plot1 = FALSE,
             maxn = 10,
-            width1 = 500,
-            height1 = 500,
             angle = 0, ...) {
 
             super$initialize(
@@ -71,14 +67,6 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=TRUE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
@@ -88,14 +76,6 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 maxn,
                 default=10,
                 min=1)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
             private$..angle <- jmvcore::OptionNumber$new(
                 "angle",
                 angle,
@@ -111,12 +91,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..max)
             self$.addOption(private$..rot)
             self$.addOption(private$..plot)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..plot1)
             self$.addOption(private$..maxn)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
             self$.addOption(private$..angle)
         }),
     active = list(
@@ -128,12 +104,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         max = function() private$..max$value,
         rot = function() private$..rot$value,
         plot = function() private$..plot$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
         maxn = function() private$..maxn$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
         angle = function() private$..angle$value),
     private = list(
         ..words = NA,
@@ -144,12 +116,8 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..max = NA,
         ..rot = NA,
         ..plot = NA,
-        ..width = NA,
-        ..height = NA,
         ..plot1 = NA,
         ..maxn = NA,
-        ..width1 = NA,
-        ..height1 = NA,
         ..angle = NA)
 )
 
@@ -192,9 +160,7 @@ wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "minf",
                     "max",
                     "min",
-                    "rot",
-                    "width",
-                    "height")))
+                    "rot")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -206,8 +172,6 @@ wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "words",
                     "freq",
                     "maxn",
-                    "width1",
-                    "height1",
                     "angle")))}))
 
 wordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -243,12 +207,8 @@ wordBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param max .
 #' @param rot .
 #' @param plot .
-#' @param width .
-#' @param height .
 #' @param plot1 .
 #' @param maxn .
-#' @param width1 .
-#' @param height1 .
 #' @param angle .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -269,12 +229,8 @@ word <- function(
     max = 5,
     rot = 0.35,
     plot = TRUE,
-    width = 500,
-    height = 500,
     plot1 = FALSE,
     maxn = 10,
-    width1 = 500,
-    height1 = 500,
     angle = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -300,12 +256,8 @@ word <- function(
         max = max,
         rot = rot,
         plot = plot,
-        width = width,
-        height = height,
         plot1 = plot1,
         maxn = maxn,
-        width1 = width1,
-        height1 = height1,
         angle = angle)
 
     analysis <- wordClass$new(

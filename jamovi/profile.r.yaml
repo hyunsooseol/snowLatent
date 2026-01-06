@@ -34,8 +34,6 @@ items:
             - vars
             - group
             - angle
-            - width
-            - height
 
     - name: plot2
       title: 'Box plot'
@@ -47,6 +45,5 @@ items:
             - group
             - angle
             - me
-            - width1
-            - height1
+
 ...

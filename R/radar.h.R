@@ -10,11 +10,7 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             num = 4,
             plot = FALSE,
-            width = 500,
-            height = 500,
             plot1 = FALSE,
-            width1 = 500,
-            height1 = 500,
             num1 = "4,6,8", ...) {
 
             super$initialize(
@@ -43,26 +39,10 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
                 default=FALSE)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
             private$..num1 <- jmvcore::OptionString$new(
                 "num1",
                 num1,
@@ -72,11 +52,7 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..num)
             self$.addOption(private$..plot)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..plot1)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
             self$.addOption(private$..num1)
         }),
     active = list(
@@ -84,22 +60,14 @@ radarOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         num = function() private$..num$value,
         plot = function() private$..plot$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
         plot1 = function() private$..plot1$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value,
         num1 = function() private$..num1$value),
     private = list(
         ..labels = NA,
         ..vars = NA,
         ..num = NA,
         ..plot = NA,
-        ..width = NA,
-        ..height = NA,
         ..plot1 = NA,
-        ..width1 = NA,
-        ..height1 = NA,
         ..num1 = NA)
 )
 
@@ -139,9 +107,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "labels",
-                    "num",
-                    "width",
-                    "height")))
+                    "num")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -153,9 +119,7 @@ radarResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "labels",
-                    "num1",
-                    "width1",
-                    "height1")))}))
+                    "num1")))}))
 
 radarBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "radarBase",
@@ -186,11 +150,7 @@ radarBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param num .
 #' @param plot .
-#' @param width .
-#' @param height .
 #' @param plot1 .
-#' @param width1 .
-#' @param height1 .
 #' @param num1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -207,11 +167,7 @@ radar <- function(
     vars,
     num = 4,
     plot = FALSE,
-    width = 500,
-    height = 500,
     plot1 = FALSE,
-    width1 = 500,
-    height1 = 500,
     num1 = "4,6,8") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -231,11 +187,7 @@ radar <- function(
         vars = vars,
         num = num,
         plot = plot,
-        width = width,
-        height = height,
         plot1 = plot1,
-        width1 = width1,
-        height1 = height1,
         num1 = num1)
 
     analysis <- radarClass$new(

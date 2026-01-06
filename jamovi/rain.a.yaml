@@ -40,35 +40,12 @@ options:
           R: >
             a number from 0 to 90 defining the angle of the x-axis labels, 
             where 0 degrees represents completely horizontal labels.
+
     - name: plot
       title: 'Raincloud'
       type: Bool
       default: FALSE
 
-    # - name: plot2
-    #   title: Box plot
-    #   type: Bool
-    #   default: FALSE
-
-    - name: width
-      type: Integer
-      title: "Size: "
-      default: 500
-
-    - name: height
-      type: Integer
-      title: "X"
-      default: 500
-    # 
-    # - name: width1
-    #   type: Integer
-    #   title: "Size: "
-    #   default: 500
-    #   
-    # - name: height1
-    #   type: Integer
-    #   title: "X"
-    #   default: 500
 ...
 
  

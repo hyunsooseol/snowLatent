@@ -60,16 +60,6 @@ options:
       type: Bool
       default: TRUE 
 
-    - name: width
-      type: Integer
-      title: "Width"
-      default: 500
-      
-    - name: height
-      type: Integer
-      title: "Height"
-      default: 500    
-
     - name: plot1
       title: 'Word frequencies' 
       type: Bool
@@ -80,16 +70,6 @@ options:
       type: Number
       default: 10
       min: 1 
-
-    - name: width1
-      type: Integer
-      title: "Width"
-      default: 500
-
-    - name: height1
-      type: Integer
-      title: "Height"
-      default: 500
 
     - name: angle
       title: Angle of x-axis labels

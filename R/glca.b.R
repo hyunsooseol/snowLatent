@@ -42,15 +42,6 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (self$options$cir)
           self$results$cir$setNote("Note", "Model2: coeff.inv=TRUE; Model3: coeff.inv=FALSE.")
         
-        if (isTRUE(self$options$plot1)) {
-          self$results$plot1$setSize(self$options$width, self$options$height)
-        }
-        if (isTRUE(self$options$plot2)) {
-          self$results$plot2$setSize(self$options$width1, self$options$height1)
-        }
-        if (isTRUE(self$options$plot3)) {
-          self$results$plot3$setSize(self$options$width1, self$options$height1)
-        }
       },
       
       .run = function() {

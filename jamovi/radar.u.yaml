@@ -40,18 +40,11 @@ children:
             children:
               - type: CheckBox
                 name: plot
-              - name: num
-                type: TextBox
-                format: number
-                enable: (plot)
-              - type: TextBox
-                name: width
-                format: number
-                enable: (plot)
-              - type: TextBox
-                name: height
-                format: number
-                enable: (plot)
+                children:
+                  - name: num
+                    type: TextBox
+                    format: number
+                    enable: (plot)
       - type: LayoutBox
         margin: large
         cell:
@@ -68,12 +61,4 @@ children:
                 type: TextBox
                 format: string
                 stretchFactor: 2
-              - type: TextBox
-                name: width1
-                format: number
-                enable: (plot1)
-              - type: TextBox
-                name: height1
-                format: number
-                enable: (plot1)
-   
+

@@ -153,8 +153,6 @@ items:
         - method
         - impu
         - regform
-        - width
-        - height
 
     - name:  plot1
       title: 'Covariate Effects Plot'
@@ -169,7 +167,6 @@ items:
         - method1
         - impu1
         - regform1
-        - width1
-        - height1
+
 
 ...

@@ -28,8 +28,6 @@ items:
             - max
             - min
             - rot
-            - width
-            - height
 
     - name: plot1
       title: 'Plot word frequencies'
@@ -41,8 +39,6 @@ items:
             - words
             - freq
             - maxn
-            - width1
-            - height1
             - angle
  
 ...

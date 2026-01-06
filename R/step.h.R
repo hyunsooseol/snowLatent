@@ -20,11 +20,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             method1 = "BCH",
             reg1 = FALSE,
             plot = FALSE,
-            width = 500,
-            height = 500,
-            plot1 = FALSE,
-            width1 = 500,
-            height1 = 500, ...) {
+            plot1 = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -124,26 +120,10 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot",
                 plot,
                 default=FALSE)
-            private$..width <- jmvcore::OptionInteger$new(
-                "width",
-                width,
-                default=500)
-            private$..height <- jmvcore::OptionInteger$new(
-                "height",
-                height,
-                default=500)
             private$..plot1 <- jmvcore::OptionBool$new(
                 "plot1",
                 plot1,
                 default=FALSE)
-            private$..width1 <- jmvcore::OptionInteger$new(
-                "width1",
-                width1,
-                default=500)
-            private$..height1 <- jmvcore::OptionInteger$new(
-                "height1",
-                height1,
-                default=500)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -160,11 +140,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..method1)
             self$.addOption(private$..reg1)
             self$.addOption(private$..plot)
-            self$.addOption(private$..width)
-            self$.addOption(private$..height)
             self$.addOption(private$..plot1)
-            self$.addOption(private$..width1)
-            self$.addOption(private$..height1)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -182,11 +158,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         method1 = function() private$..method1$value,
         reg1 = function() private$..reg1$value,
         plot = function() private$..plot$value,
-        width = function() private$..width$value,
-        height = function() private$..height$value,
-        plot1 = function() private$..plot1$value,
-        width1 = function() private$..width1$value,
-        height1 = function() private$..height1$value),
+        plot1 = function() private$..plot1$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -203,11 +175,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..method1 = NA,
         ..reg1 = NA,
         ..plot = NA,
-        ..width = NA,
-        ..height = NA,
-        ..plot1 = NA,
-        ..width1 = NA,
-        ..height1 = NA)
+        ..plot1 = NA)
 )
 
 stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -396,9 +364,7 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "method",
                     "impu",
-                    "regform",
-                    "width",
-                    "height")))
+                    "regform")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -412,9 +378,7 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nc",
                     "method1",
                     "impu1",
-                    "regform1",
-                    "width1",
-                    "height1")))}))
+                    "regform1")))}))
 
 stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "stepBase",
@@ -455,11 +419,7 @@ stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param method1 .
 #' @param reg1 .
 #' @param plot .
-#' @param width .
-#' @param height .
 #' @param plot1 .
-#' @param width1 .
-#' @param height1 .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -496,11 +456,7 @@ step <- function(
     method1 = "BCH",
     reg1 = FALSE,
     plot = FALSE,
-    width = 500,
-    height = 500,
-    plot1 = FALSE,
-    width1 = 500,
-    height1 = 500) {
+    plot1 = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("step requires jmvcore to be installed (restart may be required)")
@@ -526,11 +482,7 @@ step <- function(
         method1 = method1,
         reg1 = reg1,
         plot = plot,
-        width = width,
-        height = height,
-        plot1 = plot1,
-        width1 = width1,
-        height1 = height1)
+        plot1 = plot1)
 
     analysis <- stepClass$new(
         options = options,

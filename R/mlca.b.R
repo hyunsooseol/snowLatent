@@ -46,23 +46,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           self$results$ci$setNote("Note",
                                   "p: Chi-Square p value; Model 2:Coeff.inv=TRUE; Model 3: Coeff.inv=FALSE.")
         
-        if (isTRUE(self$options$plot1)) {
-          width <- self$options$width
-          height <- self$options$height
-          self$results$plot1$setSize(width, height)
-        }
-        
-        if (isTRUE(self$options$plot2)) {
-          width <- self$options$width1
-          height <- self$options$height1
-          self$results$plot2$setSize(width, height)
-        }
-        if (isTRUE(self$options$plot3)) {
-          width <- self$options$width2
-          height <- self$options$height2
-          self$results$plot3$setSize(width, height)
-        }
-        
+
         # 10%
         self$results$progressBarHTML$setContent(progressBarH(10, 100, 'Ready to start analysis...'))
       },

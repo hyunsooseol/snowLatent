@@ -23,20 +23,6 @@ items:
             - vars
             - group
             - angle
-            - width
-            - height
-
-    # - name: plot2
-    #   title: 'Box plot'
-    #   type: Image
-    #   visible: (plot2)
-    #   renderFun: .plot2
-    #   clearWith:
-    #         - vars
-    #         - group
-    #         - angle
-    #         - width1
-    #         - height1
 ...
 
 

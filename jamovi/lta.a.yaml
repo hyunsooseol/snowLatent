@@ -101,16 +101,6 @@ options:
       type: Bool 
       default: FALSE   
 
-    - name: width
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height
-      type: Integer
-      title: "X"
-      default: 500
-
     - name: plot1
       title: 'Non-invariant'
       type: Bool 
@@ -120,26 +110,6 @@ options:
       title: 'Invariant'
       type: Bool 
       default: FALSE   
-
-    - name: width1
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height1
-      type: Integer
-      title: "X"
-      default: 500
-
-    - name: width2
-      type: Integer
-      title: "Size: "
-      default: 500
-      
-    - name: height2
-      type: Integer
-      title: "X"
-      default: 500
 
     - name: tau
       title: 'Transition probability'
