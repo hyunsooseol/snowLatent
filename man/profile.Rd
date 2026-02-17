@@ -12,11 +12,7 @@ profile(
   me = TRUE,
   angle = 0,
   plot1 = FALSE,
-  plot2 = FALSE,
-  width = 500,
-  height = 500,
-  width1 = 500,
-  height1 = 500
+  plot2 = FALSE
 )
 }
 \arguments{
@@ -36,14 +32,6 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot1}{.}
 
 \item{plot2}{.}
-
-\item{width}{.}
-
-\item{height}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
 }
 \value{
 A results object containing:

@@ -46,6 +46,7 @@ analyses:
     ns: snowLatent
     menuGroup: snowLatent
     menuTitle: LCA/LPA 3-step approach
+    menuSubgroup: Auxiliary Analysis
     ribbon: analyses
     category: analyses
   - title: Latent Transition Analysis

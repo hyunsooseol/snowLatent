@@ -14,12 +14,8 @@ word(
   max = 5,
   rot = 0.35,
   plot = TRUE,
-  width = 500,
-  height = 500,
   plot1 = FALSE,
   maxn = 10,
-  width1 = 500,
-  height1 = 500,
   angle = 0
 )
 }
@@ -42,17 +38,9 @@ word(
 
 \item{plot}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
 \item{plot1}{.}
 
 \item{maxn}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
 
 \item{angle}{.}
 }

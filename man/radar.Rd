@@ -4,19 +4,7 @@
 \alias{radar}
 \title{Radar chart}
 \usage{
-radar(
-  data,
-  labels,
-  vars,
-  num = 4,
-  plot = FALSE,
-  width = 500,
-  height = 500,
-  plot1 = FALSE,
-  width1 = 500,
-  height1 = 500,
-  num1 = "4,6,8"
-)
+radar(data, labels, vars, num = 4, plot = FALSE, plot1 = FALSE, num1 = "4,6,8")
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -29,15 +17,7 @@ radar(
 
 \item{plot}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
 \item{plot1}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
 
 \item{num1}{.}
 }

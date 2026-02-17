@@ -4,7 +4,7 @@
 \alias{rain}
 \title{Raincloud plot}
 \usage{
-rain(data, vars, group, angle = 0, plot = FALSE, width = 500, height = 500)
+rain(data, vars, group, angle = 0, plot = FALSE)
 }
 \arguments{
 \item{data}{The data as a data frame.}
@@ -17,10 +17,6 @@ rain(data, vars, group, angle = 0, plot = FALSE, width = 500, height = 500)
 where 0 degrees represents completely horizontal labels.}
 
 \item{plot}{.}
-
-\item{width}{.}
-
-\item{height}{.}
 }
 \value{
 A results object containing:

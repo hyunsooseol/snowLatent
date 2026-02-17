@@ -17,14 +17,8 @@ lta(
   par3 = FALSE,
   fit1 = FALSE,
   plot = FALSE,
-  width = 500,
-  height = 500,
   plot1 = FALSE,
   plot2 = FALSE,
-  width1 = 500,
-  height1 = 500,
-  width2 = 500,
-  height2 = 500,
   tau = FALSE,
   stayer = FALSE
 )
@@ -55,21 +49,9 @@ of the factor and the \code{vars} that belong to that factor}
 
 \item{plot}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
 \item{plot1}{.}
 
 \item{plot2}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
-
-\item{width2}{.}
-
-\item{height2}{.}
 
 \item{tau}{.}
 

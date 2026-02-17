@@ -19,11 +19,7 @@ step(
   method1 = "BCH",
   reg1 = FALSE,
   plot = FALSE,
-  width = 500,
-  height = 500,
-  plot1 = FALSE,
-  width1 = 500,
-  height1 = 500
+  plot1 = FALSE
 )
 }
 \arguments{
@@ -56,15 +52,7 @@ of the factor and the \code{vars} that belong to that factor}
 
 \item{plot}{.}
 
-\item{width}{.}
-
-\item{height}{.}
-
 \item{plot1}{.}
-
-\item{width1}{.}
-
-\item{height1}{.}
 }
 \value{
 A results object containing:
