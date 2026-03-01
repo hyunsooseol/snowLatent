@@ -32,12 +32,12 @@ options:
 
     - name: mc
       title: Variable means
-      type: Bool 
+      type: Bool
       default: TRUE
 
     - name: me
       title: Mean
-      type: Bool 
+      type: Bool
       default: TRUE
 
     - name: angle
@@ -48,10 +48,10 @@ options:
       default: 0
       description:
           R: >
-            a number from 0 to 90 defining the angle of the x-axis labels, 
+            a number from 0 to 90 defining the angle of the x-axis labels,
             where 0 degrees represents completely horizontal labels.
     - name: plot1
-      title: Line plot
+      title: Line plot(raw mean)
       type: Bool
       default: FALSE
 
@@ -60,13 +60,27 @@ options:
       type: Bool
       default: FALSE
 
+    - name: plot3
+      title: Z plot
+      type: Bool
+      default: FALSE
+
+    - name: points
+      title: 'Show points'
+      type: Bool
+      default: false
+
+    - name: ci
+      title: '95% CI'
+      type: Bool
+      default: false
 ...
 
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+

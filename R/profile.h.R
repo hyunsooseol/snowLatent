@@ -12,7 +12,10 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             me = TRUE,
             angle = 0,
             plot1 = FALSE,
-            plot2 = FALSE, ...) {
+            plot2 = FALSE,
+            plot3 = FALSE,
+            points = FALSE,
+            ci = FALSE, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -59,6 +62,18 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot2",
                 plot2,
                 default=FALSE)
+            private$..plot3 <- jmvcore::OptionBool$new(
+                "plot3",
+                plot3,
+                default=FALSE)
+            private$..points <- jmvcore::OptionBool$new(
+                "points",
+                points,
+                default=FALSE)
+            private$..ci <- jmvcore::OptionBool$new(
+                "ci",
+                ci,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..group)
@@ -67,6 +82,9 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..angle)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
+            self$.addOption(private$..plot3)
+            self$.addOption(private$..points)
+            self$.addOption(private$..ci)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -75,7 +93,10 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         me = function() private$..me$value,
         angle = function() private$..angle$value,
         plot1 = function() private$..plot1$value,
-        plot2 = function() private$..plot2$value),
+        plot2 = function() private$..plot2$value,
+        plot3 = function() private$..plot3$value,
+        points = function() private$..points$value,
+        ci = function() private$..ci$value),
     private = list(
         ..vars = NA,
         ..group = NA,
@@ -83,7 +104,10 @@ profileOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..me = NA,
         ..angle = NA,
         ..plot1 = NA,
-        ..plot2 = NA)
+        ..plot2 = NA,
+        ..plot3 = NA,
+        ..points = NA,
+        ..ci = NA)
 )
 
 profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -93,6 +117,7 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         mc = function() private$.items[["mc"]],
         plot1 = function() private$.items[["plot1"]],
+        plot3 = function() private$.items[["plot3"]],
         plot2 = function() private$.items[["plot2"]]),
     private = list(),
     public=list(
@@ -131,7 +156,21 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "group",
-                    "angle")))
+                    "angle",
+                    "points",
+                    "ci")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot3",
+                title="Z plot",
+                visible="(plot3)",
+                renderFun=".plot3",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "angle",
+                    "points",
+                    "ci")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -142,7 +181,8 @@ profileResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "vars",
                     "group",
                     "angle",
-                    "me")))}))
+                    "me",
+                    "points")))}))
 
 profileBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "profileBase",
@@ -177,11 +217,15 @@ profileBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   where 0 degrees represents completely horizontal labels.
 #' @param plot1 .
 #' @param plot2 .
+#' @param plot3 .
+#' @param points .
+#' @param ci .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
@@ -200,7 +244,10 @@ profile <- function(
     me = TRUE,
     angle = 0,
     plot1 = FALSE,
-    plot2 = FALSE) {
+    plot2 = FALSE,
+    plot3 = FALSE,
+    points = FALSE,
+    ci = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("profile requires jmvcore to be installed (restart may be required)")
@@ -222,7 +269,10 @@ profile <- function(
         me = me,
         angle = angle,
         plot1 = plot1,
-        plot2 = plot2)
+        plot2 = plot2,
+        plot3 = plot3,
+        points = points,
+        ci = ci)
 
     analysis <- profileClass$new(
         options = options,

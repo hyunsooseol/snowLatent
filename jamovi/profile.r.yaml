@@ -9,9 +9,9 @@ items:
       title: 'Instructions'
       type: Html
       visible: True
-      
+
     - name:  mc
-      title: 'Variable means across group' 
+      title: 'Variable means across group'
       type:  Table
       visible: (mc)
       clearWith:
@@ -34,6 +34,20 @@ items:
             - vars
             - group
             - angle
+            - points
+            - ci
+
+    - name: plot3
+      title: 'Z plot'
+      type: Image
+      visible: (plot3)
+      renderFun: .plot3
+      clearWith:
+            - vars
+            - group
+            - angle
+            - points
+            - ci
 
     - name: plot2
       title: 'Box plot'
@@ -45,5 +59,6 @@ items:
             - group
             - angle
             - me
+            - points
 
 ...

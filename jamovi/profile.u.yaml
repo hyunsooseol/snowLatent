@@ -37,6 +37,13 @@ children:
             children:
               - type: CheckBox
                 name: mc
+          - type: Label
+            label: "Plot options"
+            children:
+              - type: CheckBox
+                name: points
+              - type: CheckBox
+                name: ci
       - type: LayoutBox
         margin: large
         cell:
@@ -50,6 +57,8 @@ children:
               - type: CheckBox
                 name: plot1
               - type: CheckBox
+                name: plot3
+              - type: CheckBox
                 name: plot2
                 children:
                   - type: CheckBox
@@ -60,4 +69,4 @@ children:
                 suggestedValues:
                   - value: 0
                   - value: 45
-                  - value: 90         
+                  - value: 90

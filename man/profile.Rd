@@ -12,7 +12,10 @@ profile(
   me = TRUE,
   angle = 0,
   plot1 = FALSE,
-  plot2 = FALSE
+  plot2 = FALSE,
+  plot3 = FALSE,
+  points = FALSE,
+  ci = FALSE
 )
 }
 \arguments{
@@ -32,6 +35,12 @@ where 0 degrees represents completely horizontal labels.}
 \item{plot1}{.}
 
 \item{plot2}{.}
+
+\item{plot3}{.}
+
+\item{points}{.}
+
+\item{ci}{.}
 }
 \value{
 A results object containing:
@@ -39,6 +48,7 @@ A results object containing:
   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
   \code{results$mc} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 }
 
