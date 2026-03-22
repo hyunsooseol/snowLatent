@@ -62,7 +62,8 @@ A results object containing:
   \code{results$post} \tab \tab \tab \tab \tab an output \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
   \code{results$member} \tab \tab \tab \tab \tab an output \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$pi} \tab \tab \tab \tab \tab a table \cr
+  \code{results$rho} \tab \tab \tab \tab \tab a table \cr
   \code{results$reg1} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr

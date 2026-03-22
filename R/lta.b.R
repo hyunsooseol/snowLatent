@@ -105,6 +105,426 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           latent_names <- .get_latent_names(factors)
           step_labels <- .make_step_labels(latent_names)
+          .format_class_label <- function(x) {
+            x <- as.character(x)
+            ifelse(grepl("^Class\\s*", x, ignore.case = TRUE), x, paste("Class", x))
+          }
+          
+          .pi_to_long <- function(lta_obj, latent_names) {
+            par <- slca::param(lta_obj)
+            pi_raw <- par$pi
+            
+            if (is.null(pi_raw))
+              return(NULL)
+            
+            if (is.list(pi_raw)) {
+              if (length(pi_raw) >= 1 && is.numeric(pi_raw[[1]])) {
+                pi_vec <- pi_raw[[1]]
+              } else {
+                pi_vec <- unlist(pi_raw, use.names = TRUE)
+              }
+            } else {
+              pi_vec <- pi_raw
+            }
+            
+            pi_vec <- as.numeric(pi_vec)
+            class_names <- names(pi_raw)
+            
+            if (is.null(class_names) || length(class_names) != length(pi_vec) ||
+                any(class_names == "")) {
+              class_names <- seq_along(pi_vec)
+            }
+            
+            data.frame(
+              time  = latent_names[1],
+              class = .format_class_label(class_names),
+              prob  = pi_vec,
+              stringsAsFactors = FALSE
+            )
+          }
+          
+          .tau_to_long <- function(lta_obj, step_labels) {
+            par <- slca::param(lta_obj)
+            tau <- par$tau
+            
+            if (is.null(tau) || length(tau) == 0)
+              return(NULL)
+            
+            out <- list()
+            idx <- 1
+            
+            for (s in seq_along(tau)) {
+              tau_mat <- tau[[s]]
+              
+              if (is.null(tau_mat) || is.null(dim(tau_mat)))
+                next
+              
+              rn <- rownames(tau_mat)  # child = To
+              cn <- colnames(tau_mat)  # parent = From
+              
+              if (is.null(rn))
+                rn <- as.character(seq_len(nrow(tau_mat)))
+              if (is.null(cn))
+                cn <- as.character(seq_len(ncol(tau_mat)))
+              
+              step_lab <- if (length(step_labels) >= s)
+                step_labels[s]
+              else
+                paste0("L", s, " \u2192 L", s + 1)
+              
+              for (i in seq_len(nrow(tau_mat))) {
+                for (j in seq_len(ncol(tau_mat))) {
+                  out[[idx]] <- data.frame(
+                    step = step_lab,
+                    from = cn[j],
+                    to   = rn[i],
+                    prob = as.numeric(tau_mat[i, j]),
+                    stringsAsFactors = FALSE
+                  )
+                  idx <- idx + 1
+                }
+              }
+            }
+            
+            if (length(out) == 0)
+              return(NULL)
+            
+            do.call(rbind, out)
+          }
+          
+          .rho_to_long <- function(lta_obj, latent_names, factors) {
+            par <- slca::param(lta_obj)
+            rho <- par$rho
+            
+            if (is.null(rho) || length(rho) == 0)
+              return(NULL)
+            
+            ntime <- length(rho)
+            time_labels <- latent_names
+            if (length(time_labels) < ntime)
+              time_labels <- paste0("L", seq_len(ntime))
+            
+            out <- list()
+            idx <- 1
+            
+            for (t in seq_len(ntime)) {
+              rho_mat <- rho[[t]]
+              if (is.null(rho_mat) || is.null(dim(rho_mat)))
+                next
+              
+              rn <- rownames(rho_mat)
+              if (is.null(rn))
+                rn <- as.character(seq_len(nrow(rho_mat)))
+              
+              cn <- colnames(rho_mat)
+              if (is.null(cn))
+                cn <- as.character(seq_len(ncol(rho_mat)))
+              
+              vars_t <- factors[[min(t, length(factors))]][["vars"]]
+              if (is.null(vars_t))
+                vars_t <- character()
+              
+              current_item <- NA_character_
+              current_var  <- NA_character_
+              row_info <- vector("list", length(rn))
+              
+              for (r in seq_along(rn)) {
+                rr <- trimws(as.character(rn[r]))
+                hit <- regmatches(rr, regexec("^(.+?)\\((V\\d+)\\)$", rr))[[1]]
+                
+                if (length(hit) == 3) {
+                  response_label <- trimws(hit[2])
+                  current_item   <- hit[3]
+                  
+                  item_num <- suppressWarnings(as.integer(sub("^V", "", current_item)))
+                  if (!is.na(item_num) && item_num >= 1 && item_num <= length(vars_t))
+                    current_var <- vars_t[item_num]
+                  else
+                    current_var <- current_item
+                } else {
+                  response_label <- rr
+                }
+                
+                if (is.na(current_item) || current_item == "")
+                  current_item <- paste0("V", r)
+                
+                if (is.na(current_var) || current_var == "")
+                  current_var <- current_item
+                
+                row_info[[r]] <- data.frame(
+                  time     = time_labels[t],
+                  item     = current_item,
+                  variable = current_var,
+                  response = response_label,
+                  stringsAsFactors = FALSE
+                )
+              }
+              
+              row_info <- do.call(rbind, row_info)
+              
+              for (c in seq_along(cn)) {
+                tmp <- row_info
+                tmp$class <- .format_class_label(cn[c])
+                tmp$prob  <- as.numeric(rho_mat[, c])
+                tmp <- tmp[, c("time", "item", "variable", "response", "class", "prob")]
+                out[[idx]] <- tmp
+                idx <- idx + 1
+              }
+            }
+            
+            if (length(out) == 0)
+              return(NULL)
+            
+            do.call(rbind, out)
+          }
+          
+          .fill_noninv_tables <- function(lta_obj, latent_names, step_labels, factors) {
+            model_label <- "Non-invariant"
+            
+            # section header
+            self$results$text3$setContent(
+              paste0(
+                "<div style='margin: 0 0 8px 0;'>",
+                "<b>Non-invariant model results</b><br>",
+                "Initial class probabilities, transition probabilities, and response probabilities are reported below.",
+                "</div>"
+              )
+            )
+            
+            # PI
+            pi_df <- .pi_to_long(lta_obj, latent_names)
+            if (!is.null(pi_df) && nrow(pi_df) > 0) {
+              tab <- self$results$pi_noninv
+              for (i in seq_len(nrow(pi_df))) {
+                tab$addRow(
+                  rowKey = paste0("pi_noninv_", i),
+                  values = list(
+                    time  = pi_df$time[i],
+                    class = pi_df$class[i],
+                    prob  = pi_df$prob[i]
+                  )
+                )
+              }
+            }
+            # TAU
+            tau_df <- .tau_to_long(lta_obj, step_labels)
+            if (!is.null(tau_df) && nrow(tau_df) > 0) {
+              tab <- self$results$tau_noninv
+              for (i in seq_len(nrow(tau_df))) {
+                tab$addRow(
+                  rowKey = paste0(
+                    "tau_noninv_",
+                    i, "_",
+                    as.character(tau_df$step[i]), "_",
+                    as.character(tau_df$from[i]), "_",
+                    as.character(tau_df$to[i])
+                  ),
+                  values = list(
+                    transition = as.character(tau_df$step[i]),
+                    from       = .format_class_label(as.character(tau_df$from[i])),
+                    to         = .format_class_label(as.character(tau_df$to[i])),
+                    prob       = as.numeric(tau_df$prob[i])
+                  )
+                )
+              }
+            }
+            # RHO (wide format with dynamic class columns)
+            rho_long <- .rho_to_long(lta_obj, latent_names, factors)
+            if (!is.null(rho_long) && nrow(rho_long) > 0) {
+              tab <- self$results$rho_noninv
+              
+              classes <- unique(rho_long$class)
+              
+              for (cls in classes) {
+                col_name <- paste0("class_", gsub("\\s+", "", cls))
+                tab$addColumn(
+                  name = col_name,
+                  title = cls,
+                  type = "number"
+                )
+              }
+              
+              key_df <- unique(rho_long[, c("time", "item", "variable", "response")])
+              key_df <- key_df[
+                order(
+                  key_df$time,
+                  key_df$item,
+                  suppressWarnings(as.numeric(key_df$response))
+                ),
+                , drop = FALSE
+              ]
+              
+              for (cls in classes) {
+                col_name <- paste0("class_", gsub("\\s+", "", cls))
+                key_df[[col_name]] <- NA_real_
+              }
+              
+              for (i in seq_len(nrow(rho_long))) {
+                rr <- rho_long[i, ]
+                
+                hit <- which(
+                    key_df$time     == rr$time &
+                    key_df$item     == rr$item &
+                    key_df$variable == rr$variable &
+                    key_df$response == rr$response
+                )
+                
+                if (length(hit) != 1)
+                  next
+                
+                col_name <- paste0("class_", gsub("\\s+", "", rr$class))
+                key_df[hit, col_name] <- rr$prob
+              }
+              
+              for (i in seq_len(nrow(key_df))) {
+                values <- list(
+                  time     = key_df$time[i],
+                  item     = key_df$item[i],
+                  variable = key_df$variable[i],
+                  response = key_df$response[i]
+                )
+                
+                for (cls in classes) {
+                  col_name <- paste0("class_", gsub("\\s+", "", cls))
+                  values[[col_name]] <- key_df[[col_name]][i]
+                }
+                
+                tab$addRow(
+                  rowKey = paste0(
+                    "rho_noninv_", i, "_",
+                    key_df$time[i], "_",
+                    key_df$item[i], "_",
+                    key_df$response[i]
+                  ),
+                  values = values
+                )
+              }
+            }
+    }
+          
+          .fill_inv_tables <- function(lta_obj, latent_names, step_labels, factors) {
+            
+            self$results$text4$setContent(
+              paste0(
+                "<div style='margin: 0 0 8px 0;'>",
+                "<b>Measurement invariance model results</b><br>",
+                "Initial class probabilities, transition probabilities, and response probabilities are reported below.",
+                "</div>"
+              )
+            )
+            
+            # PI
+            pi_df <- .pi_to_long(lta_obj, latent_names)
+            if (!is.null(pi_df) && nrow(pi_df) > 0) {
+              tab <- self$results$pi_inv
+              for (i in seq_len(nrow(pi_df))) {
+                tab$addRow(
+                  rowKey = paste0("pi_inv_", i),
+                  values = list(
+                    time  = pi_df$time[i],
+                    class = pi_df$class[i],
+                    prob  = pi_df$prob[i]
+                  )
+                )
+              }
+            }
+            
+            # TAU
+            tau_df <- .tau_to_long(lta_obj, step_labels)
+            if (!is.null(tau_df) && nrow(tau_df) > 0) {
+              tab <- self$results$tau_inv
+              for (i in seq_len(nrow(tau_df))) {
+                tab$addRow(
+                  rowKey = paste0(
+                    "tau_inv_",
+                    i, "_",
+                    as.character(tau_df$step[i]), "_",
+                    as.character(tau_df$from[i]), "_",
+                    as.character(tau_df$to[i])
+                  ),
+                  values = list(
+                    transition = as.character(tau_df$step[i]),
+                    from       = .format_class_label(as.character(tau_df$from[i])),
+                    to         = .format_class_label(as.character(tau_df$to[i])),
+                    prob       = as.numeric(tau_df$prob[i])
+                  )
+                )
+              }
+            }
+            # RHO (wide + dynamic columns)
+            rho_long <- .rho_to_long(lta_obj, latent_names, factors)
+            if (!is.null(rho_long) && nrow(rho_long) > 0) {
+              tab <- self$results$rho_inv
+              
+              classes <- unique(rho_long$class)
+              
+              for (cls in classes) {
+                col_name <- paste0("class_", gsub("\\s+", "", cls))
+                tab$addColumn(
+                  name  = col_name,
+                  title = cls,
+                  type  = "number"
+                )
+              }
+              
+              key_df <- unique(rho_long[, c("time", "item", "variable", "response")])
+              key_df <- key_df[
+                order(
+                  key_df$time,
+                  key_df$item,
+                  suppressWarnings(as.numeric(key_df$response))
+                ),
+                , drop = FALSE
+              ]
+              
+              for (cls in classes) {
+                col_name <- paste0("class_", gsub("\\s+", "", cls))
+                key_df[[col_name]] <- NA_real_
+              }
+              
+              for (i in seq_len(nrow(rho_long))) {
+                rr <- rho_long[i, ]
+                
+                hit <- which(
+                  key_df$time     == rr$time &
+                    key_df$item     == rr$item &
+                    key_df$variable == rr$variable &
+                    key_df$response == rr$response
+                )
+                
+                if (length(hit) != 1)
+                  next
+                
+                col_name <- paste0("class_", gsub("\\s+", "", rr$class))
+                key_df[hit, col_name] <- rr$prob
+              }
+              
+              for (i in seq_len(nrow(key_df))) {
+                values <- list(
+                  time     = key_df$time[i],
+                  item     = key_df$item[i],
+                  variable = key_df$variable[i],
+                  response = key_df$response[i]
+                )
+                
+                for (cls in classes) {
+                  col_name <- paste0("class_", gsub("\\s+", "", cls))
+                  values[[col_name]] <- key_df[[col_name]][i]
+                }
+                
+                tab$addRow(
+                  rowKey = paste0(
+                    "rho_inv_", i, "_",
+                    key_df$time[i], "_",
+                    key_df$item[i], "_",
+                    key_df$response[i]
+                  ),
+                  values = values
+                )
+              }
+            }
+          }
+          
           
           # ---- helper: tau(list of matrices) -> stayer/mover summary
           # NOTE: stayer is a "rate" computed as mean(diag(tau)) = sum(diag)/K
@@ -159,22 +579,27 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             set.seed(1234)
             obj2 <- slca::slca(formula = form1) %>%
               slca::estimate(data = data)
-            par2 <- slca::param(obj2)
             
-            self$results$text3$setContent(par2)
+            .fill_noninv_tables(
+              lta_obj = obj2,
+              latent_names = latent_names,
+              step_labels = step_labels,
+              factors = factors
+            )
           }
           
           if (isTRUE(self$options$par3)) {
-            cons <- self$options$cons
-            cons1 <- unlist(strsplit(cons, ","))
             
-            library(magrittr)
-            set.seed(1234)
-            obj3 <- slca::slca(formula = form1, constraints = cons1) %>%
-              slca::estimate(data = data)
-            par3 <- slca::param(obj3)
+            if (!exists("obj3")) {
+              obj3 <- .fit_obj3()
+            }
             
-            self$results$text4$setContent(par3)
+            .fill_inv_tables(
+              lta_obj = obj3,
+              latent_names = latent_names,
+              step_labels = step_labels,
+              factors = factors
+            )
           }
           
           if (isTRUE(self$options$fit1)) {
@@ -221,39 +646,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           # plot2 = invariant (obj3)      [forced]
           # facet: L1→L2, L2→L3 ... auto from latent labels
           # -------------------------------------------------
-          .tau_to_long <- function(lta_obj, step_labels) {
-            par <- slca::param(lta_obj)
-            tau <- par$tau
-            if (is.null(tau) || length(tau) == 0)
-              return(NULL)
-            
-            nstep <- length(tau)
-            if (length(step_labels) != nstep)
-              step_labels <- paste0("T", seq_len(nstep), "\u2192T", seq_len(nstep) + 1)
-            
-            out <- vector("list", nstep)
-            
-            for (i in seq_len(nstep)) {
-              tau_mat <- tau[[i]]
-              tmp <- as.data.frame(as.table(tau_mat))
-              colnames(tmp) <- c("child", "parent", "prob")
-              
-              # ✅ 핵심: 클래스 순서를 숫자 기준으로 강제
-              k_from <- ncol(tau_mat)
-              k_to   <- nrow(tau_mat)
-              
-              tmp$from <- factor(tmp$parent, levels = as.character(seq_len(k_from)))
-              tmp$to   <- factor(tmp$child,  levels = as.character(seq_len(k_to)))
-              
-              tmp$step <- factor(step_labels[i], levels = step_labels)
-              tmp <- tmp[, c("step", "from", "to", "prob")]
-              out[[i]] <- tmp
-            }
-            
-            do.call(rbind, out)
-          }
-          
-          
+
           if (isTRUE(self$options$plot1)) {
             # 강제: obj2 (non-invariant)
             obj2_for_plot <- NULL

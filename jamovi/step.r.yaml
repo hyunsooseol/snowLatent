@@ -98,9 +98,34 @@ items:
         - vars
         - nc
 
-    - name:  text1
-      title: ''
-      type:  Preformatted
+    - name: pi
+      title: 'Initial class probabilities'
+      type: Table
+      visible: (par)
+      clearWith:
+        - factors
+        - vars
+        - nc
+      columns:
+        - name: label
+          title: ''
+          type: text
+
+    - name: rho
+      title: 'Response probabilities'
+      type: Table
+      visible: (par)
+      clearWith:
+        - factors
+        - vars
+        - nc
+      columns:
+        - name: item
+          title: Item
+          type: text
+        - name: response
+          title: Response
+          type: text 
 
     - name: reg1
       title: 'Logistic regression'

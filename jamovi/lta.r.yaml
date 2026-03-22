@@ -48,13 +48,158 @@ items:
           type: number
           format: zto,pvalue
 
-    - name:  text3
+    - name: text3
       title: 'LTA with non-invariant model'
-      type:  Preformatted
+      type: Html
+      visible: (par2)
 
-    - name:  text4
+    - name: pi_noninv
+      title: 'Initial class probabilities (Non-invariant)'
+      type: Table
+      visible: (par2)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: time
+          title: Time
+          type: text
+        - name: class
+          title: Class
+          type: text
+        - name: prob
+          title: Probability
+          type: number
+          format: zto
+
+    - name: tau_noninv
+      title: 'Transition probabilities (Non-invariant)'
+      type: Table
+      visible: (par2)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: transition
+          title: Transition
+          type: text
+        - name: from
+          title: From
+          type: text
+        - name: to
+          title: To
+          type: text
+        - name: prob
+          title: Probability
+          type: number
+          format: zto
+
+    - name: rho_noninv
+      title: 'Response probabilities (Non-invariant)'
+      type: Table
+      visible: (par2)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: time
+          title: Time
+          type: text
+        - name: item
+          title: Item
+          type: text
+        - name: variable
+          title: Variable
+          type: text
+        - name: response
+          title: Response
+          type: text
+
+    - name: text4
       title: 'LTA with measurement invariance'
-      type:  Preformatted
+      type: Html
+      visible: (par3)
+
+    - name: pi_inv
+      title: 'Initial class probabilities (Invariant)'
+      type: Table
+      visible: (par3)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: time
+          title: Time
+          type: text
+        - name: class
+          title: Class
+          type: text
+        - name: prob
+          title: Probability
+          type: number
+          format: zto
+
+    - name: tau_inv
+      title: 'Transition probabilities (Invariant)'
+      type: Table
+      visible: (par3)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: transition
+          title: Transition
+          type: text
+        - name: from
+          title: From
+          type: text
+        - name: to
+          title: To
+          type: text
+        - name: prob
+          title: Probability
+          type: number
+          format: zto
+
+    - name: rho_inv
+      title: 'Response probabilities (Invariant)'
+      type: Table
+      visible: (par3)
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+      columns:
+        - name: time
+          title: Time
+          type: text
+        - name: item
+          title: Item
+          type: text
+        - name: variable
+          title: Variable
+          type: text
+        - name: response
+          title: Response
+          type: text
+
 
     - name:  plot1
       title: 'Transition plot(Non-invariant)'

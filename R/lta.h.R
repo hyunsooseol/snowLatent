@@ -176,7 +176,13 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         instructions = function() private$.items[["instructions"]],
         fit1 = function() private$.items[["fit1"]],
         text3 = function() private$.items[["text3"]],
+        pi_noninv = function() private$.items[["pi_noninv"]],
+        tau_noninv = function() private$.items[["tau_noninv"]],
+        rho_noninv = function() private$.items[["rho_noninv"]],
         text4 = function() private$.items[["text4"]],
+        pi_inv = function() private$.items[["pi_inv"]],
+        tau_inv = function() private$.items[["tau_inv"]],
+        rho_inv = function() private$.items[["rho_inv"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         tau = function() private$.items[["tau"]],
@@ -242,14 +248,180 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="p", 
                         `type`="number", 
                         `format`="zto,pvalue"))))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Html$new(
                 options=options,
                 name="text3",
-                title="LTA with non-invariant model"))
-            self$add(jmvcore::Preformatted$new(
+                title="LTA with non-invariant model",
+                visible="(par2)"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="pi_noninv",
+                title="Initial class probabilities (Non-invariant)",
+                visible="(par2)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="time", 
+                        `title`="Time", 
+                        `type`="text"),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="prob", 
+                        `title`="Probability", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="tau_noninv",
+                title="Transition probabilities (Non-invariant)",
+                visible="(par2)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="transition", 
+                        `title`="Transition", 
+                        `type`="text"),
+                    list(
+                        `name`="from", 
+                        `title`="From", 
+                        `type`="text"),
+                    list(
+                        `name`="to", 
+                        `title`="To", 
+                        `type`="text"),
+                    list(
+                        `name`="prob", 
+                        `title`="Probability", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rho_noninv",
+                title="Response probabilities (Non-invariant)",
+                visible="(par2)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="time", 
+                        `title`="Time", 
+                        `type`="text"),
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text"),
+                    list(
+                        `name`="variable", 
+                        `title`="Variable", 
+                        `type`="text"),
+                    list(
+                        `name`="response", 
+                        `title`="Response", 
+                        `type`="text"))))
+            self$add(jmvcore::Html$new(
                 options=options,
                 name="text4",
-                title="LTA with measurement invariance"))
+                title="LTA with measurement invariance",
+                visible="(par3)"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="pi_inv",
+                title="Initial class probabilities (Invariant)",
+                visible="(par3)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="time", 
+                        `title`="Time", 
+                        `type`="text"),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="text"),
+                    list(
+                        `name`="prob", 
+                        `title`="Probability", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="tau_inv",
+                title="Transition probabilities (Invariant)",
+                visible="(par3)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="transition", 
+                        `title`="Transition", 
+                        `type`="text"),
+                    list(
+                        `name`="from", 
+                        `title`="From", 
+                        `type`="text"),
+                    list(
+                        `name`="to", 
+                        `title`="To", 
+                        `type`="text"),
+                    list(
+                        `name`="prob", 
+                        `title`="Probability", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rho_inv",
+                title="Response probabilities (Invariant)",
+                visible="(par3)",
+                refs="slca",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons"),
+                columns=list(
+                    list(
+                        `name`="time", 
+                        `title`="Time", 
+                        `type`="text"),
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text"),
+                    list(
+                        `name`="variable", 
+                        `title`="Variable", 
+                        `type`="text"),
+                    list(
+                        `name`="response", 
+                        `title`="Response", 
+                        `type`="text"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot1",
@@ -445,8 +617,14 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit1} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$text3} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$pi_noninv} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$tau_noninv} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rho_noninv} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$text4} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$pi_inv} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$tau_inv} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rho_inv} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$tau} \tab \tab \tab \tab \tab a table \cr

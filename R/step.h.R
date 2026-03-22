@@ -187,7 +187,8 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$.items[["post"]],
         reg = function() private$.items[["reg"]],
         member = function() private$.items[["member"]],
-        text1 = function() private$.items[["text1"]],
+        pi = function() private$.items[["pi"]],
+        rho = function() private$.items[["rho"]],
         reg1 = function() private$.items[["reg1"]],
         plot = function() private$.items[["plot"]],
         plot1 = function() private$.items[["plot1"]]),
@@ -303,10 +304,38 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "factors",
                     "vars",
                     "nc")))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="text1",
-                title=""))
+                name="pi",
+                title="Initial class probabilities",
+                visible="(par)",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="label", 
+                        `title`="", 
+                        `type`="text"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="rho",
+                title="Response probabilities",
+                visible="(par)",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text"),
+                    list(
+                        `name`="response", 
+                        `title`="Response", 
+                        `type`="text"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="reg1",
@@ -427,7 +456,8 @@ stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$post} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$member} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$pi} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$rho} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$reg1} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr

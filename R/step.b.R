@@ -42,15 +42,13 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
           )
         ))
-       
+        
         if (self$options$fit)
           self$results$fit$setNote("Note", "Goodness of fit indices for the latent class model.")
         if (self$options$reg)
           self$results$reg$setNote("Note",
                                    "It utilizes logistic regression and employs a three-step approach.")
-
-
-        },
+      },
       
       # Helper function to create and estimate model (for reuse)
       .getModel = function(data, formula) {
@@ -92,8 +90,146 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         return(private$.mem)
       },
       
+      # Add dynamic class columns to a jamovi table
+      .addClassColumns = function(tab, nclass) {
+        for (k in seq_len(nclass)) {
+          nm <- paste0("class", k)
+          if (is.null(tab[[nm]])) {
+            tab$addColumn(
+              name = nm,
+              title = paste("Class", k),
+              type = "number"
+            )
+          }
+        }
+      },
+      
+      # Convert parameter object to text lines
+      .extractParText = function(par) {
+        txt <- capture.output(print(par))
+        txt <- gsub("\t", " ", txt)
+        txt <- txt[nzchar(trimws(txt))]
+        txt
+      },
+      
+      # Parse PI section into wide format
+      .parsePIwide = function(txt) {
+        pi_start  <- grep("^PI\\s*:", txt)
+        rho_start <- grep("^RHO\\s*:", txt)
+        
+        if (length(pi_start) == 0 || length(rho_start) == 0 || rho_start[1] <= pi_start[1])
+          return(NULL)
+        
+        block <- txt[(pi_start[1] + 1):(rho_start[1] - 1)]
+        block <- block[nzchar(trimws(block))]
+        
+        cand <- block[grepl("^[[:space:][:digit:].]+$", block)]
+        if (length(cand) == 0)
+          return(NULL)
+        
+        vals <- scan(text = cand[length(cand)], quiet = TRUE)
+        if (length(vals) == 0)
+          return(NULL)
+        
+        out <- data.frame(label = "Initial probability", stringsAsFactors = FALSE)
+        for (k in seq_along(vals))
+          out[[paste0("class", k)]] <- as.numeric(vals[k])
+        
+        out
+      },
+      
+      # Parse RHO section into wide format
+      .parseRHOwide = function(txt, vars = NULL) {
+        rho_start <- grep("^RHO\\s*:", txt)
+        if (length(rho_start) == 0)
+          return(NULL)
+        
+        block <- txt[(rho_start[1] + 1):length(txt)]
+        block <- block[nzchar(trimws(block))]
+        
+        # remove bottom mapping lines such as: V1 V2 V3 ... / L ...
+        block <- block[!grepl("^V[0-9]+(\\s+V[0-9]+)+\\s*$", trimws(block))]
+        block <- block[!grepl("^L\\s+", trimws(block))]
+        
+        # keep only lines from the header onward
+        class_idx <- grep("^\\s*class\\s*$", block)
+        if (length(class_idx) == 0)
+          return(NULL)
+        
+        block <- block[class_idx[1]:length(block)]
+        
+        # find class ids from a line like: "response   1   2   3"
+        hdr_idx <- grep("^\\s*response\\s+", block)
+        if (length(hdr_idx) == 0)
+          return(NULL)
+        
+        hdr_parts <- scan(text = block[hdr_idx[1]], what = character(), quiet = TRUE)
+        if (length(hdr_parts) < 2)
+          return(NULL)
+        
+        # first token is "response", remaining are class labels
+        class_ids <- hdr_parts[-1]
+        
+        # data lines start after the response/class header
+        dat_lines <- block[(hdr_idx[1] + 1):length(block)]
+        dat_lines <- dat_lines[nzchar(trimws(dat_lines))]
+        
+        rows <- list()
+        row_i <- 1
+        current_item <- NA
+        
+        for (ln in dat_lines) {
+          parts <- scan(text = ln, what = character(), quiet = TRUE)
+          if (length(parts) < 2)
+            next
+          
+          first <- parts[1]
+          
+          # new item line: 1(V1), 2(V1), 1(V2) ...
+          if (grepl("^[0-9]+\\(V[0-9]+\\)$", first)) {
+            response <- sub("\\(.*$", "", first)
+            current_item <- sub("^.*\\((V[0-9]+)\\)$", "\\1", first)
+            probs <- suppressWarnings(as.numeric(parts[-1]))
+          } else {
+            # continuation row for same item
+            response <- first
+            probs <- suppressWarnings(as.numeric(parts[-1]))
+          }
+          
+          if (is.na(current_item))
+            next
+          
+          if (length(probs) != length(class_ids))
+            next
+          
+          item_label <- current_item
+          if (!is.null(vars) && length(vars) > 0) {
+            idx <- suppressWarnings(as.integer(sub("^V", "", current_item)))
+            if (!is.na(idx) && idx >= 1 && idx <= length(vars))
+              item_label <- vars[idx]
+          }
+          
+          one <- data.frame(
+            item = item_label,
+            response = response,
+            stringsAsFactors = FALSE
+          )
+          
+          for (j in seq_along(class_ids))
+            one[[paste0("class", j)]] <- as.numeric(probs[j])
+          
+          rows[[row_i]] <- one
+          row_i <- row_i + 1
+        }
+        
+        if (length(rows) == 0)
+          return(NULL)
+        
+        do.call(rbind, rows)
+      },
+      
       .run = function() {
-
+        
         # Use cached data if available
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data
@@ -168,9 +304,51 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
         }
         
-        # Parameters output
+        # Parameters output -> wide jamovi tables
         if (isTRUE(self$options$par)) {
-          self$results$text1$setContent(par)
+          
+          txt <- private$.extractParText(par)
+          
+          # PI wide table
+          pi_df <- private$.parsePIwide(txt)
+          
+          if (!is.null(pi_df) && nrow(pi_df) > 0) {
+            pi_tab <- self$results$pi
+            
+            nclass_pi <- sum(grepl("^class[0-9]+$", names(pi_df)))
+            private$.addClassColumns(pi_tab, nclass_pi)
+            
+            vals <- list(label = pi_df$label[1])
+            for (k in seq_len(nclass_pi))
+              vals[[paste0("class", k)]] <- pi_df[[paste0("class", k)]][1]
+            
+            pi_tab$addRow(rowKey = 1, values = vals)
+          }
+          
+          # RHO wide table
+          rho_df <- private$.parseRHOwide(txt, vars = vars)
+          
+          if (!is.null(rho_df) && nrow(rho_df) > 0) {
+            rho_tab <- self$results$rho
+            
+            nclass_rho <- sum(grepl("^class[0-9]+$", names(rho_df)))
+            private$.addClassColumns(rho_tab, nclass_rho)
+            
+            for (i in seq_len(nrow(rho_df))) {
+              vals <- list(
+                item = rho_df$item[i],
+                response = rho_df$response[i]
+              )
+              
+              for (k in seq_len(nclass_rho))
+                vals[[paste0("class", k)]] <- rho_df[[paste0("class", k)]][i]
+              
+              rho_tab$addRow(
+                rowKey = i,
+                values = vals
+              )
+            }
+          }
         }
         
         # Goodness of fit output
@@ -361,7 +539,6 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
     )
   )
-
 
 # Example with R---
 
