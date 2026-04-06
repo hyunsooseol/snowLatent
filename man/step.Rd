@@ -11,6 +11,7 @@ step(
   regform = "L ~ Species",
   impu = "modal",
   method = "BCH",
+  run = FALSE,
   reg = FALSE,
   fit = FALSE,
   par = FALSE,
@@ -35,6 +36,8 @@ of the factor and the \code{vars} that belong to that factor}
 \item{impu}{.}
 
 \item{method}{.}
+
+\item{run}{.}
 
 \item{reg}{.}
 

@@ -13,6 +13,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             impu = "modal",
             method = "BCH",
             cons = "L1,L2,L3",
+            run = FALSE,
             reg = FALSE,
             par2 = FALSE,
             par3 = FALSE,
@@ -82,6 +83,10 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cons",
                 cons,
                 default="L1,L2,L3")
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..reg <- jmvcore::OptionBool$new(
                 "reg",
                 reg,
@@ -125,6 +130,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..impu)
             self$.addOption(private$..method)
             self$.addOption(private$..cons)
+            self$.addOption(private$..run)
             self$.addOption(private$..reg)
             self$.addOption(private$..par2)
             self$.addOption(private$..par3)
@@ -142,6 +148,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         impu = function() private$..impu$value,
         method = function() private$..method$value,
         cons = function() private$..cons$value,
+        run = function() private$..run$value,
         reg = function() private$..reg$value,
         par2 = function() private$..par2$value,
         par3 = function() private$..par3$value,
@@ -158,6 +165,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..impu = NA,
         ..method = NA,
         ..cons = NA,
+        ..run = NA,
         ..reg = NA,
         ..par2 = NA,
         ..par3 = NA,
@@ -604,6 +612,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param impu .
 #' @param method .
 #' @param cons .
+#' @param run .
 #' @param reg .
 #' @param par2 .
 #' @param par3 .
@@ -649,6 +658,7 @@ lta <- function(
     impu = "modal",
     method = "BCH",
     cons = "L1,L2,L3",
+    run = FALSE,
     reg = FALSE,
     par2 = FALSE,
     par3 = FALSE,
@@ -676,6 +686,7 @@ lta <- function(
         impu = impu,
         method = method,
         cons = cons,
+        run = run,
         reg = reg,
         par2 = par2,
         par3 = par3,

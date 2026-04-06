@@ -42,6 +42,10 @@ children:
             name: covs
             height: small
             isTarget: true
+  - type: LayoutBox
+    children:
+      - name: run
+        type: CheckBox
   - type: CollapseBox
     label: 'Latent Transition Analysis'
     collapsed: true

@@ -71,6 +71,11 @@ options:
           name:  'ML'  
       default: 'BCH'
 
+    - name: run
+      title: 'Run when ready'
+      type: Bool
+      default: FALSE
+
     - name: reg
       title: 'Coefficients'
       type: Bool

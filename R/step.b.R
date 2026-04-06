@@ -230,6 +230,10 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .run = function() {
         
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
         # Use cached data if available
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data

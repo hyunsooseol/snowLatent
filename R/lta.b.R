@@ -47,6 +47,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .run = function() {
         
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data
         }

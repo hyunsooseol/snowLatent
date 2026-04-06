@@ -12,6 +12,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             regform = "L ~ Species",
             impu = "modal",
             method = "BCH",
+            run = FALSE,
             reg = FALSE,
             fit = FALSE,
             par = FALSE,
@@ -77,6 +78,10 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "BCH",
                     "ML"),
                 default="BCH")
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..reg <- jmvcore::OptionBool$new(
                 "reg",
                 reg,
@@ -130,6 +135,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..regform)
             self$.addOption(private$..impu)
             self$.addOption(private$..method)
+            self$.addOption(private$..run)
             self$.addOption(private$..reg)
             self$.addOption(private$..member)
             self$.addOption(private$..post)
@@ -148,6 +154,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         regform = function() private$..regform$value,
         impu = function() private$..impu$value,
         method = function() private$..method$value,
+        run = function() private$..run$value,
         reg = function() private$..reg$value,
         member = function() private$..member$value,
         post = function() private$..post$value,
@@ -165,6 +172,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..regform = NA,
         ..impu = NA,
         ..method = NA,
+        ..run = NA,
         ..reg = NA,
         ..member = NA,
         ..post = NA,
@@ -440,6 +448,7 @@ stepBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param regform .
 #' @param impu .
 #' @param method .
+#' @param run .
 #' @param reg .
 #' @param fit .
 #' @param par .
@@ -478,6 +487,7 @@ step <- function(
     regform = "L ~ Species",
     impu = "modal",
     method = "BCH",
+    run = FALSE,
     reg = FALSE,
     fit = FALSE,
     par = FALSE,
@@ -504,6 +514,7 @@ step <- function(
         regform = regform,
         impu = impu,
         method = method,
+        run = run,
         reg = reg,
         fit = fit,
         par = par,

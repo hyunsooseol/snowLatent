@@ -12,6 +12,7 @@ lta(
   impu = "modal",
   method = "BCH",
   cons = "L1,L2,L3",
+  run = FALSE,
   reg = FALSE,
   par2 = FALSE,
   par3 = FALSE,
@@ -38,6 +39,8 @@ of the factor and the \code{vars} that belong to that factor}
 \item{method}{.}
 
 \item{cons}{.}
+
+\item{run}{.}
 
 \item{reg}{.}
 
