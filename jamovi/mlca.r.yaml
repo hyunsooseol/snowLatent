@@ -355,9 +355,50 @@ items:
               type: 'text'
               content: ($key)
 
-    - name: text3
+    # - name: text3
+    #   title: Logistic regression
+    #   type:  Preformatted 
+    - name: coTable
       title: Logistic regression
-      type:  Preformatted 
+      type: Table
+      visible: (co)
+      rows: 0
+      clearWith:
+        - vars
+        - nc
+        - group
+        - covs
+        - nclust
+
+      columns:
+        - name: level
+          title: Level
+          type: text
+        - name: cluster
+          title: Cluster
+          type: integer
+        - name: comparison
+          title: Comparison
+          type: text
+        - name: term
+          title: Term
+          type: text
+        - name: or
+          title: Odds ratio
+          type: number
+        - name: est
+          title: Estimate
+          type: number
+        - name: se
+          title: SE
+          type: number
+        - name: z
+          title: t
+          type: number
+        - name: p
+          title: p
+          type: number
+          format: zto,pvalue
 ...
 
 
