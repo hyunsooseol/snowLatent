@@ -262,13 +262,83 @@ items:
         - covs
         - angle
 
-    - name: text3
-      title: 'Logistic regression'
-      type:  Preformatted  
-      
-    - name: text1
-      title: Item response probability
-      type:  Preformatted 
+    # - name: text3
+    #   title: 'Logistic regression'
+    #   type:  Preformatted  
+
+    - name: coTable
+      title: Logistic regression
+      type: Table
+      visible: (co)
+      rows: 0
+      clearWith:
+        - vars
+        - nc
+        - group
+        - covs
+      columns:
+        - name: group
+          title: Group
+          type: text
+        - name: comparison
+          title: Comparison
+          type: text
+        - name: term
+          title: Term
+          type: text
+        - name: or
+          title: Odds ratio
+          type: number
+        - name: est
+          title: Estimate
+          type: number
+        - name: se
+          title: SE
+          type: number
+        - name: t
+          title: t
+          type: number
+        - name: p
+          title: p 
+          type: number
+          format: zto,pvalue
+
+    # - name: text1
+    #   title: Item response probability
+    #   type:  Preformatted 
+
+    - name: item
+      title: 'Item response probability'
+      type: Array
+      visible: (item)
+      items: (group)
+      clearWith:
+        - vars
+        - covs
+        - nc
+        - group
+      template:
+        title: Probability of $key
+        type: Array
+        items: (vars)
+        clearWith:
+          - vars
+          - covs
+          - nc
+          - group
+        template:
+          title: Probability of $key
+          type: Table
+          clearWith:
+            - vars
+            - covs
+            - nc
+            - group
+          columns:
+            - name: name
+              title: ''
+              type: text
+              content: ($key)
 
     - name:  text4
       title: Prevalence for level-1 class(gamma)

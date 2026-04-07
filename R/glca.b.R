@@ -185,10 +185,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         if (isTRUE(self$options$co)) {
-          #co <- lca$coefficient
-          co<- coef(lca)
+          co <- coef(lca)
           if (!is.null(co)) {
-            self$results$text3$setContent(co)
+            private$.populateCoTable(co)
           }
         }
         
@@ -243,7 +242,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             private$.modelCache[[itemKey]] <- lca[["param"]][["rho"]]
           }
           item <- private$.modelCache[[itemKey]]
-          self$results$text1$setContent(item)
+          private$.populateItemTables(item)
         }
         
         if (isTRUE(self$options$gamma)) {
@@ -625,6 +624,323 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           seed = 1
         )
         return(mglca3)
+      },
+      
+      .populateCoTable = function(co) {
+        table <- self$results$coTable
+        
+        as_num <- function(x) {
+          if (is.null(x))
+            return(NA_real_)
+          
+          if (length(x) == 0)
+            return(NA_real_)
+          
+          if (is.data.frame(x))
+            x <- x[[1]]
+          
+          x <- x[1]
+          
+          if (is.numeric(x))
+            return(as.numeric(x))
+          
+          x <- trimws(as.character(x))
+          x <- gsub(",", "", x)
+          
+          suppressWarnings({
+            out <- as.numeric(x)
+          })
+          if (!is.na(out))
+            return(out)
+          
+          x2 <- gsub("^[<>= ]+", "", x)
+          suppressWarnings(as.numeric(x2))
+        }
+        
+        norm_name <- function(x) {
+          x <- tolower(x)
+          x <- gsub("[[:space:]_.]+", "", x)
+          x
+        }
+        
+        fmt_comparison <- function(x) {
+          if (length(x) == 0 || is.null(x) || all(is.na(x)))
+            return(NA_character_)
+          
+          x <- x[1]
+          if (!nzchar(x))
+            return(NA_character_)
+          
+          x <- gsub("`", "", x, fixed = TRUE)
+          x <- gsub("\\^", "", x)
+          x <- gsub("Class([0-9]+)[[:space:]]*/[[:space:]]*([0-9]+)", "Class\\1 / \\2", x)
+          x
+        }
+        
+        find_col <- function(nms, type) {
+          nn <- norm_name(nms)
+          
+          if (type == "or") {
+            hit <- which(nn %in% c("oddsratio", "or"))
+          } else if (type == "est") {
+            hit <- which(nn %in% c("coefficient", "estimate", "coef"))
+          } else if (type == "se") {
+            hit <- which(nn %in% c("stderr", "stderror", "se"))
+          } else if (type == "stat") {
+            hit <- which(nn %in% c("tvalue", "zvalue", "waldz", "waldt"))
+          } else if (type == "p") {
+            hit <- which(grepl("^pr", nn) | nn %in% c("p", "pvalue"))
+          } else {
+            hit <- integer(0)
+          }
+          
+          if (length(hit) > 0)
+            return(nms[hit[1]])
+          
+          NULL
+        }
+        
+        add_df <- function(df, path) {
+          if (is.null(df) || !is.data.frame(df) || nrow(df) == 0)
+            return()
+          
+          rn <- rownames(df)
+          if (is.null(rn))
+            rn <- rep("", nrow(df))
+          
+          nms <- names(df)
+          
+          col_or   <- find_col(nms, "or")
+          col_est  <- find_col(nms, "est")
+          col_se   <- find_col(nms, "se")
+          col_stat <- find_col(nms, "stat")
+          col_p    <- find_col(nms, "p")
+          
+          group_hits <- path[nzchar(path) & !grepl("^Class", path)]
+          comp_hits  <- path[grepl("^Class", gsub("`", "", path))]
+          
+          group_name <- if (length(group_hits) > 0) group_hits[1] else NA_character_
+          comp_name  <- fmt_comparison(comp_hits)
+          
+          for (i in seq_len(nrow(df))) {
+            term_name <- rn[i]
+            if (is.null(term_name) || is.na(term_name) || !nzchar(term_name))
+              term_name <- paste0("Term", i)
+            
+            grp_label  <- if (!is.na(group_name) && nzchar(group_name)) group_name else "Group"
+            comp_label <- if (!is.na(comp_name) && nzchar(comp_name)) comp_name else "Comparison"
+            
+            table$addRow(
+              rowKey = paste(grp_label, comp_label, term_name, i, sep = "_"),
+              values = list(
+                group      = if (!is.na(group_name)) group_name else "",
+                comparison = if (!is.na(comp_name)) comp_name else "",
+                term       = term_name,
+                or         = if (!is.null(col_or))   as_num(df[[col_or]][i])   else NA_real_,
+                est        = if (!is.null(col_est))  as_num(df[[col_est]][i])  else NA_real_,
+                se         = if (!is.null(col_se))   as_num(df[[col_se]][i])   else NA_real_,
+                t          = if (!is.null(col_stat)) as_num(df[[col_stat]][i]) else NA_real_,
+                p          = if (!is.null(col_p))    as_num(df[[col_p]][i])    else NA_real_
+              )
+            )
+          }
+        }
+        
+        walk <- function(x, path = character()) {
+          if (is.data.frame(x)) {
+            add_df(x, path)
+            return(invisible(NULL))
+          }
+          
+          if (is.list(x)) {
+            nms <- names(x)
+            if (is.null(nms))
+              nms <- rep("", length(x))
+            
+            for (i in seq_along(x)) {
+              nm <- nms[i]
+              if (is.null(nm) || is.na(nm))
+                nm <- ""
+              walk(x[[i]], c(path, nm))
+            }
+          }
+        }
+        
+        walk(co)
+      },
+      
+      .populateItemTables = function(itemprob) {
+        tables <- self$results$item
+        
+        add_rows_only <- function(table, mat, group_name = NULL) {
+          if (is.null(table) || is.null(mat))
+            return()
+          
+          mat <- as.matrix(mat)
+          
+          rn <- rownames(mat)
+          if (is.null(rn))
+            rn <- paste("Class", seq_len(nrow(mat)))
+          
+          cn <- colnames(mat)
+          if (is.null(cn))
+            cn <- paste("Y =", seq_len(ncol(mat)))
+          
+          for (i in seq_len(nrow(mat))) {
+            row_label <- rn[i]
+            if (!is.null(group_name) && nzchar(group_name))
+              row_label <- paste0(group_name, ": ", row_label)
+            
+            row <- list()
+            row[["name"]] <- row_label
+            
+            for (j in seq_along(cn)) {
+              row[[paste0("y", j)]] <- mat[i, j]
+            }
+            
+            table$addRow(
+              rowKey = paste0(gsub("[^[:alnum:]_]+", "_", row_label), "_", i),
+              values = row
+            )
+          }
+        }
+        
+        add_columns_once <- function(table, cn) {
+          if (is.null(table) || is.null(cn))
+            return()
+          
+          for (j in seq_along(cn)) {
+            table$addColumn(
+              name = paste0("y", j),
+              title = cn[j],
+              type = "number"
+            )
+          }
+        }
+        
+        get_var_table <- function(tables, v) {
+          first <- tryCatch(tables[[1]], error = function(e) NULL)
+          if (!is.null(first)) {
+            tb <- tryCatch(first[[v]], error = function(e) NULL)
+            if (!is.null(tb))
+              return(tb)
+          }
+          
+          tb <- tryCatch(tables[[v]], error = function(e) NULL)
+          if (!is.null(tb))
+            return(tb)
+          
+          NULL
+        }
+        
+        ## 1) rho가 배열인 경우
+        if (is.array(itemprob) && length(dim(itemprob)) >= 3) {
+          dn <- dimnames(itemprob)
+          dims <- dim(itemprob)
+          
+          class_names <- if (!is.null(dn[[1]])) dn[[1]] else paste("Class", seq_len(dims[1]))
+          resp_names  <- if (!is.null(dn[[2]])) dn[[2]] else paste("Y =", seq_len(dims[2]))
+          var_names   <- if (length(dn) >= 3 && !is.null(dn[[3]])) dn[[3]] else self$options$vars
+          
+          if (length(dim(itemprob)) >= 4) {
+            group_names <- if (!is.null(dn[[4]])) dn[[4]] else paste("Group", seq_len(dims[4]))
+            
+            for (v in seq_along(var_names)) {
+              table <- get_var_table(tables, v)
+              if (is.null(table))
+                next
+              
+              ## 열은 한 번만 추가
+              add_columns_once(table, resp_names)
+              
+              ## 그룹별 행만 누적
+              for (g in seq_along(group_names)) {
+                mat <- itemprob[, , v, g, drop = FALSE]
+                dim(mat) <- c(dims[1], dims[2])
+                rownames(mat) <- class_names
+                colnames(mat) <- resp_names
+                
+                add_rows_only(table, mat, group_name = group_names[g])
+              }
+            }
+          } else {
+            for (v in seq_along(var_names)) {
+              table <- get_var_table(tables, v)
+              if (is.null(table))
+                next
+              
+              mat <- itemprob[, , v, drop = FALSE]
+              dim(mat) <- c(dims[1], dims[2])
+              rownames(mat) <- class_names
+              colnames(mat) <- resp_names
+              
+              add_columns_once(table, resp_names)
+              add_rows_only(table, mat)
+            }
+          }
+          
+          return(invisible(NULL))
+        }
+        
+        ## 2) rho가 중첩 리스트인 경우: $GROUP$ITEM -> matrix
+        if (is.list(itemprob)) {
+          top_names <- names(itemprob)
+          
+          ## grouped structure
+          if (!is.null(top_names) && length(itemprob) > 0 &&
+              is.list(itemprob[[1]]) && !is.matrix(itemprob[[1]])) {
+            
+            for (v in seq_along(self$options$vars)) {
+              table <- get_var_table(tables, v)
+              if (is.null(table))
+                next
+              
+              ## 첫 non-null matrix로 열 제목 먼저 확보
+              first_mat <- NULL
+              for (g in seq_along(itemprob)) {
+                grp <- itemprob[[g]]
+                if (length(grp) >= v && !is.null(grp[[v]])) {
+                  first_mat <- as.matrix(grp[[v]])
+                  break
+                }
+              }
+              if (is.null(first_mat))
+                next
+              
+              cn <- colnames(first_mat)
+              if (is.null(cn))
+                cn <- paste("Y =", seq_len(ncol(first_mat)))
+              
+              add_columns_once(table, cn)
+              
+              ## 그룹별 행 누적
+              for (g in seq_along(itemprob)) {
+                grp_name <- if (!is.null(names(itemprob)) && nzchar(names(itemprob)[g])) names(itemprob)[g] else paste("Group", g)
+                grp <- itemprob[[g]]
+                if (length(grp) < v || is.null(grp[[v]]))
+                  next
+                
+                add_rows_only(table, grp[[v]], group_name = grp_name)
+              }
+            }
+            
+          } else {
+            ## non-grouped structure
+            for (v in seq_along(itemprob)) {
+              table <- get_var_table(tables, v)
+              if (is.null(table))
+                next
+              
+              mat <- as.matrix(itemprob[[v]])
+              cn <- colnames(mat)
+              if (is.null(cn))
+                cn <- paste("Y =", seq_len(ncol(mat)))
+              
+              add_columns_once(table, cn)
+              add_rows_only(table, mat)
+            }
+          }
+        }
       },
       
       .clearMemory = function() {

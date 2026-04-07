@@ -206,8 +206,8 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
-        text3 = function() private$.items[["text3"]],
-        text1 = function() private$.items[["text1"]],
+        coTable = function() private$.items[["coTable"]],
+        item = function() private$.items[["item"]],
         text4 = function() private$.items[["text4"]],
         text2 = function() private$.items[["text2"]]),
     private = list(),
@@ -504,14 +504,85 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "group",
                     "covs",
                     "angle")))
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="text3",
-                title="Logistic regression"))
-            self$add(jmvcore::Preformatted$new(
+                name="coTable",
+                title="Logistic regression",
+                visible="(co)",
+                rows=0,
+                clearWith=list(
+                    "vars",
+                    "nc",
+                    "group",
+                    "covs"),
+                columns=list(
+                    list(
+                        `name`="group", 
+                        `title`="Group", 
+                        `type`="text"),
+                    list(
+                        `name`="comparison", 
+                        `title`="Comparison", 
+                        `type`="text"),
+                    list(
+                        `name`="term", 
+                        `title`="Term", 
+                        `type`="text"),
+                    list(
+                        `name`="or", 
+                        `title`="Odds ratio", 
+                        `type`="number"),
+                    list(
+                        `name`="est", 
+                        `title`="Estimate", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number"),
+                    list(
+                        `name`="t", 
+                        `title`="t", 
+                        `type`="number"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))
+            self$add(jmvcore::Array$new(
                 options=options,
-                name="text1",
-                title="Item response probability"))
+                name="item",
+                title="Item response probability",
+                visible="(item)",
+                items="(group)",
+                clearWith=list(
+                    "vars",
+                    "covs",
+                    "nc",
+                    "group"),
+                template=jmvcore::Array$new(
+                    options=options,
+                    title="Probability of $key",
+                    items="(vars)",
+                    clearWith=list(
+                        "vars",
+                        "covs",
+                        "nc",
+                        "group"),
+                    template=jmvcore::Table$new(
+                        options=options,
+                        title="Probability of $key",
+                        clearWith=list(
+                            "vars",
+                            "covs",
+                            "nc",
+                            "group"),
+                        columns=list(
+                            list(
+                                `name`="name", 
+                                `title`="", 
+                                `type`="text", 
+                                `content`="($key)"))))))
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text4",
@@ -580,8 +651,8 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$coTable} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$item} \tab \tab \tab \tab \tab an array of arrays \cr
 #'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }

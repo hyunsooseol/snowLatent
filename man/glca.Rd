@@ -86,8 +86,8 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-  \code{results$text3} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text1} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$coTable} \tab \tab \tab \tab \tab a table \cr
+  \code{results$item} \tab \tab \tab \tab \tab an array of arrays \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 }
