@@ -30,21 +30,38 @@ children:
             isTarget: true
   - type: LayoutBox
     margin: large
-    style: inline
     children:
-      - type: Label
-        label: ''
-        margin: large
-        style: list-inline
+      - type: CheckBox
+        name: run
+  - type: CollapseBox
+    label: Model options
+    collapsed: false
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: small
+        stretchFactor: 1
         children:
-          - name: nc
-            type: TextBox
-            label: Class
-            format: number
-          - name: nclust
-            type: TextBox
-            label: Cluster
-            format: number
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: nc
+                type: TextBox
+                label: Class
+                format: number
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - name: nclust
+                type: TextBox
+                label: Cluster
+                format: number
   - type: CollapseBox
     label: Analysis
     margin: normal

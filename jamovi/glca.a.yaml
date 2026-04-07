@@ -40,6 +40,11 @@ options:
       min: 2
       default: 2
 
+    - name: run
+      title: 'Run when ready'
+      type: Bool
+      default: FALSE
+
     - name: fit
       title: 'Class fit'
       type: Bool

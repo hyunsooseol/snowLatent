@@ -10,6 +10,7 @@ glca(
   covs,
   group,
   nc = 2,
+  run = FALSE,
   fit = TRUE,
   mia = FALSE,
   mir = FALSE,
@@ -37,6 +38,8 @@ glca(
 \item{group}{.}
 
 \item{nc}{.}
+
+\item{run}{.}
 
 \item{fit}{.}
 

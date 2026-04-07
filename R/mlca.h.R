@@ -11,6 +11,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             nclust = 2,
+            run = FALSE,
             fit = TRUE,
             comp1 = FALSE,
             rel1 = FALSE,
@@ -64,6 +65,10 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nclust,
                 min=2,
                 default=2)
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -136,6 +141,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
             self$.addOption(private$..nclust)
+            self$.addOption(private$..run)
             self$.addOption(private$..fit)
             self$.addOption(private$..comp1)
             self$.addOption(private$..rel1)
@@ -159,6 +165,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         group = function() private$..group$value,
         nc = function() private$..nc$value,
         nclust = function() private$..nclust$value,
+        run = function() private$..run$value,
         fit = function() private$..fit$value,
         comp1 = function() private$..comp1$value,
         rel1 = function() private$..rel1$value,
@@ -181,6 +188,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..group = NA,
         ..nc = NA,
         ..nclust = NA,
+        ..run = NA,
         ..fit = NA,
         ..comp1 = NA,
         ..rel1 = NA,
@@ -644,6 +652,7 @@ mlcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param nc .
 #' @param nclust .
+#' @param run .
 #' @param fit .
 #' @param comp1 .
 #' @param rel1 .
@@ -697,6 +706,7 @@ mlca <- function(
     group,
     nc = 2,
     nclust = 2,
+    run = FALSE,
     fit = TRUE,
     comp1 = FALSE,
     rel1 = FALSE,
@@ -735,6 +745,7 @@ mlca <- function(
         group = group,
         nc = nc,
         nclust = nclust,
+        run = run,
         fit = fit,
         comp1 = comp1,
         rel1 = rel1,

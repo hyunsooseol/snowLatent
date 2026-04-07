@@ -45,6 +45,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
+        
         if (is.null(self$options$group) || is.null(self$options$vars) ||
             length(self$options$vars) < 3) return()
         

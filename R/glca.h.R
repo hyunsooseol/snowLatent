@@ -10,6 +10,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             covs = NULL,
             group = NULL,
             nc = 2,
+            run = FALSE,
             fit = TRUE,
             mia = FALSE,
             mir = FALSE,
@@ -57,6 +58,10 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
+            private$..run <- jmvcore::OptionBool$new(
+                "run",
+                run,
+                default=FALSE)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -124,6 +129,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..covs)
             self$.addOption(private$..group)
             self$.addOption(private$..nc)
+            self$.addOption(private$..run)
             self$.addOption(private$..fit)
             self$.addOption(private$..mia)
             self$.addOption(private$..mir)
@@ -145,6 +151,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         covs = function() private$..covs$value,
         group = function() private$..group$value,
         nc = function() private$..nc$value,
+        run = function() private$..run$value,
         fit = function() private$..fit$value,
         mia = function() private$..mia$value,
         mir = function() private$..mir$value,
@@ -165,6 +172,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..covs = NA,
         ..group = NA,
         ..nc = NA,
+        ..run = NA,
         ..fit = NA,
         ..mia = NA,
         ..mir = NA,
@@ -542,6 +550,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param covs .
 #' @param group .
 #' @param nc .
+#' @param run .
 #' @param fit .
 #' @param mia .
 #' @param mir .
@@ -590,6 +599,7 @@ glca <- function(
     covs,
     group,
     nc = 2,
+    run = FALSE,
     fit = TRUE,
     mia = FALSE,
     mir = FALSE,
@@ -626,6 +636,7 @@ glca <- function(
         covs = covs,
         group = group,
         nc = nc,
+        run = run,
         fit = fit,
         mia = mia,
         mir = mir,

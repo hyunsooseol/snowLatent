@@ -52,6 +52,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+        
+        if (!isTRUE(self$options$run))
+          return()
+        
         # 15%
         self$results$progressBarHTML$setContent(progressBarH(15, 100, 'Starting analysis...'))
         
