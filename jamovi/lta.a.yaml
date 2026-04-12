@@ -76,10 +76,13 @@ options:
       type: String
       default: 'L1,L2,L3'
  
+    # - name: run
+    #   title: 'Run when ready'
+    #   type: Bool
+    #   default: FALSE
     - name: run
-      title: 'Run when ready'
-      type: Bool
-      default: FALSE
+      type: Action
+      title: Run
 
     - name: reg
       title: 'Coefficients'

@@ -12,7 +12,7 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             regform = "L ~ Species",
             impu = "modal",
             method = "BCH",
-            run = FALSE,
+            run = NULL,
             reg = FALSE,
             fit = FALSE,
             par = FALSE,
@@ -78,10 +78,9 @@ stepOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "BCH",
                     "ML"),
                 default="BCH")
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..reg <- jmvcore::OptionBool$new(
                 "reg",
                 reg,
@@ -487,7 +486,7 @@ step <- function(
     regform = "L ~ Species",
     impu = "modal",
     method = "BCH",
-    run = FALSE,
+    run,
     reg = FALSE,
     fit = FALSE,
     par = FALSE,

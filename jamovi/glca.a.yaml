@@ -41,10 +41,9 @@ options:
       default: 2
 
     - name: run
-      title: 'Run when ready'
-      type: Bool
-      default: FALSE
-
+      type: Action
+      title: Run
+      
     - name: fit
       title: 'Class fit'
       type: Bool

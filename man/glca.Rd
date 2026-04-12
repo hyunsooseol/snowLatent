@@ -10,7 +10,7 @@ glca(
   covs,
   group,
   nc = 2,
-  run = FALSE,
+  run,
   fit = TRUE,
   mia = FALSE,
   mir = FALSE,

@@ -13,7 +13,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             impu = "modal",
             method = "BCH",
             cons = "L1,L2,L3",
-            run = FALSE,
+            run = NULL,
             reg = FALSE,
             par2 = FALSE,
             par3 = FALSE,
@@ -83,10 +83,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cons",
                 cons,
                 default="L1,L2,L3")
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..reg <- jmvcore::OptionBool$new(
                 "reg",
                 reg,
@@ -658,7 +657,7 @@ lta <- function(
     impu = "modal",
     method = "BCH",
     cons = "L1,L2,L3",
-    run = FALSE,
+    run,
     reg = FALSE,
     par2 = FALSE,
     par3 = FALSE,

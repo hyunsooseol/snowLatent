@@ -11,7 +11,7 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             nc = 2,
             nclust = 2,
-            run = FALSE,
+            run = NULL,
             fit = TRUE,
             comp1 = FALSE,
             rel1 = FALSE,
@@ -65,10 +65,9 @@ mlcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nclust,
                 min=2,
                 default=2)
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -752,7 +751,7 @@ mlca <- function(
     group,
     nc = 2,
     nclust = 2,
-    run = FALSE,
+    run,
     fit = TRUE,
     comp1 = FALSE,
     rel1 = FALSE,

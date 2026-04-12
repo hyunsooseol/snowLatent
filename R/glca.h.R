@@ -10,7 +10,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             covs = NULL,
             group = NULL,
             nc = 2,
-            run = FALSE,
+            run = NULL,
             fit = TRUE,
             mia = FALSE,
             mir = FALSE,
@@ -58,10 +58,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 nc,
                 min=2,
                 default=2)
-            private$..run <- jmvcore::OptionBool$new(
+            private$..run <- jmvcore::OptionAction$new(
                 "run",
-                run,
-                default=FALSE)
+                run)
             private$..fit <- jmvcore::OptionBool$new(
                 "fit",
                 fit,
@@ -670,7 +669,7 @@ glca <- function(
     covs,
     group,
     nc = 2,
-    run = FALSE,
+    run,
     fit = TRUE,
     mia = FALSE,
     mir = FALSE,

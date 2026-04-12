@@ -63,7 +63,9 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         covs <- self$options$covs
         nc <- self$options$nc
         
-        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
+        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
+        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, sep="|")
+        
         
         if (is.null(private$.modelCache[[modelKey]])) {
           private$.modelCache[[modelKey]] <- private$.computeLCA()
@@ -292,7 +294,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars <- self$options$vars
         group <- self$options$group
         nc <- self$options$nc
-        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
+        covs <- self$options$covs
+
+        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
+        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, sep="|")
         
         if (is.null(private$.modelCache[[modelKey]])) {
           private$.modelCache[[modelKey]] <- private$.computeLCA()
@@ -335,7 +340,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars <- self$options$vars
         group <- self$options$group
         nc <- self$options$nc
-        modelKey <- paste(paste(vars, collapse=","), nc, group, "ip", sep="|")
+        covs <- self$options$covs
+        
+        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
+        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, "ip", sep="|")
+        
         
         if (is.null(private$.modelCache[[modelKey]])) {
           private$.modelCache[[modelKey]] <- private$.computeIP()
@@ -435,8 +444,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .computeMEAI = function() {
         vars <- self$options$vars
         group <- self$options$group
+        covs <- self$options$covs
         nc <- self$options$nc
-        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
+        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
+        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, sep="|")
         
         if (is.null(private$.modelCache[[modelKey]])) {
           private$.modelCache[[modelKey]] <- private$.computeLCA()
@@ -506,8 +517,11 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .computeEQ = function() {
         vars <- self$options$vars
         group <- self$options$group
+        covs <- self$options$covs
         nc <- self$options$nc
-        modelKey <- paste(paste(vars, collapse=","), nc, group, sep="|")
+        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
+        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, sep="|")
+        
         
         if (is.null(private$.modelCache[[modelKey]])) {
           private$.modelCache[[modelKey]] <- private$.computeLCA()
