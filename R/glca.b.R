@@ -49,13 +49,16 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!isTRUE(self$options$run))
           return()
         
-        
         if (is.null(self$options$group) || is.null(self$options$vars) ||
-            length(self$options$vars) < 3) return()
+            length(self$options$vars) < 3)
+          return()
         
-        if (is.null(private$.dataCache)) {
-          private$.dataCache <- private$.cleanData()
-        }
+        # 이전 Run 캐시 제거: stale cache 방지
+        private$.dataCache <- NULL
+        private$.modelCache <- list()
+        
+        # 현재 Run 기준으로 다시 생성
+        private$.dataCache <- private$.cleanData()
         data <- private$.dataCache
         
         vars <- self$options$vars

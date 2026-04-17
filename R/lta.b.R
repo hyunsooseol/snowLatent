@@ -47,15 +47,13 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .run = function() {
         
-        
         if (!isTRUE(self$options$run))
           return()
         
-        if (is.null(private$.dataCache)) {
-          private$.dataCache <- self$data
-        }
+        private$.dataCache <- NULL
+        private$.dataCache <- self$data
         data <- private$.dataCache
-        
+
         factors <- self$options$factors
         nfactors <- length(factors)
         
@@ -754,7 +752,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
         }
         
-        if (length(self$options$covs) >= 1) {
+        if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
           regform <- self$options$regform
           regform <- as.formula(regform)
           

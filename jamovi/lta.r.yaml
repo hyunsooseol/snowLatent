@@ -296,10 +296,10 @@ items:
         - cons
 
       columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
+        # - name: name
+        #   title: ''
+        #   type: 'text'
+        #   content: ($key)
         - name: cla
           title: Class
           type: 'text'

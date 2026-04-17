@@ -534,11 +534,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "cons"),
                 columns=list(
                     list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
                         `name`="cla", 
                         `title`="Class", 
                         `type`="text"),

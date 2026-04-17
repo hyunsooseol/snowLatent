@@ -291,11 +291,6 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ref"),
                 columns=list(
                     list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
-                    list(
                         `name`="cla", 
                         `title`="Class", 
                         `type`="text"),
@@ -377,11 +372,6 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "regform1",
                     "ref1"),
                 columns=list(
-                    list(
-                        `name`="name", 
-                        `title`="", 
-                        `type`="text", 
-                        `content`="($key)"),
                     list(
                         `name`="cla", 
                         `title`="Class", 

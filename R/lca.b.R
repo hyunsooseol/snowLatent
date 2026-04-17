@@ -33,8 +33,13 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
+        
+        private$.modelCache <- NULL
+        private$.fitCache <- NULL
+        private$.compCache <- NULL
         
         data <- private$.cleanData()
         
@@ -241,7 +246,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars <- paste0(vars, collapse = ',')
         formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
         
-        if (length(covs) >= 1) {
+        if (!is.null(covs) && length(covs) >= 1) {
           covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
@@ -383,7 +388,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         vars <- paste0(vars, collapse = ',')
         formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
         
-        if (length(covs) >= 1) {
+        if (!is.null(covs) && length(covs) >= 1) {
           covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
           covs <- paste0(covs, collapse = '+')
           formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))

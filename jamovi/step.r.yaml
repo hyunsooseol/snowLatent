@@ -65,10 +65,10 @@ items:
         - ref
 
       columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
+        # - name: name
+        #   title: ''
+        #   type: 'text'
+        #   content: ($key)
         - name: cla
           title: Class
           type: 'text'
@@ -143,10 +143,10 @@ items:
         - ref1
 
       columns:
-        - name: name
-          title: ''
-          type: 'text'
-          content: ($key)
+        # - name: name
+        #   title: ''
+        #   type: 'text'
+        #   content: ($key)
         - name: cla
           title: Class
           type: 'text'

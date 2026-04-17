@@ -439,7 +439,7 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         # Regression analysis
-        if (length(self$options$covs) >= 1) {
+        if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
           if (isTRUE(self$options$reg)) {
             regform <- self$options$regform
             regform <- as.formula(regform)

@@ -60,6 +60,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   if (!isTRUE(self$options$run))
     return()
   
+  # 이전 Run 캐시 제거: stale cache 방지
+  private$.dataCache <- NULL
+  private$.cache <- list()
+  
   # 15%
   self$results$progressBarHTML$setContent(progressBarH(15, 100, 'Starting analysis...'))
   
@@ -70,12 +74,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     return()
   }
   
-  # 데이터 캐시 준비
-  if (is.null(private$.dataCache)) {
-    # 20%
-    self$results$progressBarHTML$setContent(progressBarH(20, 100, 'Preparing data...'))
-    private$.dataCache <- private$.cleanData()
-  }
+  # 현재 Run 기준으로 다시 생성
+  # 20%
+  self$results$progressBarHTML$setContent(progressBarH(20, 100, 'Preparing data...'))
+  private$.dataCache <- private$.cleanData()
   data <- private$.dataCache
   
   # LCA 적합
@@ -447,7 +449,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   
   formula <- as.formula(paste0('glca::item(', vars, ')~1'))
   
-  if (length(self$options$covs) >= 1) {
+  if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
     covs <- self$options$covs
     covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
     covs <- paste0(covs, collapse = '+')
@@ -486,7 +488,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   
   formula <- as.formula(paste0('glca::item(', vars, ')~1'))
   
-  if (length(self$options$covs) >= 1) {
+  if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
     covs <- self$options$covs
     covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
     covs <- paste0(covs, collapse = '+')
@@ -543,7 +545,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   
   formula <- as.formula(paste0('glca::item(', vars, ')~1'))
   
-  if (length(self$options$covs) >= 1) {
+  if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
     covs <- self$options$covs
     covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
     covs <- paste0(covs, collapse = '+')
