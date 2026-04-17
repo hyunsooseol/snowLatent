@@ -43,8 +43,8 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           )
         ))
         
-        if (self$options$fit)
-          self$results$fit$setNote("Note", "Goodness of fit indices for the latent class model.")
+        # if (self$options$fit)
+        #   self$results$fit$setNote("Note", "Goodness of fit indices for the latent class model.")
         # if (self$options$reg)
         #   self$results$reg$setNote("Note",
         #                            "It utilizes logistic regression and employs a three-step approach.")
