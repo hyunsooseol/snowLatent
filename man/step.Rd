@@ -20,7 +20,9 @@ step(
   method1 = "BCH",
   reg1 = FALSE,
   plot = FALSE,
-  plot1 = FALSE
+  plot1 = FALSE,
+  ref = 0,
+  ref1 = 0
 )
 }
 \arguments{
@@ -56,6 +58,10 @@ of the factor and the \code{vars} that belong to that factor}
 \item{plot}{.}
 
 \item{plot1}{.}
+
+\item{ref}{.}
+
+\item{ref1}{.}
 }
 \value{
 A results object containing:

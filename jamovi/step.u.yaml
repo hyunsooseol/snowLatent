@@ -75,6 +75,9 @@ children:
                 name: impu
               - type: ComboBox
                 name: method
+              - type: TextBox
+                name: ref
+                format: number
           - type: LayoutBox
             margin: large
             style: inline
@@ -135,6 +138,9 @@ children:
                 name: impu1
               - type: ComboBox
                 name: method1
+              - type: TextBox
+                name: ref1
+                format: number
           - type: LayoutBox
             margin: large
             style: inline

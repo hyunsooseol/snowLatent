@@ -45,9 +45,9 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (self$options$fit)
           self$results$fit$setNote("Note", "Goodness of fit indices for the latent class model.")
-        if (self$options$reg)
-          self$results$reg$setNote("Note",
-                                   "It utilizes logistic regression and employs a three-step approach.")
+        # if (self$options$reg)
+        #   self$results$reg$setNote("Note",
+        #                            "It utilizes logistic regression and employs a three-step approach.")
       },
       
       # Helper function to create and estimate model (for reuse)
@@ -88,6 +88,65 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           ))))
         }
         return(private$.mem)
+      },
+      
+      .normalizeRefClass = function(ref, nc) {
+        if (is.null(ref) || length(ref) == 0)
+          return(NULL)
+        
+        ref <- suppressWarnings(as.integer(ref))
+        
+        if (is.na(ref) || ref < 1 || ref > nc)
+          return(NULL)
+        
+        ref
+      },
+      
+      .reorderByReference = function(obj, latentName, ref, nc) {
+        ref <- private$.normalizeRefClass(ref, nc)
+        
+        # NULL이면 auto: 기존 객체 그대로 사용
+        if (is.null(ref))
+          return(obj)
+        
+        # 선택한 class를 마지막으로 보냄
+        ord <- c(setdiff(seq_len(nc), ref), ref)
+        
+        # 예: reorder(obj, L = c(1,3,2))
+        args <- c(list(x = obj), stats::setNames(list(ord), latentName))
+        obj2 <- do.call(reorder, args)
+        
+        obj2
+      },
+      
+      .getRefNoteText = function(ref, nc) {
+        ref_raw <- suppressWarnings(as.integer(ref))
+        ref2 <- private$.normalizeRefClass(ref, nc)
+        
+        if (is.null(ref2)) {
+          if (!is.na(ref_raw) && ref_raw > 0)
+            return(paste0("Reference class input ", ref_raw,
+                          " is invalid for a ", nc,
+                          "-class model; class ", nc, " (auto) was used."))
+          
+          return(paste0("Reference class: ", nc, " (auto)"))
+        }
+        
+        paste0("Reference class: ", ref2)
+      },
+      
+      
+      .getDisplayClassLabels = function(ref, nc) {
+        ref2 <- private$.normalizeRefClass(ref, nc)
+        
+        if (is.null(ref2)) {
+          ref2 <- nc
+          ord <- seq_len(nc)
+        } else {
+          ord <- c(setdiff(seq_len(nc), ref2), ref2)
+        }
+        
+        paste0(ord[seq_len(nc - 1)], "/", ref2)
       },
       
       # Add dynamic class columns to a jamovi table
@@ -234,6 +293,14 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!isTRUE(self$options$run))
           return()
         
+        # reset private caches to avoid stale results
+        private$.dataCache <- NULL
+        private$.obj <- NULL
+        private$.par <- NULL
+        private$.gof <- NULL
+        private$.pos <- NULL
+        private$.mem <- NULL
+
         # Use cached data if available
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data
@@ -376,9 +443,18 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           if (isTRUE(self$options$reg)) {
             regform <- self$options$regform
             regform <- as.formula(regform)
+            
+            # reference class 적용
+            obj_reg <- private$.reorderByReference(
+              obj = obj,
+              latentName = f,
+              ref = self$options$ref,
+              nc = nc
+            )
+            
             set.seed(1234)
             reg <- slca::regress(
-              obj,
+              obj_reg,
               regform,
               imputation = self$options$impu,
               method = self$options$method,
@@ -387,17 +463,27 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             
             coef <- reg$coefficients
             se <- as.vector(reg$std.err)
-            wald <- as.vector(coef / se)
-            pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
+            
+            coef_vec <- as.vector(coef)
+            se_vec <- as.vector(reg$std.err)
+            
+            wald <- ifelse(
+              is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+              coef_vec / se_vec,
+              NA_real_
+            )
+            
+            pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
             
             variable_names <- colnames(reg$coefficients)
-            class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
+            display_classes <- private$.getDisplayClassLabels(self$options$ref, nc)
+            class_info <- rep(display_classes, each = length(variable_names))
             
             reg.df <- data.frame(
-              class = class_info[1:length(coef)],
+              class = class_info[1:length(coef_vec)],
               variable = variable_names,
-              coef = as.vector(coef),
-              std.err = se,
+              coef = coef_vec,
+              std.err = se_vec,
               wald = wald,
               p.value = pval
             )
@@ -418,22 +504,30 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               )
             }
             
-            # Covariate Effects Plot
+            self$results$reg$setNote("Note", private$.getRefNoteText(self$options$ref, nc))
+            
             if (isTRUE(self$options$plot)) {
               plot_data <- reg.df
               image <- self$results$plot
               image$setState(plot_data)
             }
-            
           }
           
           if (isTRUE(self$options$reg1)) {
             regform <- self$options$regform1
             regform <- as.formula(regform)
             
+            # reference class 적용
+            obj_reg <- private$.reorderByReference(
+              obj = obj,
+              latentName = f,
+              ref = self$options$ref1,
+              nc = nc
+            )
+            
             set.seed(1234)
             reg <- slca::regress(
-              obj,
+              obj_reg,
               regform,
               imputation = self$options$impu1,
               method = self$options$method1,
@@ -442,17 +536,28 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             
             coef <- reg$coefficients
             se <- as.vector(reg$std.err)
-            wald <- as.vector(coef / se)
-            pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
+            
+            coef_vec <- as.vector(coef)
+            se_vec <- as.vector(reg$std.err)
+            
+            wald <- ifelse(
+              is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+              coef_vec / se_vec,
+              NA_real_
+            )
+            
+            pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+            
             
             variable_names <- colnames(reg$coefficients)
-            class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
+            display_classes <- private$.getDisplayClassLabels(self$options$ref1, nc)
+            class_info <- rep(display_classes, each = length(variable_names))
             
             reg.df <- data.frame(
-              class = class_info[1:length(coef)],
+              class = class_info[1:length(coef_vec)],
               variable = variable_names,
-              coef = as.vector(coef),
-              std.err = se,
+              coef = coef_vec,
+              std.err = se_vec,
               wald = wald,
               p.value = pval
             )
@@ -473,13 +578,13 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               )
             }
             
-            # Covariate Effects Plot
+            self$results$reg1$setNote("Note", private$.getRefNoteText(self$options$ref1, nc))
+            
             if (isTRUE(self$options$plot1)) {
               plot_data <- reg.df
               image <- self$results$plot1
               image$setState(plot_data)
             }
-            
           }
           
           # Free memory

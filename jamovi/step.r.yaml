@@ -61,7 +61,8 @@ items:
         - nc
         - method
         - impu
-        - regform        
+        - regform 
+        - ref
 
       columns:
         - name: name
@@ -139,6 +140,7 @@ items:
         - method1
         - impu1
         - regform1
+        - ref1
 
       columns:
         - name: name
@@ -178,6 +180,7 @@ items:
         - method
         - impu
         - regform
+        - ref
 
     - name:  plot1
       title: 'Covariate Effects Plot'
@@ -192,6 +195,7 @@ items:
         - method1
         - impu1
         - regform1
+        - ref1
 
 
 ...
