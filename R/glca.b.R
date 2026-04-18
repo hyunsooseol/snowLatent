@@ -7,6 +7,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .modelCache = list(),  
       .dataCache = NULL,     
       .htmlwidget = NULL,
+      # .testCount = 0,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
@@ -54,8 +55,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return()
         
         # 이전 Run 캐시 제거: stale cache 방지
-        private$.dataCache <- NULL
-        private$.modelCache <- list()
+        # private$.dataCache <- NULL
+        # private$.modelCache <- list()
         
         # 현재 Run 기준으로 다시 생성
         private$.dataCache <- private$.cleanData()
@@ -407,6 +408,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .computeLCA = function() {
+        
+        # private$.testCount <- private$.testCount + 1
+        # self$results$text5$setContent(paste("computeLCA count =", private$.testCount))
+        
         data <- private$.dataCache
         if (is.null(data)) {
           data <- private$.cleanData()

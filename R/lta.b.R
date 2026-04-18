@@ -50,8 +50,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (!isTRUE(self$options$run))
           return()
         
-        private$.dataCache <- NULL
-        private$.dataCache <- self$data
+        if (is.null(private$.dataCache)) {
+          private$.dataCache <- self$data
+        }
+        
         data <- private$.dataCache
 
         factors <- self$options$factors

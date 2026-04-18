@@ -33,15 +33,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
-
+        
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
-        
-        private$.modelCache <- NULL
-        private$.fitCache <- NULL
-        private$.compCache <- NULL
-        
-        data <- private$.cleanData()
         
         if (is.null(private$.modelCache)) {
           private$.modelCache <- private$.computeLCA()
@@ -55,7 +49,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         private$.populateClassTable()
         private$.populateItemTable()
         
-        if (length(self$options$covs) >= 1) {
+        if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
           private$.populateCoefTable()
         }
         

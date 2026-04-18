@@ -90,6 +90,7 @@ A results object containing:
   \code{results$item} \tab \tab \tab \tab \tab an array of arrays \cr
   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

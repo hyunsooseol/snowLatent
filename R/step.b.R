@@ -289,24 +289,15 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
       .run = function() {
         
-        
         if (!isTRUE(self$options$run))
           return()
         
-        # reset private caches to avoid stale results
-        private$.dataCache <- NULL
-        private$.obj <- NULL
-        private$.par <- NULL
-        private$.gof <- NULL
-        private$.pos <- NULL
-        private$.mem <- NULL
-
         # Use cached data if available
         if (is.null(private$.dataCache)) {
           private$.dataCache <- self$data
         }
-        data <- private$.dataCache
-        
+        data <- private$.dataCache        
+
         factors <- self$options$factors
         
         if (length(factors[[1]]$vars) < 2)

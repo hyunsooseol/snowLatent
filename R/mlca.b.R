@@ -60,9 +60,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   if (!isTRUE(self$options$run))
     return()
   
-  # 이전 Run 캐시 제거: stale cache 방지
-  private$.dataCache <- NULL
-  private$.cache <- list()
+  if (is.null(private$.dataCache)) {
+    private$.dataCache <- private$.cleanData()
+  }
   
   # 15%
   self$results$progressBarHTML$setContent(progressBarH(15, 100, 'Starting analysis...'))
