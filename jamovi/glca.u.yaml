@@ -67,10 +67,15 @@ children:
               - type: CheckBox
                 name: cir
           - type: Label
-            label: Logistic regression
+            label: 'Logistic regression'
             children:
               - type: CheckBox
                 name: co
+          - type: Label
+            label: 'Probability'
+            children:
+              - type: CheckBox
+                name: item
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -102,21 +107,3 @@ children:
                 name: marginal
               - type: CheckBox
                 name: preval
-  - type: CollapseBox
-    label: Additional outputs
-    margin: normal
-    collapsed: true
-    children:
-      - type: LayoutBox
-        stretchFactor: 1
-        margin: large
-        children:
-          - type: Label
-            label: 'Probabilities'
-            children:
-              - type: CheckBox
-                name: item
-              - type: CheckBox
-                name: gamma
-              - type: CheckBox
-                name: post

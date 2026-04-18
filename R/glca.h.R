@@ -18,9 +18,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cir = FALSE,
             marginal = FALSE,
             preval = FALSE,
-            post = FALSE,
             item = FALSE,
-            gamma = FALSE,
             co = FALSE,
             plot1 = FALSE,
             plot2 = FALSE,
@@ -89,17 +87,9 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "preval",
                 preval,
                 default=FALSE)
-            private$..post <- jmvcore::OptionBool$new(
-                "post",
-                post,
-                default=FALSE)
             private$..item <- jmvcore::OptionBool$new(
                 "item",
                 item,
-                default=FALSE)
-            private$..gamma <- jmvcore::OptionBool$new(
-                "gamma",
-                gamma,
                 default=FALSE)
             private$..co <- jmvcore::OptionBool$new(
                 "co",
@@ -136,9 +126,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cir)
             self$.addOption(private$..marginal)
             self$.addOption(private$..preval)
-            self$.addOption(private$..post)
             self$.addOption(private$..item)
-            self$.addOption(private$..gamma)
             self$.addOption(private$..co)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
@@ -158,9 +146,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cir = function() private$..cir$value,
         marginal = function() private$..marginal$value,
         preval = function() private$..preval$value,
-        post = function() private$..post$value,
         item = function() private$..item$value,
-        gamma = function() private$..gamma$value,
         co = function() private$..co$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
@@ -179,9 +165,7 @@ glcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cir = NA,
         ..marginal = NA,
         ..preval = NA,
-        ..post = NA,
         ..item = NA,
-        ..gamma = NA,
         ..co = NA,
         ..plot1 = NA,
         ..plot2 = NA,
@@ -206,9 +190,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot2 = function() private$.items[["plot2"]],
         plot3 = function() private$.items[["plot3"]],
         coTable = function() private$.items[["coTable"]],
-        item = function() private$.items[["item"]],
-        text4 = function() private$.items[["text4"]],
-        text2 = function() private$.items[["text2"]]),
+        item = function() private$.items[["item"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -581,15 +563,7 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 `name`="name", 
                                 `title`="", 
                                 `type`="text", 
-                                `content`="($key)"))))))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text4",
-                title="Prevalence for level-1 class(gamma)"))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text2",
-                title="Posterior probability"))}))
+                                `content`="($key)"))))))}))
 
 glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "glcaBase",
@@ -628,9 +602,7 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cir .
 #' @param marginal .
 #' @param preval .
-#' @param post .
 #' @param item .
-#' @param gamma .
 #' @param co .
 #' @param plot1 .
 #' @param plot2 .
@@ -652,8 +624,6 @@ glcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$coTable} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$item} \tab \tab \tab \tab \tab an array of arrays \cr
-#'   \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -677,9 +647,7 @@ glca <- function(
     cir = FALSE,
     marginal = FALSE,
     preval = FALSE,
-    post = FALSE,
     item = FALSE,
-    gamma = FALSE,
     co = FALSE,
     plot1 = FALSE,
     plot2 = FALSE,
@@ -714,9 +682,7 @@ glca <- function(
         cir = cir,
         marginal = marginal,
         preval = preval,
-        post = post,
         item = item,
-        gamma = gamma,
         co = co,
         plot1 = plot1,
         plot2 = plot2,

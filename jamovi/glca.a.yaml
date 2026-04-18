@@ -79,18 +79,8 @@ options:
       type: Bool 
       default: FALSE    
 
-    - name: post
-      title: Posterior
-      type: Bool 
-      default: FALSE
-     
     - name: item 
       title: Item response(rho)
-      type: Bool 
-      default: FALSE
-
-    - name: gamma
-      title: Prevalence for level-1 class(gamma)
       type: Bool 
       default: FALSE
 

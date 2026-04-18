@@ -340,14 +340,6 @@ items:
               type: text
               content: ($key)
 
-    - name:  text4
-      title: Prevalence for level-1 class(gamma)
-      type:  Preformatted
-
-    - name: text2
-      title: Posterior probability
-      type:  Preformatted      
-
     # - name: text5
     #   title: cache test
     #   type:  Preformatted      

@@ -14,7 +14,6 @@ lca(
   rel = FALSE,
   cp = FALSE,
   item = FALSE,
-  gamma = FALSE,
   coef = FALSE,
   plot1 = FALSE,
   plot2 = FALSE,
@@ -40,8 +39,6 @@ lca(
 \item{cp}{.}
 
 \item{item}{.}
-
-\item{gamma}{.}
 
 \item{coef}{.}
 
@@ -70,7 +67,6 @@ A results object containing:
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

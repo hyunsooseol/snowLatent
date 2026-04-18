@@ -237,8 +237,4 @@ items:
         - covs
         - nc
 
-    - name:  text2
-      title: Prevalence for level-1 class(Gamma)
-      type:  Preformatted
-
 ...

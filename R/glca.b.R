@@ -251,29 +251,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.populateItemTables(item)
         }
         
-        if (isTRUE(self$options$gamma)) {
-          gammaKey <- paste(modelKey, "gamma", sep="|")
-          
-          if (is.null(private$.modelCache[[gammaKey]])) {
-            private$.modelCache[[gammaKey]] <- lca[["param"]][["gamma"]]
-          }
-          gamma <- private$.modelCache[[gammaKey]]
-          options(max.print = 1000000)
-          self$results$text4$setContent(gamma)
-        }
-        
-        if (isTRUE(self$options$post)) {
-          postKey <- paste(modelKey, "post", sep="|")
-          
-          if (is.null(private$.modelCache[[postKey]])) {
-            private$.modelCache[[postKey]] <- lca[["posterior"]]
-          }
-          post <- private$.modelCache[[postKey]]
-          options(max.print = 1000000)
-          self$results$text2$setContent(post)
-        }
-        
-        # Item probabilities by group plot(default:Measure.inv=TRUE)
+       
+      # Item probabilities by group plot(default:Measure.inv=TRUE)
         if (isTRUE(self$options$plot2)) {
           icKey <- paste(modelKey, "ic", sep="|")
           

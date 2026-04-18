@@ -14,7 +14,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rel = FALSE,
             cp = FALSE,
             item = FALSE,
-            gamma = FALSE,
             coef = FALSE,
             plot1 = FALSE,
             plot2 = FALSE,
@@ -68,10 +67,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "item",
                 item,
                 default=FALSE)
-            private$..gamma <- jmvcore::OptionBool$new(
-                "gamma",
-                gamma,
-                default=FALSE)
             private$..coef <- jmvcore::OptionBool$new(
                 "coef",
                 coef,
@@ -105,7 +100,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..post)
             self$.addOption(private$..member)
             self$.addOption(private$..item)
-            self$.addOption(private$..gamma)
             self$.addOption(private$..coef)
             self$.addOption(private$..plot1)
             self$.addOption(private$..plot2)
@@ -123,7 +117,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$..post$value,
         member = function() private$..member$value,
         item = function() private$..item$value,
-        gamma = function() private$..gamma$value,
         coef = function() private$..coef$value,
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
@@ -140,7 +133,6 @@ lcaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..post = NA,
         ..member = NA,
         ..item = NA,
-        ..gamma = NA,
         ..coef = NA,
         ..plot1 = NA,
         ..plot2 = NA,
@@ -164,8 +156,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         member = function() private$.items[["member"]],
         plot1 = function() private$.items[["plot1"]],
         plot2 = function() private$.items[["plot2"]],
-        plot3 = function() private$.items[["plot3"]],
-        text2 = function() private$.items[["text2"]]),
+        plot3 = function() private$.items[["plot3"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -431,11 +422,7 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "vars",
                     "covs",
-                    "nc")))
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text2",
-                title="Prevalence for level-1 class(Gamma)"))}))
+                    "nc")))}))
 
 lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "lcaBase",
@@ -470,7 +457,6 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param rel .
 #' @param cp .
 #' @param item .
-#' @param gamma .
 #' @param coef .
 #' @param plot1 .
 #' @param plot2 .
@@ -492,7 +478,6 @@ lcaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -512,7 +497,6 @@ lca <- function(
     rel = FALSE,
     cp = FALSE,
     item = FALSE,
-    gamma = FALSE,
     coef = FALSE,
     plot1 = FALSE,
     plot2 = FALSE,
@@ -540,7 +524,6 @@ lca <- function(
         rel = rel,
         cp = cp,
         item = item,
-        gamma = gamma,
         coef = coef,
         plot1 = plot1,
         plot2 = plot2,

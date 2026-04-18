@@ -60,11 +60,6 @@ children:
                 name: post
               - type: Output
                 name: member
-          - type: Label
-            label: 'Logistic regression'
-            children:
-              - type: CheckBox
-                name: coef
       - type: LayoutBox
         stretchFactor: 1
         margin: large
@@ -92,7 +87,7 @@ children:
               - type: CheckBox
                 name: plot3
           - type: Label
-            label: 'Additional output'
+            label: 'Logistic regression'
             children:
               - type: CheckBox
-                name: gamma
+                name: coef

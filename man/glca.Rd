@@ -18,9 +18,7 @@ glca(
   cir = FALSE,
   marginal = FALSE,
   preval = FALSE,
-  post = FALSE,
   item = FALSE,
-  gamma = FALSE,
   co = FALSE,
   plot1 = FALSE,
   plot2 = FALSE,
@@ -55,11 +53,7 @@ glca(
 
 \item{preval}{.}
 
-\item{post}{.}
-
 \item{item}{.}
-
-\item{gamma}{.}
 
 \item{co}{.}
 
@@ -88,9 +82,6 @@ A results object containing:
   \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
   \code{results$coTable} \tab \tab \tab \tab \tab a table \cr
   \code{results$item} \tab \tab \tab \tab \tab an array of arrays \cr
-  \code{results$text4} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text2} \tab \tab \tab \tab \tab a preformatted \cr
-  \code{results$text5} \tab \tab \tab \tab \tab a preformatted \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

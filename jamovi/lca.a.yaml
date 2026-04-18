@@ -64,11 +64,6 @@ options:
       type: Bool 
       default: FALSE   
 
-    - name: gamma
-      title: prevalence for level-1 class(Gamma)
-      type: Bool 
-      default: FALSE
-
     - name: coef 
       title: Coefficients with covariates
       type: Bool 

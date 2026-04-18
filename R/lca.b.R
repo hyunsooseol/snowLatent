@@ -55,11 +55,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         private$.handlePosterior()
         
-        if (isTRUE(self$options$gamma)) {
-          gamma <- private$.modelCache[["param"]][["gamma"]]
-          options(max.print = 1000000)
-          self$results$text2$setContent(gamma)
-        }
+       
       },
       
       .populateFitTable = function() {
