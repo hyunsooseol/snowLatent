@@ -60,9 +60,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   if (!isTRUE(self$options$run))
     return()
   
-  if (is.null(private$.dataCache)) {
-    private$.dataCache <- private$.cleanData()
-  }
+  # if (is.null(private$.dataCache)) {
+  #   private$.dataCache <- private$.cleanData()
+  # }
   
   # 15%
   self$results$progressBarHTML$setContent(progressBarH(15, 100, 'Starting analysis...'))

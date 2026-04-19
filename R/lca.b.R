@@ -8,9 +8,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .fitCache = NULL,         
       .compCache = NULL,        
       .htmlwidget = NULL,
+      .cleanDataCache = NULL,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
+        private$.cleanDataCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
@@ -33,6 +35,8 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .run = function() {
+        
+        private$.cleanDataCache <- NULL
         
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
@@ -185,7 +189,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .handlePosterior = function() {
-        data <- private$.cleanData()
+        
         pos <- private$.modelCache$posterior$ALL
         
         if (isTRUE(self$options$member)) {
@@ -353,6 +357,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .cleanData = function() {
+        if (!is.null(private$.cleanDataCache))
+          return(private$.cleanDataCache)
+        
         data <- list()
         
         if (!is.null(self$options$covs))
@@ -365,6 +372,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         
+        private$.cleanDataCache <- data
         return(data)
       },
       

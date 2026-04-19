@@ -578,6 +578,30 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             slca::slca(formula = form1, constraints = cons1) %>% slca::estimate(data = data)
           }
           
+          obj2 <- NULL
+          obj3 <- NULL
+          
+          need_obj2 <- isTRUE(self$options$par2) ||
+            isTRUE(self$options$fit1) ||
+            isTRUE(self$options$plot1) ||
+            isTRUE(self$options$tau) ||
+            isTRUE(self$options$stayer)
+          
+          need_obj3 <- isTRUE(self$options$par3) ||
+            isTRUE(self$options$fit1) ||
+            isTRUE(self$options$plot2) ||
+            isTRUE(self$options$tau) ||
+            isTRUE(self$options$stayer)
+          
+          if (need_obj2)
+            obj2 <- .fit_obj2()
+          
+          if (need_obj3)
+            obj3 <- .fit_obj3()
+          
+          
+          
+          
           if (isTRUE(self$options$par2)) {
             library(magrittr)
             set.seed(1234)
@@ -594,9 +618,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           if (isTRUE(self$options$par3)) {
             
-            if (!exists("obj3")) {
-              obj3 <- .fit_obj3()
-            }
+            # if (!exists("obj3")) {
+            #   obj3 <- .fit_obj3()
+            # }
             
             .fill_inv_tables(
               lta_obj = obj3,
@@ -607,22 +631,22 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
           
           if (isTRUE(self$options$fit1)) {
-            if (!exists("obj2")) {
-              library(magrittr)
-              set.seed(1234)
-              obj2 <- slca::slca(formula = form1) %>%
-                slca::estimate(data = data)
-            }
-            
-            if (!exists("obj3")) {
-              cons <- self$options$cons
-              cons1 <- unlist(strsplit(cons, ","))
-              
-              library(magrittr)
-              set.seed(1234)
-              obj3 <- slca::slca(formula = form1, constraints = cons1) %>%
-                slca::estimate(data = data)
-            }
+            # if (!exists("obj2")) {
+            #   library(magrittr)
+            #   set.seed(1234)
+            #   obj2 <- slca::slca(formula = form1) %>%
+            #     slca::estimate(data = data)
+            # }
+            # 
+            # if (!exists("obj3")) {
+            #   cons <- self$options$cons
+            #   cons1 <- unlist(strsplit(cons, ","))
+            #   
+            #   library(magrittr)
+            #   set.seed(1234)
+            #   obj3 <- slca::slca(formula = form1, constraints = cons1) %>%
+            #     slca::estimate(data = data)
+            # }
             
             comp <- slca::compare(obj2, obj3, test = 'chisq')
             df <- as.data.frame(comp)
@@ -985,10 +1009,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         print(p)
         TRUE
       }
-      
-      
-      
-      
     )
   )
 
