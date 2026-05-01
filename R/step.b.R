@@ -452,32 +452,73 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               data = data
             )
             
-            coef <- reg$coefficients
-            se <- as.vector(reg$std.err)
+            # coef <- reg$coefficients
+            # se <- as.vector(reg$std.err)
+            # 
+            # coef_vec <- as.vector(coef)
+            # se_vec <- as.vector(reg$std.err)
+            # 
+            # wald <- ifelse(
+            #   is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+            #   coef_vec / se_vec,
+            #   NA_real_
+            # )
+            # 
+            # pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+            # 
+            # variable_names <- colnames(reg$coefficients)
+            # display_classes <- private$.getDisplayClassLabels(self$options$ref, nc)
+            # class_info <- rep(display_classes, each = length(variable_names))
+            # 
+            # reg.df <- data.frame(
+            #   class = class_info[1:length(coef_vec)],
+            #   variable = variable_names,
+            #   coef = coef_vec,
+            #   std.err = se_vec,
+            #   wald = wald,
+            #   p.value = pval
+            # )
             
-            coef_vec <- as.vector(coef)
-            se_vec <- as.vector(reg$std.err)
+            coef_mat <- as.matrix(reg$coefficients)
+            se_mat   <- as.matrix(reg$std.err)
             
-            wald <- ifelse(
-              is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
-              coef_vec / se_vec,
-              NA_real_
-            )
-            
-            pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
-            
-            variable_names <- colnames(reg$coefficients)
+            variable_names <- colnames(coef_mat)
             display_classes <- private$.getDisplayClassLabels(self$options$ref, nc)
-            class_info <- rep(display_classes, each = length(variable_names))
             
-            reg.df <- data.frame(
-              class = class_info[1:length(coef_vec)],
-              variable = variable_names,
-              coef = coef_vec,
-              std.err = se_vec,
-              wald = wald,
-              p.value = pval
-            )
+            if (is.null(variable_names))
+              variable_names <- paste0("V", seq_len(ncol(coef_mat)))
+            
+            if (length(display_classes) != nrow(coef_mat)) {
+              if (!is.null(rownames(coef_mat))) {
+                display_classes <- rownames(coef_mat)
+              } else {
+                display_classes <- paste0("Class ", seq_len(nrow(coef_mat)))
+              }
+            }
+            
+            reg.df <- do.call(rbind, lapply(seq_len(nrow(coef_mat)), function(i) {
+              coef_vec <- as.numeric(coef_mat[i, ])
+              se_vec   <- as.numeric(se_mat[i, ])
+              
+              wald <- ifelse(
+                is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+                coef_vec / se_vec,
+                NA_real_
+              )
+              
+              pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+              
+              data.frame(
+                class = display_classes[i],
+                variable = variable_names,
+                coef = coef_vec,
+                std.err = se_vec,
+                wald = wald,
+                p.value = pval,
+                stringsAsFactors = FALSE
+              )
+            }))            
+            
             
             table <- self$results$reg
             df <- as.data.frame(reg.df)
@@ -525,33 +566,73 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               data = data
             )
             
-            coef <- reg$coefficients
-            se <- as.vector(reg$std.err)
+            # coef <- reg$coefficients
+            # se <- as.vector(reg$std.err)
+            # 
+            # coef_vec <- as.vector(coef)
+            # se_vec <- as.vector(reg$std.err)
+            # 
+            # wald <- ifelse(
+            #   is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+            #   coef_vec / se_vec,
+            #   NA_real_
+            # )
+            # 
+            # pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+            # 
+            # 
+            # variable_names <- colnames(reg$coefficients)
+            # display_classes <- private$.getDisplayClassLabels(self$options$ref1, nc)
+            # class_info <- rep(display_classes, each = length(variable_names))
+            # 
+            # reg.df <- data.frame(
+            #   class = class_info[1:length(coef_vec)],
+            #   variable = variable_names,
+            #   coef = coef_vec,
+            #   std.err = se_vec,
+            #   wald = wald,
+            #   p.value = pval
+            # )
+            coef_mat <- as.matrix(reg$coefficients)
+            se_mat   <- as.matrix(reg$std.err)
             
-            coef_vec <- as.vector(coef)
-            se_vec <- as.vector(reg$std.err)
-            
-            wald <- ifelse(
-              is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
-              coef_vec / se_vec,
-              NA_real_
-            )
-            
-            pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
-            
-            
-            variable_names <- colnames(reg$coefficients)
+            variable_names <- colnames(coef_mat)
             display_classes <- private$.getDisplayClassLabels(self$options$ref1, nc)
-            class_info <- rep(display_classes, each = length(variable_names))
             
-            reg.df <- data.frame(
-              class = class_info[1:length(coef_vec)],
-              variable = variable_names,
-              coef = coef_vec,
-              std.err = se_vec,
-              wald = wald,
-              p.value = pval
-            )
+            if (is.null(variable_names))
+              variable_names <- paste0("V", seq_len(ncol(coef_mat)))
+            
+            if (length(display_classes) != nrow(coef_mat)) {
+              if (!is.null(rownames(coef_mat))) {
+                display_classes <- rownames(coef_mat)
+              } else {
+                display_classes <- paste0("Class ", seq_len(nrow(coef_mat)))
+              }
+            }
+            
+            reg.df <- do.call(rbind, lapply(seq_len(nrow(coef_mat)), function(i) {
+              coef_vec <- as.numeric(coef_mat[i, ])
+              se_vec   <- as.numeric(se_mat[i, ])
+              
+              wald <- ifelse(
+                is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+                coef_vec / se_vec,
+                NA_real_
+              )
+              
+              pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+              
+              data.frame(
+                class = display_classes[i],
+                variable = variable_names,
+                coef = coef_vec,
+                std.err = se_vec,
+                wald = wald,
+                p.value = pval,
+                stringsAsFactors = FALSE
+              )
+            }))            
+            
             
             table <- self$results$reg1
             df <- as.data.frame(reg.df)
