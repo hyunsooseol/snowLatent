@@ -129,4 +129,11 @@ options:
       type: Bool
       default: false
 
+    - name: ref
+      title: Reference class
+      type: Integer
+      default: 0
+      min: 0
+
+
 ...

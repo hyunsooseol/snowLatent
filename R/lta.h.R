@@ -22,7 +22,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plot1 = FALSE,
             plot2 = FALSE,
             tau = FALSE,
-            stayer = FALSE, ...) {
+            stayer = FALSE,
+            ref = 0, ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -122,6 +123,11 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "stayer",
                 stayer,
                 default=FALSE)
+            private$..ref <- jmvcore::OptionInteger$new(
+                "ref",
+                ref,
+                default=0,
+                min=0)
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -139,6 +145,7 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plot2)
             self$.addOption(private$..tau)
             self$.addOption(private$..stayer)
+            self$.addOption(private$..ref)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -156,7 +163,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot1 = function() private$..plot1$value,
         plot2 = function() private$..plot2$value,
         tau = function() private$..tau$value,
-        stayer = function() private$..stayer$value),
+        stayer = function() private$..stayer$value,
+        ref = function() private$..ref$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -173,7 +181,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plot1 = NA,
         ..plot2 = NA,
         ..tau = NA,
-        ..stayer = NA)
+        ..stayer = NA,
+        ..ref = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -531,7 +540,8 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "method",
                     "impu",
                     "regform",
-                    "cons"),
+                    "cons",
+                    "ref"),
                 columns=list(
                     list(
                         `name`="cla", 
@@ -616,6 +626,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plot2 .
 #' @param tau .
 #' @param stayer .
+#' @param ref .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -661,7 +672,8 @@ lta <- function(
     plot1 = FALSE,
     plot2 = FALSE,
     tau = FALSE,
-    stayer = FALSE) {
+    stayer = FALSE,
+    ref = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -689,7 +701,8 @@ lta <- function(
         plot1 = plot1,
         plot2 = plot2,
         tau = tau,
-        stayer = stayer)
+        stayer = stayer,
+        ref = ref)
 
     analysis <- ltaClass$new(
         options = options,

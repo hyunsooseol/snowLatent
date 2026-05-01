@@ -21,7 +21,8 @@ lta(
   plot1 = FALSE,
   plot2 = FALSE,
   tau = FALSE,
-  stayer = FALSE
+  stayer = FALSE,
+  ref = 0
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ of the factor and the \code{vars} that belong to that factor}
 \item{tau}{.}
 
 \item{stayer}{.}
+
+\item{ref}{.}
 }
 \value{
 A results object containing:

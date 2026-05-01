@@ -45,6 +45,64 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
       },
       
+      .normalizeRefClass = function(ref, nc) {
+        if (is.null(ref) || length(ref) == 0)
+          return(NULL)
+        
+        ref <- suppressWarnings(as.integer(ref))
+        
+        # ref = 0 은 auto reference로 처리
+        if (is.na(ref) || ref < 1 || ref > nc)
+          return(NULL)
+        
+        ref
+      },
+      
+      .reorderByReference = function(obj, latentName, ref, nc) {
+        ref <- private$.normalizeRefClass(ref, nc)
+        
+        # NULL이면 auto: 기존 객체 그대로 사용
+        if (is.null(ref))
+          return(obj)
+        
+        # 선택한 class를 마지막으로 보냄
+        ord <- c(setdiff(seq_len(nc), ref), ref)
+        
+        args <- c(list(x = obj), stats::setNames(list(ord), latentName))
+        obj2 <- do.call(reorder, args)
+        
+        obj2
+      },
+      
+      .getRefNoteText = function(ref, nc) {
+        ref_raw <- suppressWarnings(as.integer(ref))
+        ref2 <- private$.normalizeRefClass(ref, nc)
+        
+        if (is.null(ref2)) {
+          if (!is.na(ref_raw) && ref_raw > 0)
+            return(paste0("Reference class input ", ref_raw,
+                          " is invalid for a ", nc,
+                          "-class model; class ", nc, " (auto) was used."))
+          
+          return(paste0("Reference class: ", nc, " (auto)"))
+        }
+        
+        paste0("Reference class: ", ref2)
+      },
+      
+      .getDisplayClassLabels = function(ref, nc) {
+        ref2 <- private$.normalizeRefClass(ref, nc)
+        
+        if (is.null(ref2)) {
+          ref2 <- nc
+          ord <- seq_len(nc)
+        } else {
+          ord <- c(setdiff(seq_len(nc), ref2), ref2)
+        }
+        
+        paste0(ord[seq_len(nc - 1)], "/", ref2)
+      },
+      
       .run = function() {
         
         if (!isTRUE(self$options$run))
@@ -836,31 +894,92 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               regform <- self$options$regform
               regform <- as.formula(regform)
               
+              # reg <- slca::regress(
+              #   lcpa_model,
+              #   regform,
+              #   imputation = self$options$impu,
+              #   method = self$options$method,
+              #   data = data
+              # )
+              # 
+              # # result---              
+              # coef <- reg$coefficients
+              # se <- as.vector(reg$std.err)
+              # wald <- as.vector(coef / se)
+              # pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
+              # 
+              # variable_names <- colnames(reg$coefficients)
+              # class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
+              # 
+              # reg.df <- data.frame(
+              #   class = class_info[1:length(coef)],
+              #   variable = variable_names,
+              #   coef = as.vector(coef),
+              #   std.err = se,
+              #   wald = wald,
+              #   p.value = pval
+              # )
+              
+              # reference class----------- 
+              target_latent <- "pf"
+              nc <- pf_class_count
+              
+              lcpa_model_reg <- private$.reorderByReference(
+                obj = lcpa_model,
+                latentName = target_latent,
+                ref = self$options$ref,
+                nc = nc
+              )
+              
               reg <- slca::regress(
-                lcpa_model,
+                lcpa_model_reg,
                 regform,
                 imputation = self$options$impu,
                 method = self$options$method,
                 data = data
               )
               
-              # result---              
-              coef <- reg$coefficients
-              se <- as.vector(reg$std.err)
-              wald <- as.vector(coef / se)
-              pval <- stats::pnorm(abs(wald), 1, lower.tail = FALSE)
+              # result: class × variable-------
               
-              variable_names <- colnames(reg$coefficients)
-              class_info <- rep(rownames(reg$coefficients), each = length(variable_names))
+              coef_mat <- as.matrix(reg$coefficients)
+              se_mat   <- as.matrix(reg$std.err)
               
-              reg.df <- data.frame(
-                class = class_info[1:length(coef)],
-                variable = variable_names,
-                coef = as.vector(coef),
-                std.err = se,
-                wald = wald,
-                p.value = pval
-              )
+              variable_names <- colnames(coef_mat)
+              display_classes <- private$.getDisplayClassLabels(self$options$ref, nc)
+              
+              if (is.null(variable_names))
+                variable_names <- paste0("V", seq_len(ncol(coef_mat)))
+              
+              if (length(display_classes) != nrow(coef_mat)) {
+                if (!is.null(rownames(coef_mat))) {
+                  display_classes <- rownames(coef_mat)
+                } else {
+                  display_classes <- paste0("Class ", seq_len(nrow(coef_mat)))
+                }
+              }
+              
+              reg.df <- do.call(rbind, lapply(seq_len(nrow(coef_mat)), function(i) {
+                coef_vec <- as.numeric(coef_mat[i, ])
+                se_vec   <- as.numeric(se_mat[i, ])
+                
+                wald <- ifelse(
+                  is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
+                  coef_vec / se_vec,
+                  NA_real_
+                )
+                
+                pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+                
+                data.frame(
+                  class = display_classes[i],
+                  variable = variable_names,
+                  coef = coef_vec,
+                  std.err = se_vec,
+                  wald = wald,
+                  p.value = pval,
+                  stringsAsFactors = FALSE
+                )
+              }))              
               
               table <- self$results$reg
               df <- as.data.frame(reg.df)
@@ -877,6 +996,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                   )
                 )
               }
+              
+              self$results$reg$setNote("Note", private$.getRefNoteText(self$options$ref, nc))
               
               # Covariate Effects Plot
               if (isTRUE(self$options$plot)) {

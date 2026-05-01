@@ -123,6 +123,9 @@ children:
                 name: impu
               - type: ComboBox
                 name: method
+              - type: TextBox
+                name: ref
+                format: number
           - type: LayoutBox
             margin: large
             style: inline
