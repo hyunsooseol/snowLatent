@@ -60,7 +60,7 @@ children:
               - type: CheckBox
                 name: mir
           - type: Label
-            label: 'Equality of coefficients'
+            label: 'Measurement invariance test'
             children:
               - type: CheckBox
                 name: cia

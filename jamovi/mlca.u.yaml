@@ -78,7 +78,7 @@ children:
               - type: CheckBox
                 name: fit
           - type: Label
-            label: Fit for cluster
+            label: 'Model fit by cluster'
             children:
               - type: CheckBox
                 name: comp1
@@ -149,7 +149,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: Invariance of coefficients
+            label: 'Invariance test'
             children:
               - type: CheckBox
                 name: gof

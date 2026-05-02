@@ -95,12 +95,12 @@ options:
       default: FALSE  
      
     - name: plot2 
-      title: Item probability(Invariance=T)
+      title: Item probability(invariant model)
       type: Bool 
       default: FALSE       
       
     - name: plot3 
-      title: Item probability(Invariance=F)
+      title: Item probability(non-invariant model)
       type: Bool 
       default: FALSE       
 
