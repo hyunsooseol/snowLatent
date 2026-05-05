@@ -31,7 +31,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '</ul></div></div>'
           )
         ))
+       
+        if (self$options$fit)
+          self$results$fit$setNote("Note", "CAIC is not directly provided by the glca R package and is calculated from AIC and BIC.")
         
+         
       },
       
       .run = function() {
@@ -62,12 +66,38 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
        
       },
       
+      .calcCAIC = function(aic, bic, n) {
+        if (is.null(aic) || is.null(bic))
+          return(NA_real_)
+        
+        if (is.null(n) || is.na(n) || n <= 0 || log(n) == 2)
+          return(rep(NA_real_, length(aic)))
+        
+        caic <- rep(NA_real_, length(aic))
+        
+        ok <- !is.na(aic) & !is.na(bic)
+        
+        k <- (bic[ok] - aic[ok]) / (log(n) - 2)
+        caic[ok] <- bic[ok] + k
+        
+        return(caic)
+      },
+      
       .populateFitTable = function() {
         if (is.null(private$.fitCache)) {
           v <- c("loglik", "AIC", "BIC", "entropy", "df", "Gsq")
           gof_data <- private$.modelCache$gof
-          private$.fitCache <- as.data.frame(replace(gof_data[v], sapply(gof_data[v], is.null), list(NA_real_)))
+          
+          private$.fitCache <- as.data.frame(
+            replace(gof_data[v], sapply(gof_data[v], is.null), list(NA_real_))
+          )
         }
+        
+        caic <- private$.calcCAIC(
+          aic = private$.fitCache[1, "AIC"],
+          bic = private$.fitCache[1, "BIC"],
+          n = nrow(private$.cleanData())
+        )
         
         table <- self$results$fit
         table$setRow(
@@ -76,6 +106,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             class = self$options$nc,
             loglik = private$.fitCache[1, "loglik"],
             AIC = private$.fitCache[1, "AIC"],
+            CAIC = caic,
             BIC = private$.fitCache[1, "BIC"],
             entropy = private$.fitCache[1, "entropy"],
             df = private$.fitCache[1, "df"],
@@ -95,19 +126,18 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         table <- self$results$comp
         g <- as.data.frame(private$.compCache$gtable)
         
-        #self$results$text$setContent(g)
-        
         for (i in seq_len(nrow(g))) {
           table$addRow(
             rowKey = rownames(g)[i],
             values = list(
-              class = g[i, 7],
-              loglik = g[i, 1],
-              aic = g[i, 2],
-              bic = g[i, 3],
-              entropy = g[i, 4],
-              df = g[i, 5],
-              gsq = g[i, 6]
+              class = g[i, "class"],
+              loglik = g[i, "loglik"],
+              aic = g[i, "AIC"],
+              caic = g[i, "CAIC"],
+              bic = g[i, "BIC"],
+              entropy = g[i, "entropy"],
+              df = g[i, "df"],
+              gsq = g[i, "Gsq"]
             )
           )
         }
@@ -130,6 +160,7 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               df = d[i, 3],
               dev = d[i, 4],
               p = d[i, 5]
+              
             )
           )
         }
@@ -268,23 +299,35 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (!is.null(gtable)) {
           gtable <- as.data.frame(gtable)
-          new <- c(2:self$options$nc)
-          gtable <- cbind(gtable, new)
+          
+          if (!"CAIC" %in% colnames(gtable)) {
+            gtable[["CAIC"]] <- private$.calcCAIC(
+              aic = gtable[["AIC"]],
+              bic = gtable[["BIC"]],
+              n = nrow(data)
+            )
+          }
+          
+          gtable$class <- c(2:self$options$nc)
         }
         
         if (!is.null(dtable)) {
           dtable <- as.data.frame(dtable)
-          new <- c(2:self$options$nc)
-          dtable <- cbind(dtable, new)
+          dtable$class <- c(2:self$options$nc)
         }
         
         elbow <- NULL
         if (self$options$nc > 2 && !is.null(gtable)) {
-          out1 <- gtable[, c(2:3)]
-          cla <- c(2:self$options$nc)
+          # out1 <- gtable[, c(2:3)]
+          # cla <- c(2:self$options$nc)
+          # out1 <- data.frame(out1, cla)
+          # #self$results$text$setContent(out1)
+          # colnames(out1) <- c('AIC', 'BIC', 'Class')
+          out1 <- gtable[, c("AIC", "BIC")]
+          cla <- gtable$class
           out1 <- data.frame(out1, cla)
-          #self$results$text$setContent(out1)
           colnames(out1) <- c('AIC', 'BIC', 'Class')
+          
           elbow <- reshape2::melt(
             out1,
             id.vars = 'Class',

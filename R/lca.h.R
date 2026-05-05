@@ -199,6 +199,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="AIC", 
                         `type`="number"),
                     list(
+                        `name`="CAIC", 
+                        `title`="CAIC", 
+                        `type`="number"),
+                    list(
                         `name`="BIC", 
                         `title`="BIC", 
                         `type`="number"),
@@ -236,6 +240,10 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="aic", 
                         `title`="AIC", 
+                        `type`="number"),
+                    list(
+                        `name`="caic", 
+                        `title`="CAIC", 
                         `type`="number"),
                     list(
                         `name`="bic", 

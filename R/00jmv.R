@@ -7,7 +7,7 @@
         `author`="Seol, H.", 
         `year`=2026, 
         `title`="snowLatent: Latent Class Analysis for jamovi", 
-        `publisher`="(Version 2.7.0) [jamovi module]. URL https://github.com/hyunsooseol/snowLatent", 
+        `publisher`="(Version 2.7.1) [jamovi module]. URL https://github.com/hyunsooseol/snowLatent", 
         `url`="https://github.com/hyunsooseol/snowLatent"), 
     `glca`=list(
         `type`="software", 
