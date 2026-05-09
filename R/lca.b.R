@@ -323,11 +323,15 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           # out1 <- data.frame(out1, cla)
           # #self$results$text$setContent(out1)
           # colnames(out1) <- c('AIC', 'BIC', 'Class')
-          out1 <- gtable[, c("AIC", "BIC")]
+          # out1 <- gtable[, c("AIC", "BIC")]
+          # cla <- gtable$class
+          # out1 <- data.frame(out1, cla)
+          # colnames(out1) <- c('AIC', 'BIC', 'Class')
+          out1 <- gtable[, c("AIC", "CAIC", "BIC")]
           cla <- gtable$class
           out1 <- data.frame(out1, cla)
-          colnames(out1) <- c('AIC', 'BIC', 'Class')
-          
+          colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Class')
+                    
           elbow <- reshape2::melt(
             out1,
             id.vars = 'Class',
@@ -392,8 +396,9 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         plot3 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
           ggplot2::geom_line(size = 1.1) +
           ggplot2::geom_point(size = 3) +
-          ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
-        
+          #ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
+          ggplot2::scale_x_continuous(breaks = sort(unique(elbow$Class)))
+          
         plot3 <- plot3 + ggtheme
         print(plot3)
         TRUE
