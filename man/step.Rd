@@ -11,7 +11,7 @@ step(
   regform = "L ~ Species",
   impu = "modal",
   method = "BCH",
-  run,
+  run = FALSE,
   reg = FALSE,
   fit = FALSE,
   par = FALSE,

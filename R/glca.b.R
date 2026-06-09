@@ -22,10 +22,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
             '<div style="text-align:justify;">',
             '<ul>',
-            '<li>Latent Class Analysis(LCA) based on <b>glca</b> R package.</li>',
+            '<li>Latent Class Analysis(LCA) based on the <b>glca</b> R package.</li>',
             '<li>The MAR(Missing at Random) method is applied to handle missing values.</li>',
-            '<li>If you select the Equality of coefficients option, the logistic regression result does not appear in the screen.</li>',
-            '<li>The result table does not printed if the results from glca R package are not available.</li>',
+            '<li>When the Equality of coefficients option is selected, the logistic regression results are not displayed.</li>',
+            '<li>Result tables are not displayed when the required results are unavailable from the glca R package.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
           )
@@ -54,13 +54,13 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             length(self$options$vars) < 3)
           return()
         
-        # 이전 Run 캐시 제거: stale cache 방지
-        # private$.dataCache <- NULL
-        # private$.modelCache <- list()
+        # 현재 Run에서는 데이터와 모델을 새로 계산
+        private$.dataCache <- NULL
+        private$.modelCache <- list()
         
-        # 현재 Run 기준으로 다시 생성
         private$.dataCache <- private$.cleanData()
         data <- private$.dataCache
+        
         
         vars <- self$options$vars
         group <- self$options$group
@@ -267,7 +267,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           image2 <- self$results$plot2
           image2$setState(ic)
         }
-        private$.clearMemory()
+       
       },
       
       .plot1 = function(image, ...) {
@@ -942,10 +942,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             }
           }
         }
-      },
-      
-      .clearMemory = function() {
-        gc()
       }
+      
     )
   )
