@@ -413,7 +413,7 @@ mlcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="cross",
-                title="Class prevalences by group",
+                title="Class prevalences by observed group",
                 refs="glca",
                 visible="(cross)",
                 clearWith=list(

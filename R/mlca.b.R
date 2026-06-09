@@ -11,16 +11,10 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
 .init = function() {
   private$.htmlwidget <- HTMLWidget$new()
   
-  # --- Progress bar: show & init
-  self$results$progressBarHTML$setVisible(TRUE)
-  self$results$progressBarHTML$setContent(progressBarH(0, 100, 'Initializing analysis...'))
-  
+
   if (is.null(self$data) | is.null(self$options$vars)) {
     self$results$instructions$setVisible(visible = TRUE)
   }
-  
-  # 5%
-  self$results$progressBarHTML$setContent(progressBarH(5, 100, 'Setting up UI...'))
   
   self$results$instructions$setContent(
     private$.htmlwidget$generate_accordion(
@@ -31,8 +25,8 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         '<ul>',
         '<li>Latent Class Analysis(LCA) based on <b>glca</b> R package.</li>',
         '<li>The MAR(Missing at Random) method is applied to handle missing values.</li>',
-        '<li>The result table does not printed if the results from glca R package are not available.</li>',
-        '<li>The Raltive model fit option requires the number of clusters to be greater than 2. Check box should be unchecked.</li>',
+        '<li>Result tables are not displayed when the required results are unavailable from the glca R package.</li>',
+        '<li>The Relative model fit option requires more than two clusters. This option should be unchecked when two clusters are specified.</li>',
         '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
         '</ul></div></div>'
       )
@@ -51,8 +45,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       "p: Chi-Square p value; Model 2:Coeff.inv=TRUE; Model 3: Coeff.inv=FALSE."
     )
   
-  # 10%
-  self$results$progressBarHTML$setContent(progressBarH(10, 100, 'Ready to start analysis...'))
 },
 
 .run = function() {
@@ -60,52 +52,40 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   if (!isTRUE(self$options$run))
     return()
   
-  # if (is.null(private$.dataCache)) {
-  #   private$.dataCache <- private$.cleanData()
-  # }
-  
-  # 15%
-  self$results$progressBarHTML$setContent(progressBarH(15, 100, 'Starting analysis...'))
-  
-  # 입력 확인(조기 종료 시에도 바 숨김)
-  if (is.null(self$options$group) || is.null(self$options$vars) ||
-      length(self$options$vars) < 3) {
-    self$results$progressBarHTML$setVisible(FALSE)
+  if (is.null(self$options$group) ||
+      is.null(self$options$vars) ||
+      length(self$options$vars) < 3)
     return()
-  }
   
-  # 현재 Run 기준으로 다시 생성
-  # 20%
-  self$results$progressBarHTML$setContent(progressBarH(20, 100, 'Preparing data...'))
+  # Apple spinner 표시
+  self$results$progressBarHTML$setVisible(TRUE)
+  self$results$progressBarHTML$setContent(
+    appleSpinnerH('Performing multilevel LCA...')
+  )
+  
+  # 화면에 spinner를 먼저 반영
+  private$.checkpoint()
+  
+  # 현재 Run 기준으로 데이터와 모델 초기화
+  private$.dataCache <- NULL
+  private$.cache <- list()
+  
   private$.dataCache <- private$.cleanData()
-  data <- private$.dataCache
   
   # LCA 적합
-  if (is.null(private$.cache$lca)) {
-    # 35%
-    self$results$progressBarHTML$setContent(progressBarH(35, 100, 'Fitting base LCA model...'))
-    private$.cache$lca <- private$.computeLCA()
-  }
+  private$.cache$lca <- private$.computeLCA()
+  
   # 클러스터 비교
-  if (is.null(private$.cache$clu)) {
-    # 50%
-    self$results$progressBarHTML$setContent(progressBarH(50, 100, 'Evaluating cluster solutions...'))
-    private$.cache$clu <- private$.computeCLUST()
-  }
-  # 공변량/불변성(있을 때만)
-  if (is.null(private$.cache$inv)) {
-    # 60%
-    self$results$progressBarHTML$setContent(progressBarH(60, 100, 'Computing covariate/invariance (if requested)...'))
-    private$.cache$inv <- private$.computeINV()
-  }
+  private$.cache$clu <- private$.computeCLUST()
+  
+  # 공변량/불변성
+  private$.cache$inv <- private$.computeINV()
   
   lca <- private$.cache$lca
   clu <- private$.cache$clu
   inv <- private$.cache$inv
   
-  # 70%
-  self$results$progressBarHTML$setContent(progressBarH(70, 100, 'Populating outputs...'))
-  
+  # 이후 기존 결과 출력 코드
   self$results$text$setContent(lca)
   
   if (isTRUE(self$options$co)) {
@@ -193,20 +173,61 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   
   if (isTRUE(self$options$cross)) {
     table <- self$results$cross
+    
     cross <- tryCatch({
-      as.matrix(do.call(rbind, lapply(lca$posterior, colMeans)))
+      
+      classPosterior <- lca$posterior$class
+      
+      if (is.null(classPosterior))
+        return(NULL)
+      
+      # 각 관측 집단 내에서 개인별 class posterior의 평균 계산
+      result <- lapply(
+        classPosterior,
+        function(x) {
+          colMeans(
+            as.matrix(x),
+            na.rm = TRUE
+          )
+        }
+      )
+      
+      result <- as.matrix(
+        do.call(rbind, result)
+      )
+      
+      # 집단명이 존재하면 행 이름으로 유지
+      if (!is.null(names(classPosterior)) &&
+          length(names(classPosterior)) == nrow(result)) {
+        rownames(result) <- names(classPosterior)
+      }
+      
+      result
+      
     }, error = function(e) NULL)
     
     if (!is.null(cross)) {
-      names <- dimnames(cross)[[1]]
-      dims <- dimnames(cross)[[2]]
+      names <- rownames(cross)
+      dims <- colnames(cross)
+      
       for (dim in dims) {
-        table$addColumn(name = paste0(dim), type = 'character')
+        table$addColumn(
+          name = paste0(dim),
+          type = 'character'
+        )
       }
+      
       for (name in names) {
         row <- list()
-        for (j in seq_along(dims)) row[[dims[j]]] <- cross[name, j]
-        table$addRow(rowKey = name, values = row)
+        
+        for (j in seq_along(dims)) {
+          row[[dims[j]]] <- cross[name, j]
+        }
+        
+        table$addRow(
+          rowKey = name,
+          values = row
+        )
       }
     }
   }
@@ -248,9 +269,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       }
     }
   }
-  
-  # 80%
-  self$results$progressBarHTML$setContent(progressBarH(80, 100, 'Preparing plots...'))
   
   # Elbow 
   if (self$options$nclust > 2 && isTRUE(self$options$plot3)) {
@@ -349,26 +367,51 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     }
   }
   
-  # 95%
-  self$results$progressBarHTML$setContent(progressBarH(95, 100, 'Finalizing...'))
-  
-  gc()
-  
-  # 100% & hide
-  self$results$progressBarHTML$setContent(progressBarH(100, 100, 'Done'))
   self$results$progressBarHTML$setVisible(FALSE)
 },
 
 .plot1 = function(image, ...) {
-  if (!self$options$plot1)
+  if (!isTRUE(self$options$plot1))
     return(FALSE)
   
   lca <- private$.cache$lca
   
-  par(mfcol = c(3, 1))
-  plot1 <- plot(lca, ask = FALSE)
-  print(plot1)
-  TRUE
+  if (is.null(lca))
+    return(FALSE)
+  
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar), add = TRUE)
+  
+  result <- tryCatch({
+    
+    graphics::par(mfcol = c(3, 1))
+    plot(lca, ask = FALSE)
+    
+    TRUE
+    
+  }, error = function(e) {
+    
+    graphics::par(mfrow = c(1, 1))
+    graphics::plot.new()
+    
+    graphics::text(
+      x = 0.5,
+      y = 0.55,
+      labels = "Profile plot could not be generated.",
+      cex = 1
+    )
+    
+    graphics::text(
+      x = 0.5,
+      y = 0.43,
+      labels = "Some estimated values were non-finite.",
+      cex = 0.85
+    )
+    
+    TRUE
+  })
+  
+  result
 },
 
 .plot2 = function(image2, ggtheme, theme, ...) {
@@ -755,24 +798,60 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
 )
 
 
-# --- Progress Bar HTML helper (global) ---
-progressBarH <- function(progress = 0, total = 100, message = '') {
-  progress <- max(0, min(progress, total))  # clamp
-  percentage <- round(progress / total * 100)
-  width <- 400 * percentage / 100
-  
-  html <- paste0(
-    '<div style="text-align: center; padding: 20px;">',
-    '<div style="width: 400px; height: 20px; border: 1px solid #ccc; ',
-    'background-color: #f8f9fa; margin: 0 auto; border-radius: 4px;">',
-    '<div style="width: ', width, 'px; height: 18px; ',
-    'background-color: #999999; border-radius: 3px; ',
-    'transition: width 0.3s ease;"></div>',
+appleSpinnerH <- function(message = '') {
+  paste0(
+    '<div style="text-align:center;padding:24px;">',
+    
+    '<style>',
+    '@keyframes snowsoftAppleDotPulse {',
+    '0%, 80%, 100% { transform: scale(0.72); opacity: 0.55; }',
+    '40% { transform: scale(1.20); opacity: 1; }',
+    '}',
+    '</style>',
+    
+    '<div style="margin-bottom:10px;">',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#007AFF;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#34C759;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.15s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
+    '<span style="',
+    'display:inline-block;',
+    'width:12px;',
+    'height:12px;',
+    'margin:0 5px;',
+    'border-radius:50%;',
+    'background:#FF9500;',
+    'animation:snowsoftAppleDotPulse 1.2s infinite ease-in-out;',
+    'animation-delay:0.30s;',
+    'vertical-align:middle;',
+    '"></span>',
+    
     '</div>',
-    '<div style="margin-top: 8px; font-size: 12px; color: #666;">',
-    message, ' (', percentage, '%)</div>',
+    
+    '<div style="font-size:12px;color:#666;">',
+    message,
+    '</div>',
+    
     '</div>'
   )
-  
-  return(html)
 }

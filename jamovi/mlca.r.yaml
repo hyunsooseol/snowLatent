@@ -162,7 +162,7 @@ items:
           title: 'Probability'     
 
     - name: cross
-      title: 'Class prevalences by group'
+      title: 'Class prevalences by observed group'
       type: Table
       refs: glca
       visible: (cross)
