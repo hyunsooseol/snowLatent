@@ -22,12 +22,13 @@ children:
             height: small
             isTarget: true
       - type: TargetLayoutBox
-        label: Grouping Variable(Required)
+        label: Grouping Variable
         children:
           - type: VariablesListBox
             name: group
             maxItemCount: 1
             isTarget: true
+            ghostText: Required
   - type: LayoutBox
     margin: none
     style: inline
