@@ -25,7 +25,6 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         '<ul>',
         '<li>Latent Class Analysis(LCA) based on <b>glca</b> R package.</li>',
         '<li>The MAR(Missing at Random) method is applied to handle missing values.</li>',
-        '<li>Result tables are not displayed when the required results are unavailable from the glca R package.</li>',
         '<li>The Relative model fit option requires more than two clusters. This option should be unchecked when two clusters are specified.</li>',
         '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
         '</ul></div></div>'
