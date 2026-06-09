@@ -54,26 +54,26 @@ children:
               - type: CheckBox
                 name: fit
           - type: Label
-            label: 'Model comparison'
+            label: Model comparison
             children:
               - type: CheckBox
                 name: mia
               - type: CheckBox
                 name: mir
           - type: Label
-            label: 'Measurement invariance test'
+            label: Measurement invariance test
             children:
               - type: CheckBox
                 name: cia
               - type: CheckBox
                 name: cir
           - type: Label
-            label: 'Logistic regression'
+            label: Logistic regression
             children:
               - type: CheckBox
                 name: co
           - type: Label
-            label: 'Probability'
+            label: Probability
             children:
               - type: CheckBox
                 name: item
@@ -86,7 +86,7 @@ children:
         fitToGrid: true
         children:
           - type: Label
-            label: 'Plots'
+            label: Plots
             children:
               - type: CheckBox
                 name: plot1
@@ -100,7 +100,7 @@ children:
                 suggestedValues:
                   - value: 0
                   - value: 45
-                  - value: 90 
+                  - value: 90
           - type: Label
             label: Prevalences
             children:

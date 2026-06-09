@@ -23,7 +23,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<div style="text-align:justify;">',
             '<ul>',
             '<li>Latent Class Analysis(LCA) based on the <b>glca</b> R package.</li>',
-            '<li>The MAR(Missing at Random) method is applied to handle missing values.</li>',
+            '<li>Missing values in the indicator variables are handled by the <b>glca</b> R package under the MAR assumption.</li>',
             '<li>When the Equality of coefficients option is selected, the logistic regression results are not displayed.</li>',
             '<li>Result tables are not displayed when the required results are unavailable from the glca R package.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
@@ -267,7 +267,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           image2 <- self$results$plot2
           image2$setState(ic)
         }
-       
+        
+
       },
       
       .plot1 = function(image, ...) {
@@ -627,6 +628,7 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         return(mglca3)
       },
       
+     
       .populateCoTable = function(co) {
         table <- self$results$coTable
         

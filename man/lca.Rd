@@ -9,6 +9,7 @@ lca(
   vars,
   covs,
   nc = 2,
+  miss = "listwise",
   fit = TRUE,
   comp = FALSE,
   rel = FALSE,
@@ -29,6 +30,8 @@ lca(
 \item{covs}{.}
 
 \item{nc}{.}
+
+\item{miss}{.}
 
 \item{fit}{.}
 

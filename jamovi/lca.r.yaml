@@ -23,6 +23,7 @@ items:
         - vars
         - nc
         - covs
+        - miss
       refs: glca 
 
       columns:
@@ -60,6 +61,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
       columns:
         - name: class
           title: Class
@@ -95,6 +97,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
       columns:
         - name: class
           title: Class
@@ -125,6 +128,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
       columns:
         - name: name
           title: ''
@@ -142,6 +146,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
  
       columns:
         - name: name
@@ -174,6 +179,7 @@ items:
             - vars
             - covs
             - nc
+            - miss
  
       template:
           title: Probability of $key
@@ -183,6 +189,7 @@ items:
             - covs
             - nc
             - nb
+            - miss
           columns: 
             - name: name
               title: ''
@@ -197,6 +204,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
 
     - name: member
       title: Class membership
@@ -207,6 +215,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
  
     - name:  plot1
       title: 'Profile plot'
@@ -219,6 +228,7 @@ items:
         - vars
         - covs
         - nc
+        - miss
 
     - name:  plot2
       title: 'Item by class'
@@ -231,6 +241,7 @@ items:
         - covs
         - nc
         - angle
+        - miss
 
     - name: plot3
       title: 'Elbow plot'
@@ -242,5 +253,6 @@ items:
         - vars
         - covs
         - nc
+        - miss
 
 ...

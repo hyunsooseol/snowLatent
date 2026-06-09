@@ -340,8 +340,4 @@ items:
               type: text
               content: ($key)
 
-    # - name: text5
-    #   title: cache test
-    #   type:  Preformatted      
-    
 ...

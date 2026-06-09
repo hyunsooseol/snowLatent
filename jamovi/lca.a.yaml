@@ -31,6 +31,14 @@ options:
       min: 2
       default: 2
 
+    - name: miss
+      title: Missing data
+      type: List
+      options:
+        - listwise
+        - fiml
+      default: listwise
+
     - name: fit
       title: Fit measures
       type: Bool

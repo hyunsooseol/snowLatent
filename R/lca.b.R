@@ -4,15 +4,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
     "lcaClass",
     inherit = lcaBase,
     private = list(
-      .modelCache = NULL,       
-      .fitCache = NULL,         
-      .compCache = NULL,        
+      .modelCache = NULL,
       .htmlwidget = NULL,
-      .cleanDataCache = NULL,
       
       .init = function() {
         private$.htmlwidget <- HTMLWidget$new()
-        private$.cleanDataCache <- NULL
         
         if (is.null(self$data) | is.null(self$options$vars)) {
           self$results$instructions$setVisible(visible = TRUE)
@@ -25,35 +21,35 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             '<div style="text-align:justify;">',
             '<ul>',
             '<li>Latent Class Analysis(LCA) based on <b>glca</b> R package.</li>',
-            '<li>The MAR(Missing at Random) method is applied to handle missing values.</li>',
             '<li>The result table does not printed if the results from glca R package are not available.</li>',
             '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
             '</ul></div></div>'
           )
         ))
-       
-        if (self$options$fit)
-          self$results$fit$setNote("Note", "CAIC is not directly provided by the glca R package and is calculated from AIC and BIC.")
         
-         
+        if (self$options$fit)
+          self$results$fit$setNote(
+            "Note",
+            "CAIC is not directly provided by the glca R package and is calculated from AIC and BIC."
+          )
       },
       
       .run = function() {
         
-        private$.cleanDataCache <- NULL
-        
         if (is.null(self$options$vars) || length(self$options$vars) < 3)
           return()
         
-        if (is.null(private$.modelCache)) {
-          private$.modelCache <- private$.computeLCA()
-        }
+        # 현재 데이터와 옵션으로 모델을 새로 계산
+        private$.modelCache <- private$.computeLCA()
+        
+        # 현재 실행에서 모델 비교 결과를 한 번만 계산
+        comparison <- private$.computeModelComparison()
         
         self$results$text$setContent(private$.modelCache)
         
         private$.populateFitTable()
-        private$.populateModelTable()
-        private$.populateRelTable()
+        private$.populateModelTable(comparison)
+        private$.populateRelTable(comparison)
         private$.populateClassTable()
         private$.populateItemTable()
         
@@ -62,8 +58,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         private$.handlePosterior()
-        
-       
       },
       
       .calcCAIC = function(aic, bic, n) {
@@ -84,47 +78,48 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .populateFitTable = function() {
-        if (is.null(private$.fitCache)) {
-          v <- c("loglik", "AIC", "BIC", "entropy", "df", "Gsq")
-          gof_data <- private$.modelCache$gof
-          
-          private$.fitCache <- as.data.frame(
-            replace(gof_data[v], sapply(gof_data[v], is.null), list(NA_real_))
+        v <- c("loglik", "AIC", "BIC", "entropy", "df", "Gsq")
+        gof_data <- private$.modelCache$gof
+        
+        fitData <- as.data.frame(
+          replace(
+            gof_data[v],
+            sapply(gof_data[v], is.null),
+            list(NA_real_)
           )
-        }
+        )
+        
+        prepared <- private$.prepareData()
         
         caic <- private$.calcCAIC(
-          aic = private$.fitCache[1, "AIC"],
-          bic = private$.fitCache[1, "BIC"],
-          n = nrow(private$.cleanData())
+          aic = fitData[1, "AIC"],
+          bic = fitData[1, "BIC"],
+          n = nrow(prepared$data)
         )
         
         table <- self$results$fit
+        
         table$setRow(
           rowNo = 1,
           values = list(
             class = self$options$nc,
-            loglik = private$.fitCache[1, "loglik"],
-            AIC = private$.fitCache[1, "AIC"],
+            loglik = fitData[1, "loglik"],
+            AIC = fitData[1, "AIC"],
             CAIC = caic,
-            BIC = private$.fitCache[1, "BIC"],
-            entropy = private$.fitCache[1, "entropy"],
-            df = private$.fitCache[1, "df"],
-            gsq = private$.fitCache[1, "Gsq"]
+            BIC = fitData[1, "BIC"],
+            entropy = fitData[1, "entropy"],
+            df = fitData[1, "df"],
+            gsq = fitData[1, "Gsq"]
           )
         )
       },
       
-      .populateModelTable = function() {
-        if (is.null(private$.compCache)) {
-          private$.compCache <- private$.computeModelComparison()
-        }
-        
-        if (is.null(private$.compCache$gtable))
+      .populateModelTable = function(comparison) {
+        if (is.null(comparison$gtable))
           return()
         
         table <- self$results$comp
-        g <- as.data.frame(private$.compCache$gtable)
+        g <- as.data.frame(comparison$gtable)
         
         for (i in seq_len(nrow(g))) {
           table$addRow(
@@ -143,12 +138,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
       },
       
-      .populateRelTable = function() {
-        if (self$options$nc < 3 || is.null(private$.compCache) || is.null(private$.compCache$dtable))
+      .populateRelTable = function(comparison) {
+        if (self$options$nc < 3 ||
+            is.null(comparison) ||
+            is.null(comparison$dtable))
           return()
         
         table <- self$results$rel
-        d <- as.data.frame(private$.compCache$dtable)
+        d <- as.data.frame(comparison$dtable)
         
         for (i in seq_len(nrow(d))) {
           table$addRow(
@@ -160,7 +157,6 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               df = d[i, 3],
               dev = d[i, 4],
               p = d[i, 5]
-              
             )
           )
         }
@@ -172,7 +168,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         table <- self$results$cp
         for (i in seq_len(nrow(gam))) {
-          table$addRow(rowKey = rownames(gam)[i], values = list(value = gam[i, 1]))
+          table$addRow(
+            rowKey = rownames(gam)[i],
+            values = list(value = gam[i, 1])
+          )
         }
       },
       
@@ -187,16 +186,24 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           dims <- colnames(item[[vars[i]]])
           
           for (dim in dims) {
-            table$addColumn(name = paste0(dim),
-                            type = 'text',
-                            combineBelow = TRUE)
+            table$addColumn(
+              name = paste0(dim),
+              type = 'text',
+              combineBelow = TRUE
+            )
           }
+          
           for (name in names) {
             row <- list()
+            
             for (j in seq_along(dims)) {
               row[[dims[j]]] <- item[[vars[i]]][name, j]
             }
-            table$addRow(rowKey = name, values = row)
+            
+            table$addRow(
+              rowKey = name,
+              values = row
+            )
           }
         }
       },
@@ -215,7 +222,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           row[["error"]] <- codf[name, 3]
           row[["t"]] <- codf[name, 4]
           row[["p"]] <- codf[name, 5]
-          table$addRow(rowKey = name, values = row)
+          
+          table$addRow(
+            rowKey = name,
+            values = row
+          )
         }
       },
       
@@ -223,78 +234,133 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         pos <- private$.modelCache$posterior$ALL
         
+        prepared <- private$.prepareData()
+        analysisRows <- prepared$rows
+        n_row <- prepared$nOriginal
+        
+        if (length(analysisRows) != nrow(pos)) {
+          stop(
+            paste0(
+              "Posterior probabilities could not be aligned with ",
+              "the original data rows."
+            )
+          )
+        }
+        
         if (isTRUE(self$options$member)) {
-          n_row <- nrow(self$data)
-          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          mem <- as.numeric(factor(apply(pos, 1, which.max)))
-          mem_vec <- rep(NA, n_row)
-          mem_vec[not_na_idx] <- as.factor(mem)
           
-          if (self$options$member && self$results$member$isNotFilled()) {
-            self$results$member$setRowNums(rownames(self$data))
-            self$results$member$setValues(mem_vec)
+          mem <- max.col(
+            pos,
+            ties.method = "first"
+          )
+          
+          mem_vec <- rep(NA_integer_, n_row)
+          mem_vec[analysisRows] <- mem
+          
+          if (self$options$member &&
+              self$results$member$isNotFilled()) {
+            
+            self$results$member$setRowNums(
+              rownames(self$data)
+            )
+            
+            self$results$member$setValues(
+              mem_vec
+            )
           }
         }
         
         if (isTRUE(self$options$post)) {
-          n_row <- nrow(self$data)
-          not_na_idx <- which(stats::complete.cases(self$data[, self$options$vars, drop=FALSE]))
-          if (self$options$post && self$results$post$isNotFilled()) {
-            keys <- 1:self$options$nc
-            measureTypes <- rep("continuous", self$options$nc)
+          
+          if (self$options$post &&
+              self$results$post$isNotFilled()) {
+            
+            keys <- seq_len(self$options$nc)
+            measureTypes <- rep(
+              "continuous",
+              self$options$nc
+            )
+            
             titles <- paste("Class", keys)
             descriptions <- paste("Class", keys)
+            
             self$results$post$set(
               keys = keys,
               titles = titles,
               descriptions = descriptions,
               measureTypes = measureTypes
             )
-            self$results$post$setRowNums(rownames(self$data))
-            for (i in 1:self$options$nc) {
-              scores <- rep(NA, n_row)
-              scores[not_na_idx] <- as.numeric(pos[, i])
-              self$results$post$setValues(index = i, scores)
+            
+            self$results$post$setRowNums(
+              rownames(self$data)
+            )
+            
+            for (i in seq_len(self$options$nc)) {
+              
+              scores <- rep(NA_real_, n_row)
+              scores[analysisRows] <- as.numeric(pos[, i])
+              
+              self$results$post$setValues(
+                index = i,
+                scores
+              )
             }
           }
         }
-        
       },
       
       .computeModelComparison = function() {
-        data <- private$.cleanData()
+       
+        prepared <- private$.prepareData()
+        data <- prepared$data
+        
         nc <- self$options$nc
         covs <- self$options$covs
         vars <- self$options$vars
         
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        vars <- vapply(
+          vars,
+          function(x) jmvcore::composeTerm(x),
+          ''
+        )
+        
         vars <- paste0(vars, collapse = ',')
-        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+        formula <- as.formula(
+          paste0('glca::item(', vars, ') ~ 1')
+        )
         
         if (!is.null(covs) && length(covs) >= 1) {
-          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+          covs <- vapply(
+            covs,
+            function(x) jmvcore::composeTerm(x),
+            ''
+          )
+          
           covs <- paste0(covs, collapse = '+')
-          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+          formula <- as.formula(
+            paste0('glca::item(', vars, ') ~ ', covs)
+          )
         }
         
         args <- list(test = "chisq")
         
-        for (n in 2:self$options$nc)
+        for (n in 2:self$options$nc) {
           args[[n]] <- glca::glca(
             formula = formula,
             data = data,
             nclass = n,
             seed = 1
           )
+        }
         
         res <- do.call(glca::gofglca, args)
         
-        gtable <- res[["gtable"]] # Absolute model fit
+        gtable <- res[["gtable"]]
         
         if (is.null(res$dtable)) {
           dtable <- NULL
         } else {
-          dtable <- res[["dtable"]] # Relative model fit
+          dtable <- res[["dtable"]]
         }
         
         if (!is.null(gtable)) {
@@ -317,21 +383,19 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         elbow <- NULL
+        
         if (self$options$nc > 2 && !is.null(gtable)) {
-          # out1 <- gtable[, c(2:3)]
-          # cla <- c(2:self$options$nc)
-          # out1 <- data.frame(out1, cla)
-          # #self$results$text$setContent(out1)
-          # colnames(out1) <- c('AIC', 'BIC', 'Class')
-          # out1 <- gtable[, c("AIC", "BIC")]
-          # cla <- gtable$class
-          # out1 <- data.frame(out1, cla)
-          # colnames(out1) <- c('AIC', 'BIC', 'Class')
           out1 <- gtable[, c("AIC", "CAIC", "BIC")]
           cla <- gtable$class
           out1 <- data.frame(out1, cla)
-          colnames(out1) <- c('AIC', 'CAIC', 'BIC', 'Class')
-                    
+          
+          colnames(out1) <- c(
+            'AIC',
+            'CAIC',
+            'BIC',
+            'Class'
+          )
+          
           elbow <- reshape2::melt(
             out1,
             id.vars = 'Class',
@@ -360,7 +424,11 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           private$.modelCache <- private$.computeLCA()
         
         par(mfcol = c(2, 1))
-        plot1 <- plot(private$.modelCache, ask = FALSE)
+        plot1 <- plot(
+          private$.modelCache,
+          ask = FALSE
+        )
+        
         print(plot1)
         TRUE
       },
@@ -371,17 +439,41 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         ic <- image1$state
         
-        plot2 <- ggplot2::ggplot(ic, ggplot2::aes(x = Class, y = value, fill = Level)) +
-          ggplot2::geom_bar(stat = "identity", position = "stack") +
+        plot2 <- ggplot2::ggplot(
+          ic,
+          ggplot2::aes(
+            x = Class,
+            y = value,
+            fill = Level
+          )
+        ) +
+          ggplot2::geom_bar(
+            stat = "identity",
+            position = "stack"
+          ) +
           ggplot2::facet_wrap(~ L1) +
-          ggplot2::scale_x_discrete("Class", expand = c(0, 0)) +
-          ggplot2::scale_y_continuous("Probability", expand = c(0, 0)) +
+          ggplot2::scale_x_discrete(
+            "Class",
+            expand = c(0, 0)
+          ) +
+          ggplot2::scale_y_continuous(
+            "Probability",
+            expand = c(0, 0)
+          ) +
           ggplot2::theme_bw()
         
         plot2 <- plot2 + ggtheme
+        
         if (self$options$angle > 0) {
-          plot2 <- plot2 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = self$options$angle, hjust = 1))
+          plot2 <- plot2 +
+            ggplot2::theme(
+              axis.text.x = ggplot2::element_text(
+                angle = self$options$angle,
+                hjust = 1
+              )
+            )
         }
+        
         print(plot2)
         TRUE
       },
@@ -389,30 +481,39 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       .plot3 = function(image2, ggtheme, theme, ...) {
         if (self$options$nc < 3)
           return()
+        
         if (is.null(image2$state))
           return(FALSE)
         
         elbow <- image2$state
-        plot3 <- ggplot2::ggplot(elbow, ggplot2::aes(x = Class, y = Value, color = Fit)) +
+        
+        plot3 <- ggplot2::ggplot(
+          elbow,
+          ggplot2::aes(
+            x = Class,
+            y = Value,
+            color = Fit
+          )
+        ) +
           ggplot2::geom_line(size = 1.1) +
           ggplot2::geom_point(size = 3) +
-          #ggplot2::scale_x_continuous(breaks = seq(1, length(elbow$Class), by = 1))
-          ggplot2::scale_x_continuous(breaks = sort(unique(elbow$Class)))
-          
+          ggplot2::scale_x_continuous(
+            breaks = sort(unique(elbow$Class))
+          )
+        
         plot3 <- plot3 + ggtheme
+        
         print(plot3)
         TRUE
       },
       
       .cleanData = function() {
-        if (!is.null(private$.cleanDataCache))
-          return(private$.cleanDataCache)
-        
         data <- list()
         
-        if (!is.null(self$options$covs))
+        if (!is.null(self$options$covs)) {
           for (cov in self$options$covs)
             data[[cov]] <- jmvcore::toNumeric(self$data[[cov]])
+        }
         
         for (var in self$options$vars)
           data[[var]] <- jmvcore::toNumeric(self$data[[var]])
@@ -420,24 +521,83 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         attr(data, 'row.names') <- seq_len(length(data[[1]]))
         attr(data, 'class') <- 'data.frame'
         
-        private$.cleanDataCache <- data
         return(data)
       },
       
-      .computeLCA = function() {
+      .prepareData = function() {
         data <- private$.cleanData()
+        
+        vars <- self$options$vars
+        covs <- self$options$covs
+        
+        n <- nrow(data)
+        
+        if (identical(self$options$miss, "listwise")) {
+          
+          needed <- c(vars, covs)
+          needed <- needed[
+            !is.na(needed) &
+              nzchar(needed)
+          ]
+          
+          keep <- stats::complete.cases(
+            data[, needed, drop = FALSE]
+          )
+          
+        } else {
+          
+          indicatorData <- data[, vars, drop = FALSE]
+          keep <- rowSums(!is.na(indicatorData)) > 0
+          
+          if (!is.null(covs) && length(covs) > 0) {
+            keep <- keep &
+              stats::complete.cases(
+                data[, covs, drop = FALSE]
+              )
+          }
+        }
+        
+        analysisRows <- which(keep)
+        
+        list(
+          data = data[keep, , drop = FALSE],
+          rows = analysisRows,
+          nOriginal = n
+        )
+      },
+      
+      .computeLCA = function() {
+        prepared <- private$.prepareData()
+        data <- prepared$data
+        
         nc <- self$options$nc
         covs <- self$options$covs
         vars <- self$options$vars
         
-        vars <- vapply(vars, function(x) jmvcore::composeTerm(x), '')
+        vars <- vapply(
+          vars,
+          function(x) jmvcore::composeTerm(x),
+          ''
+        )
+        
         vars <- paste0(vars, collapse = ',')
-        formula <- as.formula(paste0('glca::item(', vars, ') ~ 1'))
+        
+        formula <- as.formula(
+          paste0('glca::item(', vars, ') ~ 1')
+        )
         
         if (!is.null(covs) && length(covs) >= 1) {
-          covs <- vapply(covs, function(x) jmvcore::composeTerm(x), '')
+          covs <- vapply(
+            covs,
+            function(x) jmvcore::composeTerm(x),
+            ''
+          )
+          
           covs <- paste0(covs, collapse = '+')
-          formula <- as.formula(paste0('glca::item(', vars, ') ~ ', covs))
+          
+          formula <- as.formula(
+            paste0('glca::item(', vars, ') ~ ', covs)
+          )
         }
         
         lca <- glca::glca(
@@ -449,7 +609,14 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         
         if (isTRUE(self$options$plot2)) {
           ic <- reshape2::melt(lca$param$rho)
-          colnames(ic) <- c("Class", "Level", "value", "L1")
+          
+          colnames(ic) <- c(
+            "Class",
+            "Level",
+            "value",
+            "L1"
+          )
+          
           image1 <- self$results$plot2
           image1$setState(ic)
         }
