@@ -36,12 +36,13 @@ children:
                   height: auto
                   ghostText: drag variables here
       - type: TargetLayoutBox
-        label: Covariates(Optional)
+        label: Covariates
         children:
           - type: VariablesListBox
             name: covs
             height: small
             isTarget: true
+            ghostText: Optional
   - type: LayoutBox
     margin: none
     style: inline

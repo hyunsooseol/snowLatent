@@ -630,10 +630,22 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
           .fit_obj3 <- function() {
             cons <- self$options$cons
-            cons1 <- unlist(strsplit(cons, ","))
+            
+            cons1 <- trimws(unlist(strsplit(cons, ",", fixed = TRUE)))
+            cons1 <- cons1[nzchar(cons1)]
+            
+            if (length(cons1) == 0) {
+              stop("At least one valid measurement-invariance constraint is required.")
+            }
+            
             library(magrittr)
             set.seed(1234)
-            slca::slca(formula = form1, constraints = cons1) %>% slca::estimate(data = data)
+            
+            slca::slca(
+              formula = form1,
+              constraints = cons1
+            ) %>%
+              slca::estimate(data = data)
           }
           
           obj2 <- NULL
@@ -661,10 +673,6 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           
           if (isTRUE(self$options$par2)) {
-            library(magrittr)
-            set.seed(1234)
-            obj2 <- slca::slca(formula = form1) %>%
-              slca::estimate(data = data)
             
             .fill_noninv_tables(
               lta_obj = obj2,
@@ -735,11 +743,10 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
 
           if (isTRUE(self$options$plot1)) {
             # 강제: obj2 (non-invariant)
-            obj2_for_plot <- NULL
-            if (exists("obj2")) {
-              obj2_for_plot <- obj2
+            obj2_for_plot <- if (!is.null(obj2)) {
+              obj2
             } else {
-              obj2_for_plot <- .fit_obj2()
+              .fit_obj2()
             }
             
             tau_long <- .tau_to_long(obj2_for_plot, step_labels)
@@ -751,12 +758,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           if (isTRUE(self$options$plot2)) {
             # 강제: obj3 (invariant)
-            obj3_for_plot <- NULL
-            if (exists("obj3")) {
-              obj3_for_plot <- obj3
-            } else {
-              obj3_for_plot <- .fit_obj3()
-            }
+            obj3_for_plot <- if (!is.null(obj3)) obj3 else .fit_obj3()
             
             tau_long <- .tau_to_long(obj3_for_plot, step_labels)
             if (!is.null(tau_long)) {
@@ -796,8 +798,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             }
             
             # 강제 추정/재사용 (필요할 때만)
-            obj2_for_tau <- if (exists("obj2")) obj2 else .fit_obj2()
-            obj3_for_tau <- if (exists("obj3")) obj3 else .fit_obj3()
+            obj2_for_tau <- if (!is.null(obj2)) obj2 else .fit_obj2()
+            obj3_for_tau <- if (!is.null(obj3)) obj3 else .fit_obj3()
             
             .fill_tau_table(obj2_for_tau, "Non-invariant (H1)", step_labels)
             .fill_tau_table(obj3_for_tau, "Invariant (H0)", step_labels)
@@ -808,34 +810,53 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           # -------------------------------------------------
           if (isTRUE(self$options$stayer)) {
             
-            # obj2 (H1)
-            obj2_for_stay <- if (exists("obj2")) obj2 else .fit_obj2()
-            # obj3 (H0)
-            obj3_for_stay <- if (exists("obj3")) obj3 else .fit_obj3()
+            obj2_for_stay <- if (!is.null(obj2)) obj2 else .fit_obj2()
+            obj3_for_stay <- if (!is.null(obj3)) obj3 else .fit_obj3()
             
             df_stay <- rbind(
-              .tau_diag_summary(obj2_for_stay, step_labels, "Non-invariant (H1)"),
-              .tau_diag_summary(obj3_for_stay, step_labels, "Invariant (H0)")
+              .tau_diag_summary(
+                obj2_for_stay,
+                step_labels,
+                "Non-invariant (H1)"
+              ),
+              .tau_diag_summary(
+                obj3_for_stay,
+                step_labels,
+                "Invariant (H0)"
+              )
             )
             
             if (!is.null(df_stay) && nrow(df_stay) > 0) {
               tab <- self$results$stay
+              
               for (i in seq_len(nrow(df_stay))) {
                 tab$addRow(
-                  rowKey = paste0(df_stay$model[i], "_", df_stay$transition[i]),
+                  rowKey = paste0(
+                    df_stay$model[i],
+                    "_",
+                    df_stay$transition[i]
+                  ),
                   values = list(
-                    model = df_stay$model[i],
+                    model      = df_stay$model[i],
                     transition = df_stay$transition[i],
-                    stayer = df_stay$stayer[i],
-                    mover = df_stay$mover[i]
+                    stayer     = df_stay$stayer[i],
+                    mover      = df_stay$mover[i]
                   )
                 )
               }
-            }
+              self$results$stay$setNote(
+                "Note",
+                paste(
+                  "(1) Average stay probability: the unweighted mean of the diagonal",
+                  "transition probabilities across latent classes;",
+                  "(2) Average switching probability: 1 minus the average stay probability."
+                )
+              )
+
+              }
           }
-          
         }
-        
+          
         if (!is.null(self$options$covs) && length(self$options$covs) >= 1) {
           regform <- self$options$regform
           regform <- as.formula(regform)
