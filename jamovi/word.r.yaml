@@ -17,6 +17,8 @@ items:
     - name: plot
       title: 'Wordcloud plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot
       requiresData: true
@@ -32,6 +34,8 @@ items:
     - name: plot1
       title: 'Plot word frequencies'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1
       requiresData: true

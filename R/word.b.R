@@ -112,53 +112,65 @@ wordClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         TRUE
       },
     
-    .plot1 = function(image,ggtheme, theme,...) {
+    .plot1 = function(image, ggtheme, theme, ...) {
       
-      if (is.null(self$options$words) | is.null(self$options$freq)) return()
-      
-      # words <- self$options$words
-      # freq <- self$options$freq
+      if (is.null(self$options$words) | is.null(self$options$freq))
+        return()
       
       maxn <- self$options$maxn
-    
+      
       data <- self$data
       data <- jmvcore::naOmit(data)
       data <- as.data.frame(data)
-     
-      #Change the name of variables---
+      
+      # Change the name of variables
       names(data) <- c("word", "freq")
-      #self$results$text$setContent(data[1:maxn,]$freq)
-      Words<- data[1:maxn,]$word
-      Words<- as.vector(Words) 
       
-       Frequency<- data[1:maxn,]$freq
-       Frequency<- as.vector(Frequency)
-       
-       df<- data.frame(Words, Frequency)
-        
-       #self$results$text$setContent(df)
+      Words <- data[1:maxn, ]$word
+      Words <- as.vector(Words)
       
-       df$Words <- factor(df$Words, levels = df$Words[order(df$Frequency)])
-       Words<- stats::reorder(Words, dplyr::desc(Frequency))
-       
-       library(ggplot2)
-       set.seed(1234)
-       plot1<- ggplot2::ggplot(data=df, ggplot2::aes(x=Words, y=Frequency)) +
-         ggplot2::geom_bar(stat = "identity", fill = "steelblue")+
-         ggplot2::geom_text(aes(label=Frequency), vjust=1.6, color="white", size=3.5)
+      Frequency <- data[1:maxn, ]$freq
+      Frequency <- as.vector(Frequency)
       
-      plot1 <- plot1+ggtheme
+      df <- data.frame(Words, Frequency)
+      
+      df$Words <- factor(
+        df$Words,
+        levels = df$Words[order(df$Frequency)]
+      )
+      
+      set.seed(1234)
+      
+      plot1 <- ggplot2::ggplot(
+        data = df,
+        ggplot2::aes(x = Words, y = Frequency)
+      ) +
+        ggplot2::geom_bar(
+          stat = "identity",
+          fill = "steelblue"
+        ) +
+        ggplot2::geom_text(
+          ggplot2::aes(label = Frequency),
+          vjust = 1.6,
+          color = "white",
+          size = 3.5
+        )
+      
+      plot1 <- plot1 + ggtheme
       
       if (self$options$angle > 0) {
         plot1 <- plot1 + ggplot2::theme(
           axis.text.x = ggplot2::element_text(
-            angle = self$options$angle, hjust = 1
+            angle = self$options$angle,
+            hjust = 1
           )
         )
       }
       
       print(plot1)
-      TRUE  
+      TRUE
     }
+    
+    
     )
 )

@@ -624,10 +624,12 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           
           # ---- helper: fit obj2 (non-invariant) / obj3 (invariant) cleanly
           .fit_obj2 <- function() {
-            library(magrittr)
             set.seed(1234)
-            slca::slca(formula = form1) %>% slca::estimate(data = data)
+            
+            fit <- slca::slca(formula = form1)
+            slca::estimate(fit, data = data)
           }
+          
           .fit_obj3 <- function() {
             cons <- self$options$cons
             
@@ -638,14 +640,14 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               stop("At least one valid measurement-invariance constraint is required.")
             }
             
-            library(magrittr)
             set.seed(1234)
             
-            slca::slca(
+            fit <- slca::slca(
               formula = form1,
               constraints = cons1
-            ) %>%
-              slca::estimate(data = data)
+            )
+            
+            slca::estimate(fit, data = data)
           }
           
           obj2 <- NULL
@@ -898,12 +900,17 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               cons1 <- unlist(strsplit(cons, ","))
             }
             
-            library(magrittr)
             set.seed(1234)
             
             lcpa_model <- tryCatch({
-              slca::slca(formula = new_form, constraints = cons1) %>%
-                slca::estimate(data = data)
+              
+              fit <- slca::slca(
+                formula = new_form,
+                constraints = cons1
+              )
+              
+              slca::estimate(fit, data = data)
+              
             }, error = function(e) {
               message("error: ", e$message)
               return(NULL)

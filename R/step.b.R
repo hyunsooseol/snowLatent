@@ -53,10 +53,11 @@ stepClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       # Helper function to create and estimate model (for reuse)
       .getModel = function(data, formula) {
         if (is.null(private$.obj)) {
-          library(magrittr)
           set.seed(1234)
-          private$.obj <- slca::slca(formula) %>%
-            slca::estimate(data = data)
+          
+          fit <- slca::slca(formula)
+          
+          private$.obj <- slca::estimate(fit, data = data)
         }
         return(private$.obj)
       },

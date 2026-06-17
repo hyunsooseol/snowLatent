@@ -28,6 +28,8 @@ items:
     - name: plot1
       title: 'Line plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot1)
       renderFun: .plot1
       clearWith:
@@ -40,6 +42,8 @@ items:
     - name: plot3
       title: 'Z plot'
       type: Image
+      width: 600
+      height: 450
       visible: (plot3)
       renderFun: .plot3
       clearWith:
@@ -52,6 +56,8 @@ items:
     - name: plot2
       title: 'Box plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot2)
       renderFun: .plot2
       clearWith:

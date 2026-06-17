@@ -204,6 +204,8 @@ items:
     - name:  plot1
       title: 'Transition plot(Non-invariant)'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot1
       visible: (plot1)
       requiresData: true
@@ -217,6 +219,8 @@ items:
     - name:  plot2
       title: 'Transition plot(Invariant)'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot2
       visible: (plot2)
       requiresData: true
@@ -324,6 +328,8 @@ items:
     - name:  plot
       title: 'Covariate effects plot'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot
       visible: (plot)
       requiresData: true

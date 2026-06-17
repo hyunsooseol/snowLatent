@@ -17,6 +17,8 @@ items:
     - name:  plot
       title: 'Individual chart'
       type:  Image
+      width: 600
+      height: 450      
       requiresData: true
       visible: (plot)
       renderFun: .plot
@@ -29,6 +31,8 @@ items:
     - name:  plot1
       title: 'Multiple charts'
       type:  Image
+      width: 600
+      height: 450      
       requiresData: true
       visible: (plot1)
       renderFun: .plot1

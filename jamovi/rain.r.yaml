@@ -17,6 +17,8 @@ items:
     - name: plot
       title: 'Raincloud plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot)
       renderFun: .plot
       clearWith:

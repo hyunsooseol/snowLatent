@@ -220,6 +220,8 @@ items:
     - name:  plot1
       title: 'Profile plot'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot1
       visible: (plot1)
       refs: glca
@@ -233,6 +235,8 @@ items:
     - name:  plot2
       title: 'Item by class'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot2
       visible: (plot2)
       refs: snowLatent
@@ -246,6 +250,8 @@ items:
     - name: plot3
       title: 'Elbow plot'
       type: Image
+      width: 600
+      height: 450      
       visible: (plot3)
       refs: snowLatent
       renderFun: .plot3

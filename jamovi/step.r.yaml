@@ -170,6 +170,8 @@ items:
     - name:  plot
       title: 'Covariate Effects Plot'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot
       visible: (plot)
       requiresData: true
@@ -185,6 +187,8 @@ items:
     - name:  plot1
       title: 'Covariate Effects Plot'
       type:  Image
+      width: 600
+      height: 450      
       renderFun: .plot1
       visible: (plot1)
       requiresData: true

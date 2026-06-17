@@ -105,11 +105,14 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               
               # Close the polygon: set first and last point the same
               # Needed for coord_polar and such
-              newdata <- rbind(newdata, newdata[1,])
+              newdata <- rbind(newdata, newdata[1, ])
               
-              ggplot2:::ggname("geom_flat_violin",
-                               GeomPolygon$draw_panel(newdata, panel_scales, coord))
-            },
+              ggplot2::GeomPolygon$draw_panel(
+                newdata,
+                panel_scales,
+                coord
+              )
+          },
             
             draw_key = ggplot2::draw_key_polygon,
             
