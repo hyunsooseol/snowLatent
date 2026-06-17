@@ -53,15 +53,12 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
       },        
         
       .plot = function(image, ggtheme, theme, ...) {
-
+        
         if (is.null(image$state))
           return(FALSE)
         
         plotData <- image$state
-        #---
-        library(ggplot2)
-        library(dplyr)
-
+        
         "%||%" <- function(a, b) {
           if (!is.null(a))
             a
@@ -73,46 +70,46 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
           ggplot2::ggproto(
             "GeomFlatViolin",
             ggplot2::Geom,
+            
             setup_data = function(data, params) {
+              
               data$width <- data$width %||%
                 params$width %||% (ggplot2::resolution(data$x, FALSE) * 0.9)
               
-              # ymin, ymax, xmin, and xmax define the bounding rectangle for each group
-              data %>%
-                dplyr::group_by(.data = ., group) %>%
-                dplyr::mutate(
-                  .data = .,
-                  ymin = min(y),
-                  ymax = max(y),
-                  xmin = x,
-                  xmax = x + width / 2
-                )
+              data <- dplyr::group_by(data, group)
+              
+              data <- dplyr::mutate(
+                data,
+                ymin = min(y),
+                ymax = max(y),
+                xmin = x,
+                xmax = x + width / 2
+              )
+              
+              data
             },
             
-            draw_group = function(data, panel_scales, coord)
-            {
-              # Find the points for the line to go all the way around
-              data <- base::transform(data,
-                                      xminv = x,
-                                      xmaxv = x + violinwidth * (xmax - x))
+            draw_group = function(data, panel_scales, coord) {
               
-              # Make sure it's sorted properly to draw the outline
-              newdata <-
-                base::rbind(
-                  dplyr::arrange(.data = base::transform(data, x = xminv), y),
-                  dplyr::arrange(.data = base::transform(data, x = xmaxv), -y)
-                )
+              data <- base::transform(
+                data,
+                xminv = x,
+                xmaxv = x + violinwidth * (xmax - x)
+              )
               
-              # Close the polygon: set first and last point the same
-              # Needed for coord_polar and such
-              newdata <- rbind(newdata, newdata[1, ])
+              newdata <- base::rbind(
+                dplyr::arrange(base::transform(data, x = xminv), y),
+                dplyr::arrange(base::transform(data, x = xmaxv), dplyr::desc(y))
+              )
+              
+              newdata <- base::rbind(newdata, newdata[1, , drop = FALSE])
               
               ggplot2::GeomPolygon$draw_panel(
                 newdata,
                 panel_scales,
                 coord
               )
-          },
+            },
             
             draw_key = ggplot2::draw_key_polygon,
             
@@ -127,7 +124,6 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             required_aes = c("x", "y")
           )
-        
         
         geom_flat_violin <-
           function(mapping = NULL,
@@ -147,31 +143,57 @@ rainClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
               position = position,
               show.legend = show.legend,
               inherit.aes = inherit.aes,
-              params = list(trim = trim,
-                            scale = scale,
-                            ...)
+              params = list(
+                trim = trim,
+                scale = scale,
+                ...
+              )
             )
           }
         
-        ##################################
-        
-        plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = Variable, y = Value, fill = Group)) +
-          
-                geom_flat_violin(ggplot2::aes(fill = Group), 
-                                          position = ggplot2::position_nudge(x = .2, y = 0), 
-                                          adjust = 1.5, trim = FALSE, alpha = .5, colour = NA,
-                                          width = 1.0, scale = "width") +
-          ggplot2::geom_point(ggplot2::aes(x = as.numeric(factor(Variable))-.15, y = Value, colour = Group), 
-                              position = ggplot2::position_jitter(width = .05), size = 3,alpha=0.7, shape = 20)+
-          ggplot2::geom_boxplot(ggplot2::aes(x = Variable, y = Value, fill=Group), 
-                                outlier.shape = NA, alpha = .5, width = .25, colour = "black")+
-          
+        plot <- ggplot2::ggplot(
+          plotData,
+          ggplot2::aes(x = Variable, y = Value, fill = Group)
+        ) +
+          geom_flat_violin(
+            ggplot2::aes(fill = Group),
+            position = ggplot2::position_nudge(x = .2, y = 0),
+            adjust = 1.5,
+            trim = FALSE,
+            alpha = .5,
+            colour = NA,
+            width = 1.0,
+            scale = "width"
+          ) +
+          ggplot2::geom_point(
+            ggplot2::aes(
+              x = as.numeric(factor(Variable)) - .15,
+              y = Value,
+              colour = Group
+            ),
+            position = ggplot2::position_jitter(width = .05),
+            size = 3,
+            alpha = 0.7,
+            shape = 20
+          ) +
+          ggplot2::geom_boxplot(
+            ggplot2::aes(
+              x = Variable,
+              y = Value,
+              fill = Group
+            ),
+            outlier.shape = NA,
+            alpha = .5,
+            width = .25,
+            colour = "black"
+          ) +
           ggtheme
         
         if (self$options$angle > 0) {
           plot <- plot + ggplot2::theme(
             axis.text.x = ggplot2::element_text(
-              angle = self$options$angle, hjust = 1
+              angle = self$options$angle,
+              hjust = 1
             )
           )
         }
