@@ -231,6 +231,36 @@ items:
         - nc
         - cons
 
+    - name: plot3
+      title: 'Class-specific stability across transitions'
+      type: Image
+      width: 600
+      height: 450
+      renderFun: .plot3
+      visible: (plot3)
+      requiresData: true
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+
+    - name: plot4
+      title: 'Transition probability differences between models'
+      type: Image
+      width: 600
+      height: 450
+      renderFun: .plot4
+      visible: (plot4)
+      requiresData: true
+      refs: slca
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+
     - name: tau
       title: 'Transition probabilities'
       type: Table
@@ -260,7 +290,7 @@ items:
           format: zto
 
     - name: stay
-      title: 'Classification stability (Mean diagonal of transition matrix)'
+      title: 'Average class stability (Aligned transition matrix)'
       type: Table
       visible: (stayer)
       refs: slca
@@ -341,7 +371,6 @@ items:
         - impu
         - regform
         - cons
-
 
 
 ...

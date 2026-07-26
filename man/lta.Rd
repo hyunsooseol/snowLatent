@@ -22,7 +22,9 @@ lta(
   plot2 = FALSE,
   tau = FALSE,
   stayer = FALSE,
-  ref = 0
+  ref = 0,
+  plot3 = FALSE,
+  plot4 = FALSE
 )
 }
 \arguments{
@@ -62,6 +64,10 @@ of the factor and the \code{vars} that belong to that factor}
 \item{stayer}{.}
 
 \item{ref}{.}
+
+\item{plot3}{.}
+
+\item{plot4}{.}
 }
 \value{
 A results object containing:
@@ -78,6 +84,8 @@ A results object containing:
   \code{results$rho_inv} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot1} \tab \tab \tab \tab \tab an image \cr
   \code{results$plot2} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot3} \tab \tab \tab \tab \tab an image \cr
+  \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$tau} \tab \tab \tab \tab \tab a table \cr
   \code{results$stay} \tab \tab \tab \tab \tab a table \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr

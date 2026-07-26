@@ -125,7 +125,7 @@ options:
       default: false
 
     - name: stayer
-      title: "Classification stability"
+      title: "Average class stability"
       type: Bool
       default: false
 
@@ -135,5 +135,13 @@ options:
       default: 0
       min: 0
 
+    - name: plot3
+      title: 'Class-specific stability'
+      type: Bool
+      default: FALSE
 
+    - name: plot4
+      title: 'Transition difference'
+      type: Bool
+      default: FALSE
 ...
