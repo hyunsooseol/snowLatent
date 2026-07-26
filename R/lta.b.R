@@ -2082,17 +2082,19 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             nrow = 1
           ) +
           ggplot2::labs(
-            title = "",
-            subtitle = "Non-invariant − Invariant",
+            title = "Non-invariant − Invariant",
+            subtitle = NULL,
             x = "Latent Class at Previous Time (Parent)",
             y = "Latent Class at Next Time (Child)"
           ) +
           ggplot2::coord_fixed() +
           ggplot2::theme_minimal(base_size = 14) +
           ggplot2::theme(
-            plot.subtitle = ggplot2::element_text(
-              face = "italic"
+            plot.title = ggplot2::element_text(
+              face = "italic",
+              hjust = 0.5
             ),
+            plot.title.position = "panel",
             strip.text = ggplot2::element_text(
               face = "bold"
             ),
