@@ -144,4 +144,19 @@ options:
       title: 'Transition difference'
       type: Bool
       default: FALSE
+
+    - name: pc 
+      title: Posterior classifications 
+      type: Output        
+
+    - name: model
+      title: Model
+      type: List
+      options:
+        - title: Non-invariant
+          name:  'Non-invariant'
+        - title: Invariant
+          name:  'Invariant'
+      default: 'Non-invariant' 
+
 ...

@@ -25,7 +25,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             stayer = FALSE,
             ref = 0,
             plot3 = FALSE,
-            plot4 = FALSE, ...) {
+            plot4 = FALSE,
+            model = "Non-invariant", ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -138,6 +139,15 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plot4",
                 plot4,
                 default=FALSE)
+            private$..pc <- jmvcore::OptionOutput$new(
+                "pc")
+            private$..model <- jmvcore::OptionList$new(
+                "model",
+                model,
+                options=list(
+                    "Non-invariant",
+                    "Invariant"),
+                default="Non-invariant")
 
             self$.addOption(private$..factors)
             self$.addOption(private$..covs)
@@ -158,6 +168,8 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ref)
             self$.addOption(private$..plot3)
             self$.addOption(private$..plot4)
+            self$.addOption(private$..pc)
+            self$.addOption(private$..model)
         }),
     active = list(
         factors = function() private$..factors$value,
@@ -178,7 +190,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         stayer = function() private$..stayer$value,
         ref = function() private$..ref$value,
         plot3 = function() private$..plot3$value,
-        plot4 = function() private$..plot4$value),
+        plot4 = function() private$..plot4$value,
+        pc = function() private$..pc$value,
+        model = function() private$..model$value),
     private = list(
         ..factors = NA,
         ..covs = NA,
@@ -198,7 +212,9 @@ ltaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..stayer = NA,
         ..ref = NA,
         ..plot3 = NA,
-        ..plot4 = NA)
+        ..plot4 = NA,
+        ..pc = NA,
+        ..model = NA)
 )
 
 ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -221,6 +237,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plot4 = function() private$.items[["plot4"]],
         tau = function() private$.items[["tau"]],
         stay = function() private$.items[["stay"]],
+        pc = function() private$.items[["pc"]],
         reg = function() private$.items[["reg"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
@@ -579,6 +596,18 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Average switching probability", 
                         `type`="number", 
                         `format`="zto"))))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="pc",
+                title="Posterior classifications",
+                varTitle="Posterior class",
+                measureType="nominal",
+                clearWith=list(
+                    "factors",
+                    "vars",
+                    "nc",
+                    "cons",
+                    "model")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="reg",
@@ -656,7 +685,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 pause = NULL,
                 completeWhenFilled = FALSE,
                 requiresMissings = FALSE,
-                weightsSupport = 'auto')
+                weightsSupport = 'none')
         }))
 
 #' Latent Transition Analysis
@@ -683,6 +712,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ref .
 #' @param plot3 .
 #' @param plot4 .
+#' @param model .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$instructions} \tab \tab \tab \tab \tab a html \cr
@@ -701,6 +731,7 @@ ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$tau} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$stay} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$pc} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -733,7 +764,8 @@ lta <- function(
     stayer = FALSE,
     ref = 0,
     plot3 = FALSE,
-    plot4 = FALSE) {
+    plot4 = FALSE,
+    model = "Non-invariant") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lta requires jmvcore to be installed (restart may be required)")
@@ -764,7 +796,8 @@ lta <- function(
         stayer = stayer,
         ref = ref,
         plot3 = plot3,
-        plot4 = plot4)
+        plot4 = plot4,
+        model = model)
 
     analysis <- ltaClass$new(
         options = options,

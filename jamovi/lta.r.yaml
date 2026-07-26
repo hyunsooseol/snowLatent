@@ -315,6 +315,18 @@ items:
           type: number
           format: zto
 
+    - name: pc
+      title: Posterior classifications
+      type: Output
+      varTitle: Posterior class
+      measureType: nominal
+      clearWith:
+        - factors
+        - vars
+        - nc
+        - cons
+        - model 
+    
     - name: reg
       title: 'Logistic regression'
       type: Table

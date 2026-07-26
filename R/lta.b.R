@@ -30,6 +30,8 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               '<li><b>PI</b>: Class prevalences.</li>',
               '<li><b>TAU</b>: Transition probabilities.</li>',
               '<li><b>RHO</b>: Item response probabilities.</li>',
+              '<li><b>Posterior classifications</b>: Saves the most likely latent class at each time point to the data sheet using the selected non-invariant or invariant LTA model.</li>',
+              '<li>Saved classes are modal posterior classifications. Subsequent analyses using these variables do not account for classification uncertainty; use the 3-step approach when classification error should be incorporated into covariate analyses.</li>',
               '<li>Class labels are automatically aligned by minimizing differences between item-response probability profiles. The same aligned labels are used in the PI, TAU, and RHO tables and in all transition and stability plots. Under the non-invariant model, class meanings may still differ across time, so diagonal transition probabilities should be interpreted with caution.</li>',
               '<li>Average stay probability is the unweighted mean of the diagonal probabilities in the profile-aligned transition matrix. Average switching probability is 1 minus the average stay probability.</li>',
               '<li>Minor discrepancies between p-values and 95% CIs may occur due to Wald approximation errors.</li>',
@@ -963,7 +965,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             isTRUE(self$options$plot3) ||
             isTRUE(self$options$plot4) ||
             isTRUE(self$options$tau) ||
-            isTRUE(self$options$stayer)
+            isTRUE(self$options$stayer) ||
+            (isTRUE(self$options$pc) &&
+               identical(self$options$model, "Non-invariant"))
           
           need_obj3 <- isTRUE(self$options$par3) ||
             isTRUE(self$options$fit1) ||
@@ -971,7 +975,9 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
             isTRUE(self$options$plot3) ||
             isTRUE(self$options$plot4) ||
             isTRUE(self$options$tau) ||
-            isTRUE(self$options$stayer)
+            isTRUE(self$options$stayer) ||
+            (isTRUE(self$options$pc) &&
+               identical(self$options$model, "Invariant"))
           
           if (need_obj2)
             obj2 <- .fit_obj2()
@@ -1024,6 +1030,194 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           }
           
           
+          
+          
+          # -------------------------------------------------
+          # Posterior modal classifications saved to data
+          # - one output column per latent time point (L1, L2, ...)
+          # - class numbers use the same profile-based alignment as
+          #   PI, TAU, RHO, and all transition/stability plots
+          # - original spreadsheet row numbers are preserved
+          # -------------------------------------------------
+          if (
+            isTRUE(self$options$pc) &&
+            self$results$pc$isNotFilled()
+          ) {
+            
+            selected_model <- self$options$model
+            
+            if (identical(selected_model, "Invariant")) {
+              pc_obj <- obj3
+              pc_maps <- maps_inv
+            } else {
+              pc_obj <- obj2
+              pc_maps <- maps_noninv
+            }
+            
+            if (is.null(pc_obj) || is.null(pc_maps)) {
+              stop(
+                "Posterior classifications could not be created because the selected model was not estimated."
+              )
+            }
+            
+            manifest_vars <- unique(
+              unlist(
+                lapply(
+                  factors,
+                  function(factor) factor[["vars"]]
+                ),
+                use.names = FALSE
+              )
+            )
+            
+            manifest_vars <- manifest_vars[
+              manifest_vars %in% names(data)
+            ]
+            
+            if (length(manifest_vars) == 0) {
+              stop(
+                "No valid manifest variables were found for posterior classification."
+              )
+            }
+            
+            pc_used <- rowSums(
+              !is.na(data[, manifest_vars, drop = FALSE])
+            ) > 0
+            
+            pc_data <- data[
+              pc_used,
+              ,
+              drop = FALSE
+            ]
+            
+            if (nrow(pc_data) > 0) {
+              
+              pc_raw <- stats::predict(
+                pc_obj,
+                newdata = pc_data,
+                type = "class"
+              )
+              
+              pc_raw <- as.data.frame(
+                pc_raw,
+                stringsAsFactors = FALSE
+              )
+              
+              if (nrow(pc_raw) != nrow(pc_data)) {
+                stop(
+                  "The number of posterior classifications does not match the number of analyzed cases."
+                )
+              }
+              
+              keys <- seq_along(latent_names)
+              titles <- latent_names
+              descriptions <- paste0(
+                "Posterior modal class membership for ",
+                latent_names,
+                " from the ",
+                tolower(selected_model),
+                " LTA model; class labels are profile-aligned."
+              )
+              measure_types <- rep(
+                "nominal",
+                length(latent_names)
+              )
+              
+              self$results$pc$set(
+                keys = keys,
+                titles = titles,
+                descriptions = descriptions,
+                measureTypes = measure_types
+              )
+              
+              self$results$pc$setRowNums(
+                rownames(pc_data)
+              )
+              
+              for (t in seq_along(latent_names)) {
+                
+                latent_name <- latent_names[t]
+                
+                pred_col <- if (latent_name %in% names(pc_raw)) {
+                  latent_name
+                } else if (ncol(pc_raw) >= t) {
+                  names(pc_raw)[t]
+                } else {
+                  NA_character_
+                }
+                
+                if (is.na(pred_col)) {
+                  stop(
+                    paste0(
+                      "Posterior classification for ",
+                      latent_name,
+                      " was not returned by slca."
+                    )
+                  )
+                }
+                
+                raw_class_chr <- as.character(
+                  pc_raw[[pred_col]]
+                )
+                
+                raw_class <- suppressWarnings(
+                  as.integer(raw_class_chr)
+                )
+                
+                unresolved <- is.na(raw_class) &
+                  !is.na(raw_class_chr) &
+                  nzchar(raw_class_chr)
+                
+                if (any(unresolved)) {
+                  extracted <- sub(
+                    ".*?([0-9]+).*",
+                    "\\1",
+                    raw_class_chr[unresolved]
+                  )
+                  
+                  raw_class[unresolved] <- suppressWarnings(
+                    as.integer(extracted)
+                  )
+                }
+                
+                class_map <- if (
+                  length(pc_maps) >= t &&
+                  !is.null(pc_maps[[t]])
+                ) {
+                  as.integer(pc_maps[[t]])
+                } else {
+                  integer()
+                }
+                
+                if (length(class_map) == 0) {
+                  stop(
+                    paste0(
+                      "Class-label alignment was not available for ",
+                      latent_name,
+                      "."
+                    )
+                  )
+                }
+                
+                aligned_class <- rep(
+                  NA_integer_,
+                  length(raw_class)
+                )
+                
+                valid_class <- !is.na(raw_class) &
+                  raw_class >= 1 &
+                  raw_class <= length(class_map)
+                
+                aligned_class[valid_class] <-
+                  class_map[raw_class[valid_class]]
+                
+                self$results$pc$setValues(
+                  index = t,
+                  values = aligned_class
+                )
+              }
+            }
+          }
           
           
           if (isTRUE(self$options$par2)) {

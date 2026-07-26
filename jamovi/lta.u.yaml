@@ -50,7 +50,7 @@ children:
       - type: ActionButton
         name: run
   - type: CollapseBox
-    label: 'Latent Transition Analysis'
+    label: Latent Transition Analysis
     collapsed: true
     stretchFactor: 1
     children:
@@ -71,19 +71,19 @@ children:
             style: inline
             children:
               - type: Label
-                label: 'Model'
+                label: Model
                 children:
                   - type: CheckBox
                     name: par2
                   - type: CheckBox
                     name: par3
               - type: Label
-                label: 'Measurement invariance'
+                label: Measurement invariance
                 children:
                   - type: CheckBox
                     name: fit1
               - type: Label
-                label: 'Tables'
+                label: Tables
                 children:
                   - type: CheckBox
                     name: tau
@@ -104,6 +104,15 @@ children:
                     name: plot3
                   - type: CheckBox
                     name: plot4
+              - type: Label
+                label: 'Save'
+                children:
+                  - type: Output
+                    name: pc
+                    children:
+                      - type: ComboBox
+                        name: model
+                        enable: (pc)
   - type: CollapseBox
     label: Logistic Regression using 3-step approach
     collapsed: true

@@ -24,7 +24,8 @@ lta(
   stayer = FALSE,
   ref = 0,
   plot3 = FALSE,
-  plot4 = FALSE
+  plot4 = FALSE,
+  model = "Non-invariant"
 )
 }
 \arguments{
@@ -68,6 +69,8 @@ of the factor and the \code{vars} that belong to that factor}
 \item{plot3}{.}
 
 \item{plot4}{.}
+
+\item{model}{.}
 }
 \value{
 A results object containing:
@@ -88,6 +91,7 @@ A results object containing:
   \code{results$plot4} \tab \tab \tab \tab \tab an image \cr
   \code{results$tau} \tab \tab \tab \tab \tab a table \cr
   \code{results$stay} \tab \tab \tab \tab \tab a table \cr
+  \code{results$pc} \tab \tab \tab \tab \tab an output \cr
   \code{results$reg} \tab \tab \tab \tab \tab a table \cr
   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 }
