@@ -638,17 +638,31 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"),
                     list(
                         `name`="se", 
-                        `title`="Std.error", 
+                        `title`="Std. error", 
                         `type`="number"),
                     list(
-                        `name`="wald", 
-                        `title`="Wald", 
+                        `name`="z", 
+                        `title`="z", 
                         `type`="number"),
                     list(
                         `name`="p", 
                         `title`="p", 
                         `type`="number", 
-                        `format`="zto,pvalue"))))
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="odds", 
+                        `title`="Odds ratio", 
+                        `type`="number"),
+                    list(
+                        `name`="ciLower", 
+                        `title`="Lower", 
+                        `type`="number", 
+                        `superTitle`="OR 95% CI"),
+                    list(
+                        `name`="ciUpper", 
+                        `title`="Upper", 
+                        `type`="number", 
+                        `superTitle`="OR 95% CI"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",

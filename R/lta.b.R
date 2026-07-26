@@ -1704,24 +1704,29 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 coef_vec <- as.numeric(coef_mat[i, ])
                 se_vec   <- as.numeric(se_mat[i, ])
                 
-                wald <- ifelse(
+                z <- ifelse(
                   is.finite(se_vec) & abs(se_vec) > .Machine$double.eps,
                   coef_vec / se_vec,
                   NA_real_
                 )
                 
-                pval <- 2 * stats::pnorm(abs(wald), lower.tail = FALSE)
+                pval <- 2 * stats::pnorm(abs(z), lower.tail = FALSE)
+                ci_lower <- coef_vec - 1.96 * se_vec
+                ci_upper <- coef_vec + 1.96 * se_vec
                 
                 data.frame(
                   class = display_classes[i],
                   variable = variable_names,
                   coef = coef_vec,
                   std.err = se_vec,
-                  wald = wald,
+                  z = z,
                   p.value = pval,
+                  odds.ratio = exp(coef_vec),
+                  ci.lower = exp(ci_lower),
+                  ci.upper = exp(ci_upper),
                   stringsAsFactors = FALSE
                 )
-              }))              
+              }))
               
               table <- self$results$reg
               df <- as.data.frame(reg.df)
@@ -1729,12 +1734,15 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
                 table$addRow(
                   rowKey = name,
                   values = list(
-                    cla   = df[name, 1],
-                    va    = df[name, 2],
-                    co    = df[name, 3],
-                    se    = df[name, 4],
-                    wald  = df[name, 5],
-                    p     = df[name, 6]
+                    cla     = df[name, "class"],
+                    va      = df[name, "variable"],
+                    co      = df[name, "coef"],
+                    se      = df[name, "std.err"],
+                    z       = df[name, "z"],
+                    p       = df[name, "p.value"],
+                    odds    = df[name, "odds.ratio"],
+                    ciLower = df[name, "ci.lower"],
+                    ciUpper = df[name, "ci.upper"]
                   )
                 )
               }
@@ -1753,26 +1761,58 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         gc()
       },
       
-      .plot = function(image,ggtheme, theme,...) {
+      .plot = function(image, ggtheme, theme, ...) {
         
         if (is.null(image$state))
           return(FALSE)
         
         plot_data <- image$state
         
+        # 플롯에서 절편 제외
+        plot_data <- plot_data[
+          plot_data$variable != "(Intercept)",
+          ,
+          drop = FALSE
+        ]
+        
+        if (nrow(plot_data) == 0)
+          return(FALSE)
+        
         plot_data$lower <- plot_data$coef - 1.96 * plot_data$std.err
         plot_data$upper <- plot_data$coef + 1.96 * plot_data$std.err
         
-        plot <- ggplot2::ggplot(plot_data, ggplot2::aes(x=variable, y=coef, color=class)) +
-          ggplot2::geom_point(size=3, position=ggplot2::position_dodge(width=0.7)) +
-          ggplot2::geom_errorbar(ggplot2::aes(ymin=lower, ymax=upper),
-                                 width=0.2, position=ggplot2::position_dodge(width=0.7)) +
-          ggplot2::geom_hline(yintercept=0, linetype="dashed", color="gray50") +
-          ggplot2::labs(title="",
-                        x="Covariate", y="Coefficient (log-odds)") +
+        plot <- ggplot2::ggplot(
+          plot_data,
+          ggplot2::aes(
+            x = variable,
+            y = coef,
+            color = class
+          )
+        ) +
+          ggplot2::geom_point(
+            size = 3,
+            position = ggplot2::position_dodge(width = 0.7)
+          ) +
+          ggplot2::geom_errorbar(
+            ggplot2::aes(
+              ymin = lower,
+              ymax = upper
+            ),
+            width = 0.2,
+            position = ggplot2::position_dodge(width = 0.7)
+          ) +
+          ggplot2::geom_hline(
+            yintercept = 0,
+            linetype = "dashed",
+            color = "gray50"
+          ) +
+          ggplot2::labs(
+            title = "",
+            x = "Covariate",
+            y = "Coefficient (log-odds)"
+          ) +
           ggplot2::coord_flip() +
-          ggplot2::theme_minimal(base_size=13)
-        
+          ggplot2::theme_minimal(base_size = 13)
         
         print(plot)
         TRUE

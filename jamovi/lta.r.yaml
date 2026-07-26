@@ -343,10 +343,6 @@ items:
         - ref
 
       columns:
-        # - name: name
-        #   title: ''
-        #   type: 'text'
-        #   content: ($key)
         - name: cla
           title: Class
           type: 'text'
@@ -357,15 +353,26 @@ items:
           title: Coefficient 
           type: number
         - name: se
-          title: Std.error 
+          title: Std. error 
           type: number
-        - name: wald
-          title: Wald 
+        - name: z
+          title: z
           type: number
         - name: p
           title: p 
           type: number
           format: zto,pvalue
+        - name: odds
+          title: Odds ratio
+          type: number
+        - name: ciLower
+          title: Lower 
+          type: number
+          superTitle: 'OR 95% CI'
+        - name: ciUpper
+          title: Upper 
+          type: number
+          superTitle: 'OR 95% CI'
 
     - name:  plot
       title: 'Covariate effects plot'
