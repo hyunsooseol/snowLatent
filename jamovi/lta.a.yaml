@@ -105,7 +105,7 @@ options:
       default: FALSE
 
     - name: plot
-      title: 'Covariate Effects Plot'
+      title: 'Covariate effects plot'
       type: Bool 
       default: FALSE   
 
@@ -150,7 +150,7 @@ options:
       type: Output        
 
     - name: model
-      title: Model
+      title: 'Classification model'
       type: List
       options:
         - title: Non-invariant

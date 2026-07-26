@@ -94,7 +94,7 @@ children:
             style: inline
             children:
               - type: Label
-                label: 'Transition plots'
+                label: Transition plots
                 children:
                   - type: CheckBox
                     name: plot1
@@ -105,14 +105,16 @@ children:
                   - type: CheckBox
                     name: plot4
               - type: Label
-                label: 'Save'
+                label: Save
                 children:
-                  - type: Output
-                    name: pc
+                  - type: LayoutBox
+                    margin: large
                     children:
                       - type: ComboBox
                         name: model
                         enable: (pc)
+                      - type: Output
+                        name: pc
   - type: CollapseBox
     label: Logistic Regression using 3-step approach
     collapsed: true

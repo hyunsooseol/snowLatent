@@ -375,7 +375,7 @@ items:
           superTitle: 'OR 95% CI'
 
     - name:  plot
-      title: 'Covariate effects plot'
+      title: 'Covariate effects plot: Odds ratios with 95% confidence intervals'
       type:  Image
       width: 600
       height: 450      

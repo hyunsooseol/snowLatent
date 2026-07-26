@@ -666,7 +666,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="Covariate effects plot",
+                title="Covariate effects plot: Odds ratios with 95% confidence intervals",
                 width=600,
                 height=450,
                 renderFun=".plot",

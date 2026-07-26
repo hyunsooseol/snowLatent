@@ -1778,14 +1778,26 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         if (nrow(plot_data) == 0)
           return(FALSE)
         
-        plot_data$lower <- plot_data$coef - 1.96 * plot_data$std.err
-        plot_data$upper <- plot_data$coef + 1.96 * plot_data$std.err
+        # 유효한 odds ratio와 신뢰구간만 사용
+        plot_data <- plot_data[
+          is.finite(plot_data$odds.ratio) &
+            is.finite(plot_data$ci.lower) &
+            is.finite(plot_data$ci.upper) &
+            plot_data$odds.ratio > 0 &
+            plot_data$ci.lower > 0 &
+            plot_data$ci.upper > 0,
+          ,
+          drop = FALSE
+        ]
+        
+        if (nrow(plot_data) == 0)
+          return(FALSE)
         
         plot <- ggplot2::ggplot(
           plot_data,
           ggplot2::aes(
             x = variable,
-            y = coef,
+            y = odds.ratio,
             color = class
           )
         ) +
@@ -1795,21 +1807,22 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           ) +
           ggplot2::geom_errorbar(
             ggplot2::aes(
-              ymin = lower,
-              ymax = upper
+              ymin = ci.lower,
+              ymax = ci.upper
             ),
             width = 0.2,
             position = ggplot2::position_dodge(width = 0.7)
           ) +
           ggplot2::geom_hline(
-            yintercept = 0,
+            yintercept = 1,
             linetype = "dashed",
             color = "gray50"
           ) +
+          ggplot2::scale_y_log10() +
           ggplot2::labs(
             title = "",
             x = "Covariate",
-            y = "Coefficient (log-odds)"
+            y = "Odds ratio"
           ) +
           ggplot2::coord_flip() +
           ggplot2::theme_minimal(base_size = 13)
