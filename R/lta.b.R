@@ -1,5 +1,6 @@
 
 
+
 ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   R6::R6Class(
     "ltaClass",
@@ -1626,8 +1627,15 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
               slca::estimate(fit, data = data)
               
             }, error = function(e) {
-              message("error: ", e$message)
-              return(NULL)
+              stop(
+                paste0(
+                  "The 3-step covariate model could not be estimated. ",
+                  "Check the regression formula, covariates, constraints, ",
+                  "and available observations. Details: ",
+                  e$message
+                ),
+                call. = FALSE
+              )
             })
             
             # regression using 3-step---
@@ -2127,6 +2135,7 @@ ltaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       
     )
   )
+
 
 # Example with R---
 

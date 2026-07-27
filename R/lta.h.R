@@ -256,13 +256,11 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="fit1",
-                title="Testing for measurement invariance ",
+                title="Testing for measurement invariance",
                 visible="(fit1)",
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons"),
                 columns=list(
                     list(
@@ -311,10 +309,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(par2)",
                 refs="slca",
                 clearWith=list(
-                    "factors",
-                    "vars",
-                    "nc",
-                    "cons"),
+                    "factors"),
                 columns=list(
                     list(
                         `name`="time", 
@@ -336,10 +331,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(par2)",
                 refs="slca",
                 clearWith=list(
-                    "factors",
-                    "vars",
-                    "nc",
-                    "cons"),
+                    "factors"),
                 columns=list(
                     list(
                         `name`="transition", 
@@ -365,10 +357,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(par2)",
                 refs="slca",
                 clearWith=list(
-                    "factors",
-                    "vars",
-                    "nc",
-                    "cons"),
+                    "factors"),
                 columns=list(
                     list(
                         `name`="time", 
@@ -399,8 +388,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons"),
                 columns=list(
                     list(
@@ -424,8 +411,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons"),
                 columns=list(
                     list(
@@ -453,8 +438,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons"),
                 columns=list(
                     list(
@@ -484,10 +467,7 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 refs="slca",
                 clearWith=list(
-                    "factors",
-                    "vars",
-                    "nc",
-                    "cons")))
+                    "factors")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot2",
@@ -500,8 +480,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -515,8 +493,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons")))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -530,8 +506,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons")))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -541,8 +515,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons"),
                 columns=list(
                     list(
@@ -574,8 +546,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="slca",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons"),
                 columns=list(
                     list(
@@ -604,8 +574,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 measureType="nominal",
                 clearWith=list(
                     "factors",
-                    "vars",
-                    "nc",
                     "cons",
                     "model")))
             self$add(jmvcore::Table$new(
@@ -617,7 +585,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "factors",
                     "covs",
-                    "nc",
                     "method",
                     "impu",
                     "regform",
@@ -675,11 +642,11 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "factors",
                     "covs",
-                    "nc",
                     "method",
                     "impu",
                     "regform",
-                    "cons")))}))
+                    "cons",
+                    "ref")))}))
 
 ltaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "ltaBase",

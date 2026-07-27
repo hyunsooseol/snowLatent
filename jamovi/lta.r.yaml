@@ -10,14 +10,12 @@ items:
       visible: True
 
     - name: fit1
-      title: 'Testing for measurement invariance '
+      title: 'Testing for measurement invariance'
       type: Table
       visible: (fit1)
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
 
       columns:
@@ -60,9 +58,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
-        - cons
       columns:
         - name: time
           title: Time
@@ -82,9 +77,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
-        - cons
       columns:
         - name: transition
           title: Transition
@@ -107,9 +99,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
-        - cons
       columns:
         - name: time
           title: Time
@@ -136,8 +125,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
       columns:
         - name: time
@@ -158,8 +145,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
       columns:
         - name: transition
@@ -183,8 +168,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
       columns:
         - name: time
@@ -212,9 +195,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
-        - cons
 
     - name:  plot2
       title: 'Transition plot(Invariant)'
@@ -227,8 +207,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
 
     - name: plot3
@@ -242,8 +220,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
 
     - name: plot4
@@ -257,8 +233,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
 
     - name: tau
@@ -268,8 +242,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
       columns:
         - name: model
@@ -296,8 +268,6 @@ items:
       refs: slca
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
       columns:
         - name: model
@@ -322,8 +292,6 @@ items:
       measureType: nominal
       clearWith:
         - factors
-        - vars
-        - nc
         - cons
         - model 
     
@@ -335,7 +303,6 @@ items:
       clearWith:
         - factors
         - covs
-        - nc
         - method
         - impu
         - regform
@@ -385,11 +352,11 @@ items:
       clearWith:
         - factors
         - covs
-        - nc
         - method
         - impu
         - regform
         - cons
+        - ref
 
 
 ...
