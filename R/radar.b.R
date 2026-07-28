@@ -15,18 +15,18 @@ radarClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         
         self$results$instructions$setContent(
           private$.htmlwidget$generate_accordion(
-            title="Instructions",
+            title = "Instructions",
             content = paste(
               '<div style="border: 2px solid #e6f4fe; border-radius: 15px; padding: 15px; background-color: #e6f4fe; margin-top: 10px;">',
               '<div style="text-align:justify;">',
               '<ul>',
               '<li>You must enter row number(s) of <b>4</b> or more.</li>',
+              '<li>Use the summary table to identify the cases of interest, and then enter their row number(s) to display individual or multiple radar charts.</li>',
               '<li>Feature requests and bug reports can be made on my <a href="https://github.com/hyunsooseol/snowLatent/issues" target="_blank">GitHub</a>.</li>',
               '</ul></div></div>'
             )
           )
-        )      
-        
+        )
       },
       
 #-----------------------------------------------------
