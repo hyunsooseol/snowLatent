@@ -35,9 +35,9 @@ wordOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "freq",
                 freq,
                 suggested=list(
-                    "nominal"),
+                    "continuous"),
                 permitted=list(
-                    "factor"))
+                    "numeric"))
             private$..minf <- jmvcore::OptionInteger$new(
                 "minf",
                 minf,
@@ -249,7 +249,6 @@ word <- function(
             `if`( ! missing(freq), freq, NULL))
 
     for (v in words) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
-    for (v in freq) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- wordOptions$new(
         words = words,

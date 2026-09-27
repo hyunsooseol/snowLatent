@@ -21,9 +21,9 @@ options:
       title: Frequency
       type: Variable
       suggested:
-         - nominal
+        - continuous
       permitted:
-        - factor
+        - numeric
 
     - name: minf
       title: 'Min.freq'
