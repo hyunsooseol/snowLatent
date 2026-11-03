@@ -26,4 +26,10 @@
         `author`="Fellows, I.", 
         `year`=2022, 
         `title`="wordcloud: Word Clouds", 
-        `publisher`="(Version 2.6) [R package]. URL https://CRAN.R-project.org/package=wordcloud"))
+        `publisher`="(Version 2.6) [R package]. URL https://CRAN.R-project.org/package=wordcloud"), 
+    `latents`=list(
+        `type`="software", 
+        `author`="Saqr, M., & L\u00F3pez-Pernas, S.", 
+        `year`=2026, 
+        `title`="latents: Multilevel Latent Profile, Class and Transition Models", 
+        `publisher`="(Version 1.1.9) [R package]. URL https://github.com/mohsaqr/latents"))

@@ -21,7 +21,6 @@ refs:
        title: "slca: Structural Modeling for Multiple Latent Class Variables"
        publisher: '(Version 1.0.0) [R package]. URL https://CRAN.R-project.org/package=slca'
 
-
    wordcloud:
        type: 'software'
        author: Fellows, I.
@@ -29,3 +28,9 @@ refs:
        title: "wordcloud: Word Clouds"
        publisher: '(Version 2.6) [R package]. URL https://CRAN.R-project.org/package=wordcloud'
 
+   latents:
+       type: 'software'
+       author: Saqr, M., & López-Pernas, S.
+       year: 2026
+       title: "latents: Multilevel Latent Profile, Class and Transition Models"
+       publisher: '(Version 1.1.9) [R package]. URL https://github.com/mohsaqr/latents'

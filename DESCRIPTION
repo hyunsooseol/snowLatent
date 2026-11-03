@@ -1,10 +1,10 @@
 Package: snowLatent
 Type: Package
 Title: Latent Class Analysis for jamovi
-Version: 2.7.6
+Version: 2.7.7
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-Description: This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA, Latent transition analysis, LCA/LPA 3-step approach, and also provides various types of profile plots.
+Description: This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA, Multilevel LPA, Latent transition analysis, LCA/LPA 3-step approach, and also provides various types of profile plots.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -23,4 +23,6 @@ Imports: jmvcore (>= 0.8.5),
          dplyr,
          slca,
          magrittr,
-         MASS
+         MASS,
+         latents (>= 1.1.9)
+Remotes: hyunsooseol/latents@5031b0a6e046ea974ca5417407f7fe060c5fb89a

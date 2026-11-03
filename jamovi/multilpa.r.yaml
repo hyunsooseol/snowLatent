@@ -1,0 +1,504 @@
+name: multilpa
+title: Multilevel LPA
+jrs: '1.1'
+refs:
+- snowLatent
+- latents
+items:
+- name: help
+  title: Help
+  type: Html
+  visible: true
+- name: status
+  title: Analysis status
+  type: Preformatted
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+- name: modelFit
+  title: Model fit and comparison
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: selected
+    title: Selected
+    type: text
+  - name: profiles
+    title: Profiles
+    type: integer
+  - name: groups
+    title: Group classes
+    type: integer
+  - name: parameters
+    title: Parameters
+    type: integer
+  - name: loglik
+    title: Log-likelihood
+    type: number
+    format: sf:3
+  - name: aic
+    title: AIC
+    type: number
+    format: sf:3
+  - name: bicGroups
+    title: BIC (groups)
+    type: number
+    format: sf:3
+  - name: bicIndividuals
+    title: BIC (individuals)
+    type: number
+    format: sf:3
+  - name: entropyIndividual
+    title: Entropy (individuals)
+    type: number
+    format: sf:3
+  - name: entropyGroup
+    title: Entropy (groups)
+    type: number
+    format: sf:3
+  - name: replicated
+    title: Best / starts
+    type: text
+  - name: status
+    title: Status
+    type: text
+  visible: (showModelFit)
+- name: classification
+  title: Classification quality and posterior sizes
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: level
+    title: Level
+    type: text
+  - name: class
+    title: Class
+    type: integer
+  - name: nModal
+    title: Modal n
+    type: integer
+  - name: modalPercent
+    title: Modal %
+    type: number
+    format: sf:3
+  - name: posteriorN
+    title: Posterior expected n
+    type: number
+    format: sf:3
+  - name: posteriorPercent
+    title: Posterior expected %
+    type: number
+    format: sf:3
+  - name: avepp
+    title: AvePP
+    type: number
+    format: sf:3
+  visible: (showClassification)
+- name: entropy
+  title: Classification entropy
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: level
+    title: Level
+    type: text
+  - name: classes
+    title: Classes
+    type: integer
+  - name: units
+    title: Units
+    type: integer
+  - name: entropy
+    title: Relative entropy
+    type: number
+    format: sf:3
+  visible: (showEntropy)
+- name: profiles
+  title: Individual profile characteristics
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: profile
+    title: Profile
+    type: integer
+  - name: indicator
+    title: Indicator
+    type: text
+  - name: mean
+    title: Mean
+    type: number
+    format: sf:3
+  - name: sd
+    title: Within-profile SD
+    type: number
+    format: sf:3
+  visible: (showProfiles)
+- name: groupClasses
+  title: Estimated group-class proportions
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: groupClass
+    title: Group class
+    type: integer
+  - name: percent
+    title: Estimated %
+    type: number
+    format: sf:3
+  visible: (showGroupClasses)
+- name: composition
+  title: Individual profile composition by group class
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: groupClass
+    title: Group class
+    type: integer
+  - name: profile
+    title: Individual profile
+    type: integer
+  - name: percent
+    title: Conditional %
+    type: number
+    format: sf:3
+  visible: (showComposition)
+- name: starts
+  title: Starting-value diagnostics
+  type: Table
+  rows: 0
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  columns:
+  - name: start
+    title: Start
+    type: integer
+  - name: loglik
+    title: Log-likelihood
+    type: number
+    format: sf:3
+  - name: converged
+    title: Converged
+    type: text
+  - name: iterations
+    title: Iterations
+    type: integer
+  - name: boundary
+    title: Boundary
+    type: text
+  - name: error
+    title: Error
+    type: text
+  visible: (showStarts)
+- name: profileFigure
+  title: Individual profiles
+  type: Image
+  width: 700
+  height: 450
+  renderFun: .profilePlot
+  visible: (profilePlot)
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+- name: compositionFigure
+  title: Group-class composition
+  type: Image
+  width: 700
+  height: 450
+  renderFun: .compositionPlot
+  visible: (compositionPlot)
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+- name: saveClasses
+  title: Modal classifications
+  type: Output
+  varTitle: MLPA - $key
+  varDescription: Multilevel LPA posterior classification or probability
+  measureType: continuous
+  items: 0
+  initInRun: true
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+- name: saveProbabilities
+  title: Posterior probabilities
+  type: Output
+  varTitle: MLPA - $key
+  varDescription: Multilevel LPA posterior classification or probability
+  measureType: continuous
+  items: 0
+  initInRun: true
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities

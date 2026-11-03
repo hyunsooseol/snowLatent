@@ -1,0 +1,111 @@
+title: Multilevel LPA
+name: multilpa
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+- type: VariableSupplier
+  persistentItems: false
+  stretchFactor: 1
+  children:
+  - type: TargetLayoutBox
+    label: Variables
+    children:
+    - type: VariablesListBox
+      name: vars
+      isTarget: true
+  - type: TargetLayoutBox
+    label: Grouping Variable
+    children:
+    - type: VariablesListBox
+      name: group
+      isTarget: true
+      maxItemCount: 1
+- type: LayoutBox
+  margin: normal
+  children:
+  - type: ActionButton
+    name: run
+- type: CollapseBox
+  label: Analysis options
+  collapsed: false
+  stretchFactor: 1
+  children:
+  - type: LayoutBox
+    margin: normal
+    children:
+    - type: TextBox
+      name: nProfiles
+      format: number
+    - type: TextBox
+      name: nGroupClasses
+      format: number
+    - type: ComboBox
+      name: variance
+    - type: ComboBox
+      name: missing
+- type: CollapseBox
+  label: Estimation
+  collapsed: true
+  children:
+  - type: TextBox
+    name: nStarts
+    format: number
+  - type: TextBox
+    name: maxIter
+    format: number
+  - type: TextBox
+    name: seed
+    format: number
+
+- type: CollapseBox
+  label: Model comparison
+  collapsed: true
+  children:
+  - type: CheckBox
+    name: compare
+  - type: TextBox
+    name: models
+    format: string
+    width: largest
+    enable: (compare)
+- type: CollapseBox
+  label: Tables
+  collapsed: false
+  children:
+  - type: CheckBox
+    name: showModelFit
+  - type: CheckBox
+    name: showClassification
+  - type: CheckBox
+    name: showEntropy
+  - type: CheckBox
+    name: showProfiles
+  - type: CheckBox
+    name: showGroupClasses
+  - type: CheckBox
+    name: showComposition
+  - type: CheckBox
+    name: showStarts
+- type: CollapseBox
+  label: Plots
+  collapsed: true
+  children:
+  - type: CheckBox
+    name: profilePlot
+    children:
+    - type: CheckBox
+      name: plotZ
+      label: Standardize indicators (z-scores)
+      enable: (profilePlot)
+  - type: CheckBox
+    name: compositionPlot
+
+- type: CollapseBox
+  label: Save 
+  collapsed: true
+  children:
+  - type: Output
+    name: saveClasses
+  - type: Output
+    name: saveProbabilities

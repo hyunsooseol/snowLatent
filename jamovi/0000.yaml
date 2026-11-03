@@ -1,17 +1,17 @@
 ---
 title: Latent Class Analysis for jamovi
 name: snowLatent
-version: 2.7.6
+version: 2.7.7
 jms: '1.0'
 authors:
   - Hyunsoo Seol
 maintainer: Hyunsoo Seol <snow@cau.ac.kr>
-date: '2026-09-27'
+date: '2026-11-03'
 type: R
 description: >-
   This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA,
-  Latent Transition Analysis, LCA/LPA 3-step approach, and also provides various
-  types of profile plots.
+  Multilevel LPA, Latent Transition Analysis, LCA/LPA 3-step approach, and also
+  provides various types of profile plots.
 
   Please submit feedback, bug reports, and feature requests via the links
   provided <a href = "https://github.com/hyunsooseol/snowLatent/issues"
@@ -39,6 +39,14 @@ analyses:
     menuGroup: snowLatent
     menuTitle: Multilevel LCA
     menuSubgroup: LCA
+    ribbon: analyses
+    category: analyses
+  - title: Multilevel LPA
+    name: multilpa
+    ns: snowLatent
+    menuGroup: snowLatent
+    menuTitle: Multilevel LPA
+    menuSubgroup: LPA
     ribbon: analyses
     category: analyses
   - title: LCA/LPA 3-step approach
@@ -106,6 +114,11 @@ datasets:
     description: Tobacco smoking behavior
     tags:
       - Multilevel LCA
+  - name: multiLPA
+    path: MultiLPA.omv
+    description: Multilevel LPA
+    tags:
+      - Multilevel LPA
   - name: stepLCA
     path: stepLCA.omv
     description: 3-step LCA
