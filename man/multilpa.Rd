@@ -27,7 +27,23 @@ multilpa(
   profilePlot = FALSE,
   compositionPlot = FALSE,
   plotZ = TRUE,
-  showStarts = FALSE
+  showStarts = FALSE,
+  individualCovariates = list(),
+  groupCovariates = list(),
+  individualOutcomes = list(),
+  groupOutcomes = list(),
+  r3Adjust = "holm",
+  bchAdjust = "holm",
+  showR3Individual = FALSE,
+  showR3Group = FALSE,
+  showBCHIndividualMeans = FALSE,
+  showBCHIndividualPairs = FALSE,
+  showBCHGroupMeans = FALSE,
+  showBCHGroupPairs = FALSE,
+  individualFactors = list(),
+  individualRefLevels = list(),
+  groupFactors = list(),
+  groupRefLevels = list()
 )
 }
 \arguments{
@@ -76,6 +92,38 @@ multilpa(
 \item{plotZ}{.}
 
 \item{showStarts}{.}
+
+\item{individualCovariates}{.}
+
+\item{groupCovariates}{.}
+
+\item{individualOutcomes}{.}
+
+\item{groupOutcomes}{.}
+
+\item{r3Adjust}{.}
+
+\item{bchAdjust}{.}
+
+\item{showR3Individual}{.}
+
+\item{showR3Group}{.}
+
+\item{showBCHIndividualMeans}{.}
+
+\item{showBCHIndividualPairs}{.}
+
+\item{showBCHGroupMeans}{.}
+
+\item{showBCHGroupPairs}{.}
+
+\item{individualFactors}{.}
+
+\item{individualRefLevels}{.}
+
+\item{groupFactors}{.}
+
+\item{groupRefLevels}{.}
 }
 \value{
 A results object containing:
@@ -89,6 +137,13 @@ A results object containing:
   \code{results$groupClasses} \tab \tab \tab \tab \tab a table \cr
   \code{results$composition} \tab \tab \tab \tab \tab a table \cr
   \code{results$starts} \tab \tab \tab \tab \tab a table \cr
+  \code{results$externalStatus} \tab \tab \tab \tab \tab a preformatted \cr
+  \code{results$r3Individual} \tab \tab \tab \tab \tab a table \cr
+  \code{results$r3Group} \tab \tab \tab \tab \tab a table \cr
+  \code{results$bchIndividualMeans} \tab \tab \tab \tab \tab a table \cr
+  \code{results$bchIndividualPairs} \tab \tab \tab \tab \tab a table \cr
+  \code{results$bchGroupMeans} \tab \tab \tab \tab \tab a table \cr
+  \code{results$bchGroupPairs} \tab \tab \tab \tab \tab a table \cr
   \code{results$profileFigure} \tab \tab \tab \tab \tab an image \cr
   \code{results$compositionFigure} \tab \tab \tab \tab \tab an image \cr
   \code{results$saveClasses} \tab \tab \tab \tab \tab an output \cr

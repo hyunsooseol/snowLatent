@@ -36,6 +36,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
 - name: modelFit
   title: Model fit and comparison
   type: Table
@@ -64,6 +80,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: selected
     title: Selected
@@ -136,6 +168,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: level
     title: Level
@@ -191,6 +239,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: level
     title: Level
@@ -234,6 +298,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: profile
     title: Profile
@@ -278,6 +358,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: groupClass
     title: Group class
@@ -315,6 +411,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: groupClass
     title: Group class
@@ -355,6 +467,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
   columns:
   - name: start
     title: Start
@@ -376,6 +504,207 @@ items:
     title: Error
     type: text
   visible: (showStarts)
+- name: externalStatus
+  title: External-variable analysis status
+  type: Preformatted
+  visible: false
+  clearWith: &id001
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
+- name: r3Individual
+  title: 'R3STEP: Individual-profile predictors'
+  type: Table
+  rows: 0
+  visible: (showR3Individual)
+  clearWith: *id001
+  columns: &id002
+  - name: class
+    title: Class
+    type: integer
+  - name: reference
+    title: Reference
+    type: integer
+  - name: predictor
+    title: Predictor
+    type: text
+  - name: comparison
+    title: Predictor comparison
+    type: text
+  - name: b
+    title: B
+    type: number
+    format: sf:3
+  - name: se
+    title: SE
+    type: number
+    format: sf:3
+  - name: z
+    title: z
+    type: number
+    format: sf:3
+  - name: p
+    title: p
+    type: number
+    format: zto,pvalue
+  - name: pAdjusted
+    title: Adjusted p
+    type: number
+    format: zto,pvalue
+  - name: low
+    title: 95% CI lower (B)
+    type: number
+    format: sf:3
+  - name: high
+    title: 95% CI upper (B)
+    type: number
+    format: sf:3
+  - name: odds
+    title: OR
+    type: number
+    format: sf:3
+  - name: oddsLow
+    title: 95% CI lower (OR)
+    type: number
+    format: sf:3
+  - name: oddsHigh
+    title: 95% CI upper (OR)
+    type: number
+    format: sf:3
+- name: r3Group
+  title: 'R3STEP: Group-class predictors'
+  type: Table
+  rows: 0
+  visible: (showR3Group)
+  clearWith: *id001
+  columns: *id002
+- name: bchIndividualMeans
+  title: 'BCH: Individual-profile outcome means'
+  type: Table
+  rows: 0
+  visible: (showBCHIndividualMeans)
+  clearWith: *id001
+  columns: &id003
+  - name: outcome
+    title: Outcome
+    type: text
+  - name: class
+    title: Class
+    type: integer
+  - name: mean
+    title: Mean
+    type: number
+    format: sf:3
+  - name: se
+    title: SE
+    type: number
+    format: sf:3
+  - name: low
+    title: 95% CI lower
+    type: number
+    format: sf:3
+  - name: high
+    title: 95% CI upper
+    type: number
+    format: sf:3
+  - name: effectiveN
+    title: Effective n
+    type: number
+    format: sf:3
+- name: bchIndividualPairs
+  title: 'BCH: Individual-profile pairwise differences'
+  type: Table
+  rows: 0
+  visible: (showBCHIndividualPairs)
+  clearWith: *id001
+  columns: &id004
+  - name: outcome
+    title: Outcome
+    type: text
+  - name: class
+    title: Class
+    type: integer
+  - name: reference
+    title: Reference
+    type: integer
+  - name: difference
+    title: Mean difference
+    type: number
+    format: sf:3
+  - name: se
+    title: SE
+    type: number
+    format: sf:3
+  - name: z
+    title: z
+    type: number
+    format: sf:3
+  - name: p
+    title: p
+    type: number
+    format: zto,pvalue
+  - name: pAdjusted
+    title: Adjusted p
+    type: number
+    format: zto,pvalue
+  - name: low
+    title: 95% CI lower
+    type: number
+    format: sf:3
+  - name: high
+    title: 95% CI upper
+    type: number
+    format: sf:3
+- name: bchGroupMeans
+  title: 'BCH: Group-class outcome means'
+  type: Table
+  rows: 0
+  visible: (showBCHGroupMeans)
+  clearWith: *id001
+  columns: *id003
+- name: bchGroupPairs
+  title: 'BCH: Group-class pairwise differences'
+  type: Table
+  rows: 0
+  visible: (showBCHGroupPairs)
+  clearWith: *id001
+  columns: *id004
 - name: profileFigure
   title: Individual profiles
   type: Image
@@ -407,6 +736,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
 - name: compositionFigure
   title: Group-class composition
   type: Image
@@ -438,6 +783,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
 - name: saveClasses
   title: Modal classifications
   type: Output
@@ -470,6 +831,22 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
 - name: saveProbabilities
   title: Posterior probabilities
   type: Output
@@ -502,3 +879,20 @@ items:
   - showStarts
   - saveClasses
   - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
+

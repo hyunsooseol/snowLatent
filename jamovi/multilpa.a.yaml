@@ -130,4 +130,127 @@ options:
 - name: saveProbabilities
   title: Posterior probabilities
   type: Output
+- name: individualCovariates
+  title: Individual-level numeric covariates
+  type: Variables
+  suggested:
+  - continuous
+  permitted:
+  - numeric
+  default: []
+- name: groupCovariates
+  title: Group-level numeric covariates
+  type: Variables
+  suggested:
+  - continuous
+  permitted:
+  - numeric
+  default: []
+- name: individualOutcomes
+  title: Individual-level continuous outcomes
+  type: Variables
+  suggested:
+  - continuous
+  permitted:
+  - numeric
+  default: []
+- name: groupOutcomes
+  title: Group-level continuous outcomes
+  type: Variables
+  suggested:
+  - continuous
+  permitted:
+  - numeric
+  default: []
+- name: r3Adjust
+  title: Multiplicity correction
+  type: List
+  default: holm
+  options:
+  - name: holm
+    title: Holm
+  - name: BH
+    title: Benjamini-Hochberg
+  - name: bonferroni
+    title: Bonferroni
+  - name: none
+    title: None
+- name: bchAdjust
+  title: Multiplicity correction
+  type: List
+  default: holm
+  options:
+  - name: holm
+    title: Holm
+  - name: BH
+    title: Benjamini-Hochberg
+  - name: bonferroni
+    title: Bonferroni
+  - name: none
+    title: None
+- name: showR3Individual
+  title: Individual-profile predictors
+  type: Bool
+  default: false
+- name: showR3Group
+  title: Group-class predictors
+  type: Bool
+  default: false
+- name: showBCHIndividualMeans
+  title: Individual-profile outcome means
+  type: Bool
+  default: false
+- name: showBCHIndividualPairs
+  title: Individual-profile pairwise differences
+  type: Bool
+  default: false
+- name: showBCHGroupMeans
+  title: Group-class outcome means
+  type: Bool
+  default: false
+- name: showBCHGroupPairs
+  title: Group-class pairwise differences
+  type: Bool
+  default: false
+- name: individualFactors
+  title: Individual-level factors
+  type: Variables
+  suggested:
+  - nominal
+  - ordinal
+  permitted:
+  - factor
+  default: []
+- name: individualRefLevels
+  title: Individual-level reference categories
+  type: Array
+  default: []
+  template:
+    type: Group
+    elements:
+    - name: var
+      type: Variable
+    - name: ref
+      type: Level
+- name: groupFactors
+  title: Group-level factors
+  type: Variables
+  suggested:
+  - nominal
+  - ordinal
+  permitted:
+  - factor
+  default: []
+- name: groupRefLevels
+  title: Group-level reference categories
+  type: Array
+  default: []
+  template:
+    type: Group
+    elements:
+    - name: var
+      type: Variable
+    - name: ref
+      type: Level
 weightsSupport: none
+

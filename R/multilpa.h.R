@@ -27,7 +27,23 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             profilePlot = FALSE,
             compositionPlot = FALSE,
             plotZ = TRUE,
-            showStarts = FALSE, ...) {
+            showStarts = FALSE,
+            individualCovariates = list(),
+            groupCovariates = list(),
+            individualOutcomes = list(),
+            groupOutcomes = list(),
+            r3Adjust = "holm",
+            bchAdjust = "holm",
+            showR3Individual = FALSE,
+            showR3Group = FALSE,
+            showBCHIndividualMeans = FALSE,
+            showBCHIndividualPairs = FALSE,
+            showBCHGroupMeans = FALSE,
+            showBCHGroupPairs = FALSE,
+            individualFactors = list(),
+            individualRefLevels = list(),
+            groupFactors = list(),
+            groupRefLevels = list(), ...) {
 
             super$initialize(
                 package="snowLatent",
@@ -150,6 +166,126 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "saveClasses")
             private$..saveProbabilities <- jmvcore::OptionOutput$new(
                 "saveProbabilities")
+            private$..individualCovariates <- jmvcore::OptionVariables$new(
+                "individualCovariates",
+                individualCovariates,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"),
+                default=list())
+            private$..groupCovariates <- jmvcore::OptionVariables$new(
+                "groupCovariates",
+                groupCovariates,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"),
+                default=list())
+            private$..individualOutcomes <- jmvcore::OptionVariables$new(
+                "individualOutcomes",
+                individualOutcomes,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"),
+                default=list())
+            private$..groupOutcomes <- jmvcore::OptionVariables$new(
+                "groupOutcomes",
+                groupOutcomes,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"),
+                default=list())
+            private$..r3Adjust <- jmvcore::OptionList$new(
+                "r3Adjust",
+                r3Adjust,
+                default="holm",
+                options=list(
+                    "holm",
+                    "BH",
+                    "bonferroni",
+                    "none"))
+            private$..bchAdjust <- jmvcore::OptionList$new(
+                "bchAdjust",
+                bchAdjust,
+                default="holm",
+                options=list(
+                    "holm",
+                    "BH",
+                    "bonferroni",
+                    "none"))
+            private$..showR3Individual <- jmvcore::OptionBool$new(
+                "showR3Individual",
+                showR3Individual,
+                default=FALSE)
+            private$..showR3Group <- jmvcore::OptionBool$new(
+                "showR3Group",
+                showR3Group,
+                default=FALSE)
+            private$..showBCHIndividualMeans <- jmvcore::OptionBool$new(
+                "showBCHIndividualMeans",
+                showBCHIndividualMeans,
+                default=FALSE)
+            private$..showBCHIndividualPairs <- jmvcore::OptionBool$new(
+                "showBCHIndividualPairs",
+                showBCHIndividualPairs,
+                default=FALSE)
+            private$..showBCHGroupMeans <- jmvcore::OptionBool$new(
+                "showBCHGroupMeans",
+                showBCHGroupMeans,
+                default=FALSE)
+            private$..showBCHGroupPairs <- jmvcore::OptionBool$new(
+                "showBCHGroupPairs",
+                showBCHGroupPairs,
+                default=FALSE)
+            private$..individualFactors <- jmvcore::OptionVariables$new(
+                "individualFactors",
+                individualFactors,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"),
+                default=list())
+            private$..individualRefLevels <- jmvcore::OptionArray$new(
+                "individualRefLevels",
+                individualRefLevels,
+                default=list(),
+                template=jmvcore::OptionGroup$new(
+                    "individualRefLevels",
+                    NULL,
+                    elements=list(
+                        jmvcore::OptionVariable$new(
+                            "var",
+                            NULL),
+                        jmvcore::OptionLevel$new(
+                            "ref",
+                            NULL))))
+            private$..groupFactors <- jmvcore::OptionVariables$new(
+                "groupFactors",
+                groupFactors,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"),
+                default=list())
+            private$..groupRefLevels <- jmvcore::OptionArray$new(
+                "groupRefLevels",
+                groupRefLevels,
+                default=list(),
+                template=jmvcore::OptionGroup$new(
+                    "groupRefLevels",
+                    NULL,
+                    elements=list(
+                        jmvcore::OptionVariable$new(
+                            "var",
+                            NULL),
+                        jmvcore::OptionLevel$new(
+                            "ref",
+                            NULL))))
 
             self$.addOption(private$..vars)
             self$.addOption(private$..group)
@@ -175,6 +311,22 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showStarts)
             self$.addOption(private$..saveClasses)
             self$.addOption(private$..saveProbabilities)
+            self$.addOption(private$..individualCovariates)
+            self$.addOption(private$..groupCovariates)
+            self$.addOption(private$..individualOutcomes)
+            self$.addOption(private$..groupOutcomes)
+            self$.addOption(private$..r3Adjust)
+            self$.addOption(private$..bchAdjust)
+            self$.addOption(private$..showR3Individual)
+            self$.addOption(private$..showR3Group)
+            self$.addOption(private$..showBCHIndividualMeans)
+            self$.addOption(private$..showBCHIndividualPairs)
+            self$.addOption(private$..showBCHGroupMeans)
+            self$.addOption(private$..showBCHGroupPairs)
+            self$.addOption(private$..individualFactors)
+            self$.addOption(private$..individualRefLevels)
+            self$.addOption(private$..groupFactors)
+            self$.addOption(private$..groupRefLevels)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -200,7 +352,23 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plotZ = function() private$..plotZ$value,
         showStarts = function() private$..showStarts$value,
         saveClasses = function() private$..saveClasses$value,
-        saveProbabilities = function() private$..saveProbabilities$value),
+        saveProbabilities = function() private$..saveProbabilities$value,
+        individualCovariates = function() private$..individualCovariates$value,
+        groupCovariates = function() private$..groupCovariates$value,
+        individualOutcomes = function() private$..individualOutcomes$value,
+        groupOutcomes = function() private$..groupOutcomes$value,
+        r3Adjust = function() private$..r3Adjust$value,
+        bchAdjust = function() private$..bchAdjust$value,
+        showR3Individual = function() private$..showR3Individual$value,
+        showR3Group = function() private$..showR3Group$value,
+        showBCHIndividualMeans = function() private$..showBCHIndividualMeans$value,
+        showBCHIndividualPairs = function() private$..showBCHIndividualPairs$value,
+        showBCHGroupMeans = function() private$..showBCHGroupMeans$value,
+        showBCHGroupPairs = function() private$..showBCHGroupPairs$value,
+        individualFactors = function() private$..individualFactors$value,
+        individualRefLevels = function() private$..individualRefLevels$value,
+        groupFactors = function() private$..groupFactors$value,
+        groupRefLevels = function() private$..groupRefLevels$value),
     private = list(
         ..vars = NA,
         ..group = NA,
@@ -225,7 +393,23 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plotZ = NA,
         ..showStarts = NA,
         ..saveClasses = NA,
-        ..saveProbabilities = NA)
+        ..saveProbabilities = NA,
+        ..individualCovariates = NA,
+        ..groupCovariates = NA,
+        ..individualOutcomes = NA,
+        ..groupOutcomes = NA,
+        ..r3Adjust = NA,
+        ..bchAdjust = NA,
+        ..showR3Individual = NA,
+        ..showR3Group = NA,
+        ..showBCHIndividualMeans = NA,
+        ..showBCHIndividualPairs = NA,
+        ..showBCHGroupMeans = NA,
+        ..showBCHGroupPairs = NA,
+        ..individualFactors = NA,
+        ..individualRefLevels = NA,
+        ..groupFactors = NA,
+        ..groupRefLevels = NA)
 )
 
 multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -241,6 +425,13 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         groupClasses = function() private$.items[["groupClasses"]],
         composition = function() private$.items[["composition"]],
         starts = function() private$.items[["starts"]],
+        externalStatus = function() private$.items[["externalStatus"]],
+        r3Individual = function() private$.items[["r3Individual"]],
+        r3Group = function() private$.items[["r3Group"]],
+        bchIndividualMeans = function() private$.items[["bchIndividualMeans"]],
+        bchIndividualPairs = function() private$.items[["bchIndividualPairs"]],
+        bchGroupMeans = function() private$.items[["bchGroupMeans"]],
+        bchGroupPairs = function() private$.items[["bchGroupPairs"]],
         profileFigure = function() private$.items[["profileFigure"]],
         compositionFigure = function() private$.items[["compositionFigure"]],
         saveClasses = function() private$.items[["saveClasses"]],
@@ -287,7 +478,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities")))
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="modelFit",
@@ -316,7 +523,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="selected", 
@@ -401,7 +624,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="level", 
@@ -464,7 +703,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="level", 
@@ -512,7 +767,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="profile", 
@@ -561,7 +832,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="groupClass", 
@@ -601,7 +888,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="groupClass", 
@@ -645,7 +948,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities"),
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
                 columns=list(
                     list(
                         `name`="start", 
@@ -673,6 +992,625 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="Error", 
                         `type`="text")),
                 visible="(showStarts)"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="externalStatus",
+                title="External-variable analysis status",
+                visible=FALSE,
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels")))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="r3Individual",
+                title="R3STEP: Individual-profile predictors",
+                rows=0,
+                visible="(showR3Individual)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer"),
+                    list(
+                        `name`="reference", 
+                        `title`="Reference", 
+                        `type`="integer"),
+                    list(
+                        `name`="predictor", 
+                        `title`="Predictor", 
+                        `type`="text"),
+                    list(
+                        `name`="comparison", 
+                        `title`="Predictor comparison", 
+                        `type`="text"),
+                    list(
+                        `name`="b", 
+                        `title`="B", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="z", 
+                        `title`="z", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="pAdjusted", 
+                        `title`="Adjusted p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="low", 
+                        `title`="95% CI lower (B)", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="high", 
+                        `title`="95% CI upper (B)", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="odds", 
+                        `title`="OR", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="oddsLow", 
+                        `title`="95% CI lower (OR)", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="oddsHigh", 
+                        `title`="95% CI upper (OR)", 
+                        `type`="number", 
+                        `format`="sf:3"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="r3Group",
+                title="R3STEP: Group-class predictors",
+                rows=0,
+                visible="(showR3Group)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
+                columns=list(
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer"),
+                    list(
+                        `name`="reference", 
+                        `title`="Reference", 
+                        `type`="integer"),
+                    list(
+                        `name`="predictor", 
+                        `title`="Predictor", 
+                        `type`="text"),
+                    list(
+                        `name`="comparison", 
+                        `title`="Predictor comparison", 
+                        `type`="text"),
+                    list(
+                        `name`="b", 
+                        `title`="B", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="z", 
+                        `title`="z", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="pAdjusted", 
+                        `title`="Adjusted p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="low", 
+                        `title`="95% CI lower (B)", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="high", 
+                        `title`="95% CI upper (B)", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="odds", 
+                        `title`="OR", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="oddsLow", 
+                        `title`="95% CI lower (OR)", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="oddsHigh", 
+                        `title`="95% CI upper (OR)", 
+                        `type`="number", 
+                        `format`="sf:3"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="bchIndividualMeans",
+                title="BCH: Individual-profile outcome means",
+                rows=0,
+                visible="(showBCHIndividualMeans)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
+                columns=list(
+                    list(
+                        `name`="outcome", 
+                        `title`="Outcome", 
+                        `type`="text"),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer"),
+                    list(
+                        `name`="mean", 
+                        `title`="Mean", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="low", 
+                        `title`="95% CI lower", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="high", 
+                        `title`="95% CI upper", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="effectiveN", 
+                        `title`="Effective n", 
+                        `type`="number", 
+                        `format`="sf:3"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="bchIndividualPairs",
+                title="BCH: Individual-profile pairwise differences",
+                rows=0,
+                visible="(showBCHIndividualPairs)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
+                columns=list(
+                    list(
+                        `name`="outcome", 
+                        `title`="Outcome", 
+                        `type`="text"),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer"),
+                    list(
+                        `name`="reference", 
+                        `title`="Reference", 
+                        `type`="integer"),
+                    list(
+                        `name`="difference", 
+                        `title`="Mean difference", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="z", 
+                        `title`="z", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="pAdjusted", 
+                        `title`="Adjusted p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="low", 
+                        `title`="95% CI lower", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="high", 
+                        `title`="95% CI upper", 
+                        `type`="number", 
+                        `format`="sf:3"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="bchGroupMeans",
+                title="BCH: Group-class outcome means",
+                rows=0,
+                visible="(showBCHGroupMeans)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
+                columns=list(
+                    list(
+                        `name`="outcome", 
+                        `title`="Outcome", 
+                        `type`="text"),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer"),
+                    list(
+                        `name`="mean", 
+                        `title`="Mean", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="low", 
+                        `title`="95% CI lower", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="high", 
+                        `title`="95% CI upper", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="effectiveN", 
+                        `title`="Effective n", 
+                        `type`="number", 
+                        `format`="sf:3"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="bchGroupPairs",
+                title="BCH: Group-class pairwise differences",
+                rows=0,
+                visible="(showBCHGroupPairs)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels"),
+                columns=list(
+                    list(
+                        `name`="outcome", 
+                        `title`="Outcome", 
+                        `type`="text"),
+                    list(
+                        `name`="class", 
+                        `title`="Class", 
+                        `type`="integer"),
+                    list(
+                        `name`="reference", 
+                        `title`="Reference", 
+                        `type`="integer"),
+                    list(
+                        `name`="difference", 
+                        `title`="Mean difference", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="se", 
+                        `title`="SE", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="z", 
+                        `title`="z", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="p", 
+                        `title`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="pAdjusted", 
+                        `title`="Adjusted p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"),
+                    list(
+                        `name`="low", 
+                        `title`="95% CI lower", 
+                        `type`="number", 
+                        `format`="sf:3"),
+                    list(
+                        `name`="high", 
+                        `title`="95% CI upper", 
+                        `type`="number", 
+                        `format`="sf:3"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="profileFigure",
@@ -704,7 +1642,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities")))
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="compositionFigure",
@@ -736,7 +1690,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities")))
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="saveClasses",
@@ -769,7 +1739,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities")))
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="saveProbabilities",
@@ -802,7 +1788,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotZ",
                     "showStarts",
                     "saveClasses",
-                    "saveProbabilities")))}))
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels")))}))
 
 multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "multilpaBase",
@@ -851,6 +1853,22 @@ multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param compositionPlot .
 #' @param plotZ .
 #' @param showStarts .
+#' @param individualCovariates .
+#' @param groupCovariates .
+#' @param individualOutcomes .
+#' @param groupOutcomes .
+#' @param r3Adjust .
+#' @param bchAdjust .
+#' @param showR3Individual .
+#' @param showR3Group .
+#' @param showBCHIndividualMeans .
+#' @param showBCHIndividualPairs .
+#' @param showBCHGroupMeans .
+#' @param showBCHGroupPairs .
+#' @param individualFactors .
+#' @param individualRefLevels .
+#' @param groupFactors .
+#' @param groupRefLevels .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$help} \tab \tab \tab \tab \tab a html \cr
@@ -862,6 +1880,13 @@ multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$groupClasses} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$composition} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$starts} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$externalStatus} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$r3Individual} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$r3Group} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$bchIndividualMeans} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$bchIndividualPairs} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$bchGroupMeans} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$bchGroupPairs} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$profileFigure} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$compositionFigure} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$saveClasses} \tab \tab \tab \tab \tab an output \cr
@@ -898,19 +1923,49 @@ multilpa <- function(
     profilePlot = FALSE,
     compositionPlot = FALSE,
     plotZ = TRUE,
-    showStarts = FALSE) {
+    showStarts = FALSE,
+    individualCovariates = list(),
+    groupCovariates = list(),
+    individualOutcomes = list(),
+    groupOutcomes = list(),
+    r3Adjust = "holm",
+    bchAdjust = "holm",
+    showR3Individual = FALSE,
+    showR3Group = FALSE,
+    showBCHIndividualMeans = FALSE,
+    showBCHIndividualPairs = FALSE,
+    showBCHGroupMeans = FALSE,
+    showBCHGroupPairs = FALSE,
+    individualFactors = list(),
+    individualRefLevels = list(),
+    groupFactors = list(),
+    groupRefLevels = list()) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("multilpa requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
     if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
+    if ( ! missing(individualCovariates)) individualCovariates <- jmvcore::resolveQuo(jmvcore::enquo(individualCovariates))
+    if ( ! missing(groupCovariates)) groupCovariates <- jmvcore::resolveQuo(jmvcore::enquo(groupCovariates))
+    if ( ! missing(individualOutcomes)) individualOutcomes <- jmvcore::resolveQuo(jmvcore::enquo(individualOutcomes))
+    if ( ! missing(groupOutcomes)) groupOutcomes <- jmvcore::resolveQuo(jmvcore::enquo(groupOutcomes))
+    if ( ! missing(individualFactors)) individualFactors <- jmvcore::resolveQuo(jmvcore::enquo(individualFactors))
+    if ( ! missing(groupFactors)) groupFactors <- jmvcore::resolveQuo(jmvcore::enquo(groupFactors))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(group), group, NULL))
+            `if`( ! missing(group), group, NULL),
+            `if`( ! missing(individualCovariates), individualCovariates, NULL),
+            `if`( ! missing(groupCovariates), groupCovariates, NULL),
+            `if`( ! missing(individualOutcomes), individualOutcomes, NULL),
+            `if`( ! missing(groupOutcomes), groupOutcomes, NULL),
+            `if`( ! missing(individualFactors), individualFactors, NULL),
+            `if`( ! missing(groupFactors), groupFactors, NULL))
 
+    for (v in individualFactors) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in groupFactors) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- multilpaOptions$new(
         vars = vars,
@@ -934,7 +1989,23 @@ multilpa <- function(
         profilePlot = profilePlot,
         compositionPlot = compositionPlot,
         plotZ = plotZ,
-        showStarts = showStarts)
+        showStarts = showStarts,
+        individualCovariates = individualCovariates,
+        groupCovariates = groupCovariates,
+        individualOutcomes = individualOutcomes,
+        groupOutcomes = groupOutcomes,
+        r3Adjust = r3Adjust,
+        bchAdjust = bchAdjust,
+        showR3Individual = showR3Individual,
+        showR3Group = showR3Group,
+        showBCHIndividualMeans = showBCHIndividualMeans,
+        showBCHIndividualPairs = showBCHIndividualPairs,
+        showBCHGroupMeans = showBCHGroupMeans,
+        showBCHGroupPairs = showBCHGroupPairs,
+        individualFactors = individualFactors,
+        individualRefLevels = individualRefLevels,
+        groupFactors = groupFactors,
+        groupRefLevels = groupRefLevels)
 
     analysis <- multilpaClass$new(
         options = options,
