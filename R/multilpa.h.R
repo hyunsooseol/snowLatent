@@ -592,33 +592,27 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="aic", 
                         `title`="AIC", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="bicGroups", 
                         `title`="BIC (groups)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="bicIndividuals", 
                         `title`="BIC (individuals)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="entropyIndividual", 
                         `title`="Entropy (individuals)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="entropyGroup", 
                         `title`="Entropy (groups)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="replicated", 
                         `title`="Best / starts", 
@@ -692,23 +686,19 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="modalPercent", 
                         `title`="Modal %", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="posteriorN", 
                         `title`="Posterior expected n", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="posteriorPercent", 
                         `title`="Posterior expected %", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="avepp", 
                         `title`="AvePP", 
-                        `type`="number", 
-                        `format`="sf:3")),
+                        `type`="number")),
                 visible="(showClassification)"))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -774,8 +764,7 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="entropy", 
                         `title`="Relative entropy", 
-                        `type`="number", 
-                        `format`="sf:3")),
+                        `type`="number")),
                 visible="(showEntropy)"))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -837,13 +826,11 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="mean", 
                         `title`="Mean", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="sd", 
                         `title`="Within-profile SD", 
-                        `type`="number", 
-                        `format`="sf:3")),
+                        `type`="number")),
                 visible="(showProfiles)"))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -901,8 +888,7 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="percent", 
                         `title`="Estimated %", 
-                        `type`="number", 
-                        `format`="sf:3")),
+                        `type`="number")),
                 visible="(showGroupClasses)"))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -964,8 +950,7 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="percent", 
                         `title`="Conditional %", 
-                        `type`="number", 
-                        `format`="sf:3")),
+                        `type`="number")),
                 visible="(showComposition)"))
             self$add(jmvcore::Table$new(
                 options=options,
@@ -1023,8 +1008,7 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="loglik", 
                         `title`="Log-likelihood", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="converged", 
                         `title`="Converged", 
@@ -1159,18 +1143,15 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="b", 
                         `title`="B", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="se", 
                         `title`="SE", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="z", 
                         `title`="z", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="p", 
                         `title`="p", 
@@ -1184,28 +1165,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="low", 
                         `title`="95% CI lower (B)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="high", 
                         `title`="95% CI upper (B)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="odds", 
                         `title`="OR", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="oddsLow", 
                         `title`="95% CI lower (OR)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="oddsHigh", 
                         `title`="95% CI upper (OR)", 
-                        `type`="number", 
-                        `format`="sf:3"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="r3Group",
@@ -1275,18 +1251,15 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="b", 
                         `title`="B", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="se", 
                         `title`="SE", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="z", 
                         `title`="z", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="p", 
                         `title`="p", 
@@ -1300,28 +1273,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="low", 
                         `title`="95% CI lower (B)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="high", 
                         `title`="95% CI upper (B)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="odds", 
                         `title`="OR", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="oddsLow", 
                         `title`="95% CI lower (OR)", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="oddsHigh", 
                         `title`="95% CI upper (OR)", 
-                        `type`="number", 
-                        `format`="sf:3"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="bchIndividualMeans",
@@ -1383,28 +1351,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="mean", 
                         `title`="Mean", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="se", 
                         `title`="SE", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="low", 
                         `title`="95% CI lower", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="high", 
                         `title`="95% CI upper", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="effectiveN", 
                         `title`="Effective n", 
-                        `type`="number", 
-                        `format`="sf:3"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="bchIndividualPairs",
@@ -1470,18 +1433,15 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="difference", 
                         `title`="Mean difference", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="se", 
                         `title`="SE", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="z", 
                         `title`="z", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="p", 
                         `title`="p", 
@@ -1495,13 +1455,11 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="low", 
                         `title`="95% CI lower", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="high", 
                         `title`="95% CI upper", 
-                        `type`="number", 
-                        `format`="sf:3"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="bchGroupMeans",
@@ -1563,28 +1521,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="mean", 
                         `title`="Mean", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="se", 
                         `title`="SE", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="low", 
                         `title`="95% CI lower", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="high", 
                         `title`="95% CI upper", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="effectiveN", 
                         `title`="Effective n", 
-                        `type`="number", 
-                        `format`="sf:3"))))
+                        `type`="number"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="bchGroupPairs",
@@ -1650,18 +1603,15 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="difference", 
                         `title`="Mean difference", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="se", 
                         `title`="SE", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="z", 
                         `title`="z", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="p", 
                         `title`="p", 
@@ -1675,13 +1625,11 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="low", 
                         `title`="95% CI lower", 
-                        `type`="number", 
-                        `format`="sf:3"),
+                        `type`="number"),
                     list(
                         `name`="high", 
                         `title`="95% CI upper", 
-                        `type`="number", 
-                        `format`="sf:3"))))
+                        `type`="number"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="profileFigure",

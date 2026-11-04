@@ -160,6 +160,7 @@ wordResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "words",
                     "freq",
                     "minf",
+                    "maxw",
                     "max",
                     "min",
                     "rot")))

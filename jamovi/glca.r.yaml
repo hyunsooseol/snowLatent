@@ -230,7 +230,6 @@ items:
       renderFun: .plot1
       visible: (plot1)
       refs: glca
-      requiresData: true
       clearWith:
         - vars
         - nc
@@ -260,7 +259,6 @@ items:
       renderFun: .plot3
       visible: (plot3)
       refs: snowLatent
-      requiresData: true
       clearWith:
         - vars
         - nc
@@ -347,3 +345,4 @@ items:
               content: ($key)
 
 ...
+

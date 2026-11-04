@@ -174,7 +174,6 @@ items:
       height: 450      
       renderFun: .plot
       visible: (plot)
-      requiresData: true
       clearWith:
         - factors
         - covs
@@ -191,7 +190,6 @@ items:
       height: 450      
       renderFun: .plot1
       visible: (plot1)
-      requiresData: true
       clearWith:
         - factors
         - covs

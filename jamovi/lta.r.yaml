@@ -191,7 +191,6 @@ items:
       height: 450      
       renderFun: .plot1
       visible: (plot1)
-      requiresData: true
       refs: slca
       clearWith:
         - factors
@@ -203,7 +202,6 @@ items:
       height: 450      
       renderFun: .plot2
       visible: (plot2)
-      requiresData: true
       refs: slca
       clearWith:
         - factors
@@ -216,7 +214,6 @@ items:
       height: 450
       renderFun: .plot3
       visible: (plot3)
-      requiresData: true
       refs: slca
       clearWith:
         - factors
@@ -229,7 +226,6 @@ items:
       height: 450
       renderFun: .plot4
       visible: (plot4)
-      requiresData: true
       refs: slca
       clearWith:
         - factors
@@ -348,7 +344,6 @@ items:
       height: 450      
       renderFun: .plot
       visible: (plot)
-      requiresData: true
       clearWith:
         - factors
         - covs

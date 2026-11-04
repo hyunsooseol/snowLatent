@@ -405,7 +405,6 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot",
                 visible="(plot)",
-                requiresData=TRUE,
                 clearWith=list(
                     "factors",
                     "covs",
@@ -422,7 +421,6 @@ stepResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot1",
                 visible="(plot1)",
-                requiresData=TRUE,
                 clearWith=list(
                     "factors",
                     "covs",

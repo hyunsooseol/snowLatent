@@ -68,6 +68,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   # 현재 Run 기준으로 데이터와 모델 초기화
   private$.dataCache <- NULL
   private$.cache <- list()
+  self$results$plot1$setState(NULL)
   
   private$.dataCache <- private$.cleanData()
   
@@ -83,6 +84,9 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   lca <- private$.cache$lca
   clu <- private$.cache$clu
   inv <- private$.cache$inv
+  
+  if (isTRUE(self$options$plot1))
+    self$results$plot1$setState(private$.profilePlotState(lca))
   
   # 이후 기존 결과 출력 코드
   self$results$text$setContent(lca)
@@ -369,14 +373,43 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   self$results$progressBarHTML$setVisible(FALSE)
 },
 
+# Keep only the summaries consumed by glca's plot method. In particular,
+# marginal class prevalences come from the original posterior probabilities,
+# not from modal assignments or a new model fit.
+.profilePlotState = function(lca) {
+  marginal <- colMeans(do.call(rbind, lca$posterior$class))
+  list(
+    model = lca$model[c("R", "measure.inv", "G", "W", "M", "C", "Ng")],
+    var.names = lca$var.names[c("y.names", "g.names")],
+    rho = lca$param$rho,
+    delta = lca$param$delta,
+    marginal = marginal,
+    wclass = lca$posterior$wclass
+  )
+},
+
 .plot1 = function(image, ...) {
   if (!isTRUE(self$options$plot1))
     return(FALSE)
   
-  lca <- private$.cache$lca
-  
-  if (is.null(lca))
+  saved <- image$state
+  if (is.null(saved))
     return(FALSE)
+  if (!requireNamespace("glca", quietly = TRUE))
+    return(FALSE)
+  
+  # Reconstruct a plotting-only object after state restoration. This contains
+  # no raw observations, formula environments or fitted-model cache.
+  lca <- structure(list(
+    model = saved$model,
+    var.names = saved$var.names,
+    param = list(rho = saved$rho, delta = saved$delta),
+    posterior = list(
+      class = list(matrix(saved$marginal, nrow = 1L,
+                          dimnames = list(NULL, names(saved$marginal)))),
+      wclass = saved$wclass
+    )
+  ), class = "glca")
   
   oldpar <- graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(oldpar), add = TRUE)
@@ -384,7 +417,7 @@ mlcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
   result <- tryCatch({
     
     graphics::par(mfcol = c(3, 1))
-    plot(lca, ask = FALSE)
+    graphics::plot(lca, ask = FALSE)
     
     TRUE
     

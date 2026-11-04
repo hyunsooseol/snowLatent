@@ -19,7 +19,6 @@ items:
       type:  Image
       width: 600
       height: 450      
-      requiresData: true
       visible: (plot)
       renderFun: .plot
       refs: snowLatent
@@ -33,7 +32,6 @@ items:
       type:  Image
       width: 600
       height: 450      
-      requiresData: true
       visible: (plot1)
       renderFun: .plot1
       refs: snowLatent

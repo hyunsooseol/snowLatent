@@ -118,27 +118,21 @@ items:
   - name: loglik
     title: Log-likelihood
     type: number
-    format: sf:3
   - name: aic
     title: AIC
     type: number
-    format: sf:3
   - name: bicGroups
     title: BIC (groups)
     type: number
-    format: sf:3
   - name: bicIndividuals
     title: BIC (individuals)
     type: number
-    format: sf:3
   - name: entropyIndividual
     title: Entropy (individuals)
     type: number
-    format: sf:3
   - name: entropyGroup
     title: Entropy (groups)
     type: number
-    format: sf:3
   - name: replicated
     title: Best / starts
     type: text
@@ -206,19 +200,15 @@ items:
   - name: modalPercent
     title: Modal %
     type: number
-    format: sf:3
   - name: posteriorN
     title: Posterior expected n
     type: number
-    format: sf:3
   - name: posteriorPercent
     title: Posterior expected %
     type: number
-    format: sf:3
   - name: avepp
     title: AvePP
     type: number
-    format: sf:3
   visible: (showClassification)
 - name: entropy
   title: Classification entropy
@@ -280,7 +270,6 @@ items:
   - name: entropy
     title: Relative entropy
     type: number
-    format: sf:3
   visible: (showEntropy)
 - name: profiles
   title: Individual profile characteristics
@@ -339,11 +328,9 @@ items:
   - name: mean
     title: Mean
     type: number
-    format: sf:3
   - name: sd
     title: Within-profile SD
     type: number
-    format: sf:3
   visible: (showProfiles)
 - name: groupClasses
   title: Estimated group-class proportions
@@ -399,7 +386,6 @@ items:
   - name: percent
     title: Estimated %
     type: number
-    format: sf:3
   visible: (showGroupClasses)
 - name: composition
   title: Individual profile composition by group class
@@ -458,7 +444,6 @@ items:
   - name: percent
     title: Conditional %
     type: number
-    format: sf:3
   visible: (showComposition)
 - name: starts
   title: Starting-value diagnostics
@@ -514,7 +499,6 @@ items:
   - name: loglik
     title: Log-likelihood
     type: number
-    format: sf:3
   - name: converged
     title: Converged
     type: text
@@ -597,15 +581,12 @@ items:
   - name: b
     title: B
     type: number
-    format: sf:3
   - name: se
     title: SE
     type: number
-    format: sf:3
   - name: z
     title: z
     type: number
-    format: sf:3
   - name: p
     title: p
     type: number
@@ -617,23 +598,18 @@ items:
   - name: low
     title: 95% CI lower (B)
     type: number
-    format: sf:3
   - name: high
     title: 95% CI upper (B)
     type: number
-    format: sf:3
   - name: odds
     title: OR
     type: number
-    format: sf:3
   - name: oddsLow
     title: 95% CI lower (OR)
     type: number
-    format: sf:3
   - name: oddsHigh
     title: 95% CI upper (OR)
     type: number
-    format: sf:3
 - name: r3Group
   title: 'R3STEP: Group-class predictors'
   type: Table
@@ -657,23 +633,18 @@ items:
   - name: mean
     title: Mean
     type: number
-    format: sf:3
   - name: se
     title: SE
     type: number
-    format: sf:3
   - name: low
     title: 95% CI lower
     type: number
-    format: sf:3
   - name: high
     title: 95% CI upper
     type: number
-    format: sf:3
   - name: effectiveN
     title: Effective n
     type: number
-    format: sf:3
 - name: bchIndividualPairs
   title: 'BCH: Individual-profile pairwise differences'
   type: Table
@@ -693,15 +664,12 @@ items:
   - name: difference
     title: Mean difference
     type: number
-    format: sf:3
   - name: se
     title: SE
     type: number
-    format: sf:3
   - name: z
     title: z
     type: number
-    format: sf:3
   - name: p
     title: p
     type: number
@@ -713,11 +681,9 @@ items:
   - name: low
     title: 95% CI lower
     type: number
-    format: sf:3
   - name: high
     title: 95% CI upper
     type: number
-    format: sf:3
 - name: bchGroupMeans
   title: 'BCH: Group-class outcome means'
   type: Table
@@ -1034,5 +1000,6 @@ items:
   - profileCI
   - heatmapPlot
   - comparisonPlot
+
 
 

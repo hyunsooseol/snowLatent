@@ -57,6 +57,8 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         # 현재 Run에서는 데이터와 모델을 새로 계산
         private$.dataCache <- NULL
         private$.modelCache <- list()
+        self$results$plot1$setState(NULL)
+        self$results$plot3$setState(NULL)
         
         private$.dataCache <- private$.cleanData()
         data <- private$.dataCache
@@ -76,6 +78,17 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         }
         
         lca <- private$.modelCache[[modelKey]]
+        
+        if (isTRUE(self$options$plot1))
+          self$results$plot1$setState(private$.profilePlotState(lca))
+        if (isTRUE(self$options$plot3)) {
+          ipKey <- paste(modelKey, "ip", sep = "|")
+          if (is.null(private$.modelCache[[ipKey]]))
+            private$.modelCache[[ipKey]] <- private$.computeIP()
+          ic <- reshape2::melt(private$.modelCache[[ipKey]][["param"]][["rho"]])
+          colnames(ic) <- c("Class", "Level", "value", "Variable", "Group")
+          self$results$plot3$setState(ic)
+        }
         
         self$results$text$setContent(lca)
         
@@ -271,27 +284,43 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
 
       },
       
+      # Preserve the summaries used by glca's profile plot, including the
+      # observation weights of each observed group.
+      .profilePlotState = function(lca) {
+        list(
+          model = lca$model[c("R", "measure.inv", "G", "W", "M", "C", "Ng")],
+          var.names = lca$var.names[c("y.names", "g.names")],
+          rho = lca$param$rho,
+          means = lapply(lca$posterior, colMeans),
+          rows = vapply(lca$posterior, nrow, integer(1))
+        )
+      },
+      
+      .profilePlotObject = function(saved) {
+        rows <- saved$rows
+        if (length(rows) == 1L) rows[] <- 1L
+        # Repeat group summaries only for the native plotting method. Keeping
+        # original group weights preserves its overall marginal prevalence.
+        posterior <- Map(function(means, n) {
+          matrix(rep(means, each = n), nrow = n,
+                 dimnames = list(NULL, names(means)))
+        }, saved$means, rows)
+        structure(list(model = saved$model, var.names = saved$var.names,
+                       param = list(rho = saved$rho), posterior = posterior),
+                  class = "glca")
+      },
+      
       .plot1 = function(image, ...) {
-        if (!self$options$plot1)
+        if (!isTRUE(self$options$plot1) || is.null(image$state))
+          return(FALSE)
+        if (!requireNamespace("glca", quietly = TRUE))
           return(FALSE)
         
-        vars <- self$options$vars
-        group <- self$options$group
-        nc <- self$options$nc
-        covs <- self$options$covs
-
-        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
-        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, sep="|")
-        
-        if (is.null(private$.modelCache[[modelKey]])) {
-          private$.modelCache[[modelKey]] <- private$.computeLCA()
-        }
-        lca <- private$.modelCache[[modelKey]]
-        
-        par(mfcol = c(3, 1))
-        plot1 <- plot(lca, ask = FALSE)
-        
-        print(plot1)
+        lca <- private$.profilePlotObject(image$state)
+        oldpar <- graphics::par(no.readonly = TRUE)
+        on.exit(graphics::par(oldpar), add = TRUE)
+        graphics::par(mfcol = c(3, 1))
+        graphics::plot(lca, ask = FALSE)
         TRUE
       },
       
@@ -318,32 +347,10 @@ glcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
       },
       
       .plot3 = function(image3, ggtheme, theme, ...) {
-        if (!self$options$plot3)
+        if (!isTRUE(self$options$plot3) || is.null(image3$state))
           return(FALSE)
         
-        vars <- self$options$vars
-        group <- self$options$group
-        nc <- self$options$nc
-        covs <- self$options$covs
-        
-        covsKey <- if (is.null(covs) || length(covs) == 0) "NO_COVS" else paste(covs, collapse = ",")
-        modelKey <- paste(paste(vars, collapse=","), covsKey, nc, group, "ip", sep="|")
-        
-        
-        if (is.null(private$.modelCache[[modelKey]])) {
-          private$.modelCache[[modelKey]] <- private$.computeIP()
-        }
-        mglca3 <- private$.modelCache[[modelKey]]
-        
-        icfKey <- paste(modelKey, "icf", sep="|")
-        
-        if (is.null(private$.modelCache[[icfKey]])) {
-          icf <- mglca3[["param"]][["rho"]]
-          icf <- reshape2::melt(icf)
-          colnames(icf) <- c("Class", "Level", "value", "Variable", "Group")
-          private$.modelCache[[icfKey]] <- icf
-        }
-        ic <- private$.modelCache[[icfKey]]
+        ic <- image3$state
         
         plot3 <- ggplot2::ggplot(ic, ggplot2::aes(x = Variable, y = value, fill = Level)) +
           ggplot2::geom_bar(stat = "identity", position = "stack") +

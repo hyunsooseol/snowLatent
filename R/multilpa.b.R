@@ -219,7 +219,14 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 for (i in seq_along(output$values)) element$setValues(index=i, values=output$values[[i]])
             }
         },
-        .profilePlot = function(image, ...) {
+        # jamovi may bundle discrete colour/fill scales with its visual theme.
+        # Keep the visual theme while preserving each plot's existing scales.
+        .plotTheme = function(ggtheme) {
+            if (inherits(ggtheme, "theme"))
+                return(ggtheme)
+            Filter(function(part) inherits(part, "theme"), ggtheme)
+        },
+        .profilePlot = function(image, ggtheme, theme, ...) {
             s <- image$state
             if (is.null(s)) return(FALSE)
             d <- s$data
@@ -234,12 +241,12 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
             g <- g +
                 ggplot2::labs(x=NULL, y=if (s$z) "Standardized profile mean" else "Profile mean (original units)",
                     colour="Profile") +
-                ggplot2::theme_minimal(base_size=12) +
+                private$.plotTheme(ggtheme) +
                 ggplot2::theme(panel.grid.minor=ggplot2::element_blank(), legend.position="bottom",
                                axis.text.x=ggplot2::element_text(angle=30, hjust=1))
             print(g); TRUE
         },
-        .comparisonPlot = function(image, ...) {
+        .comparisonPlot = function(image, ggtheme, theme, ...) {
             s <- image$state
             if (is.null(s) || !nrow(s$data)) return(FALSE)
             d <- s$data
@@ -256,12 +263,12 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 ggplot2::facet_wrap(~criterion, ncol=1, scales="free_y") +
                 ggplot2::labs(x="Individual profiles", y="Information criterion", colour="Group classes",
                     shape=NULL) +
-                ggplot2::theme_minimal(base_size=12) +
+                private$.plotTheme(ggtheme) +
                 ggplot2::theme(panel.grid.minor=ggplot2::element_blank(), legend.position="bottom",
                     strip.text=ggplot2::element_text(face="bold"))
             print(g); TRUE
         },
-        .heatmapPlot = function(image, ...) {
+        .heatmapPlot = function(image, ggtheme, theme, ...) {
             d <- image$state
             if (is.null(d) || !nrow(d)) return(FALSE)
             span <- max(abs(d$mean), na.rm=TRUE)
@@ -276,12 +283,12 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 ggplot2::scale_fill_gradient2(low="#2166AC", mid="white", high="#B2182B", midpoint=0,
                     limits=c(-span, span), name="Z-score") +
                 ggplot2::labs(x=NULL, y="Individual profile") +
-                ggplot2::theme_minimal(base_size=12) +
+                private$.plotTheme(ggtheme) +
                 ggplot2::theme(panel.grid=ggplot2::element_blank(),
                     axis.text.x=ggplot2::element_text(angle=30, hjust=1))
             print(g); TRUE
         },
-        .compositionPlot = function(image, ...) {
+        .compositionPlot = function(image, ggtheme, theme, ...) {
             d <- image$state
             if (is.null(d)) return(FALSE)
             d$group_class <- factor(d$group_class); d$profile <- factor(d$profile)
@@ -290,7 +297,7 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 ggplot2::scale_y_continuous(breaks=seq(0,100,25), expand=c(0,0)) +
                 ggplot2::coord_cartesian(ylim=c(0,100)) +
                 ggplot2::labs(x="Group-level latent class", y="Conditional profile composition (%)", fill="Individual profile") +
-                ggplot2::theme_minimal(base_size=12) +
+                private$.plotTheme(ggtheme) +
                 ggplot2::theme(panel.grid.minor=ggplot2::element_blank(), legend.position="bottom")
             print(g); TRUE
         }
@@ -558,3 +565,4 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
     d$profile <- factor(d$profile, levels=sort(unique(d$profile)))
     d
 }
+

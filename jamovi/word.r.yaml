@@ -27,6 +27,7 @@ items:
             - words
             - freq
             - minf
+            - maxw
             - max
             - min
             - rot
@@ -46,3 +47,4 @@ items:
             - angle
  
 ...
+

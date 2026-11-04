@@ -295,7 +295,6 @@ items:
       renderFun: .plot1
       visible: (plot1)
       refs: glca
-      requiresData: true
       clearWith:
         - vars
         - nc
@@ -406,6 +405,7 @@ items:
           type: number
           format: zto,pvalue
 ...
+
 
 
 

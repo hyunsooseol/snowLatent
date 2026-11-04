@@ -464,7 +464,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot1",
                 visible="(plot1)",
-                requiresData=TRUE,
                 refs="slca",
                 clearWith=list(
                     "factors")))
@@ -476,7 +475,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot2",
                 visible="(plot2)",
-                requiresData=TRUE,
                 refs="slca",
                 clearWith=list(
                     "factors",
@@ -489,7 +487,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot3",
                 visible="(plot3)",
-                requiresData=TRUE,
                 refs="slca",
                 clearWith=list(
                     "factors",
@@ -502,7 +499,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot4",
                 visible="(plot4)",
-                requiresData=TRUE,
                 refs="slca",
                 clearWith=list(
                     "factors",
@@ -638,7 +634,6 @@ ltaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 height=450,
                 renderFun=".plot",
                 visible="(plot)",
-                requiresData=TRUE,
                 clearWith=list(
                     "factors",
                     "covs",

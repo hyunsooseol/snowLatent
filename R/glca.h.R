@@ -454,7 +454,6 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 visible="(plot1)",
                 refs="glca",
-                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",
@@ -484,7 +483,6 @@ glcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot3",
                 visible="(plot3)",
                 refs="snowLatent",
-                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "nc",

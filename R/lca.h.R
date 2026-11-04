@@ -425,7 +425,6 @@ lcaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plot1",
                 visible="(plot1)",
                 refs="glca",
-                requiresData=TRUE,
                 clearWith=list(
                     "vars",
                     "covs",

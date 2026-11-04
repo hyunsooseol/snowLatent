@@ -40,7 +40,10 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
           return()
         
         # 현재 데이터와 옵션으로 모델을 새로 계산
+        self$results$plot1$setState(NULL)
         private$.modelCache <- private$.computeLCA()
+        if (isTRUE(self$options$plot1))
+          self$results$plot1$setState(private$.profilePlotState(private$.modelCache))
         
         # 현재 실행에서 모델 비교 결과를 한 번만 계산
         comparison <- private$.computeModelComparison()
@@ -416,20 +419,43 @@ lcaClass <- if (requireNamespace('jmvcore', quietly = TRUE))
         ))
       },
       
+      # Preserve the summaries used by glca's profile plot, including the
+      # observation weights of each observed group.
+      .profilePlotState = function(lca) {
+        list(
+          model = lca$model[c("R", "measure.inv", "G", "W", "M", "C", "Ng")],
+          var.names = lca$var.names[c("y.names", "g.names")],
+          rho = lca$param$rho,
+          means = lapply(lca$posterior, colMeans),
+          rows = vapply(lca$posterior, nrow, integer(1))
+        )
+      },
+      
+      .profilePlotObject = function(saved) {
+        rows <- saved$rows
+        if (length(rows) == 1L) rows[] <- 1L
+        # Repeat group summaries only for the native plotting method. Keeping
+        # original group weights preserves its overall marginal prevalence.
+        posterior <- Map(function(means, n) {
+          matrix(rep(means, each = n), nrow = n,
+                 dimnames = list(NULL, names(means)))
+        }, saved$means, rows)
+        structure(list(model = saved$model, var.names = saved$var.names,
+                       param = list(rho = saved$rho), posterior = posterior),
+                  class = "glca")
+      },
+      
       .plot1 = function(image, ...) {
-        if (!self$options$plot1)
+        if (!isTRUE(self$options$plot1) || is.null(image$state))
+          return(FALSE)
+        if (!requireNamespace("glca", quietly = TRUE))
           return(FALSE)
         
-        if (is.null(private$.modelCache))
-          private$.modelCache <- private$.computeLCA()
-        
-        par(mfcol = c(2, 1))
-        plot1 <- plot(
-          private$.modelCache,
-          ask = FALSE
-        )
-        
-        print(plot1)
+        lca <- private$.profilePlotObject(image$state)
+        oldpar <- graphics::par(no.readonly = TRUE)
+        on.exit(graphics::par(oldpar), add = TRUE)
+        graphics::par(mfcol = c(2, 1))
+        graphics::plot(lca, ask = FALSE)
         TRUE
       },
       
