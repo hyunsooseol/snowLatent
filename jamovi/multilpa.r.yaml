@@ -52,6 +52,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
 - name: modelFit
   title: Model fit and comparison
   type: Table
@@ -96,6 +99,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: selected
     title: Selected
@@ -184,6 +190,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: level
     title: Level
@@ -255,6 +264,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: level
     title: Level
@@ -314,6 +326,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: profile
     title: Profile
@@ -374,6 +389,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: groupClass
     title: Group class
@@ -427,6 +445,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: groupClass
     title: Group class
@@ -483,6 +504,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
   columns:
   - name: start
     title: Start
@@ -548,6 +572,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
 - name: r3Individual
   title: 'R3STEP: Individual-profile predictors'
   type: Table
@@ -752,6 +779,109 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
+- name: comparisonFigure
+  title: 'Model comparison: AIC and BIC'
+  type: Image
+  width: 700
+  height: 650
+  renderFun: .comparisonPlot
+  visible: (comparisonPlot)
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
+- name: heatmapFigure
+  title: 'Individual profiles: standardized heatmap'
+  type: Image
+  width: 700
+  height: 450
+  renderFun: .heatmapPlot
+  visible: (heatmapPlot)
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
+  - showModelFit
+  - showClassification
+  - showEntropy
+  - showProfiles
+  - showGroupClasses
+  - showComposition
+  - profilePlot
+  - compositionPlot
+  - plotZ
+  - showStarts
+  - saveClasses
+  - saveProbabilities
+  - individualCovariates
+  - groupCovariates
+  - individualOutcomes
+  - groupOutcomes
+  - r3Adjust
+  - bchAdjust
+  - showR3Individual
+  - showR3Group
+  - showBCHIndividualMeans
+  - showBCHIndividualPairs
+  - showBCHGroupMeans
+  - showBCHGroupPairs
+  - individualFactors
+  - groupFactors
+  - individualRefLevels
+  - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
 - name: compositionFigure
   title: Group-class composition
   type: Image
@@ -799,6 +929,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
 - name: saveClasses
   title: Modal classifications
   type: Output
@@ -847,6 +980,9 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
 - name: saveProbabilities
   title: Posterior probabilities
   type: Output
@@ -895,4 +1031,8 @@ items:
   - groupFactors
   - individualRefLevels
   - groupRefLevels
+  - profileCI
+  - heatmapPlot
+  - comparisonPlot
+
 

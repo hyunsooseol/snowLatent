@@ -25,6 +25,9 @@ multilpa(
   showGroupClasses = FALSE,
   showComposition = FALSE,
   profilePlot = FALSE,
+  profileCI = FALSE,
+  heatmapPlot = FALSE,
+  comparisonPlot = FALSE,
   compositionPlot = FALSE,
   plotZ = TRUE,
   showStarts = FALSE,
@@ -87,6 +90,12 @@ multilpa(
 
 \item{profilePlot}{.}
 
+\item{profileCI}{.}
+
+\item{heatmapPlot}{.}
+
+\item{comparisonPlot}{.}
+
 \item{compositionPlot}{.}
 
 \item{plotZ}{.}
@@ -145,6 +154,8 @@ A results object containing:
   \code{results$bchGroupMeans} \tab \tab \tab \tab \tab a table \cr
   \code{results$bchGroupPairs} \tab \tab \tab \tab \tab a table \cr
   \code{results$profileFigure} \tab \tab \tab \tab \tab an image \cr
+  \code{results$comparisonFigure} \tab \tab \tab \tab \tab an image \cr
+  \code{results$heatmapFigure} \tab \tab \tab \tab \tab an image \cr
   \code{results$compositionFigure} \tab \tab \tab \tab \tab an image \cr
   \code{results$saveClasses} \tab \tab \tab \tab \tab an output \cr
   \code{results$saveProbabilities} \tab \tab \tab \tab \tab an output \cr

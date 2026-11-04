@@ -112,6 +112,18 @@ options:
   title: Profile plot
   type: Bool
   default: false
+- name: profileCI
+  title: 95% confidence intervals
+  type: Bool
+  default: false
+- name: heatmapPlot
+  title: Profile heatmap (z-scores)
+  type: Bool
+  default: false
+- name: comparisonPlot
+  title: Model comparison plot (AIC / BIC)
+  type: Bool
+  default: false
 - name: compositionPlot
   title: Group-class composition plot
   type: Bool
@@ -253,4 +265,5 @@ options:
     - name: ref
       type: Level
 weightsSupport: none
+
 

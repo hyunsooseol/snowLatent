@@ -97,6 +97,13 @@ children:
       name: plotZ
       label: Standardize indicators (z-scores)
       enable: (profilePlot)
+    - type: CheckBox
+      name: profileCI
+      enable: (profilePlot)
+  - type: CheckBox
+    name: heatmapPlot
+  - type: CheckBox
+    name: comparisonPlot
   - type: CheckBox
     name: compositionPlot
 - type: CollapseBox
@@ -219,3 +226,4 @@ children:
     name: saveClasses
   - type: Output
     name: saveProbabilities
+

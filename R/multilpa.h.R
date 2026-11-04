@@ -25,6 +25,9 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showGroupClasses = FALSE,
             showComposition = FALSE,
             profilePlot = FALSE,
+            profileCI = FALSE,
+            heatmapPlot = FALSE,
+            comparisonPlot = FALSE,
             compositionPlot = FALSE,
             plotZ = TRUE,
             showStarts = FALSE,
@@ -149,6 +152,18 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..profilePlot <- jmvcore::OptionBool$new(
                 "profilePlot",
                 profilePlot,
+                default=FALSE)
+            private$..profileCI <- jmvcore::OptionBool$new(
+                "profileCI",
+                profileCI,
+                default=FALSE)
+            private$..heatmapPlot <- jmvcore::OptionBool$new(
+                "heatmapPlot",
+                heatmapPlot,
+                default=FALSE)
+            private$..comparisonPlot <- jmvcore::OptionBool$new(
+                "comparisonPlot",
+                comparisonPlot,
                 default=FALSE)
             private$..compositionPlot <- jmvcore::OptionBool$new(
                 "compositionPlot",
@@ -306,6 +321,9 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showGroupClasses)
             self$.addOption(private$..showComposition)
             self$.addOption(private$..profilePlot)
+            self$.addOption(private$..profileCI)
+            self$.addOption(private$..heatmapPlot)
+            self$.addOption(private$..comparisonPlot)
             self$.addOption(private$..compositionPlot)
             self$.addOption(private$..plotZ)
             self$.addOption(private$..showStarts)
@@ -348,6 +366,9 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showGroupClasses = function() private$..showGroupClasses$value,
         showComposition = function() private$..showComposition$value,
         profilePlot = function() private$..profilePlot$value,
+        profileCI = function() private$..profileCI$value,
+        heatmapPlot = function() private$..heatmapPlot$value,
+        comparisonPlot = function() private$..comparisonPlot$value,
         compositionPlot = function() private$..compositionPlot$value,
         plotZ = function() private$..plotZ$value,
         showStarts = function() private$..showStarts$value,
@@ -389,6 +410,9 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showGroupClasses = NA,
         ..showComposition = NA,
         ..profilePlot = NA,
+        ..profileCI = NA,
+        ..heatmapPlot = NA,
+        ..comparisonPlot = NA,
         ..compositionPlot = NA,
         ..plotZ = NA,
         ..showStarts = NA,
@@ -433,6 +457,8 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         bchGroupMeans = function() private$.items[["bchGroupMeans"]],
         bchGroupPairs = function() private$.items[["bchGroupPairs"]],
         profileFigure = function() private$.items[["profileFigure"]],
+        comparisonFigure = function() private$.items[["comparisonFigure"]],
+        heatmapFigure = function() private$.items[["heatmapFigure"]],
         compositionFigure = function() private$.items[["compositionFigure"]],
         saveClasses = function() private$.items[["saveClasses"]],
         saveProbabilities = function() private$.items[["saveProbabilities"]]),
@@ -494,7 +520,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels")))
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="modelFit",
@@ -539,7 +568,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="selected", 
@@ -640,7 +672,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="level", 
@@ -719,7 +754,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="level", 
@@ -783,7 +821,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="profile", 
@@ -848,7 +889,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="groupClass", 
@@ -904,7 +948,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="groupClass", 
@@ -964,7 +1011,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="start", 
@@ -1036,7 +1086,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels")))
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="r3Individual",
@@ -1082,7 +1135,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="class", 
@@ -1195,7 +1251,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="class", 
@@ -1308,7 +1367,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="outcome", 
@@ -1388,7 +1450,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="outcome", 
@@ -1482,7 +1547,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="outcome", 
@@ -1562,7 +1630,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels"),
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot"),
                 columns=list(
                     list(
                         `name`="outcome", 
@@ -1658,7 +1729,112 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels")))
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="comparisonFigure",
+                title="Model comparison: AIC and BIC",
+                width=700,
+                height=650,
+                renderFun=".comparisonPlot",
+                visible="(comparisonPlot)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="heatmapFigure",
+                title="Individual profiles: standardized heatmap",
+                width=700,
+                height=450,
+                renderFun=".heatmapPlot",
+                visible="(heatmapPlot)",
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models",
+                    "showModelFit",
+                    "showClassification",
+                    "showEntropy",
+                    "showProfiles",
+                    "showGroupClasses",
+                    "showComposition",
+                    "profilePlot",
+                    "compositionPlot",
+                    "plotZ",
+                    "showStarts",
+                    "saveClasses",
+                    "saveProbabilities",
+                    "individualCovariates",
+                    "groupCovariates",
+                    "individualOutcomes",
+                    "groupOutcomes",
+                    "r3Adjust",
+                    "bchAdjust",
+                    "showR3Individual",
+                    "showR3Group",
+                    "showBCHIndividualMeans",
+                    "showBCHIndividualPairs",
+                    "showBCHGroupMeans",
+                    "showBCHGroupPairs",
+                    "individualFactors",
+                    "groupFactors",
+                    "individualRefLevels",
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="compositionFigure",
@@ -1706,7 +1882,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels")))
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="saveClasses",
@@ -1755,7 +1934,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels")))
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))
             self$add(jmvcore::Output$new(
                 options=options,
                 name="saveProbabilities",
@@ -1804,7 +1986,10 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "individualFactors",
                     "groupFactors",
                     "individualRefLevels",
-                    "groupRefLevels")))}))
+                    "groupRefLevels",
+                    "profileCI",
+                    "heatmapPlot",
+                    "comparisonPlot")))}))
 
 multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "multilpaBase",
@@ -1850,6 +2035,9 @@ multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param showGroupClasses .
 #' @param showComposition .
 #' @param profilePlot .
+#' @param profileCI .
+#' @param heatmapPlot .
+#' @param comparisonPlot .
 #' @param compositionPlot .
 #' @param plotZ .
 #' @param showStarts .
@@ -1888,6 +2076,8 @@ multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$bchGroupMeans} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$bchGroupPairs} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$profileFigure} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$comparisonFigure} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$heatmapFigure} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$compositionFigure} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$saveClasses} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$saveProbabilities} \tab \tab \tab \tab \tab an output \cr
@@ -1921,6 +2111,9 @@ multilpa <- function(
     showGroupClasses = FALSE,
     showComposition = FALSE,
     profilePlot = FALSE,
+    profileCI = FALSE,
+    heatmapPlot = FALSE,
+    comparisonPlot = FALSE,
     compositionPlot = FALSE,
     plotZ = TRUE,
     showStarts = FALSE,
@@ -1987,6 +2180,9 @@ multilpa <- function(
         showGroupClasses = showGroupClasses,
         showComposition = showComposition,
         profilePlot = profilePlot,
+        profileCI = profileCI,
+        heatmapPlot = heatmapPlot,
+        comparisonPlot = comparisonPlot,
         compositionPlot = compositionPlot,
         plotZ = plotZ,
         showStarts = showStarts,

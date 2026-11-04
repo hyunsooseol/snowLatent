@@ -1,7 +1,7 @@
 Package: snowLatent
 Type: Package
 Title: Latent Class Analysis for jamovi
-Version: 3.0.0
+Version: 3.0.1
 Author: Hyunsoo Seol
 Maintainer: Hyunsoo Seol <snow@cau.ac.kr>
 Description: This module allows users to conduct LCA, Multiple group LCA, Multilevel LCA, Multilevel LPA, Latent transition analysis, LCA/LPA 3-step approach, and also provides various types of profile plots.

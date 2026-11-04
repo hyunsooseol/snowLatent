@@ -14,6 +14,9 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 '<li><b>Relative entropy</b> is reported separately for individuals and groups (0-1, higher indicates clearer separation). It is undefined for one class. AvePP is the mean assigned-class posterior among modal members of each class; it is undefined for a class without modal members.</li>',
                 '<li>Check convergence, boundary warnings and repeated recovery of the best log-likelihood. Increase random starts if the best solution is not replicated. Nonconverged or boundary selected models produce fit diagnostics only. Numerical convergence does not prove a global maximum or meaningful classes. A small number of observed groups can make group-level estimation unstable.</li>',
                 '<li><b>Tables</b> provides a named checkbox for each result table. Select only the tables and plots needed for the current learning or reporting step; multiple outputs may also be selected. All table and main plot choices start unchecked.</li>',
+                '<li><b>Plots:</b> the model-comparison plot displays AIC, BIC (groups) and BIC (individuals) from the candidates fitted in the current Run. Check Compare additional models and specify candidates to compare more than the selected model. Each line holds the number of group classes fixed; failed, nonconverged and boundary fits are omitted. Lower values favor fit after the complexity penalty; the graph does not select a model automatically.</li>',
+                '<li><b>Profile confidence intervals:</b> the optional error bars are pointwise 95% Wald confidence intervals for the estimated means, obtained from the observed information of the selected mixture model. They are not within-profile SDs, prediction intervals, robust sandwich intervals or simultaneous intervals. They condition on the selected model. In the standardized display the bounds use the same sample mean and SD as the plotted mean, treating those scaling constants as fixed. If inference is unavailable, the means remain visible and Analysis status explains why intervals are omitted.</li>',
+                '<li><b>Profile heatmap:</b> each cell is an estimated profile mean standardized using the analyzed sample mean and SD of that indicator. Red is above the sample mean, blue below it, and white near it. It always uses z-scores, independently of the line-plot scale. It preserves the profile numbering used by the tables; its colors describe indicator levels, not significance or membership probabilities.</li>',
                 '<li><b>Run</b> estimates the selected model and optional comparison models, and displays only the checked outputs. Changing data, model settings, table or plot selections, the plot scale, or save options clears the previous results. Click <b>Run</b> after each change; selecting an option alone does not calculate, display or save new results.</li>',
                 '<li>Saved classifications are modal assignments and do not account for classification error in subsequent analyses. Group-class values and probabilities are repeated on individuals within the same group; these repetitions are not independent group observations. Excluded rows receive missing saved values. Labels are arbitrary and are consistent across all outputs of the selected model; labels across different fitted models need not correspond.</li>',
                 '<li><b>Covariates (R3STEP):</b> select continuous covariates and/or categorical factors and the desired predictor table. Predictors at the same level enter jointly. Factors are automatically treatment-coded into k-1 numeric dummy variables; nominal numeric codes are categories, not scores. Ordered factors are also treated as categories, without a linear-trend assumption. Select each factor\'s reference category in its reference table; if unset, the first observed category in the data level order is used. The last profile or group class is the reference. B is a log-odds coefficient; OR = exp(B). OR is an odds ratio, not a probability or a causal effect. Intercepts are omitted from the predictor tables.</li>',
@@ -38,7 +41,8 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                    "nStarts", "maxIter", "seed", "compare", "models",
                    "showModelFit", "showClassification", "showEntropy", "showProfiles",
                    "showGroupClasses", "showComposition", "showStarts",
-                   "profilePlot", "compositionPlot", "plotZ", "saveClasses", "saveProbabilities",
+                   "profilePlot", "compositionPlot", "plotZ", "profileCI", "heatmapPlot", "comparisonPlot",
+                   "saveClasses", "saveProbabilities",
                    "individualCovariates", "groupCovariates", "individualOutcomes", "groupOutcomes", "r3Adjust", "bchAdjust", "showR3Individual", "showR3Group", "showBCHIndividualMeans", "showBCHIndividualPairs", "showBCHGroupMeans", "showBCHGroupPairs",
                    "individualFactors", "groupFactors", "individualRefLevels", "groupRefLevels")
             opts <- stats::setNames(lapply(n, function(x) self$options[[x]]), n)
@@ -54,7 +58,7 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 { self$results[[n]]$deleteRows(); self$results[[n]]$setVisible(FALSE) }
             self$results$externalStatus$setContent("")
             self$results$externalStatus$setVisible(FALSE)
-            for (n in c("profileFigure", "compositionFigure")) {
+            for (n in c("profileFigure", "compositionFigure", "comparisonFigure", "heatmapFigure")) {
                 self$results[[n]]$setState(NULL); self$results[[n]]$setVisible(FALSE)
             }
             for (n in c("saveClasses", "saveProbabilities"))
@@ -95,6 +99,10 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                      external = if (ready) .mlpa_external(selected, prepared, self$data, self$options,
                          checkpoint = function() private$.checkpoint()) else NULL,
                      tables = if (ready) .mlpa_extract(selected, prepared) else NULL,
+                     criteria = if (isTRUE(self$options$comparisonPlot))
+                         .mlpa_plot_criteria(result$comparison, result$fits) else NULL,
+                     profileIntervals = if (ready && isTRUE(self$options$profilePlot) && isTRUE(self$options$profileCI))
+                         .mlpa_plot_intervals(selected, prepared) else NULL,
                      packageVersion = as.character(utils::packageVersion("latents")))
             }, error = function(e) {
                 self$results$status$setContent(paste0("Analysis could not be completed: ", conditionMessage(e)))
@@ -132,6 +140,21 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
             })))
             if (length(notes)) status <- paste(status, paste(notes, collapse = "\n"), sep = "\n")
             private$.fill(self$results$modelFit, bundle$comparison)
+            # The comparison plot can still show usable comparison models when
+            # the selected model fails. Never plot a failed or boundary fit.
+            if (isTRUE(self$options$comparisonPlot)) {
+                criteria <- bundle$criteria
+                if (!is.null(criteria) && nrow(criteria$data) > 0L) {
+                    self$results$comparisonFigure$setState(criteria)
+                    self$results$comparisonFigure$setVisible(TRUE)
+                    if (length(criteria$notes))
+                        status <- paste(status, paste(criteria$notes, collapse="\n"), sep="\n")
+                } else {
+                    status <- paste(status, "AIC/BIC plot unavailable: no converged, non-boundary model is available.", sep="\n")
+                }
+            }
+            if (!is.null(bundle$profileIntervals) && length(bundle$profileIntervals$notes))
+                status <- paste(status, paste(bundle$profileIntervals$notes, collapse="\n"), sep="\n")
             if (!bundle$ready) {
                 self$results$status$setContent(paste(status, "Selected model failed, did not converge, or reached a boundary. Interpretation outputs are suppressed. Select Model fit and comparison under Tables and click Run to display fit diagnostics; adjust the model or estimation settings as needed.", sep = "\n"))
                 return()
@@ -164,18 +187,19 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                     boundary=if ("boundary" %in% names(s)) ifelse(s$boundary,"Yes","No") else "",
                     error=ifelse(is.na(s$error), "", s$error)))
             }
-            plot <- t$profiles
-            plot$indicator <- factor(plot$indicator, levels = p$labels)
-            plot$profile <- factor(plot$profile)
-            if (isTRUE(self$options$plotZ)) {
-                centers <- vapply(p$data[p$engineVars], mean, numeric(1), na.rm=TRUE)
-                spreads <- vapply(p$data[p$engineVars], stats::sd, numeric(1), na.rm=TRUE)
-                ix <- match(as.character(plot$indicator), p$labels)
-                plot$mean <- (plot$mean - centers[ix]) / spreads[ix]
-            }
             if (isTRUE(self$options$profilePlot)) {
+                plot <- .mlpa_plot_frame(t$profiles, p,
+                    standardized=isTRUE(self$options$plotZ), intervals=bundle$profileIntervals)
                 self$results$profileFigure$setVisible(TRUE)
-                self$results$profileFigure$setState(list(data=plot, z=isTRUE(self$options$plotZ)))
+                self$results$profileFigure$setState(list(data=plot, z=isTRUE(self$options$plotZ),
+                    ci=isTRUE(self$options$profileCI)))
+            }
+            if (isTRUE(self$options$heatmapPlot)) {
+                # Always use observed-sample z-scores for the heatmap, independent
+                # of the profile line plot's scale and confidence-interval option.
+                heat <- .mlpa_plot_frame(t$profiles, p, standardized=TRUE)
+                self$results$heatmapFigure$setVisible(TRUE)
+                self$results$heatmapFigure$setState(heat)
             }
             if (isTRUE(self$options$compositionPlot)) {
                 self$results$compositionFigure$setVisible(TRUE)
@@ -200,11 +224,61 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
             if (is.null(s)) return(FALSE)
             d <- s$data
             g <- ggplot2::ggplot(d, ggplot2::aes(x=indicator, y=mean, group=profile, colour=profile)) +
-                ggplot2::geom_line(linewidth=0.8) + ggplot2::geom_point(size=2.5) +
-                ggplot2::labs(x=NULL, y=if (s$z) "Standardized profile mean" else "Profile mean (original units)", colour="Profile") +
+                ggplot2::geom_line(linewidth=0.8) + ggplot2::geom_point(size=2.5)
+            if (isTRUE(s$ci)) {
+                usable <- is.finite(d$lower) & is.finite(d$upper)
+                if (any(usable))
+                    g <- g + ggplot2::geom_errorbar(data=d[usable, , drop=FALSE],
+                        ggplot2::aes(ymin=lower, ymax=upper), width=0.08, linewidth=0.5)
+            }
+            g <- g +
+                ggplot2::labs(x=NULL, y=if (s$z) "Standardized profile mean" else "Profile mean (original units)",
+                    colour="Profile") +
                 ggplot2::theme_minimal(base_size=12) +
                 ggplot2::theme(panel.grid.minor=ggplot2::element_blank(), legend.position="bottom",
                                axis.text.x=ggplot2::element_text(angle=30, hjust=1))
+            print(g); TRUE
+        },
+        .comparisonPlot = function(image, ...) {
+            s <- image$state
+            if (is.null(s) || !nrow(s$data)) return(FALSE)
+            d <- s$data
+            # Lines join only candidates with the same number of group classes.
+            # A single candidate in a group-class series is shown as a point.
+            series <- split(d, interaction(d$criterion, d$groupClasses, drop=TRUE))
+            lines <- do.call(rbind, Filter(function(z) length(unique(z$profiles)) > 1L, series))
+            g <- ggplot2::ggplot(d, ggplot2::aes(x=profiles, y=value, colour=groupClasses, group=groupClasses))
+            if (!is.null(lines) && nrow(lines))
+                g <- g + ggplot2::geom_line(data=lines, linewidth=0.7)
+            g <- g + ggplot2::geom_point(ggplot2::aes(shape=selection), size=2.8) +
+                ggplot2::scale_shape_manual(values=c("Selected model"=17, "Comparison model"=16)) +
+                ggplot2::scale_x_continuous(breaks=sort(unique(d$profiles))) +
+                ggplot2::facet_wrap(~criterion, ncol=1, scales="free_y") +
+                ggplot2::labs(x="Individual profiles", y="Information criterion", colour="Group classes",
+                    shape=NULL) +
+                ggplot2::theme_minimal(base_size=12) +
+                ggplot2::theme(panel.grid.minor=ggplot2::element_blank(), legend.position="bottom",
+                    strip.text=ggplot2::element_text(face="bold"))
+            print(g); TRUE
+        },
+        .heatmapPlot = function(image, ...) {
+            d <- image$state
+            if (is.null(d) || !nrow(d)) return(FALSE)
+            span <- max(abs(d$mean), na.rm=TRUE)
+            if (!is.finite(span) || span == 0) span <- 1
+            d$profile <- factor(as.character(d$profile), levels=rev(levels(d$profile)))
+            d$valueLabel <- sprintf("%.2f", d$mean)
+            d$textColour <- ifelse(abs(d$mean) > 0.65*span, "white", "black")
+            g <- ggplot2::ggplot(d, ggplot2::aes(x=indicator, y=profile, fill=mean)) +
+                ggplot2::geom_tile(colour="white", linewidth=0.5) +
+                ggplot2::geom_text(ggplot2::aes(label=valueLabel, colour=textColour), size=3.5) +
+                ggplot2::scale_colour_identity() +
+                ggplot2::scale_fill_gradient2(low="#2166AC", mid="white", high="#B2182B", midpoint=0,
+                    limits=c(-span, span), name="Z-score") +
+                ggplot2::labs(x=NULL, y="Individual profile") +
+                ggplot2::theme_minimal(base_size=12) +
+                ggplot2::theme(panel.grid=ggplot2::element_blank(),
+                    axis.text.x=ggplot2::element_text(angle=30, hjust=1))
             print(g); TRUE
         },
         .compositionPlot = function(image, ...) {
@@ -399,4 +473,88 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
         notes <- c(notes,paste0(v,": reference = ",ref,"; treatment coding (",length(observed)-1L," dummy variable(s))."))
     }
     list(data=frame,safe=safe,labels=labels,comparisons=comparisons,notes=notes)
+}
+
+
+# Plot data are prepared during Run and stored with each image. Rendering an
+# image never refits a model or performs parameter inference.
+.mlpa_plot_criteria <- function(comparison, fits) {
+    usable <- vapply(seq_len(nrow(comparison)), function(i) {
+        f <- fits[[i]]
+        !is.null(f) && isTRUE(f$converged) && !isTRUE(f$boundary) &&
+            all(is.finite(as.numeric(unlist(comparison[i, c("aic", "bicGroups", "bicIndividuals")], use.names=FALSE))))
+    }, logical(1))
+    valid <- comparison[usable, , drop=FALSE]
+    criteria <- c(aic="AIC", bicGroups="BIC (groups)", bicIndividuals="BIC (individuals)")
+    if (!nrow(valid)) return(list(data=data.frame(), notes="No usable candidate models."))
+    rows <- lapply(names(criteria), function(key) data.frame(
+        profiles=valid$profiles, groupClasses=valid$groups, criterion=unname(criteria[key]),
+        value=valid[[key]], selection=ifelse(valid$selected == "Yes", "Selected model", "Comparison model"),
+        stringsAsFactors=FALSE))
+    d <- do.call(rbind, rows)
+    d$criterion <- factor(d$criterion, levels=unname(criteria))
+    d$groupClasses <- factor(d$groupClasses, levels=sort(unique(d$groupClasses)))
+    d$selection <- factor(d$selection, levels=c("Selected model", "Comparison model"))
+    d <- d[order(d$criterion, d$groupClasses, d$profiles), , drop=FALSE]
+    notes <- character()
+    omitted <- sum(!usable)
+    if (omitted) notes <- c(notes, sprintf("Model comparison plot: omitted %d failed, nonconverged or boundary candidate(s).", omitted))
+    if (any(grepl("not replicated", valid$status, fixed=TRUE)))
+        notes <- c(notes, "Model comparison plot: some candidates did not replicate their best likelihood; inspect the fit table.")
+    if (nrow(valid) < 2L)
+        notes <- c(notes, "Model comparison plot: only one usable candidate; add comparison models for a comparison.")
+    list(data=d, notes=notes)
+}
+
+.mlpa_plot_intervals <- function(fit, prepared) {
+    notes <- character()
+    tryCatch({
+        inference <- withCallingHandlers(
+            latents::parameter_inference(fit, data=prepared$data, level=0.95,
+                vcov_type="observed", adjust="none", method="wald"),
+            warning=function(w) {
+                notes <<- unique(c(notes, paste0("Profile 95% CIs: ", conditionMessage(w))))
+                invokeRestart("muffleWarning")
+            })
+        needed <- c("level", "parameter", "outcome", "term", "conf_low", "conf_high")
+        if (!is.data.frame(inference) || !all(needed %in% names(inference)))
+            stop("The package did not return the expected inference columns.")
+        x <- inference[inference$level == "measurement" & inference$parameter == "mean", , drop=FALSE]
+        profile <- suppressWarnings(as.integer(sub("^profile_", "", x$outcome)))
+        indicator <- prepared$labels[match(x$term, prepared$engineVars)]
+        if (!nrow(x) || anyNA(profile) || anyNA(indicator))
+            stop("Mean intervals could not be matched to profiles and indicators.")
+        frame <- data.frame(profile=profile, indicator=indicator,
+            lower=x$conf_low, upper=x$conf_high, stringsAsFactors=FALSE)
+        good <- is.finite(frame$lower) & is.finite(frame$upper) & frame$lower <= frame$upper
+        if (!any(good)) stop("No finite confidence intervals are available.")
+        if (!all(good)) notes <- c(notes, "Profile 95% CIs: some mean intervals are unavailable.")
+        frame$lower[!good] <- frame$upper[!good] <- NA_real_
+        list(data=frame, notes=notes)
+    }, error=function(e) list(data=NULL,
+        notes=unique(c(notes, paste0("Profile 95% CIs unavailable: ", conditionMessage(e))))))
+}
+
+.mlpa_plot_frame <- function(profiles, prepared, standardized=FALSE, intervals=NULL) {
+    d <- profiles
+    d$lower <- d$upper <- rep(NA_real_, nrow(d))
+    if (!is.null(intervals) && !is.null(intervals$data)) {
+        bounds <- intervals$data
+        at <- vapply(seq_len(nrow(d)), function(i) {
+            found <- which(bounds$profile == d$profile[i] & bounds$indicator == d$indicator[i])
+            if (length(found) == 1L) found else NA_integer_
+        }, integer(1))
+        d$lower <- bounds$lower[at]
+        d$upper <- bounds$upper[at]
+    }
+    if (isTRUE(standardized)) {
+        centers <- vapply(prepared$data[prepared$engineVars], mean, numeric(1), na.rm=TRUE)
+        spreads <- vapply(prepared$data[prepared$engineVars], stats::sd, numeric(1), na.rm=TRUE)
+        ix <- match(as.character(d$indicator), prepared$labels)
+        for (column in c("mean", "lower", "upper"))
+            d[[column]] <- (d[[column]] - centers[ix]) / spreads[ix]
+    }
+    d$indicator <- factor(d$indicator, levels=prepared$labels)
+    d$profile <- factor(d$profile, levels=sort(unique(d$profile)))
+    d
 }
