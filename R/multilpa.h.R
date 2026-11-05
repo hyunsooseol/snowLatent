@@ -18,7 +18,7 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             compare = FALSE,
             models = "2/1, 3/2",
             run = FALSE,
-            showModelFit = FALSE,
+            showModelFit = TRUE,
             showClassification = FALSE,
             showEntropy = FALSE,
             showProfiles = FALSE,
@@ -128,7 +128,7 @@ multilpaOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..showModelFit <- jmvcore::OptionBool$new(
                 "showModelFit",
                 showModelFit,
-                default=FALSE)
+                default=TRUE)
             private$..showClassification <- jmvcore::OptionBool$new(
                 "showClassification",
                 showClassification,
@@ -440,6 +440,7 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "multilpaResults",
     inherit = jmvcore::Group,
     active = list(
+        computationCache = function() private$.items[["computationCache"]],
         help = function() private$.items[["help"]],
         status = function() private$.items[["status"]],
         modelFit = function() private$.items[["modelFit"]],
@@ -472,6 +473,23 @@ multilpaResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs=list(
                     "snowLatent",
                     "latents"))
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="computationCache",
+                title="Computation cache",
+                visible=FALSE,
+                clearWith=list(
+                    "vars",
+                    "group",
+                    "nProfiles",
+                    "nGroupClasses",
+                    "variance",
+                    "missing",
+                    "nStarts",
+                    "maxIter",
+                    "seed",
+                    "compare",
+                    "models")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="help",
@@ -2007,6 +2025,7 @@ multilpaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param groupRefLevels .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$computationCache} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$help} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$status} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$modelFit} \tab \tab \tab \tab \tab a table \cr
@@ -2052,7 +2071,7 @@ multilpa <- function(
     compare = FALSE,
     models = "2/1, 3/2",
     run = FALSE,
-    showModelFit = FALSE,
+    showModelFit = TRUE,
     showClassification = FALSE,
     showEntropy = FALSE,
     showProfiles = FALSE,

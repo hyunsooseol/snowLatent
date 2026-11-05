@@ -26,3 +26,4 @@ Imports: jmvcore (>= 0.8.5),
          latents (>= 1.1.9)
 Remotes: hyunsooseol/latents@5031b0a6e046ea974ca5417407f7fe060c5fb89a
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

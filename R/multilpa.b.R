@@ -17,7 +17,7 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
                 '<li><b>Plots:</b> the model-comparison plot displays AIC, BIC (groups) and BIC (individuals) from the candidates fitted in the current Run. Check Compare additional models and specify candidates to compare more than the selected model. Each line holds the number of group classes fixed; failed, nonconverged and boundary fits are omitted. Lower values favor fit after the complexity penalty; the graph does not select a model automatically.</li>',
                 '<li><b>Profile confidence intervals:</b> the optional error bars are pointwise 95% Wald confidence intervals for the estimated means, obtained from the observed information of the selected mixture model. They are not within-profile SDs, prediction intervals, robust sandwich intervals or simultaneous intervals. They condition on the selected model. In the standardized display the bounds use the same sample mean and SD as the plotted mean, treating those scaling constants as fixed. If inference is unavailable, the means remain visible and Analysis status explains why intervals are omitted.</li>',
                 '<li><b>Profile heatmap:</b> each cell is an estimated profile mean standardized using the analyzed sample mean and SD of that indicator. Red is above the sample mean, blue below it, and white near it. It always uses z-scores, independently of the line-plot scale. It preserves the profile numbering used by the tables; its colors describe indicator levels, not significance or membership probabilities.</li>',
-                '<li><b>Run</b> estimates the selected model and optional comparison models, and displays only the checked outputs. Changing data, model settings, table or plot selections, the plot scale, or save options clears the previous results. Click <b>Run</b> after each change; selecting an option alone does not calculate, display or save new results.</li>',
+                '<li><b>Run</b> displays only the checked outputs. After each change, click <b>Run</b>; selecting an option alone does not calculate, display or save new results. With identical indicator/group data and model/estimation settings, Run reuses the fitted models. New external analyses and profile confidence intervals are calculated only when needed. Changes to indicator/group data, row selection or order, model settings or estimation settings invalidate the model cache. Changes to external variable values, predictors, factor reference categories, outcomes or multiplicity correction invalidate the affected external analyses. To refit the models explicitly, change the random seed or another estimation setting. Cached results belong to this analysis only.</li>',
                 '<li>Saved classifications are modal assignments and do not account for classification error in subsequent analyses. Group-class values and probabilities are repeated on individuals within the same group; these repetitions are not independent group observations. Excluded rows receive missing saved values. Labels are arbitrary and are consistent across all outputs of the selected model; labels across different fitted models need not correspond.</li>',
                 '<li><b>Covariates (R3STEP):</b> select continuous covariates and/or categorical factors and the desired predictor table. Predictors at the same level enter jointly. Factors are automatically treatment-coded into k-1 numeric dummy variables; nominal numeric codes are categories, not scores. Ordered factors are also treated as categories, without a linear-trend assumption. Select each factor\'s reference category in its reference table; if unset, the first observed category in the data level order is used. The last profile or group class is the reference. B is a log-odds coefficient; OR = exp(B). OR is an odds ratio, not a probability or a causal effect. Intercepts are omitted from the predictor tables.</li>',
                 '<li>Individual-profile R3STEP uses group-class-specific intercepts and shared predictor slopes when there is more than one latent group class; with one group class it uses the pooled form. Group-class R3STEP operates at the group level. Both use group-clustered sandwich standard errors (CR1). The step-three regression can update membership proportions but retains the original measurement parameters. It does not jointly estimate individual-level and group-level predictors in one regression.</li>',
@@ -66,12 +66,27 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
         },
         .run = function() {
             signature <- private$.signature()
+            modelKey <- .mlpa_cache_model_key(self$data, signature$options)
+            cache <- self$results$computationCache$state
+            if (!is.list(cache) || !identical(cache$version, 1L) ||
+                !identical(cache$modelKey, modelKey)) {
+                cache <- NULL
+                self$results$computationCache$setState(NULL)
+            }
             previous <- self$results$status$state
             if (!isTRUE(self$options$run)) {
                 # Keep an already-run result only when data and every user option
                 # are unchanged. Selecting a table or plot never runs the analysis.
-                if (!is.null(previous) && identical(previous$signature, signature))
+                if (!is.null(previous) && identical(previous$displayVersion, 1L) &&
+                    identical(previous$signature, signature) &&
+                    identical(previous$engine, .mlpa_cache_engine())) {
+                    # Dynamic rows (rows: 0) are not recreated by protobuf
+                    # loading. Restore the last completed display without any
+                    # estimation, external analysis or confidence inference.
+                    private$.clearOutputs()
+                    private$.render(previous)
                     return()
+                }
                 private$.clearOutputs()
                 self$results$status$setState(NULL)
                 self$results$status$setContent("Select variables, a group ID and the required outputs, then click Run. After any option change, click Run again.")
@@ -79,36 +94,75 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
             }
             private$.clearOutputs()
             self$results$status$setState(NULL)
-            self$results$status$setContent("Estimating Multilevel LPA...")
+            self$results$status$setContent("Preparing Multilevel LPA...")
             private$.checkpoint()
             bundle <- tryCatch({
                 if (!requireNamespace("latents", quietly = TRUE) || utils::packageVersion("latents") < "1.1.9")
                     stop("latents >= 1.1.9 is required. Rebuild this module with its pinned GitHub dependency.")
-                prepared <- .mlpa_prepare(self$data, self$options$vars, self$options$group, self$options$missing)
-                pairs <- .mlpa_pairs(self$options$nProfiles, self$options$nGroupClasses, self$options$compare, self$options$models)
-                result <- .mlpa_estimate(prepared, pairs, self$options$variance, self$options$missing,
-                    self$options$nStarts, self$options$maxIter, self$options$seed,
-                    checkpoint = function(i, n) {
-                        self$results$status$setContent(sprintf("Estimating model %d of %d...", i, n))
-                        private$.checkpoint()
-                    })
-                selected <- result$fits[[1L]]
-                ready <- !is.null(selected) && isTRUE(selected$converged) && !isTRUE(selected$boundary)
-                list(signature = signature, prepared = prepared, comparison = result$comparison,
-                     warnings = result$warnings, errors = result$errors, ready = ready,
-                     external = if (ready) .mlpa_external(selected, prepared, self$data, self$options,
-                         checkpoint = function() private$.checkpoint()) else NULL,
-                     tables = if (ready) .mlpa_extract(selected, prepared) else NULL,
-                     criteria = if (isTRUE(self$options$comparisonPlot))
-                         .mlpa_plot_criteria(result$comparison, result$fits) else NULL,
-                     profileIntervals = if (ready && isTRUE(self$options$profilePlot) && isTRUE(self$options$profileCI))
-                         .mlpa_plot_intervals(selected, prepared) else NULL,
+                engine <- .mlpa_cache_engine()
+                reused <- .mlpa_cache_reusable(cache, modelKey, engine)
+                if (!reused) {
+                    self$results$computationCache$setState(NULL)
+                    prepared <- .mlpa_prepare(self$data, self$options$vars, self$options$group, self$options$missing)
+                    pairs <- .mlpa_pairs(self$options$nProfiles, self$options$nGroupClasses, self$options$compare, self$options$models)
+                    result <- .mlpa_estimate(prepared, pairs, self$options$variance, self$options$missing,
+                        self$options$nStarts, self$options$maxIter, self$options$seed,
+                        checkpoint = function(i, n) {
+                            self$results$status$setContent(sprintf("Estimating model %d of %d...", i, n))
+                            private$.checkpoint()
+                        })
+                    selected <- result$fits[[1L]]
+                    ready <- !is.null(selected) && isTRUE(selected$converged) && !isTRUE(selected$boundary)
+                    # Retain one fitted object, not every comparison fit. The
+                    # comparison plot needs only these small prepared summaries.
+                    cache <- list(version = 1L, modelKey = modelKey, engine = engine,
+                        prepared = prepared, comparison = result$comparison,
+                        warnings = result$warnings, errors = result$errors, ready = ready,
+                        fit = if (ready) selected else NULL,
+                        tables = if (ready) .mlpa_extract(selected, prepared) else NULL,
+                        criteria = .mlpa_plot_criteria(result$comparison, result$fits),
+                        external = list(), profileIntervals = NULL)
+                }
+                external <- NULL
+                counts <- c(reused = 0L, computed = 0L)
+                intervals <- NULL
+                if (cache$ready) {
+                    ext <- .mlpa_cached_external(cache$fit, cache$prepared, self$data,
+                        signature$options, cache$external,
+                        checkpoint = function() private$.checkpoint())
+                    cache$external <- ext$cache
+                    external <- ext$result
+                    counts <- ext$counts
+                    if (isTRUE(self$options$profilePlot) && isTRUE(self$options$profileCI)) {
+                        if (is.null(cache$profileIntervals)) {
+                            ci <- .mlpa_plot_intervals(cache$fit, cache$prepared)
+                            # Retry unavailable inference on the next Run.
+                            if (!is.null(ci$data) && nrow(ci$data) > 0L)
+                                cache$profileIntervals <- ci
+                            intervals <- ci
+                        } else intervals <- cache$profileIntervals
+                    }
+                    self$results$computationCache$setState(cache)
+                } else {
+                    # A failed, nonconverged or boundary selected fit must be
+                    # attempted again on the next Run, never reused as valid.
+                    self$results$computationCache$setState(NULL)
+                }
+                list(signature = signature, displayVersion = 1L, engine = engine,
+                     prepared = cache$prepared, comparison = cache$comparison,
+                     warnings = cache$warnings, errors = cache$errors, ready = cache$ready,
+                     external = external, tables = cache$tables,
+                     criteria = if (isTRUE(self$options$comparisonPlot)) cache$criteria else NULL,
+                     profileIntervals = intervals, reused = reused, externalCounts = counts,
                      packageVersion = as.character(utils::packageVersion("latents")))
             }, error = function(e) {
+                self$results$computationCache$setState(NULL)
                 self$results$status$setContent(paste0("Analysis could not be completed: ", conditionMessage(e)))
                 NULL
             })
             if (is.null(bundle)) return()
+            # Preserve the completed display for native Action resets. The full
+            # fitted object belongs only to the separate computation cache.
             self$results$status$setState(bundle)
             private$.render(bundle)
         },
@@ -134,6 +188,11 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
             p <- bundle$prepared
             status <- sprintf("Analyzed: %d individuals in %d observed groups. Excluded: %d of %d rows. Group sizes: %d-%d. latents %s.",
                 nrow(p$data), p$nGroups, p$nExcluded, p$nOriginal, min(p$sizes), max(p$sizes), bundle$packageVersion)
+            status <- paste(status, if (isTRUE(bundle$reused))
+                "Computation: reused fitted models." else "Computation: fitted models.", sep = "\n")
+            if (sum(bundle$externalCounts) > 0L)
+                status <- paste(status, sprintf("External analyses: %d reused; %d computed.",
+                    bundle$externalCounts[["reused"]], bundle$externalCounts[["computed"]]), sep = "\n")
             notes <- unique(unlist(lapply(seq_along(bundle$warnings), function(i) {
                 w <- bundle$warnings[[i]]
                 if (length(w)) paste0("Model ", bundle$comparison$profiles[i], "/", bundle$comparison$groups[i], ": ", w) else character()
@@ -303,6 +362,119 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
         }
     ))
 
+
+# Persistent caches are per analysis result, never global or R6-private. jamovi
+# restores them when it creates a fresh analysis object for the next request.
+# Bump version 1 whenever a future change alters cached statistical results.
+.mlpa_cache_data <- function(data, variables, rows = NULL) {
+    variables <- unique(as.character(variables))
+    if (is.null(data)) return(list(missing = variables, data = NULL))
+    available <- variables[variables %in% names(data)]
+    if (is.null(rows)) rows <- seq_len(nrow(data))
+    list(missing = setdiff(variables, available),
+         data = as.data.frame(data[rows, available, drop = FALSE]))
+}
+
+.mlpa_cache_model_key <- function(data, options) {
+    names <- c("vars", "group", "nProfiles", "nGroupClasses", "variance", "missing",
+               "nStarts", "maxIter", "seed", "compare", "models")
+    # Exact input values, classes, factor levels and row names are compared.
+    # No rounded values, row counts alone, or potentially colliding hash keys.
+    list(options = options[names],
+         input = .mlpa_cache_data(data, c(options$group, options$vars)))
+}
+
+.mlpa_cache_engine <- function() {
+    list(package = suppressWarnings(utils::packageDescription("latents",
+             fields = c("Version", "RemoteSha", "GithubSHA1", "Built"))),
+         runtime = R.version[c("major", "minor", "platform")])
+}
+
+.mlpa_cache_reusable <- function(cache, modelKey, engine) {
+    is.list(cache) && identical(cache$version, 1L) &&
+        identical(cache$modelKey, modelKey) && identical(cache$engine, engine) &&
+        isTRUE(cache$ready) && is.list(cache$fit) &&
+        isTRUE(cache$fit$converged) && !isTRUE(cache$fit$boundary) &&
+        is.list(cache$prepared) && is.list(cache$tables) &&
+        is.data.frame(cache$comparison) && nrow(cache$comparison) > 0L &&
+        is.list(cache$criteria)
+}
+
+.mlpa_cached_external <- function(fit, prepared, data, options, cache = list(),
+                                  checkpoint = function() NULL) {
+    if (!is.list(cache)) cache <- list()
+    flags <- c("showR3Individual", "showR3Group", "showBCHIndividualMeans",
+               "showBCHIndividualPairs", "showBCHGroupMeans", "showBCHGroupPairs")
+    tasks <- list()
+    addTask <- function(id, table, flag, settings, variables, taskOptions) {
+        tasks[[length(tasks) + 1L]] <<- list(id = id, table = table,
+            requested = isTRUE(options[[flag]]), options = taskOptions,
+            key = list(settings = settings,
+                input = .mlpa_cache_data(data, variables, prepared$rows)))
+    }
+    only <- function(flag) {
+        current <- options
+        for (f in flags) current[[f]] <- identical(f, flag)
+        current
+    }
+    for (level in c("individual", "group")) {
+        table <- if (level == "individual") "r3Individual" else "r3Group"
+        flag <- if (level == "individual") "showR3Individual" else "showR3Group"
+        predictors <- paste0(level, "Covariates")
+        factors <- paste0(level, "Factors")
+        references <- paste0(level, "RefLevels")
+        addTask(table, table, flag,
+            options[c(predictors, factors, references, "r3Adjust")],
+            c(options[[predictors]], options[[factors]]), only(flag))
+    }
+    for (level in c("individual", "group")) {
+        outcomeOption <- paste0(level, "Outcomes")
+        variables <- unique(as.character(options[[outcomeOption]]))
+        # An empty selection still goes through the existing validation and
+        # produces its usual note when the corresponding output is requested.
+        outcomes <- if (length(variables)) as.list(variables) else list(NULL)
+        for (variable in outcomes) for (contrast in c("Means", "Pairs")) {
+            prefix <- if (level == "individual") "Individual" else "Group"
+            table <- paste0("bch", prefix, contrast)
+            flag <- paste0("showBCH", prefix, contrast)
+            current <- only(flag)
+            current[[outcomeOption]] <- if (is.null(variable)) character() else variable
+            addTask(paste0(table, ":", if (is.null(variable)) "<none>" else variable),
+                table, flag, list(outcome = variable, adjust = options$bchAdjust),
+                variable, current)
+        }
+    }
+    frames <- list(); notes <- character(); retained <- list()
+    counts <- c(reused = 0L, computed = 0L)
+    for (task in tasks) {
+        entry <- cache[[task$id]]
+        reusable <- is.list(entry) && identical(entry$key, task$key) &&
+            is.list(entry$result) && is.list(entry$result$frames) &&
+            is.data.frame(entry$result$frames[[task$table]]) &&
+            nrow(entry$result$frames[[task$table]]) > 0L
+        # Retain only entries for the current variable selections and keys.
+        # Unchecking an output hides it without discarding a valid result.
+        if (reusable) retained[[task$id]] <- entry
+        if (!task$requested) next
+        if (reusable) {
+            result <- entry$result
+            counts[["reused"]] <- counts[["reused"]] + 1L
+        } else {
+            result <- .mlpa_external(fit, prepared, data, task$options, checkpoint)
+            counts[["computed"]] <- counts[["computed"]] + 1L
+            frame <- result$frames[[task$table]]
+            # Do not memoize failed external analyses; permit a retry on Run.
+            if (is.data.frame(frame) && nrow(frame) > 0L)
+                retained[[task$id]] <- list(key = task$key, result = result)
+        }
+        notes <- unique(c(notes, result$notes))
+        for (name in names(result$frames)) {
+            frame <- result$frames[[name]]
+            frames[[name]] <- if (is.null(frames[[name]])) frame else rbind(frames[[name]], frame)
+        }
+    }
+    list(result = list(frames = frames, notes = notes), cache = retained, counts = counts)
+}
 
 # External-variable analyses for continuous Multilevel LPA only.
 # Kept in this backend so multilpa-core.R remains unchanged.
@@ -565,4 +737,5 @@ multilpaClass <- if (requireNamespace("jmvcore", quietly = TRUE))
     d$profile <- factor(d$profile, levels=sort(unique(d$profile)))
     d
 }
+
 

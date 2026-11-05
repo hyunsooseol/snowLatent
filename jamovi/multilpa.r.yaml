@@ -5,6 +5,22 @@ refs:
 - snowLatent
 - latents
 items:
+- name: computationCache
+  title: Computation cache
+  type: Preformatted
+  visible: false
+  clearWith:
+  - vars
+  - group
+  - nProfiles
+  - nGroupClasses
+  - variance
+  - missing
+  - nStarts
+  - maxIter
+  - seed
+  - compare
+  - models
 - name: help
   title: Help
   type: Html
@@ -1000,6 +1016,7 @@ items:
   - profileCI
   - heatmapPlot
   - comparisonPlot
+
 
 
 

@@ -18,7 +18,7 @@ multilpa(
   compare = FALSE,
   models = "2/1, 3/2",
   run = FALSE,
-  showModelFit = FALSE,
+  showModelFit = TRUE,
   showClassification = FALSE,
   showEntropy = FALSE,
   showProfiles = FALSE,

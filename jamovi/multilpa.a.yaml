@@ -87,7 +87,7 @@ options:
 - name: showModelFit
   title: Model fit and comparison
   type: Bool
-  default: false
+  default: TRUE
 - name: showClassification
   title: Classification quality and posterior sizes
   type: Bool
